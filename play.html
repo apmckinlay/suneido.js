@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>suneido.js playground</title>
+    <style type="text/css">
+        body {
+            font-family: sans-serif;
+        }
+        textarea {
+            font-family: monospace;
+            font-size: large;
+        }
+    </style>
+    <script data-main="play" src="require.js"></script>
+</head>
+<body>
+<h1>suneido.js playground</h1>
+<div style="float: left; margin-right: 1em;">
+    <label>
+        Suneido source code<br/>
+        <textarea id="su_source" rows="9" cols="50"></textarea>
+    </label>
+    <br /><br />
+    <label>
+        Suneido result<br />
+        <textarea id="su_result" rows="5" cols="50" readonly="readonly"></textarea>
+    </label>
+    <br /><br />
+</div>
+<div style="float: left; ">
+    <label>
+        JavaScript<br/>
+        <textarea id="js_source" rows="9" cols="50" readonly="readonly"></textarea>
+    </label>
+    <br /><br />
+    <label>
+        JavaScript result<br />
+        <textarea id="js_result" rows="5" cols="50" readonly="readonly"></textarea>
+    </label>
+    <br /><br />
+</div>
+<div style="clear: both;">
+    <span id="run"
+            style="font-size: x-large; padding: 5px; color: white;
+            font-weight: bold; background-color: green">Run</span>
+</div>
+</body>
+</html>
