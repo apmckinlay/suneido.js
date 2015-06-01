@@ -7,12 +7,22 @@
 import dnum = require("./dnum");
 type Dnum = dnum.Dnum;
 
-export function put(ob, mem, val) {
-    ob[mem] = val; // TODO
+import suob = require("./suobject");
+type SuObject = suob.SuObject;
+
+export function put(ob, key, val): void {
+    if (suob.isSuOb(ob))
+        <SuObject>ob.put(key, val);
+    else
+        throw "does not support put (" + key + ")";
 }
 
-export function get(ob, mem) {
-    return ob[mem]; // TODO
+export function get(x, key): any {
+    if (typeof x === 'string')
+        return <string>x.charAt(toInt(key));
+    if (suob.isSuOb(x))
+        return <SuObject>x.get(key);
+    throw "does not support get (" + key + ")";
 }
 
 export function rangeto(ob, i, j) {
@@ -46,6 +56,14 @@ export function not(x): boolean {
 
 export function bitnot(x): number {
     return ~x; // TODO
+}
+
+function toInt(x): number {
+    if (dnum.isInteger(x))
+        return x;
+    if (dnum.isDnum(x) && <Dnum>x.isInt())
+        return (<Dnum>x).toInt();
+    throw "can't convert to integer";
 }
 
 function toNum(x: any): number|Dnum {

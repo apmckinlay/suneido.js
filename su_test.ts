@@ -4,6 +4,7 @@
 "use strict";
 
 import dnum = require("./dnum");
+import suob = require("./suobject");
 import su = require("./su");
 
 var assert = require("assert");
@@ -39,3 +40,11 @@ function add(x, y, expected): void {
 add(1, 2, 3);
 add(n(1), n(2), n(3));
 add(n(1), 2, n(3));
+
+assert.equal(su.get('hello', 1), 'e');
+assert.equal(su.get('hello', n(1)), 'e');
+assert.throws(function () { su.get('hello', 'x') }, /can't convert to integer/);
+
+var ob = suob.make();
+su.put(ob, 'n', 123);
+assert.equal(su.get(ob, 'n'), 123);

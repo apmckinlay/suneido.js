@@ -4,8 +4,7 @@
 "use strict";
 
 import dnum = require("./dnum");
-
-var assert = require("assert");
+import assert = require("assert");
 
 var n = dnum.make;
 
@@ -148,3 +147,12 @@ div(n(1234567890123456), n(1234567890123456), 1);
 div(dnum.INF, n(123), 'inf');
 div(n(1, 99), n(1, 99), 1);
 div(n(1), n(1234567890123456), 8.10000007290001e-16);
+
+assert(n(0).isZero());
+assert(n(0).isInt());
+assert(n(123).isInt());
+assert(n(123, 3).isInt());
+assert(n(123000, -3).isInt());
+assert(! n(123, -3).isInt());
+
+assert(0 == dnum.cmp(dnum.fromNumber(1.5), n(15, -1)));

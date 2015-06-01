@@ -14,10 +14,15 @@
 export interface Dnum {
     coef: number;
     exp: number;
+
     sign(): number;
     abs(): Dnum;
     neg(): Dnum;
     toNumber(): number;
+    isInt(): boolean;
+    isZero(): boolean;
+    isInf(): boolean;
+    toInt(): number;
 }
 
 var dnum = Object.create(null);
@@ -243,6 +248,10 @@ export function parse(s: string): Dnum {
     return make(coef, exp);
 }
 
+export function fromNumber(n: number): Dnum {
+    return parse(n.toExponential(14)); // is there a better way?
+}
+
 function spanSignedDigits(s: string, start: number): string {
     var i = start;
     var c = s.charAt(start);
@@ -388,12 +397,12 @@ function convert(c: number, e: number): Dnum {
     if (isInteger(c))
         return make(c, e); // fast path
     c *= Math.pow(10, e);
-    return parse(c.toExponential(14));
+    return fromNumber(c);
 }
 
 // utility functions -----------------------------------------------------------
 
-function isInteger(n: any): boolean {
+export function isInteger(n: any): boolean {
     return typeof n === "number" && isFinite(n) &&
         minInt <= n && n <= maxInt &&
         Math.floor(n) === n;
