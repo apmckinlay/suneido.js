@@ -14,7 +14,7 @@ export function put(ob, key, val): void {
     if (suob.isSuOb(ob))
         <SuObject>ob.put(key, val);
     else
-        throw "does not support put (" + key + ")";
+        throw typeName(ob) + " does not support put (" + key + ")";
 }
 
 export function get(x, key): any {
@@ -22,16 +22,27 @@ export function get(x, key): any {
         return <string>x.charAt(toInt(key));
     if (suob.isSuOb(x))
         return <SuObject>x.get(key);
-    throw "does not support get (" + key + ")";
+    throw typeName(x) + " does not support get (" + key + ")";
 }
 
-export function rangeto(ob, i, j) {
-    return ob.slice(i, j); // TODO
+export function rangeto(x, i, j) {
+    var len = x.length;
+    return x.slice(prepFrom(i, len), j);
 }
 
-export function rangelen(ob, i, n) {
-    var j = (n >= 0) ? i + n : n + ob.length;
-    return ob.slice(i, j); // TODO
+export function rangelen(x, i, n) {
+    var len = x.length;
+    i = prepFrom(i, len);
+    return x.slice(i, i + n);
+}
+
+function prepFrom(from, len) {
+    if (from < 0) {
+        from += len;
+        if (from < 0)
+            from = 0;
+    }
+    return from;
 }
 
 export function inc(x) {
@@ -63,7 +74,7 @@ function toInt(x): number {
         return x;
     if (dnum.isDnum(x) && <Dnum>x.isInt())
         return (<Dnum>x).toInt();
-    throw "can't convert to integer";
+    throw "can't convert " + typeName(x) + " to integer";
 }
 
 function toNum(x: any): number|Dnum {
@@ -79,7 +90,7 @@ function toNum(x: any): number|Dnum {
         else
             return dnum.parse(x);
     }
-    throw "can't convert " + typeof x + " to number";
+    throw "can't convert " + typeName(x) + " to number";
 }
 
 function toDnum(x: number|Dnum): dnum.Dnum {
@@ -205,4 +216,41 @@ export function argsall(args) {
 
 export function args(args, spec) {
     return args; //TODO
+}
+
+export function typeName(x: any): string {
+    if (typeof x.typeName === 'function')
+        return x.typeName();
+    var t = typeof x;
+    switch (t) {
+    case 'boolean': return 'Boolean';
+    case 'string': return 'String';
+    case 'number': return 'Number';
+    }
+    return t;
+}
+
+export function display(x: any): string {
+    if (typeof x.display === 'function')
+        return x.display();
+    if (typeof x === 'string')
+        return displayString(x);
+    return x.toString();
+}
+
+export var default_single_quotes = false;
+
+function displayString(s: string): string {
+    if (-1 === s.indexOf('`') &&
+        -1 !== s.indexOf('\\') &&
+        -1 === s.search(/[^ -~]/))
+        return '`' + s + '`';
+    s = s.replace('\\', '\\\\');
+    var single_quotes = default_single_quotes
+        ? -1 === s.indexOf("'")
+        : (-1 !== s.indexOf('"') && -1 === s.indexOf("'"));
+    if (single_quotes)
+        return "'" + s + "'";
+    else
+        return "\"" + s.replace("\"", "\\\"") + "\"";
 }

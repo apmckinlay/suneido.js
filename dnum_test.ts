@@ -156,3 +156,19 @@ assert(n(123000, -3).isInt());
 assert(! n(123, -3).isInt());
 
 assert(0 == dnum.cmp(dnum.fromNumber(1.5), n(15, -1)));
+
+//function randint(limit) {
+//    return Math.floor(Math.random() * limit);
+//}
+//var nfailed = 0;
+//for (var i = 0; i < 1000000; ++i) {
+//    var x = n(randint(1000000000000), randint(200) - 100);
+//    //console.log(x.toString());
+//    var num = x.toNumber();
+//    var y = dnum.fromNumber(num);
+//    if (0 != dnum.cmp(x, y)) {
+//        ++nfailed;
+//        console.log(x + " != " + y);
+//    }
+//}
+//console.log("nfailed " + nfailed);

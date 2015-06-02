@@ -1,16 +1,22 @@
 /**
+ * Uses a JavaScript array and Map
+ * Map does not handle object keys so these are disallowed for now.
+ * Dnum keys are converted to JavaScript numbers, hopefully losslessly.
+ * Iteration through the map must use forEach until TypeScript has for-of
  * Created by andrew on 2015-05-31.
  */
 "use strict";
 
 import dnum = require("./dnum");
 type Dnum = dnum.Dnum;
+import su = require("./su");
 
 export interface SuObject {
     readonly: boolean;
     defval: any;
     vec: Array<any>;
     map: Map<any,any>;
+    length: number;
 
     size(): number;
     vecsize(): number;
@@ -20,16 +26,31 @@ export interface SuObject {
     get(key: any): any;
     setReadonly(): void;
     setDefault(value: any): void;
+    typeName(): string;
+    slice(i, j): SuObject;
+    equals(that): boolean;
+    toString(): string;
+    display(): string;
 }
 
 var suob = Object.create(null);
+suob.readonly = false;
+
+// length property is used by su.range... to be compatible with string
+Object.defineProperty(suob, 'length', {
+    get: function () { return this.size(); }
+    });
 
 export function make(): SuObject {
     var ob = Object.create(suob);
-    ob.readonly = false;
-    ob.defval = undefined;
     ob.vec = [];
     ob.map = new Map();
+    return ob;
+}
+
+export function list(...args): SuObject {
+    var ob = make();
+    ob.vec = args;
     return ob;
 }
 
@@ -73,10 +94,10 @@ suob.add = function (x: any): void {
 }
 
 function canonical(key: any): any {
-    if (dnum.isDnum(key) && (<Dnum>key).isInt())
-        return (<Dnum>key).toInt();
-    if (typeof key === 'number' && ! dnum.isInteger(key))
-        return dnum.fromNumber(key);
+    if (dnum.isDnum(key))
+        return (<Dnum>key).toNumber();
+    if (typeof key === 'object')
+        throw "suneido.js objects do not support object keys";
     return key;
 }
 
@@ -107,7 +128,7 @@ suob.get = function (key: any): any {
 
 function getIfPresent(ob: SuObject, key: any): any {
     var i = index(key);
-    return (0 <= i && i < ob.vec.length) ? ob.vec[i] : ob.map.get(key);
+    return (0 <= i && i < ob.vec.length) ? ob.vec[i] : mapget(ob, key);
 }
 
 suob.setReadonly = function (): void {
@@ -120,3 +141,96 @@ suob.setReadonly = function (): void {
 suob.setDefault = function (value: any): void {
     this.defval = value;
 }
+
+suob.typeName = function (): string {
+    return "Object";
+}
+
+suob.slice = function (i, j): SuObject {
+    var ob = make();
+    ob.vec = this.vec.slice(i, j);
+    return ob;
+}
+
+suob.equals = function (that): boolean {
+    if (! isSuOb(that))
+        return false;
+    return equals2(this, <SuObject>that, null);
+}
+
+function equals2(x, y, stack): boolean {
+    if (x.vec.length != y.vec.length || x.map.size != y.map.size)
+        return false;
+    if (stack == undefined)
+        stack = new PairStack();
+    else if (stack.contains(x, y))
+        return true; // comparison is already in progress
+    stack.push(x, y);
+    try {
+        for (var i = 0; i < x.vec.length; ++i)
+            if (! equals3(x.vec[i], y.vec[i], stack))
+                return false;
+        var eq = true;
+        x.map.forEach(function (v, k) {
+            if (!equals3(v, y.map.get(k), stack))
+                eq = false;
+        }); //TODO use for-of once available
+        return eq;
+    } finally {
+        stack.pop();
+    }
+}
+
+function equals3(x, y, stack): boolean {
+    if (x === y)
+        return true;
+    if (! isSuOb(x))
+        return su.is(x, y);
+    if (! isSuOb(y))
+        return false;
+    return equals2(x, y, stack);
+}
+
+class PairStack {
+    public stack: Array<any>;
+    constructor() {
+        this.stack = []
+    }
+    public push(x: any, y: any): void {
+        this.stack.push(x);
+        this.stack.push(y);
+    }
+    public contains(x: any, y: any): boolean {
+        for (var i = 0; i < this.stack.length; i += 2)
+            if (this.stack[i] === x && this.stack[i + 1] == y)
+                return true;
+        return false;
+    }
+    public pop(): void {
+        this.stack.pop();
+        this.stack.pop();
+    }
+}
+
+suob.toString = function (): string {
+    return toString2(this, '#(', ')');
+}
+
+function toString2(x: SuObject, before: string, after: string) {
+    var s = "";
+    for (var i = 0; i < x.vec.length; ++i)
+        s += x.vec[i] + ', ';
+    x.map.forEach(function (v, k) {
+        s += keyString(k) + ': ' + su.display(v) + ', ';
+    }); //TODO use for-of once available
+    return before + s.slice(0, -2) + after;
+}
+
+function keyString(x: any): string {
+    if (typeof x === 'string' &&
+        -1 !== x.search(/^[_a-zA-Z][_a-zA-Z0-9]*[?!]?$/))
+        return x;
+    return su.display(x);
+}
+
+suob.display = suob.toString;
