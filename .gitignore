@@ -2,3 +2,4 @@
 *.map
 *.js
 .idea/*
+.settings/*

@@ -85,7 +85,7 @@ function toNum(x: any): number|Dnum {
     if (x === true)
         return 1;
     if (typeof x === 'string') {
-        if (-1 === x.search('[.eE]' && x.length < 14))
+        if (-1 === x.search('[.eE]') && x.length < 14)
             return parseInt(x);
         else
             return dnum.parse(x);
@@ -97,7 +97,7 @@ function toDnum(x: number|Dnum): dnum.Dnum {
     return (typeof x === 'number') ? dnum.make(x) : <Dnum>x;
 }
 
-export function add(x, y) { //TODO
+export function add(x, y): any {
     x = toNum(x);
     y = toNum(y);
     if (typeof x === 'number' && typeof y === 'number')
