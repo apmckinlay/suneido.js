@@ -1,5 +1,10 @@
-
 *.map
-*.js
 .idea/*
 .settings/*
+
+su.js
+su_test.js
+dnum.js
+dnum_test.js
+suobject.js
+suobject_test.js

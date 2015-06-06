@@ -10,6 +10,6 @@
 		"dnum_test.ts",
 		"suobject.ts",
 		"suobject_test.ts",
-		"play.ts"
+		"play.js"
 	]
 }
