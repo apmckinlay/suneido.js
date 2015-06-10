@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+<head>
+	<title>View Library Code</title>
+	<script src="http://codemirror.net/lib/codemirror.js"></script>
+	<link rel="stylesheet" href="http://codemirror.net/lib/codemirror.css">
+	<script  type="text/javascript">
+		window.onload = function () {
+			var editor = CodeMirror.fromTextArea(text);
+			function load() {
+		        var name = document.getElementById("name").value;
+				if (!name) {
+					editor.setValue("");
+					return;
+				}
+		        var req = new XMLHttpRequest();
+		        req.onload = display;
+		        req.open("get", "/libget/stdlib/" + name, true);
+				req.send();
+			};
+			function display() {
+				editor.setValue(this.responseText);
+			};
+			function keypress(event) {
+				if (event.which == 13 || event.keyCode == 13) {
+       				load();
+        			return false;
+    			}
+			    return true;
+			};
+			document.getElementById('load').onclick = load;
+			document.getElementById('name').onkeypress = keypress;
+			function update() {
+			    var req = new XMLHttpRequest();
+		        req.onload = display;
+		        req.open("post", "/update", true);
+				req.send();
+			}
+			document.getElementById('update').onclick = update;		};
+	</script>
+	<style>
+		.CodeMirror {
+			height: 100%;
+			border: 1px solid gray;
+			}
+		.button {
+			padding: 2px; 
+			color: white; 
+			font-family: sans-serif;
+            font-weight: bold; 
+			background-color: blue;
+			cursor: pointer;
+			}
+	</style>
+</head>
+<body>
+	<h1>suneido.js Library View</h1>
+	<input id="name" type="text" style="margin-bottom: 1em;"></input> 
+	<span id="load" class="button">Load</span>
+	<span id="update" class="button" style="float: right;">Update</span>
+	<br style="clear: both;" />
+	<textarea id="text"></textarea>
+</body>	
+</html>
