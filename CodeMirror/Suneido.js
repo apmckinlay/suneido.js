@@ -8,7 +8,7 @@
 CodeMirror.defineMode("suneido", function(config, parserConfig) {
 	var indentUnit = config.indentUnit;
 	var isOperatorChar = /[+\-*&%=<>!?|\/$]/;
-	var keywords = words("False True and bool break buffer callback char" +
+	var keywords = words("and bool break buffer callback char" +
 		" continue default dll double false float forever" +
 		" gdiobj handle in int16 int32 int64 int8 isnt is" +
 		" long new not or pointer resource return short string" +
@@ -25,7 +25,7 @@ CodeMirror.defineMode("suneido", function(config, parserConfig) {
 	}
 	function tokenBase(stream, state) {
 		var ch = stream.next();
-		if (ch == '"' || ch == "'") {
+		if (ch == '"' || ch == "'" || ch == '`') {
 			state.tokenize = tokenString(ch);
 			return state.tokenize(stream, state);
 		}
