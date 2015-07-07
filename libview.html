@@ -2,11 +2,61 @@
 <html>
 <head>
 	<title>View Library Code</title>
+	<link rel="stylesheet" href="http://codemirror.net/addon/fold/foldgutter.css">
+	<link rel="stylesheet" href="http://codemirror.net/addon/display/fullscreen.css">
+	<link rel="stylesheet" href="http://codemirror.net/addon/search/matchesonscrollbar.css">
+	<link rel="stylesheet" href="CodeMirror/Dialog.css">
+	<link rel="stylesheet" href="CodeMirror/Suneido.css">
 	<script src="http://codemirror.net/lib/codemirror.js"></script>
-	<link rel="stylesheet" href="http://codemirror.net/lib/codemirror.css">
+	<script src="http://codemirror.net/addon/fold/foldcode.js"></script>
+	<script src="http://codemirror.net/addon/fold/foldgutter.js"></script>
+	<script src="http://codemirror.net/addon/fold/brace-fold.js"></script>
+	<script src="http://codemirror.net/addon/edit/matchbrackets.js"></script>
+	<script src="http://codemirror.net/addon/edit/closebrackets.js"></script>
+	<script src="http://codemirror.net/addon/comment/comment.js"></script>
+	<script src="http://codemirror.net/addon/display/fullscreen.js"></script>
+	<script src="http://codemirror.net/addon/search/searchcursor.js"></script>
+	<script src="http://codemirror.net/addon/scroll/annotatescrollbar.js"></script>
+	<script src="http://codemirror.net/addon/search/matchesonscrollbar.js"></script>
+	<script src="CodeMirror/Suneido.js"></script>
+	<script src="CodeMirror/Dialog.js"></script>
+	<script src="CodeMirror/Search.js"></script>
+	<script src="CodeMirror/HighlightWords.js"></script>
 	<script  type="text/javascript">
 		window.onload = function () {
-			var editor = CodeMirror.fromTextArea(text);
+			var text = document.getElementById('text');
+			var editor = CodeMirror.fromTextArea(text, {
+				mode: "suneido",
+				lineNumbers: true,
+				lineWrapping: true,
+				indentUnit: 4,
+				indentWithTabs: true,
+				extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); },
+					"Ctrl-F": "find",
+					"F3": "findNext",
+					"Shift-F3": "findPrev",
+					"Ctrl-H": "replace",
+					"Shift-Ctrl-H": "replaceAll",
+					"Ctrl-/": "toggleComment",
+					"Shift-Ctrl-/": function(cm){
+						var from = cm.getCursor("from");
+						var to = cm.getCursor("to");
+						if(cm.uncomment(from, to) === false)
+							cm.blockComment(from, to, {fullLines: false});
+					},
+					"F11": function(cm) {
+						cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+					},
+					"Esc": function(cm) {
+						if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+					}},
+				matchBrackets : true,
+				foldGutter: true,
+				gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+				highlightWords : true
+			});
+			window.editor.setOption("fullScreen", true);
+			window.editor.setOption("autoCloseBrackets", true);
 			function load() {
 		        var name = document.getElementById("name").value;
 				if (!name) {
@@ -37,11 +87,11 @@
 		        req.open("post", "/update", true);
 				req.send();
 			}
-			document.getElementById('update').onclick = update;		};
+			document.getElementById('update').onclick = update;
+        };
 	</script>
 	<style>
 		.CodeMirror {
-			height: 100%;
 			border: 1px solid gray;
 			}
 		.button {
@@ -52,6 +102,9 @@
 			background-color: blue;
 			cursor: pointer;
 			}
+        #name {
+            font-size: large;
+        }
 	</style>
 </head>
 <body>
@@ -61,5 +114,15 @@
 	<span id="update" class="button" style="float: right;">Update</span>
 	<br style="clear: both;" />
 	<textarea id="text"></textarea>
+    <p>Keyboard shortcuts:
+        Ctrl+F = Search,
+        F3 = Find Next,
+        Shift+F3 = Find Previous,
+        Ctrl+H = Replace,
+        Shift+Ctrl+H = Replace All,
+        Ctrl+/ = comment with //,
+        Shift+Ctrl+/ = comment with /* */,
+        F11 = full screen
+    </p>
 </body>
 </html>
