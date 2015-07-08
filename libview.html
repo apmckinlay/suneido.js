@@ -5,8 +5,8 @@
 	<link rel="stylesheet" href="http://codemirror.net/addon/fold/foldgutter.css">
 	<link rel="stylesheet" href="http://codemirror.net/addon/display/fullscreen.css">
 	<link rel="stylesheet" href="http://codemirror.net/addon/search/matchesonscrollbar.css">
-	<link rel="stylesheet" href="CodeMirror/Dialog.css">
-	<link rel="stylesheet" href="CodeMirror/Suneido.css">
+	<link rel="stylesheet" href="/CodeMirror/Dialog.css">
+	<link rel="stylesheet" href="/CodeMirror/Suneido.css">
 	<script src="http://codemirror.net/lib/codemirror.js"></script>
 	<script src="http://codemirror.net/addon/fold/foldcode.js"></script>
 	<script src="http://codemirror.net/addon/fold/foldgutter.js"></script>
@@ -18,10 +18,10 @@
 	<script src="http://codemirror.net/addon/search/searchcursor.js"></script>
 	<script src="http://codemirror.net/addon/scroll/annotatescrollbar.js"></script>
 	<script src="http://codemirror.net/addon/search/matchesonscrollbar.js"></script>
-	<script src="CodeMirror/Suneido.js"></script>
-	<script src="CodeMirror/Dialog.js"></script>
-	<script src="CodeMirror/Search.js"></script>
-	<script src="CodeMirror/HighlightWords.js"></script>
+	<script src="/CodeMirror/Suneido.js"></script>
+	<script src="/CodeMirror/Dialog.js"></script>
+	<script src="/CodeMirror/Search.js"></script>
+	<script src="/CodeMirror/HighlightWords.js"></script>
 	<script  type="text/javascript">
 		window.onload = function () {
 			var text = document.getElementById('text');
@@ -49,16 +49,25 @@
 					},
 					"Esc": function(cm) {
 						if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
-					}},
+					},
+                    "F12": function(cm) {
+                        goToDefinition(cm);
+                    }},
 				matchBrackets : true,
 				foldGutter: true,
 				gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
 				highlightWords : true
 			});
-			window.editor.setOption("fullScreen", true);
-			window.editor.setOption("autoCloseBrackets", true);
+			//editor.setOption("fullScreen", true);
+			editor.setOption("autoCloseBrackets", true);
 			function load() {
-		        var name = document.getElementById("name").value;
+                var name = document.getElementById("name").value;
+                history.pushState(null, null, '/libview.html/' + name);
+                load2(name);
+            }
+            function load2(name) {
+                if (name === undefined)
+                    name = document.getElementById("name").value;
 				if (!name) {
 					editor.setValue("");
 					return;
@@ -88,6 +97,23 @@
 				req.send();
 			}
 			document.getElementById('update').onclick = update;
+            function goToDefinition(cm) {
+                // TODO if no selection, select current word (maybe with cm.findWordAt)
+                var doc = cm.getDoc();
+                var sel = doc.getSelection();
+                var name = document.getElementById('name');
+                name.value = sel;
+                load();
+            }
+            window.addEventListener("popstate", function(e) {
+                document.getElementById("name").value = location.pathname.substr(14);
+                load2();
+            });
+            // handle non ajax (re)load
+            if (location.pathname.length > 14) {
+                document.getElementById("name").value = location.pathname.substr(14);
+                load2();
+            }
         };
 	</script>
 	<style>
@@ -122,7 +148,8 @@
         Shift+Ctrl+H = Replace All,
         Ctrl+/ = comment with //,
         Shift+Ctrl+/ = comment with /* */,
-        F11 = full screen
+        F11 = full screen,
+        F12 = go to selected name
     </p>
 </body>
 </html>
