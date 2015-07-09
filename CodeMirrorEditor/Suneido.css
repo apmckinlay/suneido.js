@@ -300,10 +300,6 @@ div.CodeMirror-cursors {
 .CodeMirror ::selection { background: #d7d4f0; }
 .CodeMirror ::-moz-selection { background: #d7d4f0; }
 
-.cm-searching {
-  background: #fff;
-  background: rgba(255, 255, 255, .4);
-}
 .cm-indicator {
   border:1px solid black;
 }
