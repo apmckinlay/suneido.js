@@ -1,6 +1,6 @@
 .CodeMirror-dialog {
   position: absolute;
-  right: 0px;
+  right: 10px;
   background: transparent;
   z-index: 15;
   padding: .1em .8em;
@@ -8,14 +8,22 @@
   color: inherit;
 }
 
-.CodeMirror-dialog-top {
-  border-bottom: 1px solid #eee;
-  top: 0;
+.CodeMirror-dialog-replace {
+  border-top: 1px solid #eee;
+  bottom: 24px;
 }
 
-.CodeMirror-dialog-bottom {
+.CodeMirror-dialog-search {
   border-top: 1px solid #eee;
   bottom: 0;
+}
+
+.CodeMirror-button-replace {
+  width: 109px;
+}
+
+.CodeMirror-button-search {
+  width: 70px;
 }
 
 .CodeMirror-dialog input {
