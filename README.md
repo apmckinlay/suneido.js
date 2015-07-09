@@ -8,9 +8,11 @@ jSuneido (the Java implementation) as the web and database server.
 Suneido code to be run on the browser will be translated to JavaScript
 on the server.
 
-Includes a support library for Suneido code translated/compiled to JavaScript 
+Includes a runtime support library for Suneido code translated/compiled to JavaScript 
 to run in the browser. The actual translation is done by Suneido code running 
 on jSuneido. (not included in this repo)
+
+play.html and libview.html must be run from jSuneido JsPlayServer.
 
 See also: 
 
