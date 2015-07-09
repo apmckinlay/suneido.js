@@ -4,6 +4,9 @@
  */
 "use strict";
 
+//TODO global
+//TODO dynget, dynset, dynpush, dynpop
+
 import dnum = require("./dnum");
 type Dnum = dnum.Dnum;
 

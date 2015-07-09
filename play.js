@@ -2,7 +2,7 @@
  * Created by andrew on 2015-05-28.
  */
 "use strict";
-require(['./su'], function (su) {
+require(['runtime/su'], function (su) {
     function run() {
         var src = document.getElementById("su_source").value;
         var req = new XMLHttpRequest();
@@ -16,7 +16,7 @@ require(['./su'], function (su) {
         document.getElementById("js_source").value = result.js_source;
         var js_result;
         try {
-            js_result = eval(result.js_source + '\nf();');
+            js_result = eval(result.js_source + '();');
         }
         catch (e) {
             js_result = e;
