@@ -4,12 +4,11 @@
 		"sourceMap": true
 	},
 	"files": [
-		"su.ts",
-		"su_test.ts",
-		"dnum.ts",
-		"dnum_test.ts",
-		"suobject.ts",
-		"suobject_test.ts",
-		"play.js"
+		"runtime/su.ts",
+		"runtime/su_test.ts",
+		"runtime/dnum.ts",
+		"runtime/dnum_test.ts",
+		"runtime/suobject.ts",
+		"runtime/suobject_test.ts"
 	]
 }
