@@ -176,7 +176,7 @@
 				cursor = getSearchCursor(cm, state.queryRegexp, rev ? CodeMirror.Pos(cm.lastLine()) : CodeMirror.Pos(cm.firstLine(), 0));
 				if (!cursor.find(rev)) return;
 			}
-			cm.setSelection(cursor.from(), cursor.to());
+			cm.setSelection(cursor.to(), cursor.from());
 			cm.scrollIntoView({from: cursor.from(), to: cursor.to()});
 			state.posFrom = cursor.from(); 
 			state.posTo = cursor.to();
