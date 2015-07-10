@@ -1,12 +1,13 @@
 
-(function(mod) {
-	if (typeof exports == "object" && typeof module == "object") // CommonJS
+(function (mod) {
+	"use strict";
+	if (typeof exports === "object" && typeof module === "object") // CommonJS
 		mod(require("../../lib/codemirror"), require("./searchcursor"), require("../dialog/dialog"));
-	else if (typeof define == "function" && define.amd) // AMD
+	else if (typeof define === "function" && define.amd) // AMD
 		define(["../../lib/codemirror", "./searchcursor", "../dialog/dialog"], mod);
 	else // Plain browser env
 		mod(CodeMirror);
-})(function(CodeMirror) {
+})(function (CodeMirror) {
 	"use strict";
 	function SearchState() {
 		this.posFrom = this.posTo = this.replace = null;
@@ -16,95 +17,95 @@
 		this.searchClose = this.replaceClose = null;
 		this.cursor = null;
 	}
-	
+
 	function getSearchState(cm) {
 		return cm.state.search || (cm.state.search = new SearchState());
 	}
-	
+
 	function queryCaseInsensitive(query) {
-		return typeof query == "string" && query == query.toLowerCase();
+		return typeof query === "string" && query === query.toLowerCase();
 	}
-	
+
 	function getSearchCursor(cm, query, pos) {
 		// Heuristic: if the query string is all lowercase, do a case insensitive search.
 		return cm.getSearchCursor(query, pos, queryCaseInsensitive(query));
 	}
-	
-	function complexDialog(cm, text, shortText, deflt, fs, options) {
-		if (cm.openComplex) 
+
+	function complexDialog(cm, text, fs, options) {
+		if (cm.openComplex) {
 			return cm.openComplex(text, fs, options);
-		else //TODO: just give a prompt with message like "no search/replace method found"
-			options.onInput(prompt(shortText, deflt));
-		return null;
+		}
 	}
-	
+
 	function parseQuery(query) {
-		if (typeof query == "string") {	
-			var isRE = query.match(/^\/(.*)\/([a-z]*)$/);
+		if (typeof query === "string") {
+			var isRE = query.match(/^\/(.*)\/([a-z]*)$/),
+				isCaseInsensitive;
 			if (isRE) {
-				try { 
-					query = new RegExp(isRE[1], isRE[2].indexOf("i") == -1 ? "" : "i"); 
-				} catch(e) {
-					query = /x^/
+				try {
+					query = new RegExp(isRE[1], isRE[2].indexOf("i") === -1 ? "" : "i");
+				} catch (e) {
+					query = /x^/;
 				}
 			} else {
-				var isCaseInsensitive = queryCaseInsensitive(query);
+				isCaseInsensitive = queryCaseInsensitive(query);
 				try {
 					query = new RegExp(query.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"), isCaseInsensitive ? "i" : "");
-				} catch(e) {
-					query = /x^/
+				} catch (e) {
+					query = /x^/;
 				}
 			}
 		} else {
-			query = /x^/
+			query = /x^/;
 		}
-		if (query.test(""))
-			query = /x^/
+		if (query.test("")) {
+			query = /x^/;
+		}
 		return query;
 	}
-	
+
 	var queryDialog =
 		'Search: <input id="searchDialog" type="text" style="width: 10em" class="CodeMirror-search-field"/> <span style="color: #888" class="CodeMirror-search-hint">(Use /re/ syntax for regexp search)</span> <button> Prev </button> <button> Next </button> <button> Close </button>';
-	var map = {
-		70: false, 
-		17: false, 
-		16: false, 
-		114: false, 
-		119: false, 
+	var	map = {
+		70: false,
+		17: false,
+		16: false,
+		114: false,
+		119: false,
 		72: false
-	} // Key : "F" , "Ctrl", "Shift", "F3", "F8" and "H"
-	
+	}; // Key : "F" , "Ctrl", "Shift", "F3", "F8" and "H"
+
 	function doSearch(cm) {
-		var state = getSearchState(cm);
-		var q = cm.getSelection() || state.query || '';
-		var buildNewSearch = function(query) {
-			state.query = query;
-			state.queryRegexp = parseQuery(query);
-			if (cm.showMatchesOnScrollbar) {
-				if (state.annotate) {
-					state.annotate.clear(); 
-					state.annotate = null; 
+		var state = getSearchState(cm),
+			q = cm.getSelection() || state.query || '',
+			buildNewSearch = function (query) {
+				state.query = query;
+				state.queryRegexp = parseQuery(query);
+				if (cm.showMatchesOnScrollbar) {
+					if (state.annotate) {
+						state.annotate.clear();
+						state.annotate = null;
+					}
+					state.annotate = cm.showMatchesOnScrollbar(state.queryRegexp, queryCaseInsensitive(state.query));
 				}
-				state.annotate = cm.showMatchesOnScrollbar(state.queryRegexp, queryCaseInsensitive(state.query));
-			}
-			state.posTo = cm.getCursor();
-			state.posFrom = cm.getCursor();
-			state.cursor = null;
-		};
-		var searchFunc = function(query, rev) {
-			cm.operation( function() {
-				buildNewSearch(query);
-				findNext(cm, rev);
-			});
-		};
-		if (!state.searchDialog){
-			var resultObj = complexDialog(cm, queryDialog, "Search for:", q, [function(cm) {findNext(cm, true);}, findNext],
+				state.posTo = cm.getCursor();
+				state.posFrom = cm.getCursor();
+				state.cursor = null;
+			},
+			searchFunc = function (query, rev) {
+				cm.operation(function () {
+					buildNewSearch(query);
+					findNext(cm, rev);
+				});
+			};
+		if (!state.searchDialog) {
+			var resultObj = complexDialog(cm, queryDialog, [function (cm) {findNext(cm, true); }, findNext],
 				{
 					value: q,
 					selectValueOnOpen: true,
 					closeOnEnter: false,
 					closeOnBlur: false,
-					onClose: function(){
+					onClose: function () {
 						if (state.searchDialog) {
 							state.searchClose();
 							state.searchDialog = null;
@@ -116,40 +117,37 @@
 							state.replaceColse = null;
 						}
 					},
-					bottom: true,
-					onInput: function(e, inputs, close) { searchFunc(inputs); },
-					onKeyDown: function(e, inputs, close) {
-						if (e.keyCode in map)
+					onInput: function (e, inputs, close) { searchFunc(inputs); },
+					onKeyDown: function (e, inputs, close) {
+						if (map.hasOwnProperty(e.keyCode)) {
 							map[e.keyCode] = true;
+						}
 						if (map[17] && map[70]) {
-							doSearch(cm); 
+							doSearch(cm);
 							CodeMirror.e_preventDefault(e);
-						}
-						else if (map[16] && map[114]) {
-							findNext(cm, true); 
+						} else if (map[16] && map[114]) {
+							findNext(cm, true);
 							CodeMirror.e_preventDefault(e);
-						}
-						else if (map[114]) {
-							findNext(cm); 
+						} else if (map[114]) {
+							findNext(cm);
 							CodeMirror.e_preventDefault(e);
-						}
-						else if (map[119]) {
-							doReplace(cm); 
+						} else if (map[119]) {
+							doReplace(cm);
 							CodeMirror.e_preventDefault(e);
-						}
-						else if (map[17] && map[72]) {
-							replace(cm); 
+						} else if (map[17] && map[72]) {
+							replace(cm);
 							CodeMirror.e_preventDefault(e);
 						}
 					},
-					onKeyUp : function(e, inputs, close) { 
-						if (e.keyCode in map) map[e.keyCode] = false 
+					onKeyUp : function (e, inputs, close) {
+						if (map.hasOwnProperty(e.keyCode)) {
+							map[e.keyCode] = false;
+						}
 					}
-				}
-			);
+				});
 			state.searchDialog = resultObj && resultObj.dialog;
 			state.searchClose = resultObj && resultObj.close;
-			if (state.searchDialog){
+			if (state.searchDialog) {
 				state.searchDialog.className = "CodeMirror-dialog CodeMirror-dialog-search";
 				state.searchDialog.style.width = "700";
 				var buttons = state.searchDialog.getElementsByTagName("button");
@@ -200,7 +198,7 @@
 		if (!query) return;
 		cm.operation(function() {
 			for (var cursor = getSearchCursor(cm, query); cursor.findNext();) {
-				if (typeof query != "string") {
+				if (typeof query !== "string") {
 					var match = cm.getRange(cursor.from(), cursor.to()).match(query);
 					cursor.replace(text.replace(/\$(\d)/g, function(_, i) {
 						return match[i];
@@ -214,11 +212,11 @@
 		var state = getSearchState(cm);
 		var text = state.replace || '';
 		var query = state.query;
-		if (!query) return;
+		if (!query || !state.replaceDialog) return;
 		if (!state.cursor)
 			findNext(cm);
 		if (state.cursor)
-			state.cursor.replace(typeof query == "string" ? text :
+			state.cursor.replace(typeof query === "string" ? text :
 				text.replace(/\$(\d)/g, function(_, i) {
 					return match[i];
 				}));
@@ -232,7 +230,7 @@
 		var state = getSearchState(cm);
 		doSearch(cm);
 		if (!state.replaceDialog) {
-			var resultObj = complexDialog(cm, replaceQueryDialog, "Replace:", "", [doReplace, replaceAll],
+			var resultObj = complexDialog(cm, replaceQueryDialog, [doReplace, replaceAll],
 				{ 
 					closeOnEnter: false,
 					closeOnBlur: false,
@@ -252,42 +250,41 @@
 						state.replace = inputs; 
 					},
 					onKeyDown: function(e, inputs, close) {
-						if (e.keyCode in map)
+						if (map.hasOwnProperty(e.keyCode))
 							map[e.keyCode] = true;
 						if (map[17] && map[70]) { 
 							doSearch(cm); 
 							CodeMirror.e_preventDefault(e); 
-						}
-						else if (map[16] && map[114]) { 
+						} else if (map[16] && map[114]) { 
 							doSearch(cm, true); 
 							CodeMirror.e_preventDefault(e); 
-						}
-						else if (map[114]) { 
+						} else if (map[114]) { 
 							doSearch(cm); 
 							CodeMirror.e_preventDefault(e); 
-						}
-						else if (map[119]) { 
+						} else if (map[119]) { 
 							doReplace(cm); 
 							CodeMirror.e_preventDefault(e); 
-						}
-						else if (map[17] && map[72]) { 
+						} else if (map[17] && map[72]) { 
 							replace(cm); 
 							CodeMirror.e_preventDefault(e); 
 						}
 					},
 					onKeyUp : function(e, inputs, close) { 
-						if (e.keyCode in map) map[e.keyCode] = false 
+						if (map.hasOwnProperty(e.keyCode)) {
+							map[e.keyCode] = false;
+						}
 					}
 				});
 			state.replaceDialog = resultObj && resultObj.dialog;
 			state.replaceClose = resultObj && resultObj.close;
 			state.replace = '';
-			if (state.replaceDialog){
+			if (state.replaceDialog) {
 				state.replaceDialog.className = "CodeMirror-dialog CodeMirror-dialog-replace";
 				state.replaceDialog.style.width = "700";
 				var buttons = state.replaceDialog.getElementsByTagName("button");
-				for (var i = 0; i < buttons.length; i++)
+				for (var i = 0; i < buttons.length; i++) {
 					buttons[i].className = "CodeMirror-button-replace";
+				}
 			}
 		}
 	}
