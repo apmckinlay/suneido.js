@@ -110,39 +110,17 @@
             return "comment";
         }
 
-        function Context(indented, prev) {
-            this.indented = indented;
-            this.prev = prev;
-        }
-
-        function isStatement(type) {
-            return type == "statement" || type == "switchstatement";
-        }
-
-        function pushContext(state, col, type) {
-            var indent = state.indented;
-            return state.context = new Context(indent, state.context);
-        }
-
-        function popContext(state) {
-            state.indented = state.context.indented;
-            return state.context = state.context.prev;
-        }
-
         // Interface
         return {
             startState: function (basecolumn) {
                 return {
                     tokenize: null,
-                    context: new Context((basecolumn || 0) - indentUnit, false),
                     indented: 0,
                     startOfLine: true,
-                    prevToken: null
                 };
             },
 
             token: function (stream, state) {
-                var ctx = state.context;
                 curPunc = null;
                 if (stream.sol()) {
                     state.indented = stream.indentation();
