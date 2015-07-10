@@ -35,9 +35,11 @@
                 return null;
             }
             if (/\d/.test(ch)) {
-                stream.eatWhile(/[\w\.]/);
-                return "number";
+                return tokenNumber(stream, state);
             }
+			if (/\w/.test(ch)) {
+				return tokenVariable(stream, state);
+			}
             if (ch == "/") {
                 if (stream.eat("*")) {
                     state.tokenize = tokenComment;
@@ -52,15 +54,34 @@
                 stream.eatWhile(isOperatorChar);
                 return "operator";
             }
-            stream.eatWhile(/[\w\$_\xa1-\uffff]/);
-
-            var cur = stream.current();
-            if (keywords.propertyIsEnumerable(cur)) {
-                return "keyword"
-            }
-            return "variable"
+            
+            return null;
         }
-
+		
+		function tokenVariable(stream, state) {
+			stream.eatWhile(/[\d\w]/);
+			stream.match(/[?!]/, true);
+			var cur = stream.current();
+			if (keywords.propertyIsEnumerable(cur)) {
+                return "keyword";
+            }
+			return "variable";
+		}
+		
+		function tokenNumber(stream, state) {			
+			if (stream.match("0x", true, true))
+				stream.eatWhile(/[0-9a-fA-F]/);
+			else {
+				stream.eatWhile(/\d/);
+				if (stream.eat('.'))
+					stream.eatWhile(/\d/);
+				if (stream.eat(/[eE]/))
+					stream.eatWhile(/\d/);
+			}
+			state.tokenize = null;
+			return "number";
+		}
+		
         function tokenString(quote) {
             return function (stream, state) {
                 var escaped = false, next, end = false;
