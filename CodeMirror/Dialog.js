@@ -1,156 +1,126 @@
-// CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: http://codemirror.net/LICENSE
-
-// Open simple dialogs on top of an editor. Relies on dialog.css.
-
+/*global CodeMirror, document, exports, module, require, define*/
+/*jslint browser: true*/
 (function (mod) {
-    if (typeof exports == "object" && typeof module == "object") // CommonJS
-        mod(require("../../lib/codemirror"));
-    else if (typeof define == "function" && define.amd) // AMD
-        define(["../../lib/codemirror"], mod);
-    else // Plain browser env
-        mod(CodeMirror);
-})(function (CodeMirror) {
-    function dialogDiv(cm, template, bottom) {
-        var wrap = cm.getWrapperElement();
-        var dialog;
-        dialog = wrap.appendChild(document.createElement("div"));
-        if (bottom)
-            dialog.className = "CodeMirror-dialog CodeMirror-dialog-bottom";
-        else
-            dialog.className = "CodeMirror-dialog CodeMirror-dialog-top";
+	"use strict";
+	if (typeof exports === "object" && typeof module === "object") { // CommonJS
+		mod(require("../../lib/codemirror"));
+	} else if (typeof define === "function" && define.amd) { // AMD
+		define(["../../lib/codemirror"], mod);
+	} else { // Plain browser env
+		mod(CodeMirror);
+	}
+}(function (CodeMirror) {
+	"use strict";
+	function dialogDiv(cm, template) {
+		var wrap = cm.getWrapperElement(),
+			dialog;
+		dialog = wrap.appendChild(document.createElement("div"));
 
-        if (typeof template == "string") {
-            dialog.innerHTML = template;
-        } else { // Assuming it's a detached DOM element.
-            dialog.appendChild(template);
-        }
-        return dialog;
-    }
+		if (typeof template === "string") {
+			dialog.innerHTML = template;
+		} else { // Assuming it's a detached DOM element.
+			dialog.appendChild(template);
+		}
+		return dialog;
+	}
+	CodeMirror.defineExtension("openComplex", function (template, callbacks, options) {
+		if (!options) {options = {}; }
+		var dialog = dialogDiv(this, template),
+			closed = false,
+			me = this,
+			blurring = 1,
+			i,
+			inp = dialog.getElementsByTagName("input")[0],
+			buttons = dialog.getElementsByTagName("button"),
+			b,
+			close = function (newVal) {
+				if (typeof newVal === 'string') {
+					inp.value = newVal;
+				} else {
+					if (closed) {return; }
+					closed = true;
+					dialog.parentNode.removeChild(dialog);
+					me.focus();
+					if (options.onClose) {
+						options.onClose(dialog);
+					}
+				}
+			},
+			assignCallback = function (callback) {
+				CodeMirror.on(b, "click", function (e) {
+					CodeMirror.e_preventDefault(e);
+					if (callback) {
+						callback(me);
+					} else {
+						(function () {
+							close();
+							me.focus();
+						}());
+					}
+				});
+			},
+			handleBlur = function () {
+				blurring -= 1;
+				setTimeout(function () {
+					if (blurring <= 0) {
+						close();
+					}
+				}, 200);
+			},
+			handleFocus = function () {
+				blurring += 1;
+			};
+		if (inp) {
+			if (options.value) {
+				inp.value = options.value;
+				if (options.selectValueOnOpen !== false) {
+					inp.select();
+				}
+			}
 
-    function closeNotification(cm, newVal) {
-        if (cm.state.currentNotificationClose)
-            cm.state.currentNotificationClose();
-        cm.state.currentNotificationClose = newVal;
-    }
+			if (options.onInput) {
+				CodeMirror.on(inp, "input", function (e) {
+					if (options.onInput(e, inp.value, close) === "Not found") {
+						dialog.style.backgroundColor = "#f99";
+					} else {
+						dialog.style.backgroundColor = null;
+					}
+				});
+			}
+			if (options.onKeyUp) {
+				CodeMirror.on(dialog, "keyup", function (e) {
+					options.onKeyUp(e, inp.value, close);
+				});
+			}
 
-    CodeMirror.defineExtension("openComplex", function (template, callbacks, options) {
-        if (!options) options = {};
+			CodeMirror.on(dialog, "keydown", function (e) {
+				if (options && options.onKeyDown) {
+					options.onKeyDown(e, inp.value, close);
+				}
+				if (e.keyCode === 27 || (options.closeOnEnter !== false && e.keyCode === 13)) {
+					inp.blur();
+					close();
+					CodeMirror.e_stop(e);
+				}
+				if (e.keyCode === 13) {
+					CodeMirror.e_stop(e);
+					me.focus();
+				}
+			});
 
-        closeNotification(this, null);
-
-        var dialog = dialogDiv(this, template, options.bottom);
-        var closed = false, me = this, blurring = 1;
-
-        function close(newVal) {
-            if (typeof newVal == 'string') {
-                inp.value = newVal;
-            } else {
-                if (closed) return;
-                closed = true;
-                dialog.parentNode.removeChild(dialog);
-                me.focus();
-
-                if (options.onClose) options.onClose(dialog);
-            }
-        }
-
-        var inp = dialog.getElementsByTagName("input")[0];
-        if (inp) {
-            if (options.value) {
-                inp.value = options.value;
-                if (options.selectValueOnOpen !== false) {
-                    inp.select();
-                }
-            }
-
-            if (options.onInput)
-                CodeMirror.on(inp, "input", function (e) {
-                    options.onInput(e, inp.value, close);
-                });
-            if (options.onKeyUp)
-                CodeMirror.on(inp, "keyup", function (e) {
-                    options.onKeyUp(e, inp.value, close);
-                });
-
-            CodeMirror.on(inp, "keydown", function (e) {
-                if (options && options.onKeyDown) options.onKeyDown(e, inp.value, close);
-                if (e.keyCode == 27 || (options.closeOnEnter !== false && e.keyCode == 13)) {
-                    inp.blur();
-                    close();
-                    CodeMirror.e_stop(e);
-                }
-                if (e.keyCode == 13) {
-                    CodeMirror.e_stop(e);
-                    me.focus()
-                }
-                ;
-            });
-
-            if (options.closeOnBlur !== false) CodeMirror.on(inp, "blur", close);
-
-            inp.focus();
-        }
-        var buttons = dialog.getElementsByTagName("button");
-        if (buttons) {
-            for (var i = 0; i < buttons.length; ++i) {
-                var b = buttons[i];
-                (function (callback) {
-                    CodeMirror.on(b, "click", function (e) {
-                        CodeMirror.e_preventDefault(e);
-                        if (callback)
-                            callback(me);
-                        else
-                            (function () {
-                                close();
-                                me.focus();
-                            })();
-                    });
-                })(callbacks[i]);
-                CodeMirror.on(b, "blur", function () {
-                    --blurring;
-                    setTimeout(function () {
-                        if (blurring <= 0) {
-                            close();
-                        }
-                    }, 200);
-                });
-                CodeMirror.on(b, "focus", function () {
-                    ++blurring;
-                });
-            }
-        }
-        return {close: close, dialog: dialog};
-    });
-    /*
-     * openNotification
-     * Opens a notification, that can be closed with an optional timer
-     * (default 5000ms timer) and always closes on click.
-     *
-     * If a notification is opened while another is opened, it will close the
-     * currently opened one and open the new one immediately.
-     */
-    CodeMirror.defineExtension("openNotification", function (template, options) {
-        closeNotification(this, close);
-        var dialog = dialogDiv(this, template, options && options.bottom);
-        var closed = false, doneTimer;
-        var duration = options && typeof options.duration !== "undefined" ? options.duration : 5000;
-
-        function close() {
-            if (closed) return;
-            closed = true;
-            clearTimeout(doneTimer);
-            dialog.parentNode.removeChild(dialog);
-        }
-
-        CodeMirror.on(dialog, 'click', function (e) {
-            CodeMirror.e_preventDefault(e);
-            close();
-        });
-
-        if (duration)
-            doneTimer = setTimeout(close, duration);
-
-        return close;
-    });
-});
+			if (options.closeOnBlur !== false) {
+				CodeMirror.on(inp, "blur", close);
+			}
+			inp.focus();
+		}
+		if (buttons) {
+			for (i = 0; i < buttons.length; i += 1) {
+				b = buttons[i];
+				assignCallback(callbacks[i]);
+				CodeMirror.on(b, "blur", handleBlur);
+				CodeMirror.on(b, "focus", handleFocus);
+			}
+		}
+		return {close: close, dialog: dialog};
+	});
+}));
