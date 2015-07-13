@@ -33,5 +33,5 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 
 /*auto highlighting words*/
 .cm-indicator {
-    border: 1px solid black;
+    border: 1px solid #bbb;
 }
