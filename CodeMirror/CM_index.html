@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<html>
 	<head>
 		<title>Suneido Editor</title>
 		<meta charset="utf-8"/>
@@ -23,40 +24,45 @@
 		<script src="Search.js"></script>
 		<script src="HighlightWords.js"></script>
 		<style type="text/css">
-			.CodeMirror {border-top: 1px solid black; border-bottom: 1px solid black;}
+			.CodeMirror {border-top: 1px solid black; border-bottom: 1px solid black; }
 		</style>
 	</head>
 	<body>
-		<textarea id="code" name="code"></textarea></div>
+		<div><textarea id="code" name="code"></textarea></div>
 		<script id="script">
+			/*global document, window, CodeMirror*/
 			var te = document.getElementById("code");
-			window.onload = function() {
-				te.value = "//Suneido web Editor\r\n"
+			window.onload = function () {
+				"use strict";
+				te.value = "//Suneido web Editor\r\n";
 				window.editor = CodeMirror.fromTextArea(te, {
 					mode: "suneido",
 					lineNumbers: true,
 					lineWrapping: true,
 					indentUnit: 4,
 					indentWithTabs: true,
-					extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); },
+					extraKeys: {"Ctrl-Q": function (cm) { cm.foldCode(cm.getCursor()); },
 								"Ctrl-F": "find",
 								"F3": "findNext",
 								"Shift-F3": "findPrev",
 								"Ctrl-H": "replace",
 								"Shift-Ctrl-H": "replaceAll",
 								"Ctrl-/": "toggleComment",
-								"Shift-Ctrl-/": function(cm){
-									var from = cm.getCursor("from");
-									var to = cm.getCursor("to");
-									if(cm.uncomment(from, to) === false)
-										cm.blockComment(from, to, {fullLines: false});
-								},
-								"F11": function(cm) {
-								  cm.setOption("fullScreen", !cm.getOption("fullScreen"));
-								},
-								"Esc": function(cm) {
-								  if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
-								}},
+								"Shift-Ctrl-/": function (cm) {
+							var from = cm.getCursor("from"),
+								to = cm.getCursor("to");
+							if (cm.uncomment(from, to) === false) {
+								cm.blockComment(from, to, {fullLines: false});
+							}
+						},
+								"F11": function (cm) {
+							cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+						},
+								"Esc": function (cm) {
+							if (cm.getOption("fullScreen")) {
+								cm.setOption("fullScreen", false);
+							}
+						}},
 					matchBrackets : true,
 					foldGutter: true,
 					gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],

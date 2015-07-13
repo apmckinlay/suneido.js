@@ -1,9 +1,9 @@
 // Copyright (C) 2015 Suneido Software Corp. All rights reserved worldwide.
-
+/*global CodeMirror*/
 (function (mod) {
 	"use strict";
     mod(CodeMirror);
-})(function (CodeMirror) {
+}(function (CodeMirror) {
     "use strict";
 	CodeMirror.registerHelper("wordChars", "suneido", /[\w?!]/);
     CodeMirror.defineMode("suneido", function (config) {
@@ -11,7 +11,7 @@
             var obj = {},
 				wordsArray = str.split(" "),
 				i;
-            for (i = 0; i < wordsArray.length; i++) {
+            for (i = 0; i < wordsArray.length; i += 1) {
 				obj[wordsArray[i]] = true;
 			}
             return obj;
@@ -33,7 +33,7 @@
 			controlLine;
 
 		function tokenVariable(stream) {
-			stream.eatWhile(/[\d\w]/);
+			stream.eatWhile(/[\w]/);
 
 			stream.match(/[?!]/, true);
 			var cur = stream.current();
@@ -61,13 +61,16 @@
 
         function tokenString(quote) {
             return function (stream, state) {
-                var escaped = false, next, end = false;
-                while (next = stream.next()) {
+                var escaped = false,
+					end = false,
+					next = stream.next();
+				while (next) {
                     if (next === quote && !escaped) {
                         end = true;
                         break;
                     }
                     escaped = !escaped && next === "\\";
+					next = stream.next();
                 }
                 if (end) {
 					state.tokenize = null;
@@ -172,4 +175,4 @@
             closeBrackets: "()[]{}''\"\"``"
         };
     });
-});
+}));

@@ -93,9 +93,9 @@
 				state.cursor = null;
 			},
 			searchFunc = function (query, rev) {
-				cm.operation(function () {
+				return cm.operation(function () {
 					buildNewSearch(query);
-					findNext(cm, rev);
+					return findNext(cm, rev);
 				});
 			};
 		if (!state.searchDialog) {
@@ -117,7 +117,7 @@
 							state.replaceColse = null;
 						}
 					},
-					onInput: function (e, inputs, close) { searchFunc(inputs); },
+					onInput: function (e, inputs, close) { return searchFunc(inputs); },
 					onKeyDown: function (e, inputs, close) {
 						if (map.hasOwnProperty(e.keyCode)) {
 							map[e.keyCode] = true;
@@ -166,13 +166,13 @@
 	}
 	
 	function findNext(cm, rev) {
-		cm.operation( function() {
+		return cm.operation( function() {
 			var state = getSearchState(cm);
 			if (!state.query) return;
 			var cursor = getSearchCursor(cm, state.queryRegexp, rev ? state.posFrom : state.posTo);
 			if (!cursor.find(rev)) {
 				cursor = getSearchCursor(cm, state.queryRegexp, rev ? CodeMirror.Pos(cm.lastLine()) : CodeMirror.Pos(cm.firstLine(), 0));
-				if (!cursor.find(rev)) return;
+				if (!cursor.find(rev)) return "Not found";
 			}
 			cm.setSelection(cursor.to(), cursor.from());
 			cm.scrollIntoView({from: cursor.from(), to: cursor.to()});
