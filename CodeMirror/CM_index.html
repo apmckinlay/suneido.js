@@ -3,10 +3,11 @@
 	<head>
 		<title>Suneido Editor</title>
 		<meta charset="utf-8"/>
-		<link rel="stylesheet" href="Suneido.css">
+		<link rel="stylesheet" href="http://codemirror.net/lib/codemirror.css">
 		<link rel="stylesheet" href="http://codemirror.net/addon/fold/foldgutter.css">
 		<link rel="stylesheet" href="http://codemirror.net/addon/display/fullscreen.css">
 		<link rel="stylesheet" href="http://codemirror.net/addon/search/matchesonscrollbar.css">
+		<link rel="stylesheet" href="Suneido.css">
 		<link rel="stylesheet" href="Dialog.css">
 		<script src="http://codemirror.net/lib/codemirror.js"></script>
 		<script src="http://codemirror.net/addon/fold/foldcode.js"></script>
@@ -37,6 +38,7 @@
 				te.value = "//Suneido web Editor\r\n";
 				window.editor = CodeMirror.fromTextArea(te, {
 					mode: "suneido",
+					theme: "suneido",
 					lineNumbers: true,
 					lineWrapping: true,
 					indentUnit: 4,
