@@ -5,7 +5,7 @@
     mod(CodeMirror);
 })(function (CodeMirror) {
     "use strict";
-
+	CodeMirror.registerHelper("wordChars", "suneido", /[\w?!]/);
     CodeMirror.defineMode("suneido", function (config) {
         function words(str) {
             var obj = {},
