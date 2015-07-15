@@ -11,10 +11,8 @@
 	}
 }(function (CodeMirror) {
 	"use strict";
-	function dialogDiv(cm, template) {
-		var wrap = cm.getWrapperElement(),
-			dialog;
-		dialog = wrap.appendChild(document.createElement("div"));
+	function dialogDiv(template) {
+		var dialog = document.createElement("div");
 
 		if (typeof template === "string") {
 			dialog.innerHTML = template;
@@ -25,7 +23,9 @@
 	}
 	CodeMirror.defineExtension("openComplex", function (template, callbacks, options) {
 		if (!options) {options = {}; }
-		var dialog = dialogDiv(this, template),
+		
+		var dialog = dialogDiv(template),
+			panel = editor.addPanel(dialog, {position: options.where || "bottom"}),
 			closed = false,
 			me = this,
 			blurring = 1,
@@ -39,15 +39,15 @@
 				} else {
 					if (closed) {return; }
 					closed = true;
-					dialog.parentNode.removeChild(dialog);
+					panel.clear();
 					me.focus();
 					if (options.onClose) {
-						options.onClose(dialog);
+						options.onClose();
 					}
 				}
 			},
-			assignCallback = function (callback) {
-				CodeMirror.on(b, "click", function (e) {
+			assignCallback = function (button, callback) {
+				CodeMirror.on(button, "click", function (e) {
 					CodeMirror.e_preventDefault(e);
 					if (callback) {
 						callback(me);
@@ -116,7 +116,7 @@
 		if (buttons) {
 			for (i = 0; i < buttons.length; i += 1) {
 				b = buttons[i];
-				assignCallback(callbacks[i]);
+				assignCallback(b, callbacks[i]);
 				CodeMirror.on(b, "blur", handleBlur);
 				CodeMirror.on(b, "focus", handleFocus);
 			}
