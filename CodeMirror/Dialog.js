@@ -23,9 +23,9 @@
 	}
 	CodeMirror.defineExtension("openComplex", function (template, callbacks, options) {
 		if (!options) {options = {}; }
-		
+
 		var dialog = dialogDiv(template),
-			panel = editor.addPanel(dialog, {position: options.where || "bottom"}),
+			panel = this.addPanel(dialog, {position: options.where || "bottom"}),
 			closed = false,
 			me = this,
 			blurring = 1,
