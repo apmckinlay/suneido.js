@@ -2,11 +2,12 @@
 <html>
 <head>
 	<title>View Library Code</title>
+	<link rel="stylesheet" href="http://codemirror.net/lib/codemirror.css">
 	<link rel="stylesheet" href="http://codemirror.net/addon/fold/foldgutter.css">
 	<link rel="stylesheet" href="http://codemirror.net/addon/display/fullscreen.css">
 	<link rel="stylesheet" href="http://codemirror.net/addon/search/matchesonscrollbar.css">
-	<link rel="stylesheet" href="/CodeMirror/Dialog.css">
 	<link rel="stylesheet" href="/CodeMirror/Suneido.css">
+	<link rel="stylesheet" href="/CodeMirror/Dialog.css">
 	<script src="http://codemirror.net/lib/codemirror.js"></script>
 	<script src="http://codemirror.net/addon/fold/foldcode.js"></script>
 	<script src="http://codemirror.net/addon/fold/foldgutter.js"></script>
@@ -31,7 +32,8 @@
 				lineWrapping: true,
 				indentUnit: 4,
 				indentWithTabs: true,
-				extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); },
+				extraKeys: {
+					"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); },
 					"Ctrl-F": "find",
 					"F3": "findNext",
 					"Shift-F3": "findPrev",
@@ -44,22 +46,17 @@
 						if(cm.uncomment(from, to) === false)
 							cm.blockComment(from, to, {fullLines: false});
 					},
-					"F11": function(cm) {
-						cm.setOption("fullScreen", !cm.getOption("fullScreen"));
-					},
-					"Esc": function(cm) {
-						if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
-					},
                     "F12": function(cm) {
                         goToDefinition(cm);
                     }},
 				matchBrackets : true,
 				foldGutter: true,
 				gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-				highlightWords : true
-			});
-			//editor.setOption("fullScreen", true);
-			editor.setOption("autoCloseBrackets", true);
+				highlightWords : true,
+				autoCloseBrackets: true,
+				styleActiveLine: true
+				});
+
 			function load() {
                 var name = document.getElementById("name").value;
                 history.pushState(null, null, '/libview.html/' + name);
@@ -148,7 +145,6 @@
         Shift+Ctrl+H = Replace All,
         Ctrl+/ = comment with //,
         Shift+Ctrl+/ = comment with /* */,
-        F11 = full screen,
         F12 = go to selected name
     </p>
 </body>
