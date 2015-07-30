@@ -1,7 +1,8 @@
-import dateTime = require("./date")
-import suneidoTest = require("./testing")
 ///<reference path="node.d.ts"/>
 import assert = require("assert")
+import dateTime = require("./date")
+import suneidoTest = require("./testing")
+
 
 export interface SuDate {
     d: dateTime.DateTime;
@@ -20,16 +21,42 @@ export interface SuDate {
     weekday(firstDay?: any): number;
 }
 
+
+
 var sudate = Object.create(null);
 
 function SuDate(date: number, time: number): void {
     this.d = dateTime.makeDateTime_int_int(date, time);
 }
 
+SuDate.prototype = sudate;
+
+/**
+ * makeSuDate_empty constructs a sudate
+ * @returns {Object} a sudate
+ */
+export function makeSuDate_empty(): SuDate {
+    var dt = dateTime.makeDateTime_empty(),
+        sd = new SuDate(dt.date(), dt.time());
+    return sd;
+}
+
+/**
+ * makeSuDate_int_int constructs a sudate
+ * @param {number} d integer, year = d[..9], month = d[8..5], date = d[4..0]
+ * @param {number} t integer, hour = t[..22], minute = t[21..16], second = t[15, 10], millisecond = [9..0]
+ * @returns {Object} a sudate
+ */
+export function makeSuDate_int_int(d: number, t: number): SuDate {
+    var sd = new SuDate(d, t);
+    return sd;
+}
+
 function capitalizeFirstLetter(s: string) {
     return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
+// extract n chars from the position start of string s and translate into integer 
 function getNdigit(s: string, start: number, n: number) {
     return parseInt(s.slice(start, start + n));
 }
@@ -49,6 +76,7 @@ function arrayFill(a: Array<any>, start: number, end: number, value: any): void 
     }
 }
 
+// compare compares two sudates, returning 0, -1, or +1
 function compare(sd1: SuDate, sd2: SuDate): number {
     var res: number;
     if ((res = sd1.d.year - sd2.d.year) !== 0)
@@ -67,8 +95,14 @@ function compare(sd1: SuDate, sd2: SuDate): number {
         return sd1.d.millisecond - sd2.d.millisecond;
 }
 
+// static functions ---------------------------------------------------------------------
+
+/**
+ * timestamp returns a unique sudate based on current time
+ * @returns {Object} a sudate
+ */
 SuDate["prev"] = makeSuDate_empty();
-SuDate["timestamp"] = function (): SuDate {
+export function timestamp(): SuDate {
     var ts: SuDate = makeSuDate_empty();
     if (compare(ts, SuDate["prev"]) <= 0)
         ts = SuDate["prev"].increment();
@@ -77,11 +111,18 @@ SuDate["timestamp"] = function (): SuDate {
     return ts;
 }
 
+
 enum TokenType { YEAR, MONTH, DAY, HOUR, MINUTE, SECOND, MILLISECOND, UUK };
 var minval: Array<number> = [0, 1, 1, 0, 0, 0, 0];
 var maxval: Array<number> = [3000, 12, 31, 23, 59, 59, 999]
 
-SuDate["parse"] = function (s: string, order: string): SuDate {
+/**
+ * parse constructs a sudate
+ * @param {string} s string 
+ * @param {string} order string, order pattern helps to parse date string
+ * @returns {Object} a sudate, or sufalse if not a valid date
+ */
+export function parse(s: string, order: string): SuDate {
     const NOTSET = 9999,
         MAXTOKENS = 20;
     var dt: Object = { year: NOTSET, month: 0, day: 0, hour: NOTSET, minute: NOTSET, second: NOTSET, millisecond: 0 },
@@ -308,19 +349,53 @@ SuDate["parse"] = function (s: string, order: string): SuDate {
     return makeSuDate_int_int(newDT.date(), newDT.time());
 }
 
+/**
+ * literal constructs a sudate
+ * @param {string} s string
+ * @returns {Object} a sudate, or sufalse if not a valid date
+ */
+export function literal(s: string): SuDate {
+    var i: number = 0,
+        t: number,
+        sn: number,
+        tn: number,
+        year: number,
+        month: number,
+        day: number,
+        hour: number,
+        minute: number,
+        second: number,
+        millisecond: number,
+        dt: dateTime.DateTime;
+    if (s[i] === '#')
+        i++;
+    t = s.indexOf('.', i);
+    if (t !== -1) {
+        sn = t - i;
+        tn = s.length - t - 1;
+    } else {
+        sn = s.length - i;
+        tn = 0;
+    }
+    if (sn !== 8 || (tn !== 0 && tn !== 4 && tn !== 6 && tn !== 9))
+        suneidoTest.except("SuDate.literal: invalid literal argument.");  //change to return value after value is implemented
 
-SuDate.prototype = sudate;
+    year = getNdigit(s, i, 4);
+    month = getNdigit(s, i + 4, 2);
+    day = getNdigit(s, i + 6, 2);
 
-export function makeSuDate_empty(): SuDate {
-    var dt = dateTime.makeDateTime_empty(),
-        sd = new SuDate(dt.date(), dt.time());
-    return sd;
+    hour = tn >= 2 ? getNdigit(s, t + 1, 2) : 0;
+    minute = tn >= 4 ? getNdigit(s, t + 3, 2) : 0;
+    second = tn >= 6 ? getNdigit(s, t + 5, 2) : 0;
+    millisecond = tn >= 9 ? getNdigit(s, t + 7, 3) : 0;
+
+    dt = dateTime.makeDateTime_full(year, month, day, hour, minute, second, millisecond);
+    if (!dt.valid())
+        suneidoTest.except("SuDate.literal: invalid Date"); //change to return SuFalse after SuFalse is implemented
+    return makeSuDate_int_int(dt.date(), dt.time());
 }
 
-export function makeSuDate_int_int(d: number, t: number): SuDate {
-    var sd = new SuDate(d, t);
-    return sd;
-}
+// methods ---------------------------------------------------------------------
 
 function isLetter(char: string): boolean {
     var code;
@@ -471,6 +546,11 @@ function format(dt: SuDate, fmt: string): string {
     return dst;
 }
 
+/**
+ * formatEn converts sudate into string based on given format
+ * @param {string} fmt
+ * @returns {string} a date and time string in given format
+ */
 sudate.formatEn = function (fmt: string): string {
     if (arguments.length !== 1) {
         suneidoTest.except("usage: date.Format(format)");
@@ -478,52 +558,20 @@ sudate.formatEn = function (fmt: string): string {
     return format(this, fmt);
 }
 
-SuDate["literal"] = function (s: string): SuDate {
-    var i: number = 0,
-        t: number,
-        sn: number,
-        tn: number,
-        year: number,
-        month: number,
-        day: number,
-        hour: number,
-        minute: number,
-        second: number,
-        millisecond: number,
-        dt: dateTime.DateTime;
-    if (s[i] === '#')
-        i++;
-    t = s.indexOf('.', i);
-    if (t !== -1) {
-        sn = t - i;
-        tn = s.length - t - 1;
-    } else {
-        sn = s.length - i;
-        tn = 0;
-    }
-    if (sn !== 8 || (tn !== 0 && tn !== 4 && tn !== 6 && tn !== 9))
-        suneidoTest.except("SuDate.literal: invalid literal argument.");  //change to return value after value is implemented
-
-    year = getNdigit(s, i, 4);
-    month = getNdigit(s, i + 4, 2);
-    day = getNdigit(s, i + 6, 2);
-
-    hour = tn >= 2 ? getNdigit(s, t + 1, 2) : 0;
-    minute = tn >= 4 ? getNdigit(s, t + 3, 2) : 0;
-    second = tn >= 6 ? getNdigit(s, t + 5, 2) : 0;
-    millisecond = tn >= 9 ? getNdigit(s, t + 7, 3) : 0;
-
-    dt = dateTime.makeDateTime_full(year, month, day, hour, minute, second, millisecond);
-    if (!dt.valid())
-        suneidoTest.except("SuDate.literal: invalid Date"); //change to return SuFalse after SuFalse is implemented
-    return makeSuDate_int_int(dt.date(), dt.time());
-}
-
+/**
+ * increment increments self by one millisecond
+ * @returns {object} self sudate
+ */
 sudate.increment = function (): SuDate {
     this.d.plus(0, 0, 0, 0, 0, 0, 1);
     return this;
 }
 
+/**
+ * plus creates a copy of the sudate with the specified units added.
+ * @param {Object}  a group of unit and offset pairs
+ * @returns {object} a copy of sudate
+ */
 sudate.plus = function (args: Object): SuDate {
     var usage: string = "usage: Plus(years:, months:, days:, hours:, minutes:, seconds:, milliseconds:)",
         ok: boolean = false,
@@ -544,6 +592,11 @@ sudate.plus = function (args: Object): SuDate {
     return makeSuDate_int_int(dt.date(), dt.time());
 }
 
+/**
+ * minusDays returns the number of days between two dates
+ * @param {Object}  another sudate
+ * @returns {number}
+ */
 sudate.minusDays = function (sud2: SuDate): number {
     if (arguments.length !== 1) {
         suneidoTest.except("usage: date.Minus(date)");
@@ -551,13 +604,21 @@ sudate.minusDays = function (sud2: SuDate): number {
     return this.d.minus_days(sud2.d);
 }
 
+/**
+ * minusSeconds returns the number of seconds between two dates
+ * @param {Object}  another sudate
+ * @returns {number}
+ */
 sudate.minusSeconds = function (sud2: SuDate): number {
     if (arguments.length !== 1) {
         suneidoTest.except("usage: date.MinusSeconds(date)");
     }
-    return this.d.minus_milliseconds(sud2.d);
+    return this.d.minus_milliseconds(sud2.d) / 1000;
 }
 
+/**
+ * @returns {number} year portion of the date
+ */
 sudate.year = function (): number {
     if (arguments.length !== 0) {
         suneidoTest.except("usage: date.Year()");
@@ -565,6 +626,9 @@ sudate.year = function (): number {
     return this.d.year;
 }
 
+/**
+ * @returns {number} month portion of the date
+ */
 sudate.month = function (): number {
     if (arguments.length !== 0) {
         suneidoTest.except("usage: date.Month()");
@@ -572,6 +636,9 @@ sudate.month = function (): number {
     return this.d.month;
 }
 
+/**
+ * @returns {number} day portion of the date
+ */
 sudate.day = function (): number {
     if (arguments.length !== 0) {
         suneidoTest.except("usage: date.Day()");
@@ -579,6 +646,9 @@ sudate.day = function (): number {
     return this.d.day;
 }
 
+/**
+ * @returns {number} hour portion of the date
+ */
 sudate.hour = function (): number {
     if (arguments.length !== 0) {
         suneidoTest.except("usage: date.Hour()");
@@ -586,6 +656,9 @@ sudate.hour = function (): number {
     return this.d.hour;
 }
 
+/**
+ * @returns {number} minute portion of the date
+ */
 sudate.minute = function (): number {
     if (arguments.length !== 0) {
         suneidoTest.except("usage: date.Minute()");
@@ -593,6 +666,9 @@ sudate.minute = function (): number {
     return this.d.minute;
 }
 
+/**
+ * @returns {number} second portion of the date
+ */
 sudate.second = function (): number {
     if (arguments.length !== 0) {
         suneidoTest.except("usage: date.Second()");
@@ -600,6 +676,9 @@ sudate.second = function (): number {
     return this.d.second;
 }
 
+/**
+ * @returns {number} millisecond portion of the date
+ */
 sudate.millisecond = function (): number {
     if (arguments.length !== 0) {
         suneidoTest.except("usage: date.Millisecond()");
@@ -612,6 +691,12 @@ var month: Array<string> = ["January", "February", "March", "April", "May", "Jun
 var weekday: Array<string> = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
     "Saturday"];
 
+
+/**
+ * weekday returns the day of the week in the range 0 to 6
+ * @param {string|number}  firstDay to start count
+ * @returns {number}
+ */
 sudate.weekday = function (firstDay?: string|number): number {
     if (arguments.length !== 0 && arguments.length !== 1) {
         suneidoTest.except("usage: date.WeekDay(firstDay = 'Sun')");
@@ -675,7 +760,7 @@ function testSuDate(): void {
     assert(sud1.weekday(4) === 0, "Check method weekday() with number arg.");
 
     assert(sud3.minusDays(sud1) === 6, "Check method minus_days().");
-    assert(sud4.minusSeconds(sud3) === 12345, "Check method minus_milliseconds()");
+    assert(sud4.minusSeconds(sud3) === 12.345, "Check method minus_milliseconds()");
 
     sud2 = sud3.plus({hours: 1, minutes: 2, seconds: 3, milliseconds: 4});
     assert(sud2.d.time() === sud5.d.time() && sud2.d.date() === sud5.d.date(), "Check method plus() with hms set");
@@ -695,14 +780,14 @@ function testSuDate(): void {
     assert.equal(sud1.formatEn("dd \\de MMM"), "27 de Nov");
     assert.equal(sud1.formatEn("dd 'de' MMM"), "27 de Nov");
 
-    sud2 = SuDate["parse"]("#20150326.122334456", "yyyyMMdd");
+    sud2 = parse("#20150326.122334456", "yyyyMMdd");
     assert.equal(sud2.formatEn("yyyy-MM-dd H:mm:ss"), "2015-03-26 12:23:34");
-    sud2 = SuDate["parse"]("2000/3/4 8:34:56", "yyyyMMdd");
+    sud2 = parse("2000/3/4 8:34:56", "yyyyMMdd");
     assert.equal(sud2.formatEn("yyyy-MM-dd H:mm:ss"), "2000-03-04 8:34:56");
 
-    sud2 = SuDate["literal"]("#19990101");
+    sud2 = literal("#19990101");
     assert.equal(sud2.toString(), "#19990101.000000000");
-    sud2 = SuDate["literal"]("#19990101.010203456");
+    sud2 = literal("#19990101.010203456");
     assert.equal(sud2.toString(), "#19990101.010203456");
 }
 
