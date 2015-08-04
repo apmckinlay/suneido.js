@@ -5,7 +5,6 @@
 		<meta charset="utf-8"/>
 		<link rel="stylesheet" href="http://codemirror.net/lib/codemirror.css">
 		<link rel="stylesheet" href="http://codemirror.net/addon/fold/foldgutter.css">
-		<link rel="stylesheet" href="http://codemirror.net/addon/display/fullscreen.css">
 		<link rel="stylesheet" href="http://codemirror.net/addon/search/matchesonscrollbar.css">
 		<link rel="stylesheet" href="Suneido.css">
 		<link rel="stylesheet" href="Dialog.css">
@@ -16,21 +15,23 @@
 		<script src="http://codemirror.net/addon/edit/matchbrackets.js"></script>
 		<script src="http://codemirror.net/addon/edit/closebrackets.js"></script>
 		<script src="http://codemirror.net/addon/comment/comment.js"></script>
-		<script src="http://codemirror.net/addon/display/fullscreen.js"></script>
 		<script src="http://codemirror.net/addon/search/searchcursor.js"></script>
 		<script src="http://codemirror.net/addon/scroll/annotatescrollbar.js"></script>
 		<script src="http://codemirror.net/addon/search/matchesonscrollbar.js"></script>
 		<script src="http://codemirror.net/addon/selection/active-line.js"></script>
+		<script src="http://codemirror.net/addon/display/panel.js"></script>
 		<script src="Suneido.js"></script>
 		<script src="Dialog.js"></script>
 		<script src="Search.js"></script>
 		<script src="HighlightWords.js"></script>
 		<style type="text/css">
-			.CodeMirror {border-top: 1px solid black; border-bottom: 1px solid black; }
+			.suneido-editor {
+				border: 1px solid black;
+			}
 		</style>
 	</head>
 	<body>
-		<div><textarea id="code" name="code"></textarea></div>
+		<div class="suneido-editor"><textarea id="code" name="code"></textarea></div>
 		<script id="script">
 			/*global document, window, CodeMirror*/
 			var te = document.getElementById("code");
@@ -50,6 +51,7 @@
 								"Shift-F3": "findPrev",
 								"Ctrl-H": "replace",
 								"Shift-Ctrl-H": "replaceAll",
+								"F8": "replaceCurrent",
 								"Ctrl-/": "toggleComment",
 								"Shift-Ctrl-/": function (cm) {
 							var from = cm.getCursor("from"),
@@ -57,20 +59,11 @@
 							if (cm.uncomment(from, to) === false) {
 								cm.blockComment(from, to, {fullLines: false});
 							}
-						},
-								"F11": function (cm) {
-							cm.setOption("fullScreen", !cm.getOption("fullScreen"));
-						},
-								"Esc": function (cm) {
-							if (cm.getOption("fullScreen")) {
-								cm.setOption("fullScreen", false);
-							}
 						}},
 					matchBrackets : true,
 					foldGutter: true,
 					gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
 					highlightWords : true,
-					fullScreen: true,
 					autoCloseBrackets: true,
 					styleActiveLine: true
 				});
