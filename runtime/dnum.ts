@@ -8,7 +8,6 @@
  *
  * Created by andrew on 2015-05-17.
  */
-///<reference path="node.d.ts"/>
 "use strict";
 
 export interface Dnum {

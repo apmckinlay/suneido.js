@@ -1,14 +1,17 @@
 {
-	"compilerOptions": {
-		"module": "commonjs",
-		"sourceMap": true
-	},
-	"files": [
-		"runtime/su.ts",
-		"runtime/su_test.ts",
-		"runtime/dnum.ts",
-		"runtime/dnum_test.ts",
-		"runtime/suobject.ts",
-		"runtime/suobject_test.ts"
-	]
+  "compilerOptions": {
+    "module": "commonjs",
+    "sourceMap": true
+  },
+  "files": [
+    "runtime/su.ts",
+    "runtime/su_test.ts",
+    "runtime/dnum.ts",
+    "runtime/dnum_test.ts",
+    "runtime/suobject.ts",
+    "runtime/suobject_test.ts",
+    "sudate/date.ts",
+    "sudate/date_test.ts",
+    "sudate/sudate.ts"
+  ]
 }

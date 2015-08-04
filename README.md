@@ -14,6 +14,9 @@ on jSuneido. (not included in this repo)
 
 play.html and libview.html must be run from jSuneido JsPlayServer.
 
+To run the tests, compile the TypeScript with `--module commonjs`
+To run the web pages, compile with `--module amd`
+
 See also: 
 
 * [Github Wiki](https://github.com/apmckinlay/suneido.js/wiki) 
