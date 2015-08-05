@@ -69,7 +69,7 @@ assert.equal(su.rangelen("abcde", 3, 0), "");
 assert.equal(su.rangelen("abcde", 3, -3), "");
 
 var list = suob.list;
-function eq(x, y) { assert(x.equals(y), x + " should be " + y) };
+function eq(x, y) { assert(x.equals(y), x + " should be " + y) }
 eq(su.rangeto(list(0,1,2,3,4), 2, 9), list(2,3,4));
 eq(su.rangeto(list(0,1,2,3,4), 1, 4), list(1,2,3));
 eq(su.rangeto(list(0,1,2,3,4), 1, -1), list(1,2,3));

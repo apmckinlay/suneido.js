@@ -33,12 +33,18 @@ function testSuDate(): void {
     assert(sud4.minusSeconds(sud3) === 12.345, "Check method minus_milliseconds()");
 
     sud2 = sud3.plus({hours: 1, minutes: 2, seconds: 3, milliseconds: 4});
-    assert(sud2.d.time() === sud5.d.time() && sud2.d.date() === sud5.d.date(), "Check method plus() with hms set");
+    assert(sud2.d.time() === sud5.d.time() && sud2.d.date() === sud5.d.date(),
+        "Check method plus() with hms set");
 
     sud2 = sud1.plus({years: 1, days: 5, months: 1});
-    assert(sud2.d.time() === sud6.d.time() && sud2.d.date() === sud6.d.date(), "Check method plus() with ymd set");
+    assert(sud2.d.time() === sud6.d.time() && sud2.d.date() === sud6.d.date(),
+        "Check method plus() with ymd set");
+
     sud2 = sud1.plus({years: 1, months: 1, days: 5});
-    assert(sud2.d.time() === sud6.d.time() && sud2.d.date() === sud6.d.date(), "Check method plus() with ymd set in another sequence");
+    assert(sud2.d.time() === sud6.d.time() && sud2.d.date() === sud6.d.date(),
+        "Check method plus() with ymd set in another sequence");
+
+    assert.throws(function () { sud1.plus({day: 1}); });
 
     assert.equal(sud1.formatEn("dddd, MMMM d, yyyy"), "Thursday, November 27, 2003");
     assert.equal(sud1.formatEn("ddd, MMM. dd, \\'yy"), "Thu, Nov. 27, '03");

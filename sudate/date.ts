@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 
 export interface DateTime {
     year: number;
@@ -38,7 +38,7 @@ DateTime.prototype = dtime;
 export var makeDateTime_full = function(y: number, mo: number, d: number,
         h: number, mi: number, s: number, ms: number): DateTime {
 	return new DateTime(y, mo, d, h, mi, s, ms);
-}
+};
 
 export var makeDateTime_int_int = function(date: number, time: number): DateTime {
 	var y = date >> 9,
@@ -49,7 +49,7 @@ export var makeDateTime_int_int = function(date: number, time: number): DateTime
 		s = (time >> 10) & 0x3f,
 		ms = time & 0x3ff;
 	return new DateTime(y, mo, d, h, mi, s, ms);
-}
+};
 
 export var makeDateTime_empty = function (): DateTime {
     var date = new Date(),
@@ -61,7 +61,7 @@ export var makeDateTime_empty = function (): DateTime {
         s = date.getSeconds(),
         ms = date.getMilliseconds();
     return new DateTime(y, mo, d, h, mi, s, ms);
-}
+};
 
 function dateCalc_leap_year(year: number): boolean {
 	var yy = Math.ceil(year / 100);
@@ -87,22 +87,19 @@ function convert_Date_to_DateTime(date: Date): DateTime {
 var dateCalc_Days_in_Month_ = [
     [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
     [0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-]
+    ];
 
 function dateCalc_check_date(year: number, month: number, day: number) {
-    if ((year >= 1) && (year <= 3000) &&
+    return (year >= 1) && (year <= 3000) &&
         (month >= 1) && (month <= 12) &&
-        (day >= 1) && (day <= dateCalc_Days_in_Month_[dateCalc_leap_year(year) ? 1 : 0][month]))
-        return true;
-    return false;
+        (day >= 1) &&
+        (day <= dateCalc_Days_in_Month_[dateCalc_leap_year(year) ? 1 : 0][month]);
 }
 
 function dateCalc_check_time(hour: number, minute: number, second: number) {
-    if ((hour >= 0) && (hour < 24) &&
+    return (hour >= 0) && (hour < 24) &&
         (minute >= 0) && (minute < 60) &&
-        (second >= 0) && (second < 60))
-        return true;
-    return false;
+        (second >= 0) && (second < 60);
 }
 
 dtime.valid = function (): boolean {

@@ -210,15 +210,15 @@ dnum.equals = function(that): boolean {
     if (isDnum(that))
         return 0 == cmp(this, that);
     return false;
-}
+};
 
 dnum.typeName = function (): string {
     return "Number";
-}
+};
 
 dnum.display = function (): string {
     return this.toString();
-}
+};
 
 // static functions ------------------------------------------------------------
 

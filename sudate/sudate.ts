@@ -18,6 +18,7 @@ export interface SuDate {
     second(): number;
     millisecond(): number;
     weekday(firstDay?: any): number;
+    toString(): string;
 }
 
 var sudate = Object.create(null);
@@ -33,9 +34,8 @@ SuDate.prototype = sudate;
  * @returns {Object} a sudate
  */
 export function makeSuDate_empty(): SuDate {
-    var dt = dateTime.makeDateTime_empty(),
-        sd = new SuDate(dt.date(), dt.time());
-    return sd;
+    var dt = dateTime.makeDateTime_empty();
+    return new SuDate(dt.date(), dt.time());
 }
 
 /**
@@ -45,8 +45,7 @@ export function makeSuDate_empty(): SuDate {
  * @returns {Object} a sudate
  */
 export function makeSuDate_int_int(d: number, t: number): SuDate {
-    var sd = new SuDate(d, t);
-    return sd;
+    return new SuDate(d, t);
 }
 
 function capitalizeFirstLetter(s: string) {
@@ -108,9 +107,9 @@ export function timestamp(): SuDate {
     return ts;
 }
 
-enum TokenType { YEAR, MONTH, DAY, HOUR, MINUTE, SECOND, MILLISECOND, UUK };
+enum TokenType { YEAR, MONTH, DAY, HOUR, MINUTE, SECOND, MILLISECOND, UUK }
 var minval: Array<number> = [0, 1, 1, 0, 0, 0, 0];
-var maxval: Array<number> = [3000, 12, 31, 23, 59, 59, 999]
+var maxval: Array<number> = [3000, 12, 31, 23, 59, 59, 999];
 
 /**
  * parse constructs a sudate
@@ -185,7 +184,8 @@ export function parse(s: string, order: string): SuDate|boolean {
         assert(ntokens < MAXTOKENS, "Current token number is bigger than MAXTOKENS");
         if (isLetter(s[i])) {
             j = i;
-            while (isLetter(s[++i]));
+            while (isLetter(s[++i])) {
+            }
             buf = capitalizeFirstLetter(s.slice(j, i).toLowerCase());
             for (j = 0; j < month.length; j += 1) {
                 if (month[j].indexOf(buf) !== -1)
@@ -216,7 +216,8 @@ export function parse(s: string, order: string): SuDate|boolean {
             }
         } else if (isDigit(s[i])) {
             j = i;
-            while (isDigit(s[++i]));
+            while (isDigit(s[++i])) {
+            }
             n = getNdigit(s, j, i - j);
             assert(i > j, "SuDate.parse: char index not increased after searching digits.");
             if ((i - j === 6) || (i - j === 8)) {
@@ -231,7 +232,8 @@ export function parse(s: string, order: string): SuDate|boolean {
                 if (s[i] === '.') {
                     i += 1;
                     j = i;
-                    while (isDigit(s[++i]));
+                    while (isDigit(s[++i])) {
+                    }
                     if ((i - j === 4) || (i - j === 6) || (i - j === 9)) {
                         dt["hour"] = getNdigit(s, j, 2);
                         j += 2;
@@ -342,7 +344,7 @@ export function parse(s: string, order: string): SuDate|boolean {
             dt["year"] -= 100;
     }
     var newDT = dateTime.makeDateTime_full(dt["year"], dt["month"], dt["day"],
-        dt["hour"], dt["minute"], dt["second"], dt["millisecond"])
+        dt["hour"], dt["minute"], dt["second"], dt["millisecond"]);
     if (!newDT.valid())
         return false;
     return makeSuDate_int_int(newDT.date(), newDT.time());
@@ -568,32 +570,32 @@ sudate.increment = function (): SuDate {
 
 /**
  * plus creates a copy of the sudate with the specified units added.
- * @param {Object} a group of unit and offset pairs
+ * @param args {Object} a group of unit and offset pairs
  * @returns {object} a copy of sudate
  */
 sudate.plus = function (args: Object): SuDate {
-    var usage: string = "usage: Plus(years:, months:, days:, hours:, minutes:, seconds:, milliseconds:)",
-        ok: boolean = false,
-        years: number = (ok = true, args["years"]) | 0,
-        months: number = (ok = true, args["months"]) | 0,
-        days: number = (ok = true, args["days"]) | 0,
-        hours: number = (ok = true, args["hours"]) | 0,
-        minutes: number = (ok = true, args["minutes"]) | 0,
-        seconds: number = (ok = true, args["seconds"]) | 0,
-        milliseconds: number = (ok = true, args["milliseconds"]) | 0,
-        dt = dateTime.makeDateTime_int_int(this.d.date(), this.d.time());
-
-    if (!ok) {
-        throw new Error(usage);
+    var usage = "usage: Plus(years:, months:, days:, " +
+        "hours:, minutes:, seconds:, milliseconds:)";
+    var years = args["years"],
+        months = args["months"],
+        days = args["days"],
+        hours = args["hours"],
+        minutes = args["minutes"],
+        seconds = args["seconds"],
+        milliseconds = args["milliseconds"];
+    if (! (years || months || days || hours || minutes || seconds || milliseconds)) {
+         throw new Error(usage);
     }
-    dt.plus(years, months, days, hours, minutes, seconds, milliseconds);
-    //date validation
+    var dt = dateTime.makeDateTime_int_int(this.d.date(), this.d.time());
+    dt.plus(years || 0, months || 0, days || 0,
+        hours || 0, minutes || 0, seconds || 0, milliseconds || 0);
+    //TODO validation
     return makeSuDate_int_int(dt.date(), dt.time());
 };
 
 /**
  * minusDays returns the number of days between two dates
- * @param {Object}  another sudate
+ * @param sud2 {Object}  another sudate
  * @returns {number}
  */
 sudate.minusDays = function (sud2: SuDate): number {
@@ -605,7 +607,7 @@ sudate.minusDays = function (sud2: SuDate): number {
 
 /**
  * minusSeconds returns the number of seconds between two dates
- * @param {Object}  another sudate
+ * @param sud2 {Object}  another sudate
  * @returns {number}
  */
 sudate.minusSeconds = function (sud2: SuDate): number {

@@ -24,7 +24,7 @@ interface Map<K, V> {
 declare var Map: {
     new <K, V>(): Map<K, V>;
     prototype: Map<any, any>;
-}
+};
 
 export interface SuObject {
     readonly: boolean;
@@ -75,15 +75,15 @@ export function isSuOb(x: any): boolean {
 
 suob.size = function (): number {
     return this.vec.length + this.map.size;
-}
+};
 
 suob.vecsize = function (): number {
     return this.vec.length;
-}
+};
 
 suob.mapsize = function (): number {
     return this.map.size;
-}
+};
 
 function checkReadonly(ob: SuObject) {
     if (ob.readonly)
@@ -106,7 +106,7 @@ suob.add = function (x: any): void {
     checkReadonly(this);
     this.vec.push(x);
     migrate(this);
-}
+};
 
 function canonical(key: any): any {
     if (dnum.isDnum(key))
@@ -131,7 +131,7 @@ suob.put = function (key: any, value: any): void {
         this.add(value);
     else
         this.map.set(key, value);
-}
+};
 
 suob.get = function (key: any): any {
     var value = getIfPresent(this, key);
@@ -139,7 +139,7 @@ suob.get = function (key: any): any {
         return value;
     //TODO handle SuObject defval
     return this.defval;
-}
+};
 
 function getIfPresent(ob: SuObject, key: any): any {
     var i = index(key);
@@ -151,27 +151,27 @@ suob.setReadonly = function (): void {
         return;
     this.readonly = true;
     //TODO recursively set readonly
-}
+};
 
 suob.setDefault = function (value: any): void {
     this.defval = value;
-}
+};
 
 suob.typeName = function (): string {
     return "Object";
-}
+};
 
 suob.slice = function (i, j): SuObject {
     var ob = make();
     ob.vec = this.vec.slice(i, j);
     return ob;
-}
+};
 
 suob.equals = function (that): boolean {
     if (! isSuOb(that))
         return false;
     return equals2(this, <SuObject>that, null);
-}
+};
 
 function equals2(x, y, stack): boolean {
     if (x.vec.length != y.vec.length || x.map.size != y.map.size)
@@ -229,7 +229,7 @@ class PairStack {
 
 suob.toString = function (): string {
     return toString2(this, '#(', ')');
-}
+};
 
 function toString2(x: SuObject, before: string, after: string) {
     var s = "";
