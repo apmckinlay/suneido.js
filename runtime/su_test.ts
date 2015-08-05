@@ -7,7 +7,7 @@ import dnum = require("./dnum");
 import suob = require("./suobject");
 import su = require("./su");
 
-var assert = require("assert");
+import assert = require("assert");
 
 var n = dnum.make;
 

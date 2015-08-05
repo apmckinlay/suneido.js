@@ -8,5 +8,9 @@ dnum.js
 dnum_test.js
 suobject.js
 suobject_test.js
+date.js
+date_test.js
+sudate.js
+sudate_js
 
 .DS_Store
