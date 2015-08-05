@@ -12,6 +12,7 @@
     "runtime/suobject_test.ts",
     "sudate/date.ts",
     "sudate/date_test.ts",
-    "sudate/sudate.ts"
+    "sudate/sudate.ts",
+    "sudate/sudate_test.ts"
   ]
 }
