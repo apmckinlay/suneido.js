@@ -117,7 +117,7 @@ var maxval: Array<number> = [3000, 12, 31, 23, 59, 59, 999];
  * @param {string} order string, order pattern helps to parse date string
  * @returns {Object} a sudate, or sufalse if not a valid date
  */
-export function parse(s: string, order: string): SuDate|boolean {
+export function parse(s: string, order: string): SuDate {
     var NOTSET = 9999,
         MAXTOKENS = 20;
     var dt: Object = { year: NOTSET, month: 0, day: 0,
@@ -203,7 +203,7 @@ export function parse(s: string, order: string): SuDate|boolean {
                     if (dt["hour"] === 12)
                         dt["hour"] = 0;
                     if (dt["hour"] > 12)
-                        return false;
+                        return null;
                 }
             } else {
                 // ignore days of week
@@ -212,7 +212,7 @@ export function parse(s: string, order: string): SuDate|boolean {
                         break;
                 }
                 if (j >= weekday.length)
-                    return false;
+                    return null;
             }
         } else if (isDigit(s[i])) {
             j = i;
@@ -256,7 +256,7 @@ export function parse(s: string, order: string): SuDate|boolean {
                 else if (dt["second"] === NOTSET)
                     dt["second"] = n;
                 else
-                    return false;
+                    return null;
             } else { //date
                 tokens[ntokens] = n;
                 if (prev === '\'')
@@ -328,7 +328,7 @@ export function parse(s: string, order: string): SuDate|boolean {
         dt["month"] = thismo;
         dt["day"] = thisd;
     } else // no match
-        return false;
+        return null;
 
     if (dt["year"] === NOTSET) {
         if (dt["month"] >= Math.max(thismo - 5, 1) &&
@@ -346,7 +346,7 @@ export function parse(s: string, order: string): SuDate|boolean {
     var newDT = dateTime.makeDateTime_full(dt["year"], dt["month"], dt["day"],
         dt["hour"], dt["minute"], dt["second"], dt["millisecond"]);
     if (!newDT.valid())
-        return false;
+        return null;
     return makeSuDate_int_int(newDT.date(), newDT.time());
 }
 
