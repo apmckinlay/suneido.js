@@ -27,3 +27,23 @@ export function isAlnum(char: string): boolean {
 export function capitalizeFirstLetter(s: string) {
     return s.charAt(0).toUpperCase() + s.slice(1);
 }
+
+export function isLower(char: string): boolean {
+    var code;
+    if (char && char.length === 1) {
+        code = char.charCodeAt(0);
+        if ((code > 96) && (code < 123))
+            return true;
+    }
+    return false;
+}
+
+export function isUpper(char: string): boolean {
+    var code;
+    if (char && char.length === 1) {
+        code = char.charCodeAt(0);
+        if ((code > 64) && (code < 91))
+            return true;
+    }
+    return false;
+}
