@@ -1,21 +1,15 @@
 "use strict";
 
-import date = require("./date");
 import sudate = require("./sudate");
 import assert = require("assert");
 
-function testSuDate(): void {
-    var d1 = date.makeDateTime_full(2003, 11, 27, 16, 37, 33, 123),
-        d3 = date.makeDateTime_full(2003, 12, 3, 0, 0, 0, 0),
-        d4 = date.makeDateTime_full(2003, 12, 3, 0, 0, 12, 345),
-        d5 = date.makeDateTime_full(2003, 12, 3, 1, 2, 3, 4),
-        d6 = date.makeDateTime_full(2005, 1, 1, 16, 37, 33, 123),
-        sud1 = sudate.makeSuDate_int_int(d1.date(), d1.time()),
+export = function testSuDate(): void {
+    var sud1 = sudate.makeSuDate_full(2003, 11, 27, 16, 37, 33, 123),
         sud2,
-        sud3 = sudate.makeSuDate_int_int(d3.date(), d3.time()),
-        sud4 = sudate.makeSuDate_int_int(d4.date(), d4.time()),
-        sud5 = sudate.makeSuDate_int_int(d5.date(), d5.time()),
-        sud6 = sudate.makeSuDate_int_int(d6.date(), d6.time());
+        sud3 = sudate.makeSuDate_full(2003, 12, 3, 0, 0, 0, 0),
+        sud4 = sudate.makeSuDate_full(2003, 12, 3, 0, 0, 12, 345),
+        sud5 = sudate.makeSuDate_full(2003, 12, 3, 1, 2, 3, 4),
+        sud6 = sudate.makeSuDate_full(2005, 1, 1, 16, 37, 33, 123);
 
     assert(sud1.year() === 2003, "Check initialize year.");
     assert(sud1.month()=== 11, "Check initialize month.");
@@ -33,15 +27,15 @@ function testSuDate(): void {
     assert(sud4.minusSeconds(sud3) === 12.345, "Check method minus_milliseconds()");
 
     sud2 = sud3.plus({hours: 1, minutes: 2, seconds: 3, milliseconds: 4});
-    assert(sud2.d.time() === sud5.d.time() && sud2.d.date() === sud5.d.date(),
+    assert(sud2.time === sud5.time && sud2.date === sud5.date,
         "Check method plus() with hms set");
 
     sud2 = sud1.plus({years: 1, days: 5, months: 1});
-    assert(sud2.d.time() === sud6.d.time() && sud2.d.date() === sud6.d.date(),
+    assert(sud2.time === sud6.time && sud2.date === sud6.date,
         "Check method plus() with ymd set");
 
     sud2 = sud1.plus({years: 1, months: 1, days: 5});
-    assert(sud2.d.time() === sud6.d.time() && sud2.d.date() === sud6.d.date(),
+    assert(sud2.time === sud6.time && sud2.date === sud6.date,
         "Check method plus() with ymd set in another sequence");
 
     assert.throws(function () { sud1.plus({day: 1}); });
@@ -65,6 +59,27 @@ function testSuDate(): void {
     assert.equal(sud2.toString(), "#19990101.000000000");
     sud2 = sudate.literal("#19990101.010203456");
     assert.equal(sud2.toString(), "#19990101.010203456");
-}
+    sud2 = sudate.literal("");
+    assert(sud2 === null, "Check method literal() with empty string");
+    sud2 = sudate.literal("#19990229");
+    assert(sud2 === null, "Check method literal() with invalid date argument");
+    sud2 = sudate.literal("#19990229.285959000");
+    assert(sud2 === null, "Check method literal() with invalid time argument");
 
-testSuDate();
+    sud2 = sudate.literal("#19990101.010203456").increment();
+    assert.equal(sud2.toString(), "#19990101.010203457");
+
+    sud1 = sudate.timestamp();
+    sud2 = sudate.timestamp();
+    sud3 = sudate.timestamp();
+    if (sud1.date === sud2.date) {
+        assert(sud1.time < sud2.time, "check function timestamp(): new timestamp bigger than old timestamp");
+    } else {
+        assert(sud1.date < sud2.date, "check function timestamp(): new timestamp bigger than old timestamp");
+    }
+    if (sud2.date === sud3.date) {
+        assert(sud2.time < sud3.time, "check function timestamp(): new timestamp bigger than old timestamp 1");
+    } else {
+        assert(sud2.date < sud3.date, "check function timestamp(): new timestamp bigger than old timestamp 2");
+    }
+}

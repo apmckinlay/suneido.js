@@ -1,10 +1,11 @@
 "use strict";
 
 import assert = require("assert")
-import dateTime = require("./date")
+import util = require("./utility")
 
 export interface SuDate {
-    d: dateTime.DateTime;
+    date: number;
+    time: number;
 
     formatEn(fmt: string): string;
     plus(args: Object): SuDate;
@@ -18,28 +19,25 @@ export interface SuDate {
     second(): number;
     millisecond(): number;
     weekday(firstDay?: any): number;
+
+    toDate(): Date;
     toString(): string;
+    increment(): SuDate;
 }
 
 var sudate = Object.create(null);
 
 function SuDate(date: number, time: number): void {
-    this.d = dateTime.makeDateTime_int_int(date, time);
+    this.date = date;
+    this.time = time;
 }
 
 SuDate.prototype = sudate;
 
-/**
- * makeSuDate_empty constructs a sudate
- * @returns {Object} a sudate
- */
-export function makeSuDate_empty(): SuDate {
-    var dt = dateTime.makeDateTime_empty();
-    return new SuDate(dt.date(), dt.time());
-}
+//constructors ------------------------------------------------------------
 
 /**
- * makeSuDate_int_int constructs a sudate
+ * makeSuDate_int_int constructs a sudate with specified date and time 
  * @param {number} d integer, year = d[..9], month = d[8..5], date = d[4..0]
  * @param {number} t integer, hour = t[..22], minute = t[21..16], second = t[15, 10], millisecond = [9..0]
  * @returns {Object} a sudate
@@ -48,11 +46,28 @@ export function makeSuDate_int_int(d: number, t: number): SuDate {
     return new SuDate(d, t);
 }
 
-function capitalizeFirstLetter(s: string) {
-    return s.charAt(0).toUpperCase() + s.slice(1);
+/**
+ * makeSuDate_full constructs a sudate with specified year, month, etc
+ * @param {number} year integer
+ * @param {number} month integer
+ * @param {number} day integer
+ * @param {number} hour integer
+ * @param {number} minute integer
+ * @param {number} second integer
+ * @param {number} millisecond integer
+ * @returns {Object} a sudate
+ */
+export function makeSuDate_full(year: number, month: number, day: number,
+    hour: number, minute: number, second: number, millisecond: number): SuDate {
+    //TODO validation
+    var date = (year << 9) | (month << 5) | day,
+        time = (hour << 22) | (minute << 16) | (second << 10) | millisecond;
+    return new SuDate(date, time);
 }
 
-// extract n chars from the position start of string s and translate into integer 
+// local utility functions ------------------------------------------------------------
+
+/** extract n chars from the position start of string s and translate into integer */
 function getNdigit(s: string, start: number, n: number) {
     return parseInt(s.slice(start, start + n));
 }
@@ -72,369 +87,53 @@ function arrayFill(a: Array<any>, start: number, end: number, value: any): void 
     }
 }
 
-// compare compares two sudates, returning 0, -1, or +1
+/** compare compares two sudates, returning Zero, Negative or Positive */
 function compare(sd1: SuDate, sd2: SuDate): number {
     var res: number;
-    if ((res = sd1.d.year - sd2.d.year) !== 0)
+    if ((res = sd1.date - sd2.date) !== 0)
         return res;
-    else if ((res = sd1.d.month - sd2.d.month) !== 0)
-        return res;
-    else if ((res = sd1.d.day - sd2.d.day) !== 0)
-        return res;
-    else if ((res = sd1.d.hour - sd2.d.hour) !== 0)
-        return res;
-    else if ((res = sd1.d.minute - sd2.d.minute) !== 0)
-        return res;
-    else if ((res = sd1.d.second - sd2.d.second) !== 0)
-        return res;
-    else
-        return sd1.d.millisecond - sd2.d.millisecond;
+    else 
+        return sd1.time - sd2.time;
 }
 
-// static functions ------------------------------------------------------------
+var dateCalc_Days_in_Month_ = [
+    [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
+    [0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+];
 
-/**
- * timestamp returns a unique sudate based on current time
- * @returns {Object} a sudate
- */
-SuDate["prev"] = makeSuDate_empty();
-export function timestamp(): SuDate {
-    var ts: SuDate = makeSuDate_empty();
-    if (compare(ts, SuDate["prev"]) <= 0)
-        ts = SuDate["prev"].increment();
-    else
-        SuDate["prev"] = ts;
-    return ts;
+function dateCalc_leap_year(year: number): boolean {
+    var yy = Math.ceil(year / 100);
+    return ((year & 0x03) === 0) && (((yy * 100) !== year) || ((yy & 0x03) === 0))
 }
 
-enum TokenType { YEAR, MONTH, DAY, HOUR, MINUTE, SECOND, MILLISECOND, UUK }
-var minval: Array<number> = [0, 1, 1, 0, 0, 0, 0];
-var maxval: Array<number> = [3000, 12, 31, 23, 59, 59, 999];
-
-/**
- * parse constructs a sudate
- * @param {string} s string 
- * @param {string} order string, order pattern helps to parse date string
- * @returns {Object} a sudate, or sufalse if not a valid date
- */
-export function parse(s: string, order: string): SuDate {
-    var NOTSET = 9999,
-        MAXTOKENS = 20;
-    var dt: Object = { year: NOTSET, month: 0, day: 0,
-            hour: NOTSET, minute: NOTSET, second: NOTSET, millisecond: 0 },
-        date_patterns: Array<string> = [
-            "", // set to system default
-            "md",
-            "dm",
-            "dmy",
-            "mdy",
-            "ymd"
-        ],
-        getSyspat = function (): string {
-            var i: number = 0,
-                prev: string = null,
-                j: number,
-                tmp: string,
-                syspatArray: Array<string> = [],
-                syspatRes: string;
-            for (j = 0; order[j] && i < 3; prev = order[j], j += 1) {
-                if (order[j] !== prev &&
-                    ((order[j] === 'y') || (order[j] === 'M') || (order[j] === 'd'))) {
-                    syspatArray[i] = order[j].toLowerCase();
-                    i += 1;
-                }
-            }
-            if (i !== 3) {
-                throw new Error("invalid date format: '" + order + "'");
-            }
-            date_patterns[0] = syspatRes = syspatArray.join('');
-
-            // swap month-day patterns if system setting is day first
-            for (i = 0; i < 3; i += 1) {
-                if (syspatArray[i] === 'm')
-                    break;
-                else if (syspatArray[i] === 'd') {
-                    tmp = date_patterns[1];
-                    date_patterns[1] = date_patterns[2];
-                    date_patterns[2] = tmp;
-                }
-            }
-            return syspatRes;
-        },
-        syspat: string = getSyspat(),
-        types: Array<TokenType> = [],
-        tokens: Array<number> = [],
-        ntokens: number = 0,
-        got_time: boolean = false,
-        prev: string = null,
-        i: number,
-        j: number,
-        k: number,
-        n: number,
-        buf: string,
-        curPattern: string,
-        part: TokenType,
-        now: dateTime.DateTime,
-        thisyr: number,
-        thismo: number,
-        thisd: number;
-    arrayFill(types, 0, MAXTOKENS, TokenType.UUK);
-    i = 0;
-    while (i < s.length) {
-        assert(ntokens < MAXTOKENS, "Current token number is bigger than MAXTOKENS");
-        if (isLetter(s[i])) {
-            j = i;
-            while (isLetter(s[++i])) {
-            }
-            buf = capitalizeFirstLetter(s.slice(j, i).toLowerCase());
-            for (j = 0; j < month.length; j += 1) {
-                if (month[j].indexOf(buf) !== -1)
-                    break;
-            }
-            if (j < month.length) {
-                types[ntokens] = TokenType.MONTH;
-                tokens[ntokens] = j + 1;
-                ntokens += 1;
-            } else if (buf === "Am" || buf === "Pm") {
-                if (buf.charAt(0) === 'P') {
-                    if (dt["hour"] < 12)
-                        dt["hour"] += 12;
-                } else {
-                    if (dt["hour"] === 12)
-                        dt["hour"] = 0;
-                    if (dt["hour"] > 12)
-                        return null;
-                }
-            } else {
-                // ignore days of week
-                for (j = 0; j < weekday.length; j += 1) {
-                    if (weekday[j].indexOf(buf) !== -1)
-                        break;
-                }
-                if (j >= weekday.length)
-                    return null;
-            }
-        } else if (isDigit(s[i])) {
-            j = i;
-            while (isDigit(s[++i])) {
-            }
-            n = getNdigit(s, j, i - j);
-            assert(i > j, "SuDate.parse: char index not increased after searching digits.");
-            if ((i - j === 6) || (i - j === 8)) {
-                if (i - j === 6) { // date with no separators with yy
-                    tokens[ntokens++] = getNdigit(s, j, 2);
-                    tokens[ntokens++] = getNdigit(s, j + 2, 2);
-                    tokens[ntokens++] = getNdigit(s, j + 4, 2);
-                } else if (i - j === 8) { // date with no separators with yyyy
-                    for (k = 0; k < 3; j += syspat[k] === 'y' ? 4 : 2, k += 1)
-                        tokens[ntokens++] = syspat[k] === 'y' ? getNdigit(s, j, 4) : getNdigit(s, j, 2);
-                }
-                if (s[i] === '.') {
-                    i += 1;
-                    j = i;
-                    while (isDigit(s[++i])) {
-                    }
-                    if ((i - j === 4) || (i - j === 6) || (i - j === 9)) {
-                        dt["hour"] = getNdigit(s, j, 2);
-                        j += 2;
-                        dt["minute"] = getNdigit(s, j, 2);
-                        j += 2;
-                        if (i - j >= 2) {
-                            dt["second"] = getNdigit(s, j, 2);
-                            j += 2;
-                            if (i - j === 3)
-                                dt["millisecond"] = getNdigit(s, j, 3);
-                        }
-                    }
-                }
-            } else if (prev === ':' || s[i] === ':' || ampmAhead(s, i)) { //time
-                got_time = true;
-                if (dt["hour"] === NOTSET)
-                    dt["hour"] = n;
-                else if (dt["minute"] === NOTSET)
-                    dt["minute"] = n;
-                else if (dt["second"] === NOTSET)
-                    dt["second"] = n;
-                else
-                    return null;
-            } else { //date
-                tokens[ntokens] = n;
-                if (prev === '\'')
-                    types[ntokens] = TokenType.YEAR;
-                ntokens += 1;
-            }
-        } else
-            prev = s[i++]; //ignore
-    }
-    if (dt["hour"] === NOTSET)
-        dt["hour"] = 0;
-    if (dt["minute"] === NOTSET)
-        dt["minute"] = 0;
-    if (dt["second"] === NOTSET)
-        dt["second"] = 0;
-
-    //search for data match
-    for (i = 0; i < date_patterns.length; i++) {
-        //try one pattern
-        curPattern = date_patterns[i];
-        for (j = 0; curPattern[j] && j < ntokens; j++) {
-            switch (curPattern[j]) {
-                case 'y':
-                    part = TokenType.YEAR;
-                    break;
-                case 'm':
-                    part = TokenType.MONTH;
-                    break;
-                case 'd':
-                    part = TokenType.DAY;
-                    break;
-                default:
-                    throw new Error("unreachable");
-            }
-            if ((types[j] !== TokenType.UUK && types[j] !== part) ||
-                tokens[j] < minval[part] || tokens[j] > maxval[part])
-                break;
-        }
-        // stop at first match
-        if (!curPattern[j] && j === ntokens)
-            break;
-    }
-
-    now = dateTime.makeDateTime_empty();
-    thisyr = now.year;
-    thismo = now.month;
-    thisd = now.day;
-
-    if (i < date_patterns.length) {
-        // use match
-        curPattern = date_patterns[i];
-        for (j = 0; curPattern[j]; j++) {
-            switch (curPattern[j]) {
-                case 'y':
-                    dt["year"] = tokens[j];
-                    break;
-                case 'm':
-                    dt["month"] = tokens[j];
-                    break;
-                case 'd':
-                    dt["day"] = tokens[j];
-                    break;
-                default:
-                    throw new Error("unreachable");
-            }
-        }
-    } else if (got_time && ntokens === 0) {
-        dt["year"] = thisyr;
-        dt["month"] = thismo;
-        dt["day"] = thisd;
-    } else // no match
-        return null;
-
-    if (dt["year"] === NOTSET) {
-        if (dt["month"] >= Math.max(thismo - 5, 1) &&
-            dt["month"] <= Math.min(thismo + 6, 12))
-            dt["year"] = thisyr;
-        else if (thismo < 6)
-            dt["year"] = thisyr - 1;
-        else
-            dt["year"] = thisyr + 1;
-    } else if (dt["year"] < 100) {
-        dt["year"] += thisyr - thisyr % 100;
-        if (dt["year"] - thisyr > 20)
-            dt["year"] -= 100;
-    }
-    var newDT = dateTime.makeDateTime_full(dt["year"], dt["month"], dt["day"],
-        dt["hour"], dt["minute"], dt["second"], dt["millisecond"]);
-    if (!newDT.valid())
-        return null;
-    return makeSuDate_int_int(newDT.date(), newDT.time());
+function dateCalc_check_date(year: number, month: number, day: number) {
+    return (year >= 1) && (year <= 3000) &&
+        (month >= 1) && (month <= 12) &&
+        (day >= 1) &&
+        (day <= dateCalc_Days_in_Month_[dateCalc_leap_year(year) ? 1 : 0][month]);
 }
 
-/**
- * literal constructs a sudate
- * @param {string} s string
- * @returns {Object} a sudate, or sufalse if not a valid date
- */
-export function literal(s: string): SuDate {
-    var i: number = 0,
-        t: number,
-        sn: number,
-        tn: number,
-        year: number,
-        month: number,
-        day: number,
-        hour: number,
-        minute: number,
-        second: number,
-        millisecond: number,
-        dt: dateTime.DateTime;
-    if (s[i] === '#')
-        i++;
-    t = s.indexOf('.', i);
-    if (t !== -1) {
-        sn = t - i;
-        tn = s.length - t - 1;
-    } else {
-        sn = s.length - i;
-        tn = 0;
-    }
-    if (sn !== 8 || (tn !== 0 && tn !== 4 && tn !== 6 && tn !== 9))
-        return null;
-
-    year = getNdigit(s, i, 4);
-    month = getNdigit(s, i + 4, 2);
-    day = getNdigit(s, i + 6, 2);
-
-    hour = tn >= 2 ? getNdigit(s, t + 1, 2) : 0;
-    minute = tn >= 4 ? getNdigit(s, t + 3, 2) : 0;
-    second = tn >= 6 ? getNdigit(s, t + 5, 2) : 0;
-    millisecond = tn >= 9 ? getNdigit(s, t + 7, 3) : 0;
-
-    dt = dateTime.makeDateTime_full(year, month, day, hour, minute, second, millisecond);
-    if (!dt.valid())
-        return null;
-    return makeSuDate_int_int(dt.date(), dt.time());
-}
-
-// methods ---------------------------------------------------------------------
-
-function isLetter(char: string): boolean {
-    var code;
-    if (char && char.length === 1) {
-        code = char.charCodeAt(0);
-        if (((code >= 65) && (code <= 90)) || ((code >= 97) && (code <= 122))) {
-            return true;
-        }
-    }
-    return false;
-}
-
-function isDigit(char: string): boolean {
-    var code;
-    if (char && char.length === 1) {
-        code = char.charCodeAt(0);
-        if ((code >= 48) && (code <= 57)) {
-            return true;
-        }
-    }
-    return false;
+function dateCalc_check_time(hour: number, minute: number, second: number) {
+    return (hour >= 0) && (hour < 24) &&
+        (minute >= 0) && (minute < 60) &&
+        (second >= 0) && (second < 60);
 }
 
 function format(dt: SuDate, fmt: string): string {
     var dst: string = '',
-        i:  number,
-        n:  number,
-        c:  string,
+        i: number,
+        n: number,
+        c: string,
         yr: number,
         mo: number,
         wd: number,
-        d:  number,
+        d: number,
         hr: number,
         mi: number,
-        s:  number;
+        s: number;
     for (i = 0; i < fmt.length; i += 1) {
         n = 1;
-        if (isLetter(fmt[i])) {
+        if (util.isAlpha(fmt[i])) {
             for (c = fmt[i]; c === fmt[i + 1]; i += 1) {
                 n += 1;
             }
@@ -547,15 +246,393 @@ function format(dt: SuDate, fmt: string): string {
     return dst;
 }
 
+// static functions ------------------------------------------------------------
+
+/** @return An SuDate for the current local date & time */
+export function now() {
+    var date = new Date();
+    return fromDate(date);
+}
+
+/** validation */
+export function valid(year: number, month: number, day: number,
+    hour: number, minute: number, second: number, millisecond: number) {
+    if (year === 3000 && (month !== 1 || day !== 1 || hour !== 0 ||
+        minute !== 0 || second !== 0 || millisecond !== 0))
+        return false;
+    return dateCalc_check_date(year, month, day) &&
+        dateCalc_check_time(hour, minute, second) &&
+        millisecond >= 0 && millisecond <= 999;
+}
+
+export function normalize(year: number, month: number, day: number,
+    hour: number, minute: number, second: number, millisecond: number) {
+    // adjust to bring back into range
+    while (millisecond < 0) {
+        --second;
+        millisecond += 1000;
+    }
+    while (millisecond >= 1000) {
+        ++second;
+        millisecond -= 1000;
+    }
+
+    while (second < 0) {
+        --minute;
+        second += 60;
+    }
+    while (second >= 60) {
+        ++minute;
+        second -= 60;
+    }
+
+    while (minute < 0) {
+        --hour;
+        minute += 60;
+    }
+    while (minute >= 60) {
+        ++hour;
+        minute -= 60;
+    }
+
+    while (hour < 0) {
+        --day;
+        hour += 24;
+    }
+    while (hour >= 24) {
+        ++day;
+        hour -= 24;
+    }
+
+    //use Date for days to handle leap years etc.
+    if (day < 1 || day > 28) {
+        var d = new Date(year, month - 1, day);
+        year = d.getFullYear();
+        month = d.getMonth() + 1;
+        day = d.getDate();
+    }
+
+    while (month < 1) {
+        --year;
+        month += 12;
+    }
+    while (month > 12) {
+        ++year;
+        month -= 12;
+    }
+
+    return makeSuDate_full(year, month, day, hour, minute, second, millisecond);
+};
+
+/**
+ * timestamp returns a unique sudate based on current time
+ * @returns {Object} a sudate
+ */
+SuDate["prev"] = now();
+export function timestamp(): SuDate {
+    var ts: SuDate = now();
+    if (compare(ts, SuDate["prev"]) <= 0) {
+        SuDate["prev"].increment();
+        ts = new SuDate(SuDate["prev"].date, SuDate["prev"].time);
+    } else
+        SuDate["prev"] = new SuDate(ts.date, ts.time);
+    return ts;
+}
+
+enum TokenType { YEAR, MONTH, DAY, HOUR, MINUTE, SECOND, MILLISECOND, UUK }
+var minval: Array<number> = [0, 1, 1, 0, 0, 0, 0];
+var maxval: Array<number> = [3000, 12, 31, 23, 59, 59, 999];
+
+/**
+ * parse constructs a sudate
+ * @param {string} s string 
+ * @param {string} order string, order pattern helps to parse date string
+ * @returns {Object} a sudate, or sufalse if not a valid date
+ */
+export function parse(s: string, order: string): SuDate {
+    var NOTSET = 9999,
+        MAXTOKENS = 20;
+    var dt: Object = { year: NOTSET, month: 0, day: 0,
+            hour: NOTSET, minute: NOTSET, second: NOTSET, millisecond: 0 },
+        date_patterns: Array<string> = [
+            "", // set to system default
+            "md",
+            "dm",
+            "dmy",
+            "mdy",
+            "ymd"
+        ],
+        getSyspat = function (): string {
+            var i: number = 0,
+                prev: string = null,
+                j: number,
+                tmp: string,
+                syspatArray: Array<string> = [],
+                syspatRes: string;
+            for (j = 0; order[j] && i < 3; prev = order[j], j += 1) {
+                if (order[j] !== prev &&
+                    ((order[j] === 'y') || (order[j] === 'M') || (order[j] === 'd'))) {
+                    syspatArray[i] = order[j].toLowerCase();
+                    i += 1;
+                }
+            }
+            assert(i === 3, "invalid date format: '" + order + "'")
+            date_patterns[0] = syspatRes = syspatArray.join('');
+
+            // swap month-day patterns if system setting is day first
+            for (i = 0; i < 3; i += 1) {
+                if (syspatArray[i] === 'm')
+                    break;
+                else if (syspatArray[i] === 'd') {
+                    tmp = date_patterns[1];
+                    date_patterns[1] = date_patterns[2];
+                    date_patterns[2] = tmp;
+                }
+            }
+            return syspatRes;
+        },
+        syspat: string = getSyspat(),
+        types: Array<TokenType> = [],
+        tokens: Array<number> = [],
+        ntokens: number = 0,
+        got_time: boolean = false,
+        prev: string = null,
+        i: number,
+        j: number,
+        k: number,
+        n: number,
+        buf: string,
+        curPattern: string,
+        part: TokenType,
+        current: SuDate,
+        thisyr: number,
+        thismo: number,
+        thisd: number;
+    arrayFill(types, 0, MAXTOKENS, TokenType.UUK);
+    i = 0;
+    while (i < s.length) {
+        assert(ntokens < MAXTOKENS, "Current token number is bigger than MAXTOKENS");
+        if (util.isAlpha(s[i])) {
+            j = i;
+            while (util.isAlpha(s[++i])) {
+            }
+            buf = util.capitalizeFirstLetter(s.slice(j, i).toLowerCase());
+            for (j = 0; j < month.length; j += 1) {
+                if (month[j].indexOf(buf) !== -1)
+                    break;
+            }
+            if (j < month.length) {
+                types[ntokens] = TokenType.MONTH;
+                tokens[ntokens] = j + 1;
+                ntokens += 1;
+            } else if (buf === "Am" || buf === "Pm") {
+                if (buf.charAt(0) === 'P') {
+                    if (dt["hour"] < 12)
+                        dt["hour"] += 12;
+                } else {
+                    if (dt["hour"] === 12)
+                        dt["hour"] = 0;
+                    if (dt["hour"] > 12)
+                        return null;
+                }
+            } else {
+                // ignore days of week
+                for (j = 0; j < weekday.length; j += 1) {
+                    if (weekday[j].indexOf(buf) !== -1)
+                        break;
+                }
+                if (j >= weekday.length)
+                    return null;
+            }
+        } else if (util.isDigit(s[i])) {
+            j = i;
+            while (util.isDigit(s[++i])) {
+            }
+            n = getNdigit(s, j, i - j);
+            assert(i > j, "SuDate.parse: char index not increased after searching digits.");
+            if ((i - j === 6) || (i - j === 8)) {
+                if (i - j === 6) { // date with no separators with yy
+                    tokens[ntokens++] = getNdigit(s, j, 2);
+                    tokens[ntokens++] = getNdigit(s, j + 2, 2);
+                    tokens[ntokens++] = getNdigit(s, j + 4, 2);
+                } else if (i - j === 8) { // date with no separators with yyyy
+                    for (k = 0; k < 3; j += syspat[k] === 'y' ? 4 : 2, k += 1)
+                        tokens[ntokens++] = syspat[k] === 'y' ? getNdigit(s, j, 4) : getNdigit(s, j, 2);
+                }
+                if (s[i] === '.') {
+                    i += 1;
+                    j = i;
+                    while (util.isDigit(s[++i])) {
+                    }
+                    if ((i - j === 4) || (i - j === 6) || (i - j === 9)) {
+                        dt["hour"] = getNdigit(s, j, 2);
+                        j += 2;
+                        dt["minute"] = getNdigit(s, j, 2);
+                        j += 2;
+                        if (i - j >= 2) {
+                            dt["second"] = getNdigit(s, j, 2);
+                            j += 2;
+                            if (i - j === 3)
+                                dt["millisecond"] = getNdigit(s, j, 3);
+                        }
+                    }
+                }
+            } else if (prev === ':' || s[i] === ':' || ampmAhead(s, i)) { //time
+                got_time = true;
+                if (dt["hour"] === NOTSET)
+                    dt["hour"] = n;
+                else if (dt["minute"] === NOTSET)
+                    dt["minute"] = n;
+                else if (dt["second"] === NOTSET)
+                    dt["second"] = n;
+                else
+                    return null;
+            } else { //date
+                tokens[ntokens] = n;
+                if (prev === '\'')
+                    types[ntokens] = TokenType.YEAR;
+                ntokens += 1;
+            }
+        } else
+            prev = s[i++]; //ignore
+    }
+    if (dt["hour"] === NOTSET)
+        dt["hour"] = 0;
+    if (dt["minute"] === NOTSET)
+        dt["minute"] = 0;
+    if (dt["second"] === NOTSET)
+        dt["second"] = 0;
+
+    //search for data match
+    for (i = 0; i < date_patterns.length; i++) {
+        //try one pattern
+        curPattern = date_patterns[i];
+        for (j = 0; curPattern[j] && j < ntokens; j++) {
+            switch (curPattern[j]) {
+                case 'y':
+                    part = TokenType.YEAR;
+                    break;
+                case 'm':
+                    part = TokenType.MONTH;
+                    break;
+                case 'd':
+                    part = TokenType.DAY;
+                    break;
+                default:
+                    throw new Error("unreachable");
+            }
+            if ((types[j] !== TokenType.UUK && types[j] !== part) ||
+                tokens[j] < minval[part] || tokens[j] > maxval[part])
+                break;
+        }
+        // stop at first match
+        if (!curPattern[j] && j === ntokens)
+            break;
+    }
+
+    current = now();
+    thisyr = current.year();
+    thismo = current.month();
+    thisd = current.day();
+
+    if (i < date_patterns.length) {
+        // use match
+        curPattern = date_patterns[i];
+        for (j = 0; curPattern[j]; j++) {
+            switch (curPattern[j]) {
+                case 'y':
+                    dt["year"] = tokens[j];
+                    break;
+                case 'm':
+                    dt["month"] = tokens[j];
+                    break;
+                case 'd':
+                    dt["day"] = tokens[j];
+                    break;
+                default:
+                    throw new Error("unreachable");
+            }
+        }
+    } else if (got_time && ntokens === 0) {
+        dt["year"] = thisyr;
+        dt["month"] = thismo;
+        dt["day"] = thisd;
+    } else // no match
+        return null;
+
+    if (dt["year"] === NOTSET) {
+        if (dt["month"] >= Math.max(thismo - 5, 1) &&
+            dt["month"] <= Math.min(thismo + 6, 12))
+            dt["year"] = thisyr;
+        else if (thismo < 6)
+            dt["year"] = thisyr - 1;
+        else
+            dt["year"] = thisyr + 1;
+    } else if (dt["year"] < 100) {
+        dt["year"] += thisyr - thisyr % 100;
+        if (dt["year"] - thisyr > 20)
+            dt["year"] -= 100;
+    }
+    if (!valid(dt["year"], dt["month"], dt["day"],
+        dt["hour"], dt["minute"], dt["second"], dt["millisecond"]))
+        return null;
+    return makeSuDate_full(dt["year"], dt["month"], dt["day"],
+        dt["hour"], dt["minute"], dt["second"], dt["millisecond"]);
+}
+
+/**
+ * literal constructs a sudate
+ * @param {string} s string
+ * @returns {Object} a sudate, or sufalse if not a valid date
+ */
+export function literal(s: string): SuDate {
+    var i: number = 0,
+        t: number,
+        sn: number,
+        tn: number,
+        year: number,
+        month: number,
+        day: number,
+        hour: number,
+        minute: number,
+        second: number,
+        millisecond: number,
+        dt: SuDate;
+    if (s[i] === '#')
+        i++;
+    t = s.indexOf('.', i);
+    if (t !== -1) {
+        sn = t - i;
+        tn = s.length - t - 1;
+    } else {
+        sn = s.length - i;
+        tn = 0;
+    }
+    if (sn !== 8 || (tn !== 0 && tn !== 4 && tn !== 6 && tn !== 9))
+        return null;
+
+    year = getNdigit(s, i, 4);
+    month = getNdigit(s, i + 4, 2);
+    day = getNdigit(s, i + 6, 2);
+
+    hour = tn >= 2 ? getNdigit(s, t + 1, 2) : 0;
+    minute = tn >= 4 ? getNdigit(s, t + 3, 2) : 0;
+    second = tn >= 6 ? getNdigit(s, t + 5, 2) : 0;
+    millisecond = tn >= 9 ? getNdigit(s, t + 7, 3) : 0;
+    if (!valid(year, month, day, hour, minute, second, millisecond))
+        return null;
+    return makeSuDate_full(year, month, day, hour, minute, second, millisecond);
+}
+
+// methods ---------------------------------------------------------------------
+
 /**
  * formatEn converts sudate into string based on given format
  * @param {string} fmt
  * @returns {string} a date and time string in given format
  */
 sudate.formatEn = function (fmt: string): string {
-    if (arguments.length !== 1) {
-        throw new Error("usage: date.Format(format)");
-    }
+    assert(arguments.length === 1, "usage: date.Format(format)");
     return format(this, fmt);
 };
 
@@ -564,7 +641,9 @@ sudate.formatEn = function (fmt: string): string {
  * @returns {object} self sudate
  */
 sudate.increment = function (): SuDate {
-    this.d.plus(0, 0, 0, 0, 0, 0, 1);
+    var d = this.plus({ milliseconds: 1 });
+    this.date = d.date;
+    this.time = d.time;
     return this;
 };
 
@@ -576,21 +655,29 @@ sudate.increment = function (): SuDate {
 sudate.plus = function (args: Object): SuDate {
     var usage = "usage: Plus(years:, months:, days:, " +
         "hours:, minutes:, seconds:, milliseconds:)";
-    var years = args["years"],
-        months = args["months"],
-        days = args["days"],
-        hours = args["hours"],
-        minutes = args["minutes"],
-        seconds = args["seconds"],
-        milliseconds = args["milliseconds"];
-    if (! (years || months || days || hours || minutes || seconds || milliseconds)) {
-         throw new Error(usage);
-    }
-    var dt = dateTime.makeDateTime_int_int(this.d.date(), this.d.time());
-    dt.plus(years || 0, months || 0, days || 0,
-        hours || 0, minutes || 0, seconds || 0, milliseconds || 0);
-    //TODO validation
-    return makeSuDate_int_int(dt.date(), dt.time());
+    var years = (args["years"] | 0) + this.year(),
+        months = (args["months"] | 0) + this.month(),
+        days = (args["days"] | 0) + this.day(),
+        hours = (args["hours"] | 0) + this.hour(),
+        minutes = (args["minutes"] | 0) + this.minute(),
+        seconds = (args["seconds"] | 0) + this.second(),
+        milliseconds = (args["milliseconds"] | 0) + this.millisecond();
+    assert(!(isNaN(args["years"]) && isNaN(args["months"]) && isNaN(args["days"]) &&
+        isNaN(args["hours"]) && isNaN(args["minutes"]) && isNaN(args["seconds"]) &&
+        isNaN(args["milliseconds"])), usage);
+    return normalize(years, months, days, hours, minutes, seconds, milliseconds);
+};
+
+function timeAsMs(sud: SuDate): number {
+    return sud.millisecond() + 1000 * (sud.second() + 60 * (sud.minute() + 60 * sud.hour()));
+};
+
+// WARNING: doing this around daylight savings changes may be problematic
+sudate.minusMilliseconds = function (sud2: SuDate): number {
+    if (this.date == sud2.date)
+        return timeAsMs(this) - timeAsMs(sud2);
+    else
+        return this.toDate().getTime() - sud2.toDate().getTime();
 };
 
 /**
@@ -599,10 +686,9 @@ sudate.plus = function (args: Object): SuDate {
  * @returns {number}
  */
 sudate.minusDays = function (sud2: SuDate): number {
-    if (arguments.length !== 1) {
-        throw new Error("usage: date.Minus(date)");
-    }
-    return this.d.minus_days(sud2.d);
+    var timeDiff = this.toDate().getTime() - sud2.toDate().getTime();
+    assert(arguments.length === 1, "usage: date.Minus(date)");
+    return Math.ceil(timeDiff / (1000 * 3600 * 24));
 };
 
 /**
@@ -611,80 +697,65 @@ sudate.minusDays = function (sud2: SuDate): number {
  * @returns {number}
  */
 sudate.minusSeconds = function (sud2: SuDate): number {
-    if (arguments.length !== 1) {
-        throw new Error("usage: date.MinusSeconds(date)");
-    }
-    return this.d.minus_milliseconds(sud2.d) / 1000;
+    var timeDiff = this.toDate().getTime() - sud2.toDate().getTime();
+    assert(arguments.length === 1, "usage: date.MinusSeconds(date)");
+    return timeDiff / 1000;
 };
 
 /**
  * @returns {number} year portion of the date
  */
 sudate.year = function (): number {
-    if (arguments.length !== 0) {
-        throw new Error("usage: date.Year()");
-    }
-    return this.d.year;
+    assert(arguments.length === 0, "usage: date.Year()");
+    return this.date >> 9;
 };
 
 /**
  * @returns {number} month portion of the date
  */
 sudate.month = function (): number {
-    if (arguments.length !== 0) {
-        throw new Error("usage: date.Month()");
-    }
-    return this.d.month;
+    assert(arguments.length === 0, "usage: date.Month()");
+    return (this.date >> 5) & 0xf;
 };
 
 /**
  * @returns {number} day portion of the date
  */
 sudate.day = function (): number {
-    if (arguments.length !== 0) {
-        throw new Error("usage: date.Day()");
-    }
-    return this.d.day;
+    assert(arguments.length === 0, "usage: date.Day()");
+    return this.date & 0x1f;
 };
 
 /**
  * @returns {number} hour portion of the date
  */
 sudate.hour = function (): number {
-    if (arguments.length !== 0) {
-        throw new Error("usage: date.Hour()");
-    }
-    return this.d.hour;
+    assert(arguments.length === 0, "usage: date.Hour()");
+    return this.time >> 22;
 };
 
 /**
  * @returns {number} minute portion of the date
  */
 sudate.minute = function (): number {
-    if (arguments.length !== 0) {
-        throw new Error("usage: date.Minute()");
-    }
-    return this.d.minute;
+    assert(arguments.length === 0, "usage: date.Minute()");
+    return (this.time >> 16) & 0x3f;
 };
 
 /**
  * @returns {number} second portion of the date
  */
 sudate.second = function (): number {
-    if (arguments.length !== 0) {
-        throw new Error("usage: date.Second()");
-    }
-    return this.d.second;
+    assert(arguments.length === 0, "usage: date.Second()");
+    return (this.time >> 10) & 0x3f;
 };
 
 /**
  * @returns {number} millisecond portion of the date
  */
 sudate.millisecond = function (): number {
-    if (arguments.length !== 0) {
-        throw new Error("usage: date.Millisecond()");
-    }
-    return this.d.millisecond;
+    assert(arguments.length === 0, "usage: date.Millisecond()");
+    return this.time & 0x3ff;
 };
 
 var month: Array<string> = ["January", "February", "March", "April", "May", "June", "July",
@@ -698,9 +769,8 @@ var weekday: Array<string> = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thurs
  * @returns {number}
  */
 sudate.weekday = function (firstDay?: string|number): number {
-    if (arguments.length !== 0 && arguments.length !== 1) {
-        throw new Error("usage: date.WeekDay(firstDay = 'Sun')");
-    }
+    assert(arguments.length === 0 || arguments.length === 1,
+        "usage: date.WeekDay(firstDay = 'Sun')");
     var i: number = 0,
         s;
     if (arguments.length === 1) {
@@ -710,26 +780,45 @@ sudate.weekday = function (firstDay?: string|number): number {
                 if (weekday[i].toLowerCase().indexOf(s) === 0)
                     break;
             }
-            if (i >= 7)
-                throw new Error("usage: date.WeekDay( <day of week> )");
+            assert(i < 7, "usage: date.WeekDay( <day of week> )");
         } else if (!isNaN(firstDay)) {
             i = firstDay;
         } else {
-            throw new Error("usage: date.WeekDay( <day of week> )");
+            assert(false, "usage: date.WeekDay( <day of week> )");
         }
     }
-    return (this.d.day_of_week() - i + 7) % 7;
+    return (this.toDate().getDay() - i + 7) % 7;
 };
+
+// methods for type conversion
 
 sudate.toString = function (): string {
     var s: string = "#";
-    s += ("0000" + this.d.year).slice(-4);
-    s += ("0" + this.d.month).slice(-2);
-    s += ("0" + this.d.day).slice(-2);
+    s += ("0000" + this.year()).slice(-4);
+    s += ("0" + this.month()).slice(-2);
+    s += ("0" + this.day()).slice(-2);
     s += '.';
-    s += ("0" + this.d.hour).slice(-2);
-    s += ("0" + this.d.minute).slice(-2);
-    s += ("0" + this.d.second).slice(-2);
-    s += ("000" + this.d.millisecond).slice(-3);
+    s += ("0" + this.hour()).slice(-2);
+    s += ("0" + this.minute()).slice(-2);
+    s += ("0" + this.second()).slice(-2);
+    s += ("000" + this.millisecond()).slice(-3);
     return s;
 };
+
+sudate.toDate = function (): Date {
+    return new Date(this.year(), this.month() - 1, this.day(),
+        this.hour(), this.minute(), this.second(), this.millisecond());
+}
+
+function fromDate(d: Date): SuDate {
+    return new SuDate(toDateValue(d), toTimeValue(d));
+}
+
+function toDateValue(d: Date): number {
+    return (d.getFullYear() << 9) | (d.getMonth() << 5) | d.getDate();
+}
+
+function toTimeValue(d: Date): number {
+    return (d.getHours() << 22) | (d.getMinutes() << 16) | (d.getSeconds() << 10) |
+        d.getMilliseconds();
+}
