@@ -234,4 +234,11 @@ export = function testSuString(): void {
     assert(!str1.upperq(), "check method upperq() with no letter string");
     str1 = sustring.makeSuString_string("");
     assert(!str1.upperq(), "check method upperq() with empty string");
+
+    str1 = sustring.makeSuString_string("123");
+    assert.deepEqual(str1.integer(), 123);
+    str1 = sustring.makeSuString_string("abc");
+    assert(isNaN(str1.integer()), 'check method "abc".integer()');
+    str1 = sustring.makeSuString_string("123abc");
+    assert.deepEqual(str1.integer(), 123);
 }

@@ -5,7 +5,8 @@ import suobject = require("./suobject")
 
 export interface SuString {
     s: string;
-
+    
+    //methods used for external
     alphaq(): boolean;
     alphaNumq(): boolean;
     asc(): number;
@@ -43,10 +44,11 @@ export interface SuString {
     unescape(): SuString;
     upper(): SuString;
     upperq(): boolean;
-
     wcstombs(): SuString;       //haven't implemented, needed?
 
-
+    //methods used for internal
+    getdata(): SuString;        //haven't implemented, need Range
+    integer(): number;
     toString(): string;
 }
 
@@ -58,9 +60,13 @@ function SuString(t: string): void {
 
 SuString.prototype = sustring;
 
+//constructors ------------------------------------------------------------
+
 export function makeSuString_string(str: string): SuString {
     return new SuString(str);
 }
+
+// methods ---------------------------------------------------------------------
 
 sustring.alphaq = function (): boolean {
     var i: number;
@@ -260,7 +266,7 @@ sustring.lowerq = function (): boolean {
     return result ? true : false;
 };
 
-//TODO: to change after block and call functions are implemented
+//TODO: to change after classes for block and callable functions are implemented
 sustring.mapN = function (n: number, f: (s: string) => string): SuString {
     var s = this.s,
         dst = "",
@@ -348,6 +354,7 @@ sustring.repeat = function (count: number): SuString {
 };
 
 enum RepStatus { E, U, L, u, l };
+//TODO: to change after classes for block and callable functions are implemented
 sustring.replace = function (pattern: string, replacement: string|((m: string) => string) = '', count: number = Infinity): SuString {
     assert(arguments.length >= 1 && arguments.length <= 3,
         "usage: string.Replace(pattern, replacement = '', count = false) -> string");
@@ -504,6 +511,10 @@ sustring.upperq = function (): boolean {
             result = true;
     }
     return result ? true : false;
+};
+
+sustring.integer = function (): number {
+    return parseInt(this.toString(), 0);
 };
 
 sustring.toString = function (): string {
