@@ -133,9 +133,8 @@
 					nest = 0,
 					list = [],
 					base;
-				scanner.reset();
-				tokenOb = scanner.next();
-				while (tokenOb){
+				scanner.reset();				
+				for (tokenOb = scanner.next(); tokenOb; tokenOb = scanner.next()){
 					if (tokenOb.token === '{' || tokenOb.token === '[' ||
 						tokenOb.token === '(')
 						nest++;
@@ -144,10 +143,9 @@
 						nest--;
 					if (nest === 1 && tokenOb.style === 'variable' && 
 						/[A-Z]/.test(tokenOb.token[0])){
-						if (list.includes(tokenOb.token))
+						if (!list.includes(tokenOb.token))
 							list.push(tokenOb.token);
-					}
-					tokenOb = scanner.next();
+					}					
 				}
 				base = this.getSuperClass(scanner);
 				if (base)
@@ -158,9 +156,8 @@
 				var tokenOb,
 					nest = 0,
 					list = [];
-				scanner.reset();
-				tokenOb = scanner.next();
-				while (tokenOb){
+				scanner.reset();				
+				for (tokenOb = scanner.next(); tokenOb; tokenOb = scanner.next()){
 					if (tokenOb.token === '{' || tokenOb.token === '[' ||
 						tokenOb.token === '(')
 						nest++;
@@ -170,14 +167,13 @@
 					if (tokenOb.style !== 'variable' || !this.isLocalName(tokenOb.token || ""))
 						continue;
 					if (nest === 1) {
-						if (list.includes(tokenOb.token))
+						if (!list.includes(tokenOb.token))
 							list.push(tokenOb.token);
 					} else if (nest > 1 && scanner.prev().token === '.' &&
 						!this.isLocalName(scanner.prev2().token) && scanner.ahead().token === '=') {
-						if (list.includes(tokenOb.token))
+						if (!list.includes(tokenOb.token))
 							list.push(tokenOb.token);
-					}
-					tokenOb = scanner.next();
+					}					
 				}
 				return list.sort();
 			},
@@ -188,7 +184,7 @@
 				tokenOb = scanner.next();
 				while (tokenOb){
 					if (tokenOb.style === 'variable'){
-						if (words.includes(tokenOb.token))
+						if (!words.includes(tokenOb.token))
 							words.push(tokenOb.token);
 					}
 					tokenOb = scanner.next();
