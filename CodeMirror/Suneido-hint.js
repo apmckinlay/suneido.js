@@ -324,7 +324,7 @@
 				
 				var base = classHelper.getSuperClass();
 				if (base && base !== baseClass) {
-					ajaxQuery('InheritedPublicMembers', base, function(members){
+					ajaxQuery('ClassHelpPublicMembersOfName', base, function(members){
 						basePublicMembers = members;
 					});
 				}

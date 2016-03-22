@@ -70,11 +70,6 @@
        requests the default methods. The corresponding method in Suneido is 
        ``` Objects.Members().Add(@BasicMethods).Sort!().Unique!() ```
        
-     * GET .../InheritedPublicMembers?q=key
-     
-       requests the public members of the base class *key*. The corresponding method in Suneido is 
-       ``` ClassHelp.PublicMembers(key) ``` (**should be removed, use *ClassHelpPublicMembersOfName* instead.**)
-       
    The response content should be in JSON format with an attribute *matches*, which contains a list of condidate strings.
    
    A snippet of Suneido code to handle the above requests is shown as follow (an updated version of **JsPlayServer**)
@@ -144,13 +139,6 @@
 			if env.method isnt 'GET'
 				return .methodNotAllowed(env)
 			matches = Objects.Members().Add(@BasicMethods).Sort!().Unique!()
-			return Json.Encode(Object(matches: matches))
-			}
-		else if env.path.Prefix?('/InheritedPublicMembers')
-			{
-			if env.method isnt 'GET'
-				return .methodNotAllowed(env)
-			matches = ClassHelp.PublicMembersOfName(env.queryvalues.q)
 			return Json.Encode(Object(matches: matches))
 			}
 		return ['404 Not Found', #(), 'not found']
