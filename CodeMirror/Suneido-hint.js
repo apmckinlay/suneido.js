@@ -6,6 +6,7 @@
 	else // Plain browser env
 		mod(CodeMirror);
 })(function(CodeMirror) {
+	var suneidoAutoComplete = suneidoHint();
 	CodeMirror.defineOption("autoCompletion", false, function (cm, val, old) {		
 		var	autocomplete = function(){
 			var ExcludedIntelliSenseTriggerKeys = {
@@ -147,10 +148,7 @@
 							list.push(tokenOb.token);
 					}					
 				}
-				base = this.getSuperClass(scanner);
-				if (base)
-					alert("Request public members of class " + base);
-				return list.sort();
+				return list;
 			},
 			getPrivateMembers: function(){
 				var tokenOb,
@@ -239,70 +237,110 @@
 		return resString;
 	}
 	
-	function suneidoAutoComplete(cm, callback, options) {
-		var word = getCurrentReference(cm),
-			cur = cm.getCursor(),
-			curToken = cm.getTokenAt(cur),
-			content = cm.getDoc().getValue(),
-			classHelper = getClassHelper(content),
-			matches,
-			textNames,
-			privateMembers,
-			publicMembers,
-			allMembers,
-			autoCompleteMethod = function() {
-				var thisMembers = function(member) {
-						if (member === '')
-							return allMembers;
-						else if (classHelper.isLocalName(member))
-							return privateMembers;
-						else if (classHelper.isGlobalName(member))
-							return publicMembers;
-						else
-							return [];
-					},
-					methods = [];
-				if (word[0] === '.') {
-					methods = thisMembers(word.substring(1));
-					word = word.slice(word.lastIndexOf('.') + 1);
-					methods = methods.filter(function(element){ return element.startsWith(word); });
-					callback({list: methods, from: CodeMirror.Pos(cur.line, curToken.start), 
-						to: CodeMirror.Pos(cur.line, curToken.end)});
-				} else if (/^[A-Z]/.test(word[0])){
-					alert("Request ClassHelp.PublicMembersOfName for " + word);
-				} else {
-					alert("Request defaultMethods for " + word);
-				}									
-			},
-			autoCompleteWord = function() {
-				var words = [],
-					counter = 0;
-				if (word.length < 3)
-					return;
-				if (/[A-Z]/.test(word[0])){
-					alert("Request LibLocateList.GetMatches for " + word);
-					callback({list: ["word"], from: CodeMirror.Pos(cur.line, curToken.start), 
-						to: CodeMirror.Pos(cur.line, curToken.end)});
-				} else {
-					words = textNames.filter(function(element){ return element.startsWith(word) && 
-						element !== word && counter++ < 100; });
-					callback({list: words, from: CodeMirror.Pos(cur.line, curToken.start), 
-						to: CodeMirror.Pos(cur.line, curToken.end)});
+	function suneidoHint(){
+		var baseClass = '',
+			basePublicMembers = [];
+		
+		function ajaxQuery(qName, key, callbackFunc){
+			var xmlhttp = new XMLHttpRequest();
+			xmlhttp.open("GET", "/" + qName + "?q=" + key, true);
+			xmlhttp.onreadystatechange = function(){
+				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+					words = JSON.parse(xmlhttp.responseText).matches;
+					callbackFunc(words);
 				}
 			};
-		textNames = classHelper.getTextNames();
-		if (classHelper.getLibRecordType() === 'class'){
-			privateMembers = classHelper.getPrivateMembers();
-			publicMembers = classHelper.getPublicMembers();
-			allMembers = privateMembers.concat(publicMembers);
-		} else {
-			privateMembers = [];
-			publicMembers = [];
-			allMembers = [];
+			xmlhttp.send();
 		}
-		if (/\./.test(word))
-			autoCompleteMethod();
-		else
-			autoCompleteWord();
+		
+		return function(cm, callback, options) {
+			var word = getCurrentReference(cm),
+				cur = cm.getCursor(),
+				curToken = cm.getTokenAt(cur),
+				content = cm.getDoc().getValue(),
+				classHelper = getClassHelper(content),
+				matches,
+				textNames,
+				privateMembers = [],
+				publicMembers = [],
+				allMembers,
+				autoCompleteMethod = function() {
+					var thisMembers = function(member) {
+							if (member === '')
+								return allMembers;
+							else if (classHelper.isLocalName(member))
+								return privateMembers;
+							else if (classHelper.isGlobalName(member))
+								return publicMembers;
+							else
+								return [];
+						},
+						filterAndCallback = function(list, filterWord, callbackFunc){
+							var start = (curToken.string === '.')? curToken.end : curToken.start,
+								end = curToken.end;
+							list = list.filter(function(element){ return element.startsWith(filterWord); });
+							callback({list: list, from: CodeMirror.Pos(cur.line, start), 
+								to: CodeMirror.Pos(cur.line, end)});
+						},
+						methods = [];
+					if (word[0] === '.') {
+						methods = thisMembers(word.substring(1));
+						word = word.slice(word.lastIndexOf('.') + 1);
+						filterAndCallback(methods, word, callback);
+					} else if (/^[A-Z]/.test(word[0])){
+						className = word.slice(0, word.lastIndexOf('.'));
+						word = word.slice(word.lastIndexOf('.') + 1);
+						ajaxQuery("ClassHelpPublicMembersOfName", className, function(methods){
+							filterAndCallback(methods, word, callback);
+						});
+					} else {
+						word = word.slice(word.lastIndexOf('.') + 1);
+						ajaxQuery("DefaultMethods", 'default', function(methods){
+							filterAndCallback(methods, word, callback);
+						});
+					}									
+				},
+				autoCompleteWord = function() {
+					var words = [],
+						counter = 0;
+					if (word.length < 3)
+						return;
+					if (/[A-Z]/.test(word[0])){
+						ajaxQuery("LibLocateList", word, function(words){
+							callback({list: words, from: CodeMirror.Pos(cur.line, curToken.start), 
+									to: CodeMirror.Pos(cur.line, curToken.end)});
+						});
+					} else {
+						words = textNames.filter(function(element){ return element.startsWith(word) && 
+							element !== word && counter++ < 100; });
+						callback({list: words, from: CodeMirror.Pos(cur.line, curToken.start), 
+							to: CodeMirror.Pos(cur.line, curToken.end)});
+					}
+				};
+			textNames = classHelper.getTextNames();
+			if (classHelper.getLibRecordType() === 'class'){
+				privateMembers = classHelper.getPrivateMembers();
+				publicMembers = classHelper.getPublicMembers();
+				
+				var base = classHelper.getSuperClass();
+				if (base && base !== baseClass) {
+					ajaxQuery('InheritedPublicMembers', base, function(members){
+						basePublicMembers = members;
+					});
+				}
+				baseClass = base || baseClass;
+				
+				publicMembers = publicMembers.concat(basePublicMembers);
+				allMembers = privateMembers.concat(publicMembers);
+			} else {
+				privateMembers = [];
+				publicMembers = [];
+				allMembers = [];
+			}
+			if (/\./.test(word))
+				autoCompleteMethod();
+			else
+				autoCompleteWord();
+		};
 	}
 });
