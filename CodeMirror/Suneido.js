@@ -26,11 +26,7 @@
 				" super this throw true void xor" +
 				" if else for function while do switch case class struct try catch"),
 			controlStart = /^[ \t]*(if|else|for|function|while|do|switch|case|class|struct|try|catch)/,
-			curPunc,
-			onlyCurly,
-			opening,
-			closing,
-			controlLine;
+			curPunc;
 
 		function tokenVariable(stream) {
 			stream.eatWhile(/[\w]/);
@@ -101,6 +97,11 @@
             }
             if (/[\[\]{}\(\),;\:\.]/.test(ch)) {
                 curPunc = ch;
+				if (ch === '[' || ch === '{' || ch === '(') {
+					state.braceCounter += 1;
+				} else if (ch === ']' || ch === '}' || ch === ')') {
+					state.braceCounter -= 1;
+				}
                 return null;
             }
             if (/\d/.test(ch)) {
@@ -133,7 +134,10 @@
                 return {
                     tokenize: null,
                     indented: 0,
-                    startOfLine: true
+                    startOfLine: true,
+					onlyCurly: false,
+					controlLine: false,
+					braceCounter: 0
                 };
             },
 
@@ -141,6 +145,9 @@
                 curPunc = null;
                 if (stream.sol()) {
                     state.indented = stream.indentation();
+					state.braceCounter = 0;
+					state.onlyCurly = false;
+					state.controlLine = false;
                     state.startOfLine = true;
                 }
                 if (stream.eatSpace()) {
@@ -148,20 +155,20 @@
                 }
                 var style = (state.tokenize || tokenBase)(stream, state);
 
-                onlyCurly = state.startOfLine === true && curPunc === "{";
-                opening = /([\{])[^\}]*$|([\(])[^\)]*$|([\[])[^\]]*$/.test(stream.string);
-                closing = /([\}])[^\{]*$|([\)])[^\(]*$|([\]])[^\[]*$/.test(stream.string);
-                controlLine = controlStart.test(stream.string);
-
+                state.onlyCurly = state.startOfLine === true && curPunc === "{";
+                state.controlLine = controlStart.test(stream.string);
                 state.startOfLine = false;
                 return style;
             },
 
             indent: function (state, textAfter) {
-                if ((!onlyCurly && textAfter.length !== 0) || (!onlyCurly && opening) || controlLine) {
+				if (state.onlyCurly || textAfter[0] === '}') {
+					return state.indented;
+				}					
+                if (textAfter.length !== 0 || state.braceCounter > 0 || state.controlLine) {
                     return state.indented + indentUnit;
                 }
-                if ((closing)) {
+                if (state.braceCounter < 0) {
                     return state.indented - indentUnit;
                 }
                 return state.indented;
