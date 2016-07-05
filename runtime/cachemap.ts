@@ -10,7 +10,7 @@ export default class CacheMap<Key, Data> {
     constructor(n: number) {
         this.next = 0;
         this.clock = 0;
-        this.n = n,
+        this.n = n;
         this.slots = [];
     }
     put(key: Key, data: Data): Data {

@@ -79,7 +79,7 @@ function toInt(x): number {
     throw "can't convert " + typeName(x) + " to integer";
 }
 
-function toNum(x: any): number|Dnum {
+function toNum(x: any): number | Dnum {
     if (typeof x === 'number' || dnum.isDnum(x))
         return x;
     if (x === false || x === "")
@@ -95,7 +95,7 @@ function toNum(x: any): number|Dnum {
     throw "can't convert " + typeName(x) + " to number";
 }
 
-function toDnum(x: number|Dnum): dnum.Dnum {
+function toDnum(x: number | Dnum): dnum.Dnum {
     return (typeof x === 'number') ? dnum.make(x) : <Dnum>x;
 }
 
@@ -161,7 +161,7 @@ export function is(x, y): boolean {
         return x.equals(y);
     if (dnum.isDnum(y))
         return y.equals(x);
-   // TODO suneido objects
+    // TODO suneido objects
     return false;
 }
 
@@ -225,9 +225,9 @@ export function typeName(x: any): string {
         return x.typeName();
     var t = typeof x;
     switch (t) {
-    case 'boolean': return 'Boolean';
-    case 'string': return 'String';
-    case 'number': return 'Number';
+        case 'boolean': return 'Boolean';
+        case 'string': return 'String';
+        case 'number': return 'Number';
     }
     return t;
 }

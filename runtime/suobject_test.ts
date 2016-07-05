@@ -45,24 +45,24 @@ ob.setDefault(0);
 assert.equal(ob.get('x'), 0);
 
 ob.setReadonly();
-assert.throws(function () { ob.put('b', true); },
+assert.throws(function() { ob.put('b', true); },
     /can't modify readonly objects/);
 
 ob = suob.make();
 assert(ob.equals(ob));
-assert(! ob.equals(123));
+assert(!ob.equals(123));
 var ob2 = suob.make();
 assert(ob.equals(ob2));
 ob.add(123);
-assert(! ob.equals(ob2));
-assert(! ob2.equals(ob));
+assert(!ob.equals(ob2));
+assert(!ob2.equals(ob));
 ob2.add(123);
 assert(ob.equals(ob2));
 assert(ob2.equals(ob));
 ob.put('a', 'alpha');
 ob2.put('a', 'Alpha');
-assert(! ob.equals(ob2));
-assert(! ob2.equals(ob));
+assert(!ob.equals(ob2));
+assert(!ob2.equals(ob));
 ob2.put('a', 'alpha');
 assert(ob.equals(ob2));
 assert(ob2.equals(ob));
@@ -76,5 +76,5 @@ ob.put('b', 'Bob');
 assert.equal(ob.toString(), '#(12, 34, b: "Bob")');
 
 ob = suob.make();
-ob.put('a b', n(1,3));
+ob.put('a b', n(1, 3));
 assert.equal(ob.toString(), '#("a b": 1000)');

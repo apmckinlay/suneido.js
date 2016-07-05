@@ -167,11 +167,11 @@ export function IndexOb(i: number = 0) {
     this.i = i;
 }
 export function dosesc(src: string, index: indexOb): string {
-    var hexval = function (c: string): number {
-            var cCode = c.toLowerCase().charCodeAt(0);
-            return cCode <= 57 ? cCode - 48 : cCode - 97 + 10;
-        },
-        octval = function (c: string): number {
+    var hexval = function(c: string): number {
+        var cCode = c.toLowerCase().charCodeAt(0);
+        return cCode <= 57 ? cCode - 48 : cCode - 97 + 10;
+    },
+        octval = function(c: string): number {
             return c.charCodeAt(0) - 48;
         },
         dstCode: number;

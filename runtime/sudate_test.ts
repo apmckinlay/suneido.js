@@ -10,7 +10,7 @@ export = function testSuDate(): void {
         sud6 = sudate.makeSuDate_full(2005, 1, 1, 16, 37, 33, 123);
 
     assert(sud1.year() === 2003, "Check initialize year.");
-    assert(sud1.month()=== 11, "Check initialize month.");
+    assert(sud1.month() === 11, "Check initialize month.");
     assert(sud1.day() === 27, "Check initialize date.");
     assert(sud1.hour() === 16, "Check initialize hours.");
     assert(sud1.minute() === 37, "Check initialize minutes.");
@@ -24,19 +24,19 @@ export = function testSuDate(): void {
     assert(sud3.minusDays(sud1) === 6, "Check method minus_days().");
     assert(sud4.minusSeconds(sud3) === 12.345, "Check method minus_milliseconds()");
 
-    sud2 = sud3.plus({hours: 1, minutes: 2, seconds: 3, milliseconds: 4});
+    sud2 = sud3.plus({ hours: 1, minutes: 2, seconds: 3, milliseconds: 4 });
     assert(sud2.time === sud5.time && sud2.date === sud5.date,
         "Check method plus() with hms set");
 
-    sud2 = sud1.plus({years: 1, days: 5, months: 1});
+    sud2 = sud1.plus({ years: 1, days: 5, months: 1 });
     assert(sud2.time === sud6.time && sud2.date === sud6.date,
         "Check method plus() with ymd set");
 
-    sud2 = sud1.plus({years: 1, months: 1, days: 5});
+    sud2 = sud1.plus({ years: 1, months: 1, days: 5 });
     assert(sud2.time === sud6.time && sud2.date === sud6.date,
         "Check method plus() with ymd set in another sequence");
 
-    assert.throws(function () { sud1.plus({day: 1}); });
+    assert.throws(function() { sud1.plus({ day: 1 }); });
 
     assert.equal(sud1.formatEn("dddd, MMMM d, yyyy"), "Thursday, November 27, 2003");
     assert.equal(sud1.formatEn("ddd, MMM. dd, \\'yy"), "Thu, Nov. 27, '03");

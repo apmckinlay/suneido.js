@@ -87,7 +87,7 @@ export function make(coef: number, exp = 0): Dnum {
  * adding up to 4 zeroes at the end or 3 zeroes at the beginning.
  * @returns {string}
  */
-dnum.toString = function (): string {
+dnum.toString = function(): string {
     var c = this.coef;
     var e = this.exp;
     if (c === 0)
@@ -121,7 +121,7 @@ dnum.toString = function (): string {
 /**
  * @returns {boolean} whether or not the dnum is an integer
  */
-dnum.isInt = function (): boolean {
+dnum.isInt = function(): boolean {
     var e = this.exp;
     if (e < -16)
         return false;
@@ -136,28 +136,28 @@ dnum.isInt = function (): boolean {
 /**
  * @returns {boolean} whether or not the dnum is zero
  */
-dnum.isZero = function (): boolean {
+dnum.isZero = function(): boolean {
     return this.coef === 0;
 };
 
 /**
  * @returns {boolean} whether or not the dnum is infinite
  */
-dnum.isInf = function (): boolean {
-    return ! isFinite(this.coef);
+dnum.isInf = function(): boolean {
+    return !isFinite(this.coef);
 };
 
 /**
  * @returns {number} 0, +1, or -1
  */
-dnum.sign = function (): number {
+dnum.sign = function(): number {
     return this.coef === 0 ? 0 : this.coef > 0 ? +1 : -1;
 };
 
 /**
  * @returns {Object} the negative of a dnum (but not negative zero)
  */
-dnum.neg = function (): Dnum {
+dnum.neg = function(): Dnum {
     if (this.coef === 0)
         return ZERO; // avoid -0 coefficient
     return make(-this.coef, this.exp);
@@ -166,7 +166,7 @@ dnum.neg = function (): Dnum {
 /**
  * @returns {Object} the absolute value of a dnum
  */
-dnum.abs = function (): Dnum {
+dnum.abs = function(): Dnum {
     return make(Math.abs(this.coef), this.exp);
 };
 
@@ -174,7 +174,7 @@ dnum.abs = function (): Dnum {
  * @returns {number} the integer value of a dnum,
  * zero if the absolute value < 1, infinite if too large
  */
-dnum.toInt = function (): number {
+dnum.toInt = function(): number {
     if (this.exp < -16)
         return 0;
     var n = mutable(this);
@@ -194,7 +194,7 @@ dnum.toInt = function (): number {
 /**
  * @returns {number} this dnum converted to a JavaScript number
  */
-dnum.toNumber = function (): number {
+dnum.toNumber = function(): number {
     return this.coef * Math.pow(10, this.exp);
 };
 
@@ -210,11 +210,11 @@ dnum.equals = function(that): boolean {
     return false;
 };
 
-dnum.typeName = function (): string {
+dnum.typeName = function(): string {
     return "Number";
 };
 
-dnum.display = function (): string {
+dnum.display = function(): string {
     return this.toString();
 };
 
@@ -358,7 +358,7 @@ export function align(x: Dnum, y: Dnum): void {
 
 function shiftLeft(n: Dnum): boolean {
     var c = n.coef * 10;
-    if (! isInteger(c))
+    if (!isInteger(c))
         return false;
     n.coef = c;
     if (n.exp > minExp)
@@ -423,12 +423,12 @@ function repeat(s: string, n: number): string { // in ES6
     if (s.length * n >= 1 << 20)
         throw "repeat too large";
     var rpt = '';
-    for (;;) {
+    for (; ;) {
         if ((n & 1) === 1)
             rpt += s;
         n >>>= 1;
         if (n === 0)
             break;
         s += s;
-    }    return rpt;
+    } return rpt;
 }
