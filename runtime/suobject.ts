@@ -5,22 +5,11 @@
  * Iteration through the map must use forEach until TypeScript has for-of
  * Created by andrew on 2015-05-31.
  */
-"use strict";
 
 import dnum = require("./dnum");
 type Dnum = dnum.Dnum;
 import su = require("./su");
 
-// need this with TypeScript 1.5
-interface Map<K, V> {
-    clear(): void;
-    delete(key: K): boolean;
-    forEach(callbackfn: (value: V, index: K, map: Map<K, V>) => void, thisArg?: any): void;
-    get(key: K): V;
-    has(key: K): boolean;
-    set(key: K, value: V): Map<K, V>;
-    size: number;
-}
 declare var Map: {
     new <K, V>(): Map<K, V>;
     prototype: Map<any, any>;

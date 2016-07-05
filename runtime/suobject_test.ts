@@ -1,7 +1,6 @@
 /**
  * Created by andrew on 2015-05-31.
  */
-"use strict";
 
 import suob = require("./suobject");
 import dnum = require("./dnum");

@@ -1,5 +1,3 @@
-﻿"use strict";
-
 import sustring = require("./sustring");
 import util = require("./utility")
 import assert = require("assert");

@@ -2,7 +2,6 @@
  * Run-time support routines for suneido.js
  * Created by andrew on 2015-05-25.
  */
-"use strict";
 
 //TODO global
 //TODO dynget, dynset, dynpush, dynpop
@@ -256,4 +255,10 @@ function displayString(s: string): string {
         return "'" + s + "'";
     else
         return "\"" + s.replace("\"", "\\\"") + "\"";
+}
+
+export var empty_object = suob.make();
+
+export function call0(f) {
+    return f();
 }

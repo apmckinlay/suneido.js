@@ -1,7 +1,5 @@
-"use strict";
-
 import assert = require("assert")
-import util = require("./utility")
+import * as util from "./utility"
 
 export interface SuDate {
     date: number;
@@ -37,7 +35,7 @@ SuDate.prototype = sudate;
 //constructors ------------------------------------------------------------
 
 /**
- * makeSuDate_int_int constructs a sudate with specified date and time 
+ * makeSuDate_int_int constructs a sudate with specified date and time
  * @param {number} d integer, year = d[..9], month = d[8..5], date = d[4..0]
  * @param {number} t integer, hour = t[..22], minute = t[21..16], second = t[15, 10], millisecond = [9..0]
  * @returns {Object} a sudate
@@ -92,7 +90,7 @@ function compare(sd1: SuDate, sd2: SuDate): number {
     var res: number;
     if ((res = sd1.date - sd2.date) !== 0)
         return res;
-    else 
+    else
         return sd1.time - sd2.time;
 }
 
@@ -345,7 +343,7 @@ var maxval: Array<number> = [3000, 12, 31, 23, 59, 59, 999];
 
 /**
  * parse constructs a sudate
- * @param {string} s string 
+ * @param {string} s string
  * @param {string} order string, order pattern helps to parse date string
  * @returns {Object} a sudate, or sufalse if not a valid date
  */

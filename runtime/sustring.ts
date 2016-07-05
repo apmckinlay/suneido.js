@@ -1,11 +1,10 @@
-﻿///<reference path="node.d.ts"/>
 import assert = require("assert")
 import util = require("./utility")
 import suobject = require("./suobject")
 
 export interface SuString {
     s: string;
-    
+
     //methods used for external
     alphaq(): boolean;
     alphaNumq(): boolean;
@@ -28,7 +27,7 @@ export interface SuString {
     lower(): SuString;
     lowerq(): boolean;
     mapN(n: number, f: (s: string) => string): SuString;
-    match(pattern: string, pos?: number|boolean, prev?: boolean): suobject.SuObject;        //haven't implemented, no good way to find index of captured group in javascript 
+    match(pattern: string, pos?: number|boolean, prev?: boolean): suobject.SuObject;        //haven't implemented, no good way to find index of captured group in javascript
     mbstowcs(): SuString;       //haven't implemented, needed?
     numberq(): boolean;
     numericq(): boolean;
@@ -56,7 +55,7 @@ var sustring = Object.create(null);
 
 function SuString(t: string): void {
     this.s = new String(t);
-} 
+}
 
 SuString.prototype = sustring;
 

@@ -1,4 +1,4 @@
-﻿import cachemap = require("./cachemap")
+﻿import Cachemap from "./cachemap"
 
 export function isAlpha(char: string): boolean {
     var code;
@@ -91,7 +91,7 @@ export function tr(srcstr: string, from: string, to: string): string {
     if (allbut)
         from = from.substr(1);
     fromset = makset(from);
-    
+
     for (si = 0; si < srclen; si++) {
         p = fromset.indexOf(srcstr.charAt(si));
         if (allbut === (p === -1))
@@ -127,7 +127,7 @@ export function tr(srcstr: string, from: string, to: string): string {
 function makset(s: string): string {
     var dash = s.indexOf('-', 1),
         p: string;
-    
+
     if (dash === -1 || dash === (s.length - 1))
         return s; // no ranges to expand
     if (p = makset["cache"].get(s))
@@ -135,7 +135,7 @@ function makset(s: string): string {
     return makset["cache"].put(s, expendRanges(s));
 }
 
-makset["cache"] = new cachemap<string, string>(10);
+makset["cache"] = new Cachemap<string, string>(10);
 
 function expendRanges(s: string): string {
     var i: number,
@@ -159,7 +159,7 @@ function xindex(fromset: string, c: string, allbut: boolean, lastto: number): nu
 }
 
 // should be called with i pointing at backslash
-// may need to move to class scanner 
+// may need to move to class scanner
 export interface indexOb {
     i: number;
 }

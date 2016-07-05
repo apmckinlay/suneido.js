@@ -1,5 +1,3 @@
-"use strict";
-
 import sudate = require("./sudate");
 import assert = require("assert");
 

@@ -1,8 +1,6 @@
 /**
  * Created by andrew on 2015-05-17.
  */
-"use strict";
-
 import dnum = require("./dnum");
 import assert = require("assert");
 

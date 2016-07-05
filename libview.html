@@ -59,7 +59,7 @@
 
 			function load() {
                 var name = document.getElementById("name").value;
-                history.pushState(null, null, '/libview.html/' + name);
+                history.pushState(null, null, '/libview/' + name);
                 load2(name);
             }
             function load2(name) {
@@ -103,12 +103,12 @@
                 load();
             }
             window.addEventListener("popstate", function(e) {
-                document.getElementById("name").value = location.pathname.substr(14);
+                document.getElementById("name").value = location.pathname.substr(9);
                 load2();
             });
             // handle non ajax (re)load
-            if (location.pathname.length > 14) {
-                document.getElementById("name").value = location.pathname.substr(14);
+            if (location.pathname.length > 9) {
+                document.getElementById("name").value = location.pathname.substr(9);
                 load2();
             }
         };
