@@ -1,7 +1,5 @@
-"use strict";
-
 import assert = require("assert")
-import util = require("./utility")
+import * as util from "./utility"
 
 export interface SuDate {
     date: number;
@@ -37,7 +35,7 @@ SuDate.prototype = sudate;
 //constructors ------------------------------------------------------------
 
 /**
- * makeSuDate_int_int constructs a sudate with specified date and time 
+ * makeSuDate_int_int constructs a sudate with specified date and time
  * @param {number} d integer, year = d[..9], month = d[8..5], date = d[4..0]
  * @param {number} t integer, hour = t[..22], minute = t[21..16], second = t[15, 10], millisecond = [9..0]
  * @returns {Object} a sudate
@@ -92,7 +90,7 @@ function compare(sd1: SuDate, sd2: SuDate): number {
     var res: number;
     if ((res = sd1.date - sd2.date) !== 0)
         return res;
-    else 
+    else
         return sd1.time - sd2.time;
 }
 
@@ -345,15 +343,17 @@ var maxval: Array<number> = [3000, 12, 31, 23, 59, 59, 999];
 
 /**
  * parse constructs a sudate
- * @param {string} s string 
+ * @param {string} s string
  * @param {string} order string, order pattern helps to parse date string
  * @returns {Object} a sudate, or sufalse if not a valid date
  */
 export function parse(s: string, order: string): SuDate {
     var NOTSET = 9999,
         MAXTOKENS = 20;
-    var dt: Object = { year: NOTSET, month: 0, day: 0,
-            hour: NOTSET, minute: NOTSET, second: NOTSET, millisecond: 0 },
+    var dt: Object = {
+        year: NOTSET, month: 0, day: 0,
+        hour: NOTSET, minute: NOTSET, second: NOTSET, millisecond: 0
+    },
         date_patterns: Array<string> = [
             "", // set to system default
             "md",
@@ -362,7 +362,7 @@ export function parse(s: string, order: string): SuDate {
             "mdy",
             "ymd"
         ],
-        getSyspat = function (): string {
+        getSyspat = function(): string {
             var i: number = 0,
                 prev: string = null,
                 j: number,
@@ -631,7 +631,7 @@ export function literal(s: string): SuDate {
  * @param {string} fmt
  * @returns {string} a date and time string in given format
  */
-sudate.formatEn = function (fmt: string): string {
+sudate.formatEn = function(fmt: string): string {
     assert(arguments.length === 1, "usage: date.Format(format)");
     return format(this, fmt);
 };
@@ -640,7 +640,7 @@ sudate.formatEn = function (fmt: string): string {
  * increment increments self by one millisecond
  * @returns {object} self sudate
  */
-sudate.increment = function (): SuDate {
+sudate.increment = function(): SuDate {
     var d = this.plus({ milliseconds: 1 });
     this.date = d.date;
     this.time = d.time;
@@ -652,7 +652,7 @@ sudate.increment = function (): SuDate {
  * @param args {Object} a group of unit and offset pairs
  * @returns {object} a copy of sudate
  */
-sudate.plus = function (args: Object): SuDate {
+sudate.plus = function(args: Object): SuDate {
     var usage = "usage: Plus(years:, months:, days:, " +
         "hours:, minutes:, seconds:, milliseconds:)";
     var years = (args["years"] | 0) + this.year(),
@@ -673,7 +673,7 @@ function timeAsMs(sud: SuDate): number {
 };
 
 // WARNING: doing this around daylight savings changes may be problematic
-sudate.minusMilliseconds = function (sud2: SuDate): number {
+sudate.minusMilliseconds = function(sud2: SuDate): number {
     if (this.date == sud2.date)
         return timeAsMs(this) - timeAsMs(sud2);
     else
@@ -685,7 +685,7 @@ sudate.minusMilliseconds = function (sud2: SuDate): number {
  * @param sud2 {Object}  another sudate
  * @returns {number}
  */
-sudate.minusDays = function (sud2: SuDate): number {
+sudate.minusDays = function(sud2: SuDate): number {
     var timeDiff = this.toDate().getTime() - sud2.toDate().getTime();
     assert(arguments.length === 1, "usage: date.Minus(date)");
     return Math.ceil(timeDiff / (1000 * 3600 * 24));
@@ -696,7 +696,7 @@ sudate.minusDays = function (sud2: SuDate): number {
  * @param sud2 {Object}  another sudate
  * @returns {number}
  */
-sudate.minusSeconds = function (sud2: SuDate): number {
+sudate.minusSeconds = function(sud2: SuDate): number {
     var timeDiff = this.toDate().getTime() - sud2.toDate().getTime();
     assert(arguments.length === 1, "usage: date.MinusSeconds(date)");
     return timeDiff / 1000;
@@ -705,7 +705,7 @@ sudate.minusSeconds = function (sud2: SuDate): number {
 /**
  * @returns {number} year portion of the date
  */
-sudate.year = function (): number {
+sudate.year = function(): number {
     assert(arguments.length === 0, "usage: date.Year()");
     return this.date >> 9;
 };
@@ -713,7 +713,7 @@ sudate.year = function (): number {
 /**
  * @returns {number} month portion of the date
  */
-sudate.month = function (): number {
+sudate.month = function(): number {
     assert(arguments.length === 0, "usage: date.Month()");
     return (this.date >> 5) & 0xf;
 };
@@ -721,7 +721,7 @@ sudate.month = function (): number {
 /**
  * @returns {number} day portion of the date
  */
-sudate.day = function (): number {
+sudate.day = function(): number {
     assert(arguments.length === 0, "usage: date.Day()");
     return this.date & 0x1f;
 };
@@ -729,7 +729,7 @@ sudate.day = function (): number {
 /**
  * @returns {number} hour portion of the date
  */
-sudate.hour = function (): number {
+sudate.hour = function(): number {
     assert(arguments.length === 0, "usage: date.Hour()");
     return this.time >> 22;
 };
@@ -737,7 +737,7 @@ sudate.hour = function (): number {
 /**
  * @returns {number} minute portion of the date
  */
-sudate.minute = function (): number {
+sudate.minute = function(): number {
     assert(arguments.length === 0, "usage: date.Minute()");
     return (this.time >> 16) & 0x3f;
 };
@@ -745,7 +745,7 @@ sudate.minute = function (): number {
 /**
  * @returns {number} second portion of the date
  */
-sudate.second = function (): number {
+sudate.second = function(): number {
     assert(arguments.length === 0, "usage: date.Second()");
     return (this.time >> 10) & 0x3f;
 };
@@ -753,7 +753,7 @@ sudate.second = function (): number {
 /**
  * @returns {number} millisecond portion of the date
  */
-sudate.millisecond = function (): number {
+sudate.millisecond = function(): number {
     assert(arguments.length === 0, "usage: date.Millisecond()");
     return this.time & 0x3ff;
 };
@@ -768,7 +768,7 @@ var weekday: Array<string> = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thurs
  * @param {string|number}  firstDay to start count
  * @returns {number}
  */
-sudate.weekday = function (firstDay?: string|number): number {
+sudate.weekday = function(firstDay?: string | number): number {
     assert(arguments.length === 0 || arguments.length === 1,
         "usage: date.WeekDay(firstDay = 'Sun')");
     var i: number = 0,
@@ -792,7 +792,7 @@ sudate.weekday = function (firstDay?: string|number): number {
 
 // methods for type conversion
 
-sudate.toString = function (): string {
+sudate.toString = function(): string {
     var s: string = "#";
     s += ("0000" + this.year()).slice(-4);
     s += ("0" + this.month()).slice(-2);
@@ -805,7 +805,7 @@ sudate.toString = function (): string {
     return s;
 };
 
-sudate.toDate = function (): Date {
+sudate.toDate = function(): Date {
     return new Date(this.year(), this.month() - 1, this.day(),
         this.hour(), this.minute(), this.second(), this.millisecond());
 }

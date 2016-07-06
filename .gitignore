@@ -1,16 +1,8 @@
 *.map
 .idea/*
 .settings/*
+.vscode/*
 
-su.js
-su_test.js
-dnum.js
-dnum_test.js
-suobject.js
-suobject_test.js
-date.js
-date_test.js
-sudate.js
-sudate_test.js
+runtime/*.js
 
 .DS_Store

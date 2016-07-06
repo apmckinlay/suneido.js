@@ -6,11 +6,11 @@ class Slot<Key, Data> {
         public data: Data = null) { }
 }
 
-class CacheMap<Key, Data> {
+export default class CacheMap<Key, Data> {
     constructor(n: number) {
         this.next = 0;
         this.clock = 0;
-        this.n = n,
+        this.n = n;
         this.slots = [];
     }
     put(key: Key, data: Data): Data {
@@ -43,5 +43,3 @@ class CacheMap<Key, Data> {
     private n: number;
     private slots: Slot<Key, Data>[];
 }
-
-export = CacheMap;

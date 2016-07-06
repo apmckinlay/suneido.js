@@ -1,18 +1,23 @@
 {
-  "compilerOptions": {
-    "module": "commonjs",
-    "sourceMap": true
-  },
-  "files": [
-    "runtime/su.ts",
-    "runtime/su_test.ts",
-    "runtime/dnum.ts",
-    "runtime/dnum_test.ts",
-    "runtime/suobject.ts",
-    "runtime/suobject_test.ts",
-    "sudate/date.ts",
-    "sudate/date_test.ts",
-    "sudate/sudate.ts",
-    "sudate/sudate_test.ts"
-  ]
+    "compilerOptions": {
+        "module": "amd",
+        "sourceMap": true,
+        "listFiles": true,
+        "target": "es6"
+    },
+    "files": [
+        "runtime/cachemap.ts",
+        "runtime/dnum.ts",
+        "runtime/dnum_test.ts",
+        "runtime/su.ts",
+        "runtime/su_test.ts",
+        "runtime/sudate.ts",
+        "runtime/sudate_test.ts",
+        "runtime/suobject.ts",
+        "runtime/suobject_test.ts",
+        "runtime/sustring.ts",
+        "runtime/sustring_test.ts",
+        "runtime/utility.ts",
+        "runtime/utility_test.ts"
+    ]
 }

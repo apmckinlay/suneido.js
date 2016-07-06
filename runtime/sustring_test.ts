@@ -1,5 +1,3 @@
-﻿"use strict";
-
 import sustring = require("./sustring");
 import util = require("./utility")
 import assert = require("assert");
@@ -106,11 +104,11 @@ export = function testSuString(): void {
     assert(!str1.lowerq(), "check method lowerq() with empty string");
 
     str1 = sustring.makeSuString_string("hello world");
-    str2 = str1.mapN(2, function (it) { return util.capitalizeFirstLetter(it); });
+    str2 = str1.mapN(2, function(it) { return util.capitalizeFirstLetter(it); });
     assert.deepEqual(str1.toString(), "hello world");
     assert.deepEqual(str2.toString(), "HeLlO WoRlD");
     str1 = sustring.makeSuString_string("");
-    str2 = str1.mapN(2, function (it) { return util.capitalizeFirstLetter(it); });
+    str2 = str1.mapN(2, function(it) { return util.capitalizeFirstLetter(it); });
     assert.deepEqual(str2.toString(), "");
 
     str1 = sustring.makeSuString_string("-123.456");
@@ -161,7 +159,7 @@ export = function testSuString(): void {
     assert.deepEqual(str1.replace("xxx", "haha").toString(), "hello world");
     assert.deepEqual(str1.replace("([hw])(\s?)(.)", "\\2").toString(), "llo rld")
     assert.deepEqual(str1.replace("\\w+", "\\u&").toString(), "Hello World");
-    assert.deepEqual(str1.replace(".", function (m) { return m.toUpperCase() }).toString(), "HELLO WORLD");
+    assert.deepEqual(str1.replace(".", function(m) { return m.toUpperCase() }).toString(), "HELLO WORLD");
 
     str1 = sustring.makeSuString_string("hello world");
     assert.deepEqual(str1.size(), 11);

@@ -1,7 +1,6 @@
 /**
  * Created by andrew on 2015-05-30.
  */
-"use strict";
 
 import dnum = require("./dnum");
 import suob = require("./suobject");
@@ -43,7 +42,7 @@ add(n(1), 2, n(3));
 
 assert.equal(su.get('hello', 1), 'e');
 assert.equal(su.get('hello', n(1)), 'e');
-assert.throws(function () { su.get('hello', 'x') },
+assert.throws(function() { su.get('hello', 'x') },
     /can't convert String to integer/);
 
 var ob = suob.make();
@@ -70,17 +69,17 @@ assert.equal(su.rangelen("abcde", 3, -3), "");
 
 var list = suob.list;
 function eq(x, y) { assert(x.equals(y), x + " should be " + y) }
-eq(su.rangeto(list(0,1,2,3,4), 2, 9), list(2,3,4));
-eq(su.rangeto(list(0,1,2,3,4), 1, 4), list(1,2,3));
-eq(su.rangeto(list(0,1,2,3,4), 1, -1), list(1,2,3));
-eq(su.rangeto(list(0,1,2,3,4), -2, -1), list(3));
-eq(su.rangeto(list(0,1,2,3,4), 4, 1), list());
+eq(su.rangeto(list(0, 1, 2, 3, 4), 2, 9), list(2, 3, 4));
+eq(su.rangeto(list(0, 1, 2, 3, 4), 1, 4), list(1, 2, 3));
+eq(su.rangeto(list(0, 1, 2, 3, 4), 1, -1), list(1, 2, 3));
+eq(su.rangeto(list(0, 1, 2, 3, 4), -2, -1), list(3));
+eq(su.rangeto(list(0, 1, 2, 3, 4), 4, 1), list());
 
-eq(su.rangelen(list(0,1,2,3,4), 1, 3), list(1,2,3));
-eq(su.rangelen(list(0,1,2,3,4), 2, 9), list(2,3,4));
-eq(su.rangelen(list(0,1,2,3,4), -2, 1), list(3));
-eq(su.rangelen(list(0,1,2,3,4), 3, 0), list());
-eq(su.rangelen(list(0,1,2,3,4), 3, -3), list());
+eq(su.rangelen(list(0, 1, 2, 3, 4), 1, 3), list(1, 2, 3));
+eq(su.rangelen(list(0, 1, 2, 3, 4), 2, 9), list(2, 3, 4));
+eq(su.rangelen(list(0, 1, 2, 3, 4), -2, 1), list(3));
+eq(su.rangelen(list(0, 1, 2, 3, 4), 3, 0), list());
+eq(su.rangelen(list(0, 1, 2, 3, 4), 3, -3), list());
 
 function disp(x, expected) {
     assert.equal(su.display(x), expected);

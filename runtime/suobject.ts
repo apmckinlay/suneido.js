@@ -5,22 +5,11 @@
  * Iteration through the map must use forEach until TypeScript has for-of
  * Created by andrew on 2015-05-31.
  */
-"use strict";
 
 import dnum = require("./dnum");
 type Dnum = dnum.Dnum;
 import su = require("./su");
 
-// need this with TypeScript 1.5
-interface Map<K, V> {
-    clear(): void;
-    delete(key: K): boolean;
-    forEach(callbackfn: (value: V, index: K, map: Map<K, V>) => void, thisArg?: any): void;
-    get(key: K): V;
-    has(key: K): boolean;
-    set(key: K, value: V): Map<K, V>;
-    size: number;
-}
 declare var Map: {
     new <K, V>(): Map<K, V>;
     prototype: Map<any, any>;
@@ -30,7 +19,7 @@ export interface SuObject {
     readonly: boolean;
     defval: any;
     vec: Array<any>;
-    map: Map<any,any>;
+    map: Map<any, any>;
     length: number;
 
     size(): number;
@@ -53,8 +42,8 @@ suob.readonly = false;
 
 // length property is used by su.range... to be compatible with string
 Object.defineProperty(suob, 'length', {
-    get: function () { return this.size(); }
-    });
+    get: function() { return this.size(); }
+});
 
 export function make(): SuObject {
     var ob = Object.create(suob);
@@ -73,15 +62,15 @@ export function isSuOb(x: any): boolean {
     return typeof x === 'object' && Object.getPrototypeOf(x) === suob;
 }
 
-suob.size = function (): number {
+suob.size = function(): number {
     return this.vec.length + this.map.size;
 };
 
-suob.vecsize = function (): number {
+suob.vecsize = function(): number {
     return this.vec.length;
 };
 
-suob.mapsize = function (): number {
+suob.mapsize = function(): number {
     return this.map.size;
 };
 
@@ -102,7 +91,7 @@ function migrate(ob: SuObject): void {
     }
 }
 
-suob.add = function (x: any): void {
+suob.add = function(x: any): void {
     checkReadonly(this);
     this.vec.push(x);
     migrate(this);
@@ -122,7 +111,7 @@ function index(key: any): number {
     return dnum.isInteger(key) ? key : -1;
 }
 
-suob.put = function (key: any, value: any): void {
+suob.put = function(key: any, value: any): void {
     checkReadonly(this);
     var i = index(key);
     if (0 <= i && i < this.vec.length)
@@ -133,7 +122,7 @@ suob.put = function (key: any, value: any): void {
         this.map.set(key, value);
 };
 
-suob.get = function (key: any): any {
+suob.get = function(key: any): any {
     var value = getIfPresent(this, key);
     if (value !== undefined)
         return value;
@@ -146,29 +135,29 @@ function getIfPresent(ob: SuObject, key: any): any {
     return (0 <= i && i < ob.vec.length) ? ob.vec[i] : mapget(ob, key);
 }
 
-suob.setReadonly = function (): void {
+suob.setReadonly = function(): void {
     if (this.readonly)
         return;
     this.readonly = true;
     //TODO recursively set readonly
 };
 
-suob.setDefault = function (value: any): void {
+suob.setDefault = function(value: any): void {
     this.defval = value;
 };
 
-suob.typeName = function (): string {
+suob.typeName = function(): string {
     return "Object";
 };
 
-suob.slice = function (i, j): SuObject {
+suob.slice = function(i, j): SuObject {
     var ob = make();
     ob.vec = this.vec.slice(i, j);
     return ob;
 };
 
-suob.equals = function (that): boolean {
-    if (! isSuOb(that))
+suob.equals = function(that): boolean {
+    if (!isSuOb(that))
         return false;
     return equals2(this, <SuObject>that, null);
 };
@@ -183,10 +172,10 @@ function equals2(x, y, stack): boolean {
     stack.push(x, y);
     try {
         for (var i = 0; i < x.vec.length; ++i)
-            if (! equals3(x.vec[i], y.vec[i], stack))
+            if (!equals3(x.vec[i], y.vec[i], stack))
                 return false;
         var eq = true;
-        x.map.forEach(function (v, k) {
+        x.map.forEach(function(v, k) {
             if (!equals3(v, y.map.get(k), stack))
                 eq = false;
         }); //TODO use for-of once available
@@ -199,9 +188,9 @@ function equals2(x, y, stack): boolean {
 function equals3(x, y, stack): boolean {
     if (x === y)
         return true;
-    if (! isSuOb(x))
+    if (!isSuOb(x))
         return su.is(x, y);
-    if (! isSuOb(y))
+    if (!isSuOb(y))
         return false;
     return equals2(x, y, stack);
 }
@@ -227,7 +216,7 @@ class PairStack {
     }
 }
 
-suob.toString = function (): string {
+suob.toString = function(): string {
     return toString2(this, '#(', ')');
 };
 
@@ -235,7 +224,7 @@ function toString2(x: SuObject, before: string, after: string) {
     var s = "";
     for (var i = 0; i < x.vec.length; ++i)
         s += x.vec[i] + ', ';
-    x.map.forEach(function (v, k) {
+    x.map.forEach(function(v, k) {
         s += keyString(k) + ': ' + su.display(v) + ', ';
     }); //TODO use for-of once available
     return before + s.slice(0, -2) + after;

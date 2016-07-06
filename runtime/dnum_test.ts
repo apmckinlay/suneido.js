@@ -1,8 +1,6 @@
 /**
  * Created by andrew on 2015-05-17.
  */
-"use strict";
-
 import dnum = require("./dnum");
 import assert = require("assert");
 
@@ -48,7 +46,7 @@ parse("0", 0);
 parse("123", 123);
 parse("-123", -123);
 parse("12.34", 12.34);
-parse(".001",.001);
+parse(".001", .001);
 parse("1e3", 1000);
 parse("1e-2", .01);
 parse("123x", null);
@@ -76,7 +74,7 @@ function add_sub(x, y, sum, dif) {
         var result = fn(x, y);
         var sfn = (fn === dnum.add) ? " + " : " - ";
         assert.equal(result, expected, "" + x + sfn + y +
-             " should be " + expected + " but got " + result);
+            " should be " + expected + " but got " + result);
     }
     op(dnum.add, x, y, sum);
     op(dnum.sub, x, y, dif);
@@ -153,7 +151,7 @@ assert(n(0).isInt());
 assert(n(123).isInt());
 assert(n(123, 3).isInt());
 assert(n(123000, -3).isInt());
-assert(! n(123, -3).isInt());
+assert(!n(123, -3).isInt());
 
 assert(0 == dnum.cmp(dnum.fromNumber(1.5), n(15, -1)));
 

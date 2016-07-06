@@ -1,11 +1,10 @@
-﻿///<reference path="node.d.ts"/>
 import assert = require("assert")
 import util = require("./utility")
 import suobject = require("./suobject")
 
 export interface SuString {
     s: string;
-    
+
     //methods used for external
     alphaq(): boolean;
     alphaNumq(): boolean;
@@ -28,13 +27,13 @@ export interface SuString {
     lower(): SuString;
     lowerq(): boolean;
     mapN(n: number, f: (s: string) => string): SuString;
-    match(pattern: string, pos?: number|boolean, prev?: boolean): suobject.SuObject;        //haven't implemented, no good way to find index of captured group in javascript 
+    match(pattern: string, pos?: number | boolean, prev?: boolean): suobject.SuObject;        //haven't implemented, no good way to find index of captured group in javascript
     mbstowcs(): SuString;       //haven't implemented, needed?
     numberq(): boolean;
     numericq(): boolean;
     prefixq(str: string, pos?: number): boolean;
     repeat(count: number): SuString;
-    replace(pattern: string, replacement?: string|((m: string) => string), count?: number): SuString;
+    replace(pattern: string, replacement?: string | ((m: string) => string), count?: number): SuString;
     serverEval(): any;          //haven't implemented
     size(): number;
     split(separator: string): suobject.SuObject;
@@ -56,7 +55,7 @@ var sustring = Object.create(null);
 
 function SuString(t: string): void {
     this.s = new String(t);
-} 
+}
 
 SuString.prototype = sustring;
 
@@ -68,7 +67,7 @@ export function makeSuString_string(str: string): SuString {
 
 // methods ---------------------------------------------------------------------
 
-sustring.alphaq = function (): boolean {
+sustring.alphaq = function(): boolean {
     var i: number;
     assert(arguments.length === 0, "usage: string.Alpha?()");
     if (this.s.length === 0)
@@ -80,7 +79,7 @@ sustring.alphaq = function (): boolean {
     return true;
 };
 
-sustring.alphaNumq = function (): boolean {
+sustring.alphaNumq = function(): boolean {
     var i: number;
     assert(arguments.length === 0, "usage: string.AlphaNum?()");
     if (this.s.length === 0)
@@ -92,23 +91,23 @@ sustring.alphaNumq = function (): boolean {
     return true;
 };
 
-sustring.asc = function (): boolean {
+sustring.asc = function(): boolean {
     assert(arguments.length === 0, "usage: string.Asc()");
     return this.s.charCodeAt(0) || 0;
 };
 
 function doWithSplit(str: string, seperator: string, f: (arg: string) => string) {
     var a = str.split(seperator);
-    a.forEach(function (value, index) {
+    a.forEach(function(value, index) {
         a[index] = f(value);
     });
     return a.join(seperator);
 };
 
-sustring.detab = function (): SuString {
+sustring.detab = function(): SuString {
     var tabWidth: number = 4,
         spaces: string = "    ",
-        replaceTabWithSpace = function (oneLineString: string) {
+        replaceTabWithSpace = function(oneLineString: string) {
             var array = oneLineString.split('\t'),
                 nSpace,
                 i;
@@ -119,17 +118,17 @@ sustring.detab = function (): SuString {
             return array.join('');
         };
     assert(arguments.length === 0, "usage: string.Detab()");
-    return new SuString(doWithSplit(this.s, '\r', function (s) {
+    return new SuString(doWithSplit(this.s, '\r', function(s) {
         return doWithSplit(s, '\n', replaceTabWithSpace);
     }));
 };
 
-sustring.entab = function (): SuString {
+sustring.entab = function(): SuString {
     var tabWidth: number = 4,
-        isTab = function (col: number): boolean {
+        isTab = function(col: number): boolean {
             return col > 0 && (col % tabWidth) === 0;
         },
-        replaceSpaceWithTab = function (oneLineString: string) {
+        replaceSpaceWithTab = function(oneLineString: string) {
             var strTrim = oneLineString.trim(),
                 strPre = "",
                 i = 0,
@@ -156,13 +155,13 @@ sustring.entab = function (): SuString {
             return strPre + strTrim;
         };
     assert(arguments.length === 0, "usage: string.Entab()");
-    return new SuString(doWithSplit(this.s, '\r', function (s) {
+    return new SuString(doWithSplit(this.s, '\r', function(s) {
         return doWithSplit(s, '\n', replaceSpaceWithTab);
     }));
 };
 
 // return null instead of false when failed to find a result
-sustring.extract = function (pattern: string, part: number|boolean = false): SuString {
+sustring.extract = function(pattern: string, part: number | boolean = false): SuString {
     assert(arguments.length === 1 || arguments.length === 2,
         "usage: string.Extract(pattern, part = 0/1)");
     var re = new RegExp(pattern),
@@ -176,21 +175,21 @@ sustring.extract = function (pattern: string, part: number|boolean = false): SuS
     return found[part_i];
 };
 
-sustring.find = function (str: string, pos: number = 0): number {
+sustring.find = function(str: string, pos: number = 0): number {
     assert(arguments.length === 1 || arguments.length === 2,
         "usage: string.Find(string, pos = 0)");
     var i = this.s.indexOf(str, pos);
     return i === -1 ? this.s.length : i;
 };
 
-sustring.findLast = function (str: string, pos: number = this.s.length): number {
+sustring.findLast = function(str: string, pos: number = this.s.length): number {
     assert(arguments.length === 1 || arguments.length === 2,
         "usage: string.FindLast(string, pos = size())");
     var i = this.s.lastIndexOf(str, pos);
     return i === -1 ? null : i;
 };
 
-sustring.find1of = function (set: string, pos: number = 0): number {
+sustring.find1of = function(set: string, pos: number = 0): number {
     assert(arguments.length === 1 || arguments.length === 2,
         "usage: string.Find1of(string, pos = 0)");
     var i,
@@ -203,7 +202,7 @@ sustring.find1of = function (set: string, pos: number = 0): number {
     return this.s.length
 };
 
-sustring.findLast1of = function (set: string, pos: number = this.s.length - 1): number {
+sustring.findLast1of = function(set: string, pos: number = this.s.length - 1): number {
     assert(arguments.length === 1 || arguments.length === 2,
         "usage: string.FindLast1of(string, pos = size() - 1)");
     var i,
@@ -216,7 +215,7 @@ sustring.findLast1of = function (set: string, pos: number = this.s.length - 1): 
     return null;
 };
 
-sustring.findnot1of = function (set: string, pos: number = 0): number {
+sustring.findnot1of = function(set: string, pos: number = 0): number {
     assert(arguments.length === 1 || arguments.length === 2,
         "usage: string.Findnot1of(string, pos = 0)");
     var i,
@@ -229,7 +228,7 @@ sustring.findnot1of = function (set: string, pos: number = 0): number {
     return this.s.length
 };
 
-sustring.findLastnot1of = function (set: string, pos: number = this.s.length - 1): number {
+sustring.findLastnot1of = function(set: string, pos: number = this.s.length - 1): number {
     assert(arguments.length === 1 || arguments.length === 2,
         "usage: string.FindLastnot1of(string, pos = size() - 1)");
     var i,
@@ -242,18 +241,18 @@ sustring.findLastnot1of = function (set: string, pos: number = this.s.length - 1
     return null;
 };
 
-sustring.hasq = function (str: string): boolean {
+sustring.hasq = function(str: string): boolean {
     assert(arguments.length === 1, "usage: string.Has?(string)");
     return this.s.indexOf(str) === -1 ? false : true;
 };
 
-sustring.lower = function (): SuString {
+sustring.lower = function(): SuString {
     assert(arguments.length === 0, "usage: string.Lower()");
     var str = this.s.toLowerCase();
     return new SuString(str);
 };
 
-sustring.lowerq = function (): boolean {
+sustring.lowerq = function(): boolean {
     assert(arguments.length === 0, "usage: string.Lower?()");
     var i,
         result = false;
@@ -267,7 +266,7 @@ sustring.lowerq = function (): boolean {
 };
 
 //TODO: to change after classes for block and callable functions are implemented
-sustring.mapN = function (n: number, f: (s: string) => string): SuString {
+sustring.mapN = function(n: number, f: (s: string) => string): SuString {
     var s = this.s,
         dst = "",
         slen = this.s.length,
@@ -301,7 +300,7 @@ sustring.mapN = function (n: number, f: (s: string) => string): SuString {
 //}
 
 
-sustring.numberq = function (): boolean {
+sustring.numberq = function(): boolean {
     assert(arguments.length === 0, "usage: string.Number?()");
     var i: number = 0,
         c: string,
@@ -331,7 +330,7 @@ sustring.numberq = function (): boolean {
     return i === s.length;
 };
 
-sustring.numericq = function (): boolean {
+sustring.numericq = function(): boolean {
     assert(arguments.length === 0, "usage: string.Numeric?()");
     var i: number;
     if (this.s.length === 0)
@@ -342,31 +341,31 @@ sustring.numericq = function (): boolean {
     return true;
 };
 
-sustring.prefixq = function (str: string, pos: number = 0): boolean {
+sustring.prefixq = function(str: string, pos: number = 0): boolean {
     assert(arguments.length === 1 || arguments.length === 2,
         "usage: string.Prefix?(string, pos = 0)");
     return this.s.indexOf(str, pos) === pos;
 };
 
-sustring.repeat = function (count: number): SuString {
+sustring.repeat = function(count: number): SuString {
     assert(arguments.length === 1, "usage: string.Repeat(count)");
     return new SuString(this.s.repeat(Math.max(0, count)));
 };
 
 enum RepStatus { E, U, L, u, l };
 //TODO: to change after classes for block and callable functions are implemented
-sustring.replace = function (pattern: string, replacement: string|((m: string) => string) = '', count: number = Infinity): SuString {
+sustring.replace = function(pattern: string, replacement: string | ((m: string) => string) = '', count: number = Infinity): SuString {
     assert(arguments.length >= 1 && arguments.length <= 3,
         "usage: string.Replace(pattern, replacement = '', count = false) -> string");
     var nGroups = (new RegExp(pattern + '|')).exec('').length - 1,      //Calculate how many capture groups dose the regex pattern have
         repCount = 0,
-        repF = function (): string {
+        repF = function(): string {
             var dst: string = '',
                 i: number = 0,
                 c: string,
                 n: number,
                 repStatus: RepStatus = RepStatus.E,
-                handleCase = function (s: string): string {
+                handleCase = function(s: string): string {
                     var res: string;
                     if (s && s.length === 0)
                         return '';
@@ -439,23 +438,23 @@ sustring.replace = function (pattern: string, replacement: string|((m: string) =
     return new SuString(this.s.replace(new RegExp(pattern, 'g'), repF));
 };
 
-sustring.size = function (): number {
+sustring.size = function(): number {
     assert(arguments.length === 0, "usage: string.Size()");
     return this.s.length;
 };
 
-sustring.split = function (separator: string): suobject.SuObject {
+sustring.split = function(separator: string): suobject.SuObject {
     assert(arguments.length === 1, "usage: string.Split(separator)");
     assert(separator !== '', "string.Split separator must not be empty string");
     var arraySplit = this.s.split(separator),
         resOb = suobject.make();
     if (arraySplit[arraySplit.length - 1] === '')
         arraySplit = arraySplit.slice(0, -1);
-    arraySplit.forEach(function (value) { resOb.add(value); });
+    arraySplit.forEach(function(value) { resOb.add(value); });
     return resOb;
 };
 
-sustring.substr = function (start: number, length: number = this.s.length): SuString {
+sustring.substr = function(start: number, length: number = this.s.length): SuString {
     assert(arguments.length === 1 || arguments.length === 2, "usage: string(i[,n])");
     if (start < 0)
         start += this.s.length;
@@ -468,19 +467,19 @@ sustring.substr = function (start: number, length: number = this.s.length): SuSt
     return new SuString(this.s.substr(start, length));
 };
 
-sustring.suffixq = function (str: string): boolean {
+sustring.suffixq = function(str: string): boolean {
     assert(arguments.length === 1, "usage: string.Suffix?(string)");
     var index = this.s.lastIndexOf(str);
     return index !== -1 && (index + str.length === this.s.length);
 };
 
-sustring.tr = function (from: string, to: string = ''): SuString {
+sustring.tr = function(from: string, to: string = ''): SuString {
     assert(arguments.length === 1 || arguments.length === 2,
         "usage: string.Tr(from [ , to ] )");
     return new SuString(util.tr(this.toString(), from, to));
 };
 
-sustring.unescape = function (): SuString {
+sustring.unescape = function(): SuString {
     assert(arguments.length === 0, "usage: string.Unescape()");
     var dst: string = '',
         s: string = this.toString(),
@@ -494,13 +493,13 @@ sustring.unescape = function (): SuString {
     return new SuString(dst);
 };
 
-sustring.upper = function (): SuString {
+sustring.upper = function(): SuString {
     assert(arguments.length === 0, "usage: string.Upper()");
     var str = this.s.toUpperCase();
     return new SuString(str);
 };
 
-sustring.upperq = function (): boolean {
+sustring.upperq = function(): boolean {
     assert(arguments.length === 0, "usage: string.Upper?()");
     var i,
         result = false;
@@ -513,10 +512,10 @@ sustring.upperq = function (): boolean {
     return result ? true : false;
 };
 
-sustring.integer = function (): number {
+sustring.integer = function(): number {
     return parseInt(this.toString(), 0);
 };
 
-sustring.toString = function (): string {
+sustring.toString = function(): string {
     return this.s.valueOf();
 };
