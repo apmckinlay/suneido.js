@@ -1,4 +1,4 @@
-import * as ss from "./sustring";
+import * as ss from "./stringmethods";
 import * as util from "./utility";
 import * as assert from "./assert";
 
