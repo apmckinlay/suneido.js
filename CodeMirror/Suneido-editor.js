@@ -1,5 +1,5 @@
-function SuneidoEditor(container, cusConfigs){
-	"use strict";
+"use strict";
+function SuneidoEditor(targetDiv, cusConfigs = {}){
 	function getDefault(member){
 		return cusConfigs[member] || defconfigs[member];
 	}
@@ -40,7 +40,7 @@ function SuneidoEditor(container, cusConfigs){
 					"Ctrl-F": "find",
 					"F3": "findNext",
 					"Shift-F3": "findPrev",
-					"Ctrl-H": "replace",
+					// "Ctrl-H": "replace",
 					"Shift-Ctrl-H": "replaceAll",
 					"F8": "replaceCurrent",
 					"Ctrl-/": "toggleComment",
@@ -63,11 +63,11 @@ function SuneidoEditor(container, cusConfigs){
 	$editor,
 	$textarea;
 	
-	$editor = $("<div>", {class: "suneido-editor"});
+	$editor = $(targetDiv);
 	$textarea = $("<textarea>");
 	$textarea.get(0).value = "//Suneido web Editor\r\n";
 	$textarea.appendTo($editor);
-	$editor.appendTo(container);
+
 	cm = CodeMirror.fromTextArea($textarea.get(0));
 	
 	initModeAndTheme();
@@ -83,5 +83,5 @@ function SuneidoEditor(container, cusConfigs){
 		return true;
 	});
 	
-	return $editor.get(0);
+	return cm;
 }

@@ -33,15 +33,18 @@
 		<style type="text/css">
 			.suneido-editor {
 				border: 1px solid black;
+				margin: 10px;
 			}
 		</style>
 	</head>
  	<body>
+		<div id="code1" class="suneido-editor"></div>
+		<div id="code2" class="suneido-editor"></div>
 		<script id="script">
 			window.onload = function () {
 				"use strict";
-				SuneidoEditor(document.body, {});
-				SuneidoEditor(document.body, {});
+				SuneidoEditor(document.getElementById("code1"), {});
+				SuneidoEditor(document.getElementById("code2"), {});
 			};
 		</script>
 	</body>
