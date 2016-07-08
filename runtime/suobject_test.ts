@@ -2,10 +2,10 @@
  * Created by andrew on 2015-05-31.
  */
 
-import suob = require("./suobject");
-import dnum = require("./dnum");
-var n = dnum.make;
-import assert = require("assert");
+import * as suob from "./suobject";
+import * as dnum from "./dnum";
+import { make as n } from "./dnum";
+import * as assert from "./assert";
 
 var ob = suob.make();
 assert.equal(ob.size(), 0);
@@ -49,23 +49,23 @@ assert.throws(function() { ob.put('b', true); },
     /can't modify readonly objects/);
 
 ob = suob.make();
-assert(ob.equals(ob));
-assert(!ob.equals(123));
+assert.that(ob.equals(ob));
+assert.that(!ob.equals(123));
 var ob2 = suob.make();
-assert(ob.equals(ob2));
+assert.that(ob.equals(ob2));
 ob.add(123);
-assert(!ob.equals(ob2));
-assert(!ob2.equals(ob));
+assert.that(!ob.equals(ob2));
+assert.that(!ob2.equals(ob));
 ob2.add(123);
-assert(ob.equals(ob2));
-assert(ob2.equals(ob));
+assert.that(ob.equals(ob2));
+assert.that(ob2.equals(ob));
 ob.put('a', 'alpha');
 ob2.put('a', 'Alpha');
-assert(!ob.equals(ob2));
-assert(!ob2.equals(ob));
+assert.that(!ob.equals(ob2));
+assert.that(!ob2.equals(ob));
 ob2.put('a', 'alpha');
-assert(ob.equals(ob2));
-assert(ob2.equals(ob));
+assert.that(ob.equals(ob2));
+assert.that(ob2.equals(ob));
 
 ob = suob.make();
 assert.equal(ob.toString(), '#()');

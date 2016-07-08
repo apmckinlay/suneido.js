@@ -6,11 +6,12 @@
 //TODO global
 //TODO dynget, dynset, dynpush, dynpop
 
-import dnum = require("./dnum");
-type Dnum = dnum.Dnum;
+import * as dnum from "./dnum";
+import { Dnum } from "./dnum";
 
-import suob = require("./suobject");
-type SuObject = suob.SuObject;
+import * as suob from "./suobject";
+import { SuObject } from "./suobject";
+export { empty_object } from "./suobject";
 
 export function put(ob, key, val): void {
     if (suob.isSuOb(ob))
@@ -255,10 +256,4 @@ function displayString(s: string): string {
         return "'" + s + "'";
     else
         return "\"" + s.replace("\"", "\\\"") + "\"";
-}
-
-export var empty_object = suob.make();
-
-export function call0(f) {
-    return f();
 }

@@ -1,4 +1,3 @@
-﻿
 class Slot<Key, Data> {
     constructor(
         public lru: number = null,

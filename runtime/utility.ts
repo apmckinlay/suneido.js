@@ -1,4 +1,4 @@
-﻿import Cachemap from "./cachemap"
+﻿import CacheMap from "./cachemap";
 
 export function isAlpha(char: string): boolean {
     var code;
@@ -135,7 +135,7 @@ function makset(s: string): string {
     return makset["cache"].put(s, expendRanges(s));
 }
 
-makset["cache"] = new Cachemap<string, string>(10);
+makset["cache"] = new CacheMap<string, string>(10);
 
 function expendRanges(s: string): string {
     var i: number,

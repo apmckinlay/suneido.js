@@ -6,9 +6,9 @@
  * Created by andrew on 2015-05-31.
  */
 
-import dnum = require("./dnum");
-type Dnum = dnum.Dnum;
-import su = require("./su");
+import * as dnum from "./dnum";
+import { Dnum } from "./dnum";
+import * as su from "./su";
 
 declare var Map: {
     new <K, V>(): Map<K, V>;
@@ -238,3 +238,5 @@ function keyString(x: any): string {
 }
 
 suob.display = suob.toString;
+
+export var empty_object = make();
