@@ -1,5 +1,6 @@
 import * as assert from "./assert";
 import * as util from "./utility";
+import { tr as trImpl } from "./tr";
 import * as suobject from "./suobject";
 
 export function alphaq(s: string): boolean {
@@ -385,7 +386,7 @@ export function suffixq(s: string, str: string): boolean {
 export function tr(s: string, from: string, to: string = ''): string {
     assert.that(arguments.length === 2 || arguments.length === 3,
         "usage: string.Tr(from [ , to ] )");
-    return util.tr(s, from, to);
+    return trImpl(s, from, to);
 }
 
 export function unescape(s: string): string {
@@ -394,7 +395,7 @@ export function unescape(s: string): string {
         index: util.indexOb = new util.IndexOb();
     for (index.i = 0; index.i < s.length; index.i++) {
         if (s.charAt(index.i) === '\\')
-            dst += util.dosesc(s, index);
+            dst += util.doesc(s, index);
         else
             dst += s.charAt(index.i);
     }

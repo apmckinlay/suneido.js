@@ -1,9 +1,6 @@
-﻿import CacheMap from "./cachemap";
-
 export function isAlpha(char: string): boolean {
-    var code;
     if (char && char.length === 1) {
-        code = char.charCodeAt(0);
+        let code = char.charCodeAt(0);
         if (((code >= 65) && (code <= 90)) || ((code >= 97) && (code <= 122))) {
             return true;
         }
@@ -12,9 +9,8 @@ export function isAlpha(char: string): boolean {
 }
 
 export function isDigit(char: string): boolean {
-    var code;
     if (char && char.length === 1) {
-        code = char.charCodeAt(0);
+        let code = char.charCodeAt(0);
         if ((code >= 48) && (code <= 57)) {
             return true;
         }
@@ -23,9 +19,8 @@ export function isDigit(char: string): boolean {
 }
 
 export function isoDigit(char: string): boolean {
-    var code;
     if (char && char.length === 1) {
-        code = char.charCodeAt(0);
+        let code = char.charCodeAt(0);
         if ((code >= 48) && (code <= 55)) {
             return true;
         }
@@ -34,9 +29,8 @@ export function isoDigit(char: string): boolean {
 }
 
 export function isxDigit(char: string): boolean {
-    var code;
     if (char && char.length === 1) {
-        code = char.charCodeAt(0);
+        let code = char.charCodeAt(0);
         if (((code >= 48) && (code <= 57)) ||
             ((code >= 65) && (code <= 70)) ||
             ((code >= 97) && (code <= 102))) {
@@ -55,9 +49,8 @@ export function capitalizeFirstLetter(s: string) {
 }
 
 export function isLower(char: string): boolean {
-    var code;
     if (char && char.length === 1) {
-        code = char.charCodeAt(0);
+        let code = char.charCodeAt(0);
         if ((code > 96) && (code < 123))
             return true;
     }
@@ -65,97 +58,12 @@ export function isLower(char: string): boolean {
 }
 
 export function isUpper(char: string): boolean {
-    var code;
     if (char && char.length === 1) {
-        code = char.charCodeAt(0);
+        let code = char.charCodeAt(0);
         if ((code > 64) && (code < 91))
             return true;
     }
     return false;
-}
-
-export function tr(srcstr: string, from: string, to: string): string {
-    var srclen: number = srcstr.length,
-        lastto: number,
-        allbut: boolean,
-        collapse: boolean,
-        fromset: string,
-        toset,
-        si: number,
-        p: number,
-        dst: string;
-
-    if (srclen === 0 || from.length === 0)
-        return srcstr;
-    allbut = from.charAt(0) === '^';
-    if (allbut)
-        from = from.substr(1);
-    fromset = makset(from);
-
-    for (si = 0; si < srclen; si++) {
-        p = fromset.indexOf(srcstr.charAt(si));
-        if (allbut === (p === -1))
-            break;
-    }
-    if (si === srclen)
-        return srcstr; // no changes
-
-    toset = makset(to);
-    lastto = toset.length;
-    collapse = lastto > 0 && (allbut || lastto < fromset.length);
-    lastto--;
-
-    dst = srcstr.substring(0, si);
-    for (; si < srclen; si++) {
-        p = xindex(fromset, srcstr.charAt(si), allbut, lastto);
-        if (collapse && p >= lastto) {
-            dst += toset[lastto];
-            do {
-                if (++si >= srclen)
-                    return dst;
-                p = xindex(fromset, srcstr.charAt(si), allbut, lastto);
-            } while (p >= lastto);
-        }
-        if (p < 0)
-            dst += srcstr.charAt(si);
-        else if (lastto >= 0)
-            dst += toset[p];
-    }
-    return dst;
-}
-
-function makset(s: string): string {
-    var dash = s.indexOf('-', 1),
-        p: string;
-
-    if (dash === -1 || dash === (s.length - 1))
-        return s; // no ranges to expand
-    if (p = makset["cache"].get(s))
-        return p;
-    return makset["cache"].put(s, expendRanges(s));
-}
-
-makset["cache"] = new CacheMap<string, string>(10);
-
-function expendRanges(s: string): string {
-    var i: number,
-        c: number,
-        dst: string = '';
-    for (i = 0; i < s.length; i++)
-        if (s.charAt(i) === '-' && i > 0 && i < s.length - 1)
-            for (c = s.charCodeAt(i - 1) + 1; c < s.charCodeAt(i + 1); c++)
-                dst += String.fromCharCode(c);
-        else
-            dst += s.charAt(i);
-    return dst;
-}
-
-function xindex(fromset: string, c: string, allbut: boolean, lastto: number): number {
-    var i: number = fromset.indexOf(c);
-    if (allbut)
-        return i === -1 ? lastto + 1 : -1;
-    else
-        return i;
 }
 
 // should be called with i pointing at backslash
@@ -166,7 +74,7 @@ export interface indexOb {
 export function IndexOb(i: number = 0) {
     this.i = i;
 }
-export function dosesc(src: string, index: indexOb): string {
+export function doesc(src: string, index: indexOb): string {
     var hexval = function(c: string): number {
         var cCode = c.toLowerCase().charCodeAt(0);
         return cCode <= 57 ? cCode - 48 : cCode - 97 + 10;
