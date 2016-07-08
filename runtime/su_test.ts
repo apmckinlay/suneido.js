@@ -2,13 +2,13 @@
  * Created by andrew on 2015-05-30.
  */
 
-import * as dnum from "./dnum";
+import Dnum from "./dnum";
 import * as suob from "./suobject";
 import * as su from "./su";
 
 import * as assert from "./assert";
 
-var n = dnum.make;
+var n = Dnum.make;
 
 function is(x, y): void {
     assert.that(su.is(x, y), x + " is " + y + " should be true");

@@ -6,8 +6,8 @@
  * Created by andrew on 2015-05-31.
  */
 
-import * as dnum from "./dnum";
-import { Dnum } from "./dnum";
+import Dnum from "./dnum";
+import { isInteger } from "./dnum";
 import * as su from "./su";
 
 declare var Map: {
@@ -98,7 +98,7 @@ suob.add = function(x: any): void {
 };
 
 function canonical(key: any): any {
-    if (dnum.isDnum(key))
+    if (key instanceof Dnum)
         return (<Dnum>key).toNumber();
     if (typeof key === 'object')
         throw "suneido.js objects do not support object keys";
@@ -106,9 +106,9 @@ function canonical(key: any): any {
 }
 
 function index(key: any): number {
-    if (dnum.isDnum(key) && (<Dnum>key).isInt())
+    if (key instanceof Dnum && (<Dnum>key).isInt())
         key = (<Dnum>key).toInt();
-    return dnum.isInteger(key) ? key : -1;
+    return isInteger(key) ? key : -1;
 }
 
 suob.put = function(key: any, value: any): void {

@@ -3,9 +3,10 @@
  */
 
 import * as suob from "./suobject";
-import * as dnum from "./dnum";
-import { make as n } from "./dnum";
+import Dnum from "./dnum";
 import * as assert from "./assert";
+
+const n = Dnum.make;
 
 var ob = suob.make();
 assert.equal(ob.size(), 0);
@@ -17,7 +18,7 @@ assert.equal(ob.length, 2);
 assert.equal(ob.vecsize(), 1);
 assert.equal(ob.mapsize(), 1);
 assert.equal(ob.get(0), 123);
-assert.equal(ob.get(dnum.ZERO), 123);
+assert.equal(ob.get(Dnum.ZERO), 123);
 assert.equal(ob.get(1), undefined);
 assert.equal(ob.get('a'), 'hi');
 assert.equal(ob.get('b'), undefined);

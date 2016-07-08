@@ -1,6 +1,7 @@
-import * as dnum from "./dnum";
-import { make as n, Dnum } from "./dnum";
+import Dnum from "./dnum";
 import * as assert from "./assert";
+
+const n = Dnum.make;
 
 function eq(x: Dnum, y?: string | number) {
     if (typeof y == "string")
@@ -13,9 +14,9 @@ function eq(x: Dnum, y?: string | number) {
 
 // make/toString ---------------------------------------------------------------
 
-eq(dnum.ZERO, "0");
-eq(dnum.INF, "inf");
-eq(dnum.MINUS_INF, "-inf");
+eq(Dnum.ZERO, "0");
+eq(Dnum.INF, "inf");
+eq(Dnum.MINUS_INF, "-inf");
 eq(n(123), "123");
 eq(n(-123), "-123");
 eq(n(1, -3), ".001");
@@ -28,7 +29,7 @@ eq(n(1000000, -3), "1000");
 // toNumber --------------------------------------------------------------------
 
 function toNum(s: string, expected) {
-    var n = dnum.parse(s).toNumber();
+    var n = Dnum.parse(s).toNumber();
     assert.equal(n, expected);
     // var dif = Math.abs(n - expected);
     // assert.that(dif < Math.abs(n) / 1e12, "expected " + expected + " got " + n);
@@ -44,7 +45,7 @@ toNum('12.34e-56', 12.34e-56);
 // parse -----------------------------------------------------------------------
 
 function parse(s: string, expected) {
-    var result = dnum.parse(s);
+    var result = Dnum.parse(s);
     eq(result, expected);
 }
 parse("0", 0);
@@ -67,27 +68,27 @@ eq(n(1).abs(), 1);
 eq(n(1).neg(), -1);
 eq(n(-1).neg(), 1);
 eq(n(-1).abs(), 1);
-eq(dnum.INF.neg(), '-inf');
-eq(dnum.INF.abs(), 'inf');
-eq(dnum.MINUS_INF.neg(), 'inf');
-eq(dnum.MINUS_INF.abs(), 'inf');
+eq(Dnum.INF.neg(), '-inf');
+eq(Dnum.INF.abs(), 'inf');
+eq(Dnum.MINUS_INF.neg(), 'inf');
+eq(Dnum.MINUS_INF.abs(), 'inf');
 
 // add/sub ---------------------------------------------------------------------
 
 function add_sub(x: Dnum, y: Dnum, sum, dif) {
     function op(fn, x, y, expected) {
         var result = fn(x, y);
-        var sfn = (fn === dnum.add) ? " + " : " - ";
+        var sfn = (fn === Dnum.add) ? " + " : " - ";
         eq(result, expected);
     }
-    op(dnum.add, x, y, sum);
-    op(dnum.sub, x, y, dif);
-    op(dnum.add, y, x, sum);
+    op(Dnum.add, x, y, sum);
+    op(Dnum.sub, x, y, dif);
+    op(Dnum.add, y, x, sum);
     if (dif != 0)
-        op(dnum.sub, y, x, '-' + dif);
+        op(Dnum.sub, y, x, '-' + dif);
     if (sum !== 0) {
-        op(dnum.add, x.neg(), y.neg(), '-' + sum);
-        op(dnum.add, y.neg(), x.neg(), '-' + sum);
+        op(Dnum.add, x.neg(), y.neg(), '-' + sum);
+        op(Dnum.add, y.neg(), x.neg(), '-' + sum);
     }
 }
 
@@ -95,8 +96,8 @@ add_sub(n(1), n(1), 2, 0);
 add_sub(n(1), n(-1), 0, 2);
 add_sub(n(1, 3), n(1), 1001, 999);
 add_sub(n(123), n(0), 123, 123);
-add_sub(dnum.INF, dnum.MINUS_INF, 0, 'inf');
-add_sub(dnum.INF, dnum.INF, 'inf', 0);
+add_sub(Dnum.INF, Dnum.MINUS_INF, 0, 'inf');
+add_sub(Dnum.INF, Dnum.INF, 'inf', 0);
 add_sub(n(9007199254740990), n(9007199254740990), 18014398509481980, 0); // overflow
 add_sub(n(9007199254740990, 126), n(9007199254740990, 126), 'inf', 0); // overflow
 
@@ -104,7 +105,7 @@ add_sub(n(9007199254740990, 126), n(9007199254740990, 126), 'inf', 0); // overfl
 
 function mul(x: Dnum, y: Dnum, expected) {
     function mul2(x, y, expected) {
-        var result = dnum.mul(x, y);
+        var result = Dnum.mul(x, y);
         eq(result, expected);
     }
     mul2(x, y, expected);
@@ -120,7 +121,7 @@ mul(n(0), n(123), 0);
 mul(n(1), n(123), 123);
 mul(n(128), n(128), 16384);
 mul(n(128e3), n(128e5), 16384e8);
-mul(dnum.INF, n(123), 'inf');
+mul(Dnum.INF, n(123), 'inf');
 mul(n(1, 99), n(1, 99), 'inf');
 mul(n(1234567800000000), n(1234567800000000), '1.52415765279684e30');
 mul(n(1234567890123456), n(1234567890123456), '1.52415787532388e30');
@@ -129,7 +130,7 @@ mul(n(1234567890123456), n(1234567890123456), '1.52415787532388e30');
 
 function div(x, y, expected) {
     function div2(x, y, expected) {
-        var result = dnum.div(x, y);
+        var result = Dnum.div(x, y);
         eq(result, expected);
     }
     div2(x, y, expected);
@@ -146,7 +147,7 @@ div(n(0), n(123), 0);
 div(n(123), n(0), 'inf');
 div(n(256), n(4), 64);
 div(n(1234567890123456), n(1234567890123456), 1);
-div(dnum.INF, n(123), 'inf');
+div(Dnum.INF, n(123), 'inf');
 div(n(1, 99), n(1, 99), 1);
 div(n(1), n(1234567890123456), 8.10000007290001e-16);
 
@@ -157,7 +158,7 @@ assert.that(n(123, 3).isInt());
 assert.that(n(123000, -3).isInt());
 assert.that(!n(123, -3).isInt());
 
-assert.that(0 == dnum.cmp(dnum.fromNumber(1.5), n(15, -1)));
+assert.that(0 == Dnum.cmp(Dnum.fromNumber(1.5), n(15, -1)));
 
 //function randint(limit) {
 //    return Math.floor(Math.random() * limit);
@@ -167,8 +168,8 @@ assert.that(0 == dnum.cmp(dnum.fromNumber(1.5), n(15, -1)));
 //    var x = n(randint(1000000000000), randint(200) - 100);
 //    //console.log(x.toString());
 //    var num = x.toNumber();
-//    var y = dnum.fromNumber(num);
-//    if (0 != dnum.cmp(x, y)) {
+//    var y = Dnum.fromNumber(num);
+//    if (0 != Dnum.cmp(x, y)) {
 //        ++nfailed;
 //        console.log(x + " != " + y);
 //    }

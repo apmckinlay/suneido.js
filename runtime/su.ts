@@ -6,8 +6,8 @@
 //TODO global
 //TODO dynget, dynset, dynpush, dynpop
 
-import * as dnum from "./dnum";
-import { Dnum } from "./dnum";
+import Dnum from "./dnum";
+import { isInteger } from "./dnum";
 
 import * as suob from "./suobject";
 import { SuObject } from "./suobject";
@@ -73,15 +73,15 @@ export function bitnot(x): number {
 }
 
 function toInt(x): number {
-    if (dnum.isInteger(x))
+    if (isInteger(x))
         return x;
-    if (dnum.isDnum(x) && <Dnum>x.isInt())
+    if (x instanceof Dnum && <Dnum>x.isInt())
         return (<Dnum>x).toInt();
     throw "can't convert " + typeName(x) + " to integer";
 }
 
 function toNum(x: any): number | Dnum {
-    if (typeof x === 'number' || dnum.isDnum(x))
+    if (typeof x === 'number' || x instanceof Dnum)
         return x;
     if (x === false || x === "")
         return 0;
@@ -91,13 +91,13 @@ function toNum(x: any): number | Dnum {
         if (-1 === x.search('[.eE]') && x.length < 14)
             return parseInt(x);
         else
-            return dnum.parse(x);
+            return Dnum.parse(x);
     }
     throw "can't convert " + typeName(x) + " to number";
 }
 
-function toDnum(x: number | Dnum): dnum.Dnum {
-    return (typeof x === 'number') ? dnum.make(x) : <Dnum>x;
+function toDnum(x: number | Dnum): Dnum {
+    return (typeof x === 'number') ? Dnum.make(x) : <Dnum>x;
 }
 
 export function add(x, y): any {
@@ -106,7 +106,7 @@ export function add(x, y): any {
     if (typeof x === 'number' && typeof y === 'number')
         return x + y;
     else
-        return dnum.add(toDnum(x), toDnum(y));
+        return Dnum.add(toDnum(x), toDnum(y));
 }
 
 export function sub(x, y) {
@@ -150,7 +150,7 @@ export function bitxor(x, y): number {
 }
 
 function isNum(x): boolean {
-    return typeof x === 'number' || dnum.isDnum(x);
+    return typeof x === 'number' || x instanceof Dnum;
 }
 
 export function is(x, y): boolean {
@@ -158,9 +158,9 @@ export function is(x, y): boolean {
         return true;
     if (typeof x === 'number' && typeof y === 'number')
         return false;
-    if (dnum.isDnum(x))
+    if (x instanceof Dnum)
         return x.equals(y);
-    if (dnum.isDnum(y))
+    if (y instanceof Dnum)
         return y.equals(x);
     // TODO suneido objects
     return false;
