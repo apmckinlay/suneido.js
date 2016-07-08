@@ -3,6 +3,7 @@
 	<head>
 		<title>Suneido Editor</title>
 		<meta charset="utf-8"/>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 		<link rel="stylesheet" href="http://codemirror.net/lib/codemirror.css">
 		<link rel="stylesheet" href="http://codemirror.net/addon/fold/foldgutter.css">
 		<link rel="stylesheet" href="http://codemirror.net/addon/search/matchesonscrollbar.css">
@@ -23,55 +24,27 @@
 		<script src="http://codemirror.net/addon/selection/active-line.js"></script>
 		<script src="http://codemirror.net/addon/display/panel.js"></script>
 		<script src="http://codemirror.net/addon/runmode/runmode.js"></script>
+		<script src="Suneido-editor.js"></script>
 		<script src="Suneido.js"></script>
 		<script src="Dialog.js"></script>
-		<script src="Search.js"></script>
+		<script src="Suneido-search.js"></script>
 		<script src="HighlightWords.js"></script>
 		<script src="Suneido-hint.js"></script>
 		<style type="text/css">
 			.suneido-editor {
 				border: 1px solid black;
+				margin: 10px;
 			}
 		</style>
 	</head>
-	<body>
-		<div class="suneido-editor"><textarea id="code" name="code"></textarea></div>
+ 	<body>
+		<div id="code1" class="suneido-editor"></div>
+		<div id="code2" class="suneido-editor"></div>
 		<script id="script">
-			/*global document, window, CodeMirror*/
-			var te = document.getElementById("code");
 			window.onload = function () {
 				"use strict";
-				te.value = "//Suneido web Editor\r\n";
-				window.editor = CodeMirror.fromTextArea(te, {
-					mode: "suneido",
-					theme: "suneido",
-					lineNumbers: true,
-					lineWrapping: true,
-					indentUnit: 4,
-					indentWithTabs: true,
-					extraKeys: {"Ctrl-Q": function (cm) { cm.foldCode(cm.getCursor()); },
-								"Ctrl-F": "find",
-								"F3": "findNext",
-								"Shift-F3": "findPrev",
-								"Ctrl-H": "replace",
-								"Shift-Ctrl-H": "replaceAll",
-								"F8": "replaceCurrent",
-								"Ctrl-/": "toggleComment",
-								"Shift-Ctrl-/": function (cm) {
-							var from = cm.getCursor("from"),
-								to = cm.getCursor("to");
-							if (cm.uncomment(from, to) === false) {
-								cm.blockComment(from, to, {fullLines: false});
-							}
-						}},
-					matchBrackets : true,
-					foldGutter: true,
-					gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-					highlightWords : true,
-					autoCloseBrackets: true,
-					styleActiveLine: true,
-					autoCompletion: true
-				});
+				SuneidoEditor(document.getElementById("code1"), {});
+				SuneidoEditor(document.getElementById("code2"), {});
 			};
 		</script>
 	</body>

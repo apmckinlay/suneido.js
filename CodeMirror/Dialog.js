@@ -21,17 +21,21 @@
 		}
 		return dialog;
 	}
-	CodeMirror.defineExtension("openComplex", function (template, callbacks, options) {
-		if (!options) {options = {}; }
+	CodeMirror.defineExtension("openComplex", function (template, buttonCallbacks, checkboxCallbacks, options) {
+		if (!options) { 
+			options = {}; 
+		}
 
 		var dialog = dialogDiv(template),
-			panel = this.addPanel(dialog, {position: options.where || "bottom"}),
+			panel = this.addPanel(dialog, { position: options.where || "bottom" }),
 			closed = false,
 			me = this,
 			blurring = 1,
 			i,
-			inp = dialog.getElementsByTagName("input")[0],
-			buttons = dialog.getElementsByTagName("button"),
+			inputs,
+			inp,
+			buttons = [],
+			checkboxes = [],
 			b,
 			close = function (newVal) {
 				if (typeof newVal === 'string') {
@@ -46,11 +50,15 @@
 					}
 				}
 			},
-			assignCallback = function (button, callback) {
-				CodeMirror.on(button, "click", function (e) {
-					CodeMirror.e_preventDefault(e);
+			assignCallback = function (element, event, callback) {
+				CodeMirror.on(element, event, function (e) {
+					// CodeMirror.e_preventDefault(e);
 					if (callback) {
-						callback(me);
+						if (callback(me, e, element) === "Not found") {
+							dialog.style.backgroundColor = "#f99";
+						} else {
+							dialog.style.backgroundColor = null;
+						}
 					} else {
 						(function () {
 							close();
@@ -70,6 +78,24 @@
 			handleFocus = function () {
 				blurring += 1;
 			};
+
+		inputs = dialog.getElementsByTagName("input");
+		for (i = 0; i < inputs.length; i++) {
+			switch (inputs[i].type) {
+				case 'text':
+					inp = inputs[i];
+					break;
+				case 'button':
+					buttons.push(inputs[i]);
+					break;
+				case 'checkbox':
+					checkboxes.push(inputs[i]);
+					break;
+				default:
+					console.log("Dialog.js - Invalid input type: " + inputs[i].type);
+			}
+		}
+
 		if (inp) {
 			if (options.value) {
 				inp.value = options.value;
@@ -113,13 +139,17 @@
 			}
 			inp.focus();
 		}
-		if (buttons) {
-			for (i = 0; i < buttons.length; i += 1) {
-				b = buttons[i];
-				assignCallback(b, callbacks[i]);
-				CodeMirror.on(b, "blur", handleBlur);
-				CodeMirror.on(b, "focus", handleFocus);
-			}
+		for (i = 0; i < buttons.length; i += 1) {
+			b = buttons[i];
+			assignCallback(b, "click", buttonCallbacks[i]);
+			// CodeMirror.on(b, "blur", handleBlur);
+			// CodeMirror.on(b, "focus", handleFocus);
+		}
+		for (i = 0; i < checkboxes.length; i += 1) {
+			b = checkboxes[i];
+			assignCallback(b, "click", checkboxCallbacks[i]);
+			// CodeMirror.on(b, "blur", handleBlur);
+			// CodeMirror.on(b, "focus", handleFocus);
 		}
 		return {close: close, dialog: dialog};
 	});
