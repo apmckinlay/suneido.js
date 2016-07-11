@@ -1,5 +1,5 @@
-import assert = require("assert")
-import * as util from "./utility"
+import * as assert from "./assert";
+import * as util from "./utility";
 
 export interface SuDate {
     date: number;
@@ -376,7 +376,7 @@ export function parse(s: string, order: string): SuDate {
                     i += 1;
                 }
             }
-            assert(i === 3, "invalid date format: '" + order + "'")
+            assert.that(i === 3, "invalid date format: '" + order + "'")
             date_patterns[0] = syspatRes = syspatArray.join('');
 
             // swap month-day patterns if system setting is day first
@@ -411,7 +411,7 @@ export function parse(s: string, order: string): SuDate {
     arrayFill(types, 0, MAXTOKENS, TokenType.UUK);
     i = 0;
     while (i < s.length) {
-        assert(ntokens < MAXTOKENS, "Current token number is bigger than MAXTOKENS");
+        assert.that(ntokens < MAXTOKENS, "Current token number is bigger than MAXTOKENS");
         if (util.isAlpha(s[i])) {
             j = i;
             while (util.isAlpha(s[++i])) {
@@ -449,7 +449,7 @@ export function parse(s: string, order: string): SuDate {
             while (util.isDigit(s[++i])) {
             }
             n = getNdigit(s, j, i - j);
-            assert(i > j, "SuDate.parse: char index not increased after searching digits.");
+            assert.that(i > j, "SuDate.parse: char index not increased after searching digits.");
             if ((i - j === 6) || (i - j === 8)) {
                 if (i - j === 6) { // date with no separators with yy
                     tokens[ntokens++] = getNdigit(s, j, 2);
@@ -632,7 +632,7 @@ export function literal(s: string): SuDate {
  * @returns {string} a date and time string in given format
  */
 sudate.formatEn = function(fmt: string): string {
-    assert(arguments.length === 1, "usage: date.Format(format)");
+    assert.that(arguments.length === 1, "usage: date.Format(format)");
     return format(this, fmt);
 };
 
@@ -662,7 +662,7 @@ sudate.plus = function(args: Object): SuDate {
         minutes = (args["minutes"] | 0) + this.minute(),
         seconds = (args["seconds"] | 0) + this.second(),
         milliseconds = (args["milliseconds"] | 0) + this.millisecond();
-    assert(!(isNaN(args["years"]) && isNaN(args["months"]) && isNaN(args["days"]) &&
+    assert.that(!(isNaN(args["years"]) && isNaN(args["months"]) && isNaN(args["days"]) &&
         isNaN(args["hours"]) && isNaN(args["minutes"]) && isNaN(args["seconds"]) &&
         isNaN(args["milliseconds"])), usage);
     return normalize(years, months, days, hours, minutes, seconds, milliseconds);
@@ -687,7 +687,7 @@ sudate.minusMilliseconds = function(sud2: SuDate): number {
  */
 sudate.minusDays = function(sud2: SuDate): number {
     var timeDiff = this.toDate().getTime() - sud2.toDate().getTime();
-    assert(arguments.length === 1, "usage: date.Minus(date)");
+    assert.that(arguments.length === 1, "usage: date.Minus(date)");
     return Math.ceil(timeDiff / (1000 * 3600 * 24));
 };
 
@@ -698,7 +698,7 @@ sudate.minusDays = function(sud2: SuDate): number {
  */
 sudate.minusSeconds = function(sud2: SuDate): number {
     var timeDiff = this.toDate().getTime() - sud2.toDate().getTime();
-    assert(arguments.length === 1, "usage: date.MinusSeconds(date)");
+    assert.that(arguments.length === 1, "usage: date.MinusSeconds(date)");
     return timeDiff / 1000;
 };
 
@@ -706,7 +706,7 @@ sudate.minusSeconds = function(sud2: SuDate): number {
  * @returns {number} year portion of the date
  */
 sudate.year = function(): number {
-    assert(arguments.length === 0, "usage: date.Year()");
+    assert.that(arguments.length === 0, "usage: date.Year()");
     return this.date >> 9;
 };
 
@@ -714,7 +714,7 @@ sudate.year = function(): number {
  * @returns {number} month portion of the date
  */
 sudate.month = function(): number {
-    assert(arguments.length === 0, "usage: date.Month()");
+    assert.that(arguments.length === 0, "usage: date.Month()");
     return (this.date >> 5) & 0xf;
 };
 
@@ -722,7 +722,7 @@ sudate.month = function(): number {
  * @returns {number} day portion of the date
  */
 sudate.day = function(): number {
-    assert(arguments.length === 0, "usage: date.Day()");
+    assert.that(arguments.length === 0, "usage: date.Day()");
     return this.date & 0x1f;
 };
 
@@ -730,7 +730,7 @@ sudate.day = function(): number {
  * @returns {number} hour portion of the date
  */
 sudate.hour = function(): number {
-    assert(arguments.length === 0, "usage: date.Hour()");
+    assert.that(arguments.length === 0, "usage: date.Hour()");
     return this.time >> 22;
 };
 
@@ -738,7 +738,7 @@ sudate.hour = function(): number {
  * @returns {number} minute portion of the date
  */
 sudate.minute = function(): number {
-    assert(arguments.length === 0, "usage: date.Minute()");
+    assert.that(arguments.length === 0, "usage: date.Minute()");
     return (this.time >> 16) & 0x3f;
 };
 
@@ -746,7 +746,7 @@ sudate.minute = function(): number {
  * @returns {number} second portion of the date
  */
 sudate.second = function(): number {
-    assert(arguments.length === 0, "usage: date.Second()");
+    assert.that(arguments.length === 0, "usage: date.Second()");
     return (this.time >> 10) & 0x3f;
 };
 
@@ -754,7 +754,7 @@ sudate.second = function(): number {
  * @returns {number} millisecond portion of the date
  */
 sudate.millisecond = function(): number {
-    assert(arguments.length === 0, "usage: date.Millisecond()");
+    assert.that(arguments.length === 0, "usage: date.Millisecond()");
     return this.time & 0x3ff;
 };
 
@@ -769,7 +769,7 @@ var weekday: Array<string> = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thurs
  * @returns {number}
  */
 sudate.weekday = function(firstDay?: string | number): number {
-    assert(arguments.length === 0 || arguments.length === 1,
+    assert.that(arguments.length === 0 || arguments.length === 1,
         "usage: date.WeekDay(firstDay = 'Sun')");
     var i: number = 0,
         s;
@@ -780,11 +780,11 @@ sudate.weekday = function(firstDay?: string | number): number {
                 if (weekday[i].toLowerCase().indexOf(s) === 0)
                     break;
             }
-            assert(i < 7, "usage: date.WeekDay( <day of week> )");
+            assert.that(i < 7, "usage: date.WeekDay( <day of week> )");
         } else if (!isNaN(firstDay)) {
             i = firstDay;
         } else {
-            assert(false, "usage: date.WeekDay( <day of week> )");
+            assert.that(false, "usage: date.WeekDay( <day of week> )");
         }
     }
     return (this.toDate().getDay() - i + 7) % 7;

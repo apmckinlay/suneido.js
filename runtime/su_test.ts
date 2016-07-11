@@ -2,17 +2,17 @@
  * Created by andrew on 2015-05-30.
  */
 
-import dnum = require("./dnum");
-import suob = require("./suobject");
-import su = require("./su");
+import Dnum from "./dnum";
+import * as suob from "./suobject";
+import * as su from "./su";
 
-import assert = require("assert");
+import * as assert from "./assert";
 
-var n = dnum.make;
+var n = Dnum.make;
 
 function is(x, y): void {
-    assert(su.is(x, y), x + " is " + y + " should be true");
-    assert(su.is(y, x), y + " is " + x + " should be true");
+    assert.that(su.is(x, y), x + " is " + y + " should be true");
+    assert.that(su.is(y, x), y + " is " + x + " should be true");
 }
 is(true, true);
 is('hello', 'hello');
@@ -21,8 +21,8 @@ is(123, n(123));
 is(n(15, -1), 1.5);
 
 function isnt(x, y): void {
-    assert(su.isnt(x, y), x + " isnt " + y + " should be true");
-    assert(su.isnt(y, x), y + " isnt " + x + " should be true");
+    assert.that(su.isnt(x, y), x + " isnt " + y + " should be true");
+    assert.that(su.isnt(y, x), y + " isnt " + x + " should be true");
 }
 isnt(true, false);
 isnt(123, 'hello');
@@ -30,10 +30,10 @@ isnt(n(1), true);
 
 function add(x, y, expected): void {
     var sum = su.add(x, y);
-    assert(su.is(sum, expected), "add " + x + ", " + y +
+    assert.that(su.is(sum, expected), "add " + x + ", " + y +
         " expected " + expected + " got " + sum);
     sum = su.add(y, x);
-    assert(su.is(sum, expected), "add " + y + ", " + x +
+    assert.that(su.is(sum, expected), "add " + y + ", " + x +
         " expected " + expected + " got " + sum);
 }
 add(1, 2, 3);
@@ -68,7 +68,7 @@ assert.equal(su.rangelen("abcde", 3, 0), "");
 assert.equal(su.rangelen("abcde", 3, -3), "");
 
 var list = suob.list;
-function eq(x, y) { assert(x.equals(y), x + " should be " + y) }
+function eq(x, y) { assert.that(x.equals(y), x + " should be " + y) }
 eq(su.rangeto(list(0, 1, 2, 3, 4), 2, 9), list(2, 3, 4));
 eq(su.rangeto(list(0, 1, 2, 3, 4), 1, 4), list(1, 2, 3));
 eq(su.rangeto(list(0, 1, 2, 3, 4), 1, -1), list(1, 2, 3));
