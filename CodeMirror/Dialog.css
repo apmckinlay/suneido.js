@@ -4,6 +4,7 @@
     padding: .1em .8em;
     overflow: hidden;
     color: inherit;
+    height: 21px;
 }
 
 .CodeMirror-dialog-replace {
@@ -18,24 +19,25 @@
 	border-bottom: 1px solid #ddd;
 }
 
-.CodeMirror-button-replace {
-	width: 109px;
+.Suneido-search-button {
+    float: right;
+	width: auto;
+    margin-left: 4px;
+	margin-right: 4px;
+    vertical-align: middle;
+    border: 1px solid #000;
 }
 
-.CodeMirror-button-search {
-	width: 70px;
-}
-
-.CodeMirror-dialog input {
+.Suneido-search-field {
     border: 1px solid #ddd;
     outline: none;
     color: inherit;
     font-family: monospace;
+    width: 50%;
 }
 
-.CodeMirror-dialog button {
-    font-size: 70%;
-	float: right;
-	margin-left: 4px;
-	margin-right: 4px;
+.Suneido-search-lable {
+    display: block;
+    float: left;
+    width: 8ch;
 }

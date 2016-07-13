@@ -40,7 +40,12 @@
 		if (state.isWholeWord){
 			queryString = "\\b" + queryString + "\\b";
 		}
-		queryRegex = new RegExp(queryString, isCaseSensitive);
+		try {
+			queryRegex = new RegExp(queryString, isCaseSensitive);
+		}
+		catch(err) {
+			return /x^/;
+		}
 		if (queryRegex.test("")){
 			queryRegex = /x^/;
 		}
@@ -59,24 +64,24 @@
 	}
 	
 	function findNext(cm, rev){
-		return cm.operation(function(){
+		return cm.operation(function () {
 			var state = getSearchState(cm),
 				queryRegex = parseQuery(state.query, state),
 				match;
 				
-			if (!state.query){
+			if (!state.query) {
 				return;
 			}
-			if (!state.cursor){
+			if (!state.cursor) {
 				state.cursor = getSearchCursor(cm, queryRegex, cm.getCursor());
 			} 
 			match = rev ? state.cursor.findPrevious() : state.cursor.findNext();
 			
-			if (!match){
+			if (!match) {
 				state.cursor = getSearchCursor(cm, queryRegex, rev ? 
 					CodeMirror.Pos(cm.lastLine()) : 
 					CodeMirror.Pos(cm.firstLine(), 0));
-				if (!state.cursor.find(rev)){
+				if (!state.cursor.find(rev)) {
 					return "Not found";
 				}
 			}
@@ -86,20 +91,81 @@
 		});
 	}
 	
-	function callSearch(cm){
+	function doReplace(cm, cursor, query, replacement) {
+		var match = cm.getRange(cursor.from(), cursor.to()).match(query);
+		cursor.replace(
+			replacement.replace(/\$(\d)/g, function (_, i) {
+				return match[i] || '';
+			})
+		);
+	}
+
+	function replaceCurrent(cm) {
+		var state = getSearchState(cm),
+			replacement = state.replace || '',
+			queryRegex = parseQuery(state.query, state);
+		
+		if (!state.query || !state.replaceDialog) {
+			return;
+		}		
+		if (!state.cursor) {
+			findNext(cm);
+		}
+		if (state.cursor) {
+			doReplace(cm, state.cursor, queryRegex, replacement);
+		}
+		findNext(cm);
+	}
+
+	function replaceAll(cm) {
+		var state = getSearchState(cm),
+			replacement = state.replace || '',
+			queryRegex = parseQuery(state.query, state);
+
+		if (!state.query || !state.replaceDialog) {
+			return;
+		}
+		cm.operation(function () {
+			var cursor = getSearchCursor(cm, queryRegex);
+			while (cursor.findNext()) {
+				doReplace(cm, cursor, queryRegex, replacement);
+			}
+		});
+	}
+
+	function replaceInSelect(cm) {
+		var state = getSearchState(cm),
+			replacement = state.replace || '',
+			queryRegex = parseQuery(state.query, state),
+			queryRegexGlobal = new RegExp(queryRegex, 'g');
+
+		if (!state.query || !state.replaceDialog) {
+			return;
+		}
+		cm.operation(function () {
+			var selections = cm.getSelections(),
+				replacements = [],
+				match,
+				i;
+			for (i = 0; i < selections.length; i++) {
+				replacements[i] = selections[i].replace(queryRegexGlobal, function (matchString) {
+					match = matchString.match(queryRegex);
+					return replacement.replace(/\$(\d)/g, function (_, i) {
+						return match[i] || '';
+					})
+				})
+			}
+			cm.replaceSelections(replacements, 'around');
+		});
+	}
+
+	function callSearch(cm) {
 		var	state = getSearchState(cm),
 			query = cm.getSelection() || state.query || '',
 			queryRegex = parseQuery(query, state),
 			buildNewSearch = function(queryString){
 				state.query = queryString;
 				state.cursor = null;
-				if (cm.showMatchesOnScrollbar){
-					if (state.annotate){
-						state.annotate.clear();
-						state.annotate = null;
-					}
-					state.annotate = cm.showMatchesOnScrollbar(queryRegex);
-				}
 			},
 			searchFunc = function(queryString, rev){
 				return cm.operation(function(){
@@ -112,13 +178,22 @@
 			input,
 			i;
 		if (!state.searchDialog){
-			resultObj = createDialog(cm, queryDialog, 
+			resultObj = createDialog(cm, searchQueryDialog, 
 				[
 					function (cm, e, element) {
 						return findNext(cm, true); 
 					},
 					function (cm, e, element) {
 						return findNext(cm); 
+					},
+					function (cm, e, element) {
+						state.searchClose();
+					},
+					function (cm, e, element) {
+						addMarks(cm);
+					},
+					function (cm, e, element) {
+						clearMarks(cm);
 					}
 				],
 				[
@@ -158,11 +233,6 @@
 			state.searchClose = resultObj && resultObj.close;
 			if (state.searchDialog) {
 				state.searchDialog.className = "CodeMirror-dialog CodeMirror-dialog-search";
-				state.searchDialog.style.width = "700";
-				buttons = state.searchDialog.getElementsByTagName("button");
-				for (i = 0; i < buttons.length; i += 1) {
-					buttons[i].className = "CodeMirror-button-search";
-				}
 			}
 		} else {
 			input = document.getElementById("searchDialog");
@@ -174,33 +244,102 @@
 		}
 		buildNewSearch(query);
 	}
-	
-	function clearSearch(cm) {
+
+	function addMarks(cm) {
 		cm.operation(function () {
-			var state = getSearchState(cm);
-			if (state.annotate) {
-				state.annotate.clear();
-				state.annotate = null;
-			}
+			var state = getSearchState(cm),
+				queryRegex,
+				elt;
+			cm.clearGutter(searchGutter);
+			queryRegex = parseQuery(state.query, state);
+			cm.eachLine(function (line) {				
+				if (line.text.search(queryRegex) !== -1) {
+					elt = document.createElement("div");
+					elt.className = "Suneido-searchgutter-marker";
+					cm.setGutterMarker(line, searchGutter, elt);
+				}
+			});
+		});
+	}
+
+	function clearMarks(cm) {
+		cm.operation(function () {
+			cm.clearGutter(searchGutter);
 		});
 	}
 	
-	var queryDialog =
-			'Find: <input id="searchDialog" type="text" style="width: 10em" class="CodeMirror-search-field"/> \
-			<input type="checkbox" name="case"> Case \
-			<input type="checkbox" name="word"> Word \
-			<input type="checkbox" name="regex"> Regex \
-			<input type="button" value="prev"> \
-			<input type="button" value="next"> \
-			<input type="button" value="close">';
-	
+	function callReplace(cm) {
+		if (cm.getOption("readOnly")) { 
+			return; 
+		}
+		var state = getSearchState(cm),
+			resultObj,
+			buttons,
+			i;
+		callSearch(cm);
+		if (!state.replaceDialog) {
+			resultObj = createDialog(cm, replaceQueryDialog, 
+			[
+				replaceCurrent,
+				replaceInSelect,
+				replaceAll
+			],
+			[],
+			{
+				closeOnEnter: false,
+				closeOnBlur: false,
+				onClose: function () {
+					if (state.searchDialog) {
+						state.searchClose();
+						state.searchDialog = null;
+						state.searchClose = null;
+					}
+					if (state.replaceDialog) {
+						state.replaceClose();
+						state.replaceDialog = null;
+						state.replaceColse = null;
+					}
+				},
+				onInput: function (e, inputs, close) {
+					state.replace = inputs;
+				}
+			});
+			state.replaceDialog = resultObj && resultObj.dialog;
+			state.replaceClose = resultObj && resultObj.close;
+			state.replace = '';
+			if (state.replaceDialog) {
+				state.replaceDialog.className = "CodeMirror-dialog CodeMirror-dialog-replace";
+			}
+		}
+	}
+
+	var searchQueryDialog =
+		'<lable class="Suneido-search-lable">Find: </lable> \
+		<input id="searchDialog" type="text" class="Suneido-search-field"/> \
+		<label display: block><input type="checkbox" name="case" /> Case </lable> \
+		<label display: block><input type="checkbox" name="word" /> Word </lable> \
+		<label display: block><input type="checkbox" name="regex" /> Regex </lable> \
+		<input type="button" value="prev" class="Suneido-search-button"> \
+		<input type="button" value="next" class="Suneido-search-button"> \
+		<input type="button" value="close" class="Suneido-search-button"> \
+		<input type="button" value="mark" class="Suneido-search-button"> \
+		<input type="button" value="clear" class="Suneido-search-button">';
+	var replaceQueryDialog = 
+		'<lable class="Suneido-search-lable">Replace: </lable> \
+		<input id="replaceDialog" type="text" class="Suneido-search-field"/> \
+		<input type="button" value="Replace Current" class="Suneido-search-button"> \
+		<input type="button" value="In Select" class="Suneido-search-button"> \
+		<input type="button" value="Replace All" class="Suneido-search-button">';
+	var searchGutter = 'Suneido-searchgutter';
+
 	CodeMirror.commands.find = function (cm) {
-		clearSearch(cm);
 		callSearch(cm);
 	};
 	CodeMirror.commands.findNext = findNext;
 	CodeMirror.commands.findPrev = function (cm) {
 		findNext(cm, true);
 	};
-	CodeMirror.commands.clearSearch = clearSearch;
+	CodeMirror.commands.replace = callReplace;
+	CodeMirror.commands.replaceAll = replaceAll;
+	CodeMirror.commands.replaceCurrent = replaceCurrent;
 }));

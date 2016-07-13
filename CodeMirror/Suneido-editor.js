@@ -40,7 +40,7 @@ function SuneidoEditor(targetDiv, cusConfigs = {}){
 					"Ctrl-F": "find",
 					"F3": "findNext",
 					"Shift-F3": "findPrev",
-					// "Ctrl-H": "replace",
+					"Ctrl-H": "replace",
 					"Shift-Ctrl-H": "replaceAll",
 					"F8": "replaceCurrent",
 					"Ctrl-/": "toggleComment",
@@ -53,7 +53,7 @@ function SuneidoEditor(targetDiv, cusConfigs = {}){
 			}},
 		matchBrackets : true,
 		foldGutter: true,
-		gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+		gutters: ["Suneido-searchgutter", "CodeMirror-foldgutter", "CodeMirror-linenumbers"],
 		highlightWords : true,
 		autoCloseBrackets: true,
 		styleActiveLine: true,
@@ -76,7 +76,7 @@ function SuneidoEditor(targetDiv, cusConfigs = {}){
 	initAutoCompletion();
 	
 	$editor.on("keydown", ".CodeMirror-dialog",function(e){
-		if(e.ctrlkey || (e.keyCode <= 123 && e.keyCode >= 112)){
+		if(e.ctrlKey || (e.keyCode <= 123 && e.keyCode >= 112)){
 			cm.triggerOnKeyDown(e);
 			return false;
 		}

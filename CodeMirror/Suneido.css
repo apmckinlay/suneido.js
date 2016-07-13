@@ -31,5 +31,15 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 
 /*auto highlighting words*/
 .cm-indicator {
-    border: 1px solid #bbb;
+    border: 1px solid blue;
+}
+
+/*search scroll bar markers*/
+.Suneido-searchgutter {
+    width: 1em;
+}
+
+.Suneido-searchgutter-marker:after {
+    content: "\2588";
+    color: green;
 }
