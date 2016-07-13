@@ -21,6 +21,7 @@
 
 .Suneido-search-button {
     float: right;
+	width: auto;
     margin-left: 4px;
 	margin-right: 4px;
     vertical-align: middle;
