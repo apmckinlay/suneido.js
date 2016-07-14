@@ -124,6 +124,3 @@ checkStrings(
     ["'\\015'", "\r"],
     ["'\\x0a'", "\n"],
     ["`\\`", "\\"])
-
-console.log("finished");
-process.exit();
