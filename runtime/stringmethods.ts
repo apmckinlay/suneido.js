@@ -18,7 +18,7 @@ export function alphaNumq(s: string): boolean {
     if (s.length === 0)
         return false;
     for (var c of s)
-        if (!util.isAlnum(c))
+        if (!util.isAlphaNum(c))
             return false;
     return true;
 }

@@ -27,7 +27,7 @@ assert.equal(tr("a-b-c", "x-", ""), "abc"); // literal dash
 // collapse at end
 assert.equal(tr("hello \t\n\n", " \t\n", "\n"), "hello\n");
 
-// signear range
+// signed range
 assert.equal(tr("hello", "^\x20-\xff", ""), "hello");
 assert.equal(tr("hello\x7f", "\x70-\x7f", ""), "hello");
 assert.equal(tr("hello\xff", "\x7f-\xff", ""), "hello");

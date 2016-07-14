@@ -1,3 +1,12 @@
+/**
+ * Miscellaneous string functions
+ */
+
+export function isWhite(c: string = ""): boolean {
+    let a = c.charCodeAt(0);
+    return a === 32 || (9 <= a && a <= 13);
+}
+
 export function isAlpha(char: string): boolean {
     if (char && char.length === 1) {
         let code = char.charCodeAt(0);
@@ -18,7 +27,7 @@ export function isDigit(char: string): boolean {
     return false;
 }
 
-export function isoDigit(char: string): boolean {
+export function isOctalDigit(char: string): boolean {
     if (char && char.length === 1) {
         let code = char.charCodeAt(0);
         if ((code >= 48) && (code <= 55)) {
@@ -28,7 +37,7 @@ export function isoDigit(char: string): boolean {
     return false;
 }
 
-export function isxDigit(char: string): boolean {
+export function isHexDigit(char: string): boolean {
     if (char && char.length === 1) {
         let code = char.charCodeAt(0);
         if (((code >= 48) && (code <= 57)) ||
@@ -40,11 +49,11 @@ export function isxDigit(char: string): boolean {
     return false;
 }
 
-export function isAlnum(char: string): boolean {
+export function isAlphaNum(char: string): boolean {
     return isAlpha(char) || isDigit(char);
 }
 
-export function capitalizeFirstLetter(s: string) {
+export function capitalizeFirstLetter(s: string): string {
     return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
@@ -75,14 +84,7 @@ export function IndexOb(i: number = 0) {
     this.i = i;
 }
 export function doesc(src: string, index: indexOb): string {
-    var hexval = function(c: string): number {
-        var cCode = c.toLowerCase().charCodeAt(0);
-        return cCode <= 57 ? cCode - 48 : cCode - 97 + 10;
-    },
-        octval = function(c: string): number {
-            return c.charCodeAt(0) - 48;
-        },
-        dstCode: number;
+    let dstCode: number;
     index.i++;
     switch (src.charAt(index.i)) {
         case 'n':
@@ -92,7 +94,7 @@ export function doesc(src: string, index: indexOb): string {
         case 'r':
             return String.fromCharCode(13);
         case 'x':
-            if (isxDigit(src.charAt(index.i + 1)) && isxDigit(src.charAt(index.i + 2))) {
+            if (isHexDigit(src.charAt(index.i + 1)) && isHexDigit(src.charAt(index.i + 2))) {
                 index.i += 2;
                 dstCode = 16 * hexval(src.charAt(index.i - 1)) + hexval(src.charAt(index.i));
                 return String.fromCharCode(dstCode);
@@ -102,12 +104,19 @@ export function doesc(src: string, index: indexOb): string {
         case '\'':
             return src.charAt(index.i);
         default:
-            if (isoDigit(src.charAt(index.i)) && isoDigit(src.charAt(index.i + 1)) &&
-                isoDigit(src.charAt(index.i + 2))) {
+            if (isOctalDigit(src.charAt(index.i)) && isOctalDigit(src.charAt(index.i + 1)) &&
+                isOctalDigit(src.charAt(index.i + 2))) {
                 index.i += 2;
                 dstCode = 64 * octval(src.charAt(index.i - 2)) +
                     8 * octval(src.charAt(index.i - 1)) + octval(src.charAt(index.i));
                 return String.fromCharCode(dstCode);
             }
+    }
+    function hexval(c: string): number {
+        var cCode = c.toLowerCase().charCodeAt(0);
+        return cCode <= 57 ? cCode - 48 : cCode - 97 + 10;
+    }
+    function octval(c: string): number {
+        return c.charCodeAt(0) - 48;
     }
 }

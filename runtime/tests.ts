@@ -6,7 +6,8 @@ import "./su_test";
 import "./sudate_test";
 import "./suobject_test";
 import "./stringmethods_test";
-import "./tr";
+import "./tr_test";
+import "./lexer_test";
 
 console.log("finished");
 process.exit();
