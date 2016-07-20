@@ -1,8 +1,10 @@
 {
+    "compileOnSave": true,
     "compilerOptions": {
-        "module": "amd",
+        "module": "umd",
         "sourceMap": true,
         "listFiles": true,
-        "target": "es6"
+        "target": "es6",
+        "preserveConstEnums": true
     }
 }

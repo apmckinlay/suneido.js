@@ -31,3 +31,11 @@ assert.equal(tr("hello \t\n\n", " \t\n", "\n"), "hello\n");
 assert.equal(tr("hello", "^\x20-\xff", ""), "hello");
 assert.equal(tr("hello\x7f", "\x70-\x7f", ""), "hello");
 assert.equal(tr("hello\xff", "\x7f-\xff", ""), "hello");
+
+import { runFile } from "./porttests"
+
+runFile("tr.test", { "tr": trFixture });
+
+function trFixture(s, from, to, expected) {
+    return tr(s, from, to) == expected;
+}

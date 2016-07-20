@@ -59,6 +59,13 @@ parse("123x", null);
 parse("x123", null);
 parse("12x34", null);
 parse("1e3x", null);
+parse(".333333333333333333333", ".3333333333333333")
+parse(".33333333333333333333", ".3333333333333333")
+parse(".3333333333333333333", ".3333333333333333")
+parse(".333333333333333333", ".3333333333333333")
+parse(".33333333333333333", ".3333333333333333")
+parse(".3333333333333333", ".3333333333333333")
+parse(".6666666666666666666", ".6666666666666667")
 
 // abs/neg ---------------------------------------------------------------------
 
@@ -124,7 +131,7 @@ mul(n(128e3), n(128e5), 16384e8);
 mul(Dnum.INF, n(123), 'inf');
 mul(n(1, 99), n(1, 99), 'inf');
 mul(n(1234567800000000), n(1234567800000000), '1.52415765279684e30');
-mul(n(1234567890123456), n(1234567890123456), '1.52415787532388e30');
+mul(n(1234567890123456), n(1234567890123456), '1.524157875323882e30');
 
 // div -------------------------------------------------------------------------
 
@@ -149,7 +156,7 @@ div(n(256), n(4), 64);
 div(n(1234567890123456), n(1234567890123456), 1);
 div(Dnum.INF, n(123), 'inf');
 div(n(1, 99), n(1, 99), 1);
-div(n(1), n(1234567890123456), 8.10000007290001e-16);
+div(n(1), n(1234567890123456), 8.100000072900005e-16);
 
 assert.that(n(0).isZero());
 assert.that(n(0).isInt());
@@ -160,18 +167,62 @@ assert.that(!n(123, -3).isInt());
 
 assert.that(0 == Dnum.cmp(Dnum.fromNumber(1.5), n(15, -1)));
 
-//function randint(limit) {
-//    return Math.floor(Math.random() * limit);
-//}
-//var nfailed = 0;
-//for (var i = 0; i < 1000000; ++i) {
-//    var x = n(randint(1000000000000), randint(200) - 100);
-//    //console.log(x.toString());
-//    var num = x.toNumber();
-//    var y = Dnum.fromNumber(num);
-//    if (0 != Dnum.cmp(x, y)) {
-//        ++nfailed;
-//        console.log(x + " != " + y);
-//    }
-//}
-//console.log("nfailed " + nfailed);
+// porttests -------------------------------------------------------------------
+
+import { runFile } from "./porttests"
+
+runFile("dnum.test", { dnum_add, dnum_sub, dnum_mul, dnum_div, dnum_cmp });
+
+function binary(x, y, z, fn) {
+    return fn(dn(x), dn(y), dn(z))
+}
+
+function ck1(x, y, z, op): boolean {
+    if (!op(x, y).equals(z)) {
+        console.log(op.name + " " + x + ", " + y +
+            " => " + op(x, y) + " should be " + z);
+        return false;
+    } else
+        return true;
+}
+
+function dnum_add(x, y, z): boolean {
+    return binary(x, y, z, (x, y, z) =>
+        ck1(x, y, z, Dnum.add) && ck1(y, x, z, Dnum.add))
+}
+
+function dnum_sub(x, y, z): boolean {
+    return binary(x, y, z, (x, y, z) =>
+        ck1(x, y, z, Dnum.sub) && ck1(y, x, z.neg(), Dnum.sub))
+}
+
+function dnum_mul(x, y, z): boolean {
+    return binary(x, y, z, (x, y, z) =>
+        ck1(x, y, z, Dnum.mul) && ck1(y, x, z, Dnum.mul))
+}
+
+function dnum_div(x, y, z): boolean {
+    return binary(x, y, z, (x, y, z) =>
+        ck1(x, y, z, Dnum.div))
+}
+
+function dnum_cmp(...data): boolean {
+    const n = data.length;
+    for (let i = 0; i < n; ++i) {
+        let x = dn(data[i]);
+        if (Dnum.cmp(x, x) != 0)
+            return false;
+        for (let j = i + 1; j < n; ++j) {
+            let y = dn(data[j]);
+            if (Dnum.cmp(x, y) >= 0)
+                return false;
+        }
+    }
+    return true;
+}
+
+function dn(s: string) {
+    return s == "inf" ? Dnum.INF :
+        s == "-inf" ? Dnum.MINUS_INF :
+            Dnum.parse(s);
+}

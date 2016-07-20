@@ -9,11 +9,12 @@
  * Created by andrew on 2015-05-17.
  */
 
+import * as assert from "./assert"
+
 const minExp = -126;
 const maxExp = +126;
 const expInf = 127;
-const maxInt = 9007199254740992;
-const minInt = -9007199254740992;
+const MAX_COEF_STR = "" + Number.MAX_SAFE_INTEGER;
 
 export default class Dnum {
     private coef: number;
@@ -25,7 +26,7 @@ export default class Dnum {
     }
 
     static fromNumber(n: number): Dnum {
-        return Dnum.parse(n.toExponential(14)); // is there a better way?
+        return Dnum.parse(n.toString()); // is there a better way?
     }
 
     /**
@@ -38,9 +39,13 @@ export default class Dnum {
             return null; // invalid input
         if (s === "0")
             return Dnum.ZERO;
-        var i = 0;
-        var before = spanSignedDigits(s, i);
+        let i = 0;
+        let sign = s.charAt(i) === '-' ? -1 : 1;
+        if (s.charAt(i) === '+' || s.charAt(i) == '-')
+            i++;
+        var before = spanDigits(s, i);
         i += before.length;
+        before = trimLeft(before, '0');
         var after = "";
         if (i < s.length && s.charAt(i) === '.') {
             i++;
@@ -53,14 +58,21 @@ export default class Dnum {
         if (i < s.length && s.charAt(i).toLowerCase() === 'e') {
             i++;
             var es = spanSignedDigits(s, i);
-            exp = parseInt(es);
+            exp = parseInt(es, 10);
             i += es.length;
         }
         if (i < s.length)
             return null; // invalid input
         exp -= after.length;
-        var coef = parseInt(before + after);
-        return Dnum.make(coef, exp);
+        let carry = 0;
+        let digits = before + after;
+        while (cmpNumStr(digits, MAX_COEF_STR) >= 0) {
+            exp++;
+            carry = digits.charAt(digits.length - 1) < '5' ? 0 : 1;
+            digits = digits.substring(0, digits.length - 1);
+        }
+        var coef = carry + parseInt(digits, 10);
+        return Dnum.make(sign * coef, exp);
     }
 
     /**
@@ -69,18 +81,16 @@ export default class Dnum {
     * @param {number} [exp=0] integer, outside range of -126 to 126 will become infinite
     * @returns {Object} an immutable dnum
     */
-    static make(coef: number, exp = 0): Dnum {
+    static make(coef: number, exp: number = 0): Dnum {
         if (coef === 0)
             return Dnum.ZERO;
         if (coef === Number.NEGATIVE_INFINITY)
             return Dnum.MINUS_INF;
         if (coef === Number.POSITIVE_INFINITY)
             return Dnum.INF;
-        if (!isInteger(coef))
+        if (!Number.isSafeInteger(coef))
             throw "Dnum.make invalid coefficient: " + coef;
-        //if (exp === undefined)
-        //    exp = 0;
-        else if (!isInteger(exp))
+        else if (!Number.isSafeInteger(exp))
             throw "Dnum.make invalid exponent: " + exp;
         if (exp < minExp)
             return Dnum.ZERO;
@@ -97,6 +107,7 @@ export default class Dnum {
      * @returns {string}
      */
     toString(): string {
+        //return '{ ' + this.coef + ', ' + this.exp + ' }';
         var c = this.coef;
         var e = this.exp;
         if (c === 0)
@@ -255,9 +266,9 @@ export default class Dnum {
             Dnum.align(x, y);
         }
         var c = x.coef + y.coef;
-        if (c !== c) // NaN from adding +inf and -inf
+        if (isNaN(c)) // NaN from adding +inf and -inf
             return Dnum.ZERO;
-        if (c < minInt || maxInt < c) { // overflow
+        if (c < Number.MIN_SAFE_INTEGER || Number.MAX_SAFE_INTEGER < c) { // overflow
             x = Dnum.mutable(x);
             y = Dnum.mutable(y);
             if (Dnum.shiftRight(x))
@@ -281,15 +292,16 @@ export default class Dnum {
         var roundup = false;
         while (y.exp > x.exp && x.coef !== 0)
             roundup = Dnum.shiftRight(x);
-        if (x.exp != y.exp)
+        if (x.exp != y.exp) {
+            assert.equal(x.coef, 0);
             x.exp = y.exp;
-        else if (roundup)
-            x.coef++;
+        } else if (roundup)
+            x.coef += x.coef < 0 ? -1 : +1;
     }
 
     private static shiftLeft(n: Dnum): boolean {
         var c = n.coef * 10;
-        if (!isInteger(c))
+        if (!Number.isSafeInteger(c))
             return false;
         n.coef = c;
         if (n.exp > minExp)
@@ -301,7 +313,7 @@ export default class Dnum {
         if (n.coef === 0)
             return false;
         var roundup = (n.coef % 10) >= 5;
-        n.coef = Math.floor(n.coef / 10);
+        n.coef = Math.trunc(n.coef / 10);
         if (n.exp < expInf)
             n.exp++;
         return roundup;
@@ -314,6 +326,15 @@ export default class Dnum {
 
     // div returns the quotient of two dnums
     static div(x: Dnum, y: Dnum): Dnum {
+        if (x.isZero())
+            return Dnum.ZERO;
+        else if (y.isZero())
+            return Dnum.inf(x.sign());
+        else if (x.isInf()) {
+            let sign = x.sign() * y.sign();
+            return y.isInf() ? Dnum.make(sign) : Dnum.inf(sign);
+        } else if (y.isInf())
+            return Dnum.ZERO;
         return convert(x.coef / y.coef, x.exp - y.exp);
     }
 
@@ -369,19 +390,26 @@ function trimRight(s: string, c: string): string {
     return s.substring(0, i + 1)
 }
 
-function convert(c: number, e: number): Dnum {
+function trimLeft(s: string, c: string): string {
+    var i = 0;
+    while (s.charAt(i) === c)
+        i++;
+    return s.substring(i)
+}
+
+function cmpNumStr(x: string, y: string): number {
+    if (x.length !== y.length)
+        return x.length - y.length;
+    return x > y ? +1 : x < y ? -1 : 0;
+}
+
+export function convert(c: number, e: number): Dnum {
     if (c === Number.NEGATIVE_INFINITY)
         return Dnum.MINUS_INF;
     if (c === Number.POSITIVE_INFINITY)
         return Dnum.INF;
-    if (isInteger(c))
+    if (Number.isSafeInteger(c))
         return Dnum.make(c, e); // fast path
     c *= Math.pow(10, e);
     return Dnum.fromNumber(c);
-}
-
-export function isInteger(n: any): boolean {
-    return typeof n === "number" && isFinite(n) &&
-        minInt <= n && n <= maxInt &&
-        Math.floor(n) === n;
 }

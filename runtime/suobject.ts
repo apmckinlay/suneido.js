@@ -7,7 +7,6 @@
  */
 
 import Dnum from "./dnum";
-import { isInteger } from "./dnum";
 import * as su from "./su";
 
 declare var Map: {
@@ -108,7 +107,7 @@ function canonical(key: any): any {
 function index(key: any): number {
     if (key instanceof Dnum && (<Dnum>key).isInt())
         key = (<Dnum>key).toInt();
-    return isInteger(key) ? key : -1;
+    return Number.isSafeInteger(key) ? key : -1;
 }
 
 suob.put = function(key: any, value: any): void {

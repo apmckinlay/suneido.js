@@ -7,7 +7,6 @@
 //TODO dynget, dynset, dynpush, dynpop
 
 import Dnum from "./dnum";
-import { isInteger } from "./dnum";
 
 import * as suob from "./suobject";
 import { SuObject } from "./suobject";
@@ -73,7 +72,7 @@ export function bitnot(x): number {
 }
 
 function toInt(x): number {
-    if (isInteger(x))
+    if (Number.isSafeInteger(x))
         return x;
     if (x instanceof Dnum && <Dnum>x.isInt())
         return (<Dnum>x).toInt();
