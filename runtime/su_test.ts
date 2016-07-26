@@ -3,7 +3,7 @@
  */
 
 import Dnum from "./dnum";
-import * as suob from "./suobject";
+import SuObject from "./suobject";
 import * as su from "./su";
 
 import * as assert from "./assert";
@@ -45,7 +45,7 @@ assert.equal(su.get('hello', n(1)), 'e');
 assert.throws(function() { su.get('hello', 'x') },
     /can't convert String to integer/);
 
-var ob = suob.make();
+var ob = new SuObject();
 su.put(ob, 'n', 123);
 assert.equal(su.get(ob, 'n'), 123);
 
@@ -53,7 +53,7 @@ assert.equal(su.typeName(true), 'Boolean');
 assert.equal(su.typeName('hello'), 'String');
 assert.equal(su.typeName(123), 'Number');
 assert.equal(su.typeName(n(123)), 'Number');
-assert.equal(su.typeName(suob.make()), 'Object');
+assert.equal(su.typeName(new SuObject()), 'Object');
 
 assert.equal(su.rangeto("abcde", 1, 4), "bcd");
 assert.equal(su.rangeto("abcde", 2, 9), "cde");
@@ -67,7 +67,7 @@ assert.equal(su.rangelen("abcde", -2, 1), "d");
 assert.equal(su.rangelen("abcde", 3, 0), "");
 assert.equal(su.rangelen("abcde", 3, -3), "");
 
-var list = suob.list;
+var list = SuObject.list;
 function eq(x, y) { assert.that(x.equals(y), x + " should be " + y) }
 eq(su.rangeto(list(0, 1, 2, 3, 4), 2, 9), list(2, 3, 4));
 eq(su.rangeto(list(0, 1, 2, 3, 4), 1, 4), list(1, 2, 3));

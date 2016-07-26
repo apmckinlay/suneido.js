@@ -8,3 +8,8 @@ runtime/*.js
 .DS_Store
 
 porttests.js
+
+runtime/node_modules/*
+runtime/.babelrc
+runtime/package.json
+.atomignore

@@ -2,13 +2,13 @@
  * Created by andrew on 2015-05-31.
  */
 
-import * as suob from "./suobject";
+import SuObject from "./suobject";
 import Dnum from "./dnum";
 import * as assert from "./assert";
 
 const n = Dnum.make;
 
-var ob = suob.make();
+var ob = new SuObject();
 assert.equal(ob.size(), 0);
 ob.add(123);
 assert.equal(ob.size(), 1);
@@ -49,10 +49,10 @@ ob.setReadonly();
 assert.throws(function() { ob.put('b', true); },
     /can't modify readonly objects/);
 
-ob = suob.make();
+ob = new SuObject();
 assert.that(ob.equals(ob));
 assert.that(!ob.equals(123));
-var ob2 = suob.make();
+var ob2 = new SuObject();
 assert.that(ob.equals(ob2));
 ob.add(123);
 assert.that(!ob.equals(ob2));
@@ -68,7 +68,7 @@ ob2.put('a', 'alpha');
 assert.that(ob.equals(ob2));
 assert.that(ob2.equals(ob));
 
-ob = suob.make();
+ob = new SuObject();
 assert.equal(ob.toString(), '#()');
 ob.add(12);
 ob.add(34);
@@ -76,6 +76,6 @@ assert.equal(ob.toString(), '#(12, 34)');
 ob.put('b', 'Bob');
 assert.equal(ob.toString(), '#(12, 34, b: "Bob")');
 
-ob = suob.make();
+ob = new SuObject();
 ob.put('a b', n(1, 3));
 assert.equal(ob.toString(), '#("a b": 1000)');
