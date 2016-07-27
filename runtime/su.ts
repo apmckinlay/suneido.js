@@ -9,11 +9,11 @@
 import Dnum from "./dnum";
 
 import * as suob from "./suobject";
-import { SuObject } from "./suobject";
-export { empty_object } from "./suobject";
+import SuObject from "./suobject";
+// export { empty_object } from "./suobject";
 
 export function put(ob, key, val): void {
-    if (suob.isSuOb(ob))
+    if (SuObject.isSuOb(ob))
         <SuObject>ob.put(key, val);
     else
         throw typeName(ob) + " does not support put (" + key + ")";
@@ -22,7 +22,7 @@ export function put(ob, key, val): void {
 export function get(x, key): any {
     if (typeof x === 'string')
         return <string>x.charAt(toInt(key));
-    if (suob.isSuOb(x))
+    if (SuObject.isSuOb(x))
         return <SuObject>x.get(key);
     throw typeName(x) + " does not support get (" + key + ")";
 }

@@ -1,7 +1,7 @@
 import * as assert from "./assert";
 import * as util from "./utility";
 import { tr as trImpl } from "./tr";
-import * as suobject from "./suobject";
+import SuObject from "./suobject";
 
 export function alphaq(s: string): boolean {
     assert.that(arguments.length === 1, "usage: string.Alpha?()");
@@ -354,13 +354,13 @@ export function size(s: string): number {
     return s.length;
 }
 
-export function split(s: string, separator: string): suobject.SuObject {
+export function split(s: string, separator: string): SuObject {
     assert.that(arguments.length === 2, "usage: string.Split(separator)");
     assert.that(separator !== '', "string.Split separator must not be empty string");
     var arraySplit = s.split(separator);
     if (arraySplit[arraySplit.length - 1] === '')
         arraySplit = arraySplit.slice(0, -1);
-    var resOb = suobject.make();
+    var resOb = new SuObject();
     arraySplit.forEach(function(value) { resOb.add(value); });
     return resOb;
 }

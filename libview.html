@@ -2,127 +2,144 @@
 <html>
 
 <head>
-	<title>View Library Code</title>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-	<link rel="stylesheet" href="http://codemirror.net/lib/codemirror.css">
-	<link rel="stylesheet" href="http://codemirror.net/addon/fold/foldgutter.css">
-	<link rel="stylesheet" href="http://codemirror.net/addon/hint/show-hint.css">
-	<link rel="stylesheet" href="/CodeMirror/Suneido.css">
-	<link rel="stylesheet" href="/CodeMirror/Dialog.css">
-	<script src="http://codemirror.net/lib/codemirror.js"></script>
-	<script src="http://codemirror.net/addon/fold/foldcode.js"></script>
-	<script src="http://codemirror.net/addon/fold/foldgutter.js"></script>
-	<script src="http://codemirror.net/addon/fold/brace-fold.js"></script>
-	<script src="http://codemirror.net/addon/edit/matchbrackets.js"></script>
-	<script src="http://codemirror.net/addon/edit/closebrackets.js"></script>
-	<script src="http://codemirror.net/addon/hint/show-hint.js"></script>
-	<script src="http://codemirror.net/addon/comment/comment.js"></script>
-	<script src="http://codemirror.net/addon/search/searchcursor.js"></script>
-	<script src="http://codemirror.net/addon/selection/active-line.js"></script>
-	<script src="http://codemirror.net/addon/display/panel.js"></script>
-	<script src="http://codemirror.net/addon/runmode/runmode.js"></script>
-	<script src="/CodeMirror/Suneido-editor.js"></script>
-	<script src="/CodeMirror/Suneido.js"></script>
-	<script src="/CodeMirror/Dialog.js"></script>
-	<script src="/CodeMirror/Suneido-search.js"></script>
-	<script src="/CodeMirror/HighlightWords.js"></script>
-	<script src="/CodeMirror/Suneido-hint.js"></script>
-	<script type="text/javascript">
-		window.onload = function() {
-			var text = document.getElementById('text');
-			var editor = SuneidoEditor(text);
+    <title>View Library Code</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="http://codemirror.net/lib/codemirror.css">
+    <link rel="stylesheet" href="http://codemirror.net/addon/fold/foldgutter.css">
+    <link rel="stylesheet" href="http://codemirror.net/addon/hint/show-hint.css">
+    <link rel="stylesheet" href="/CodeMirror/Suneido.css">
+    <link rel="stylesheet" href="/CodeMirror/Dialog.css">
+    <script src="http://codemirror.net/lib/codemirror.js"></script>
+    <script src="http://codemirror.net/addon/fold/foldcode.js"></script>
+    <script src="http://codemirror.net/addon/fold/foldgutter.js"></script>
+    <script src="http://codemirror.net/addon/fold/brace-fold.js"></script>
+    <script src="http://codemirror.net/addon/edit/matchbrackets.js"></script>
+    <script src="http://codemirror.net/addon/edit/closebrackets.js"></script>
+    <script src="http://codemirror.net/addon/hint/show-hint.js"></script>
+    <script src="http://codemirror.net/addon/comment/comment.js"></script>
+    <script src="http://codemirror.net/addon/search/searchcursor.js"></script>
+    <script src="http://codemirror.net/addon/selection/active-line.js"></script>
+    <script src="http://codemirror.net/addon/display/panel.js"></script>
+    <script src="http://codemirror.net/addon/runmode/runmode.js"></script>
+    <script src="/CodeMirror/Suneido-editor.js"></script>
+    <script src="/CodeMirror/Suneido.js"></script>
+    <script src="/CodeMirror/Dialog.js"></script>
+    <script src="/CodeMirror/Suneido-search.js"></script>
+    <script src="/CodeMirror/HighlightWords.js"></script>
+    <script src="/CodeMirror/Suneido-hint.js"></script>
+    <script type="text/javascript">
+        window.onload = function() {
+            var text = document.getElementById('text');
+            var editor = SuneidoEditor(text);
 
-			function load() {
-				var name = document.getElementById("name").value;
-				history.pushState(null, null, '/libview/' + name);
-				load2(name);
-			}
+            function load() {
+                var name = document.getElementById("name").value;
+                history.pushState(null, null, '/libview/' + name);
+                load2(name);
+            }
 
-			function load2(name) {
-				if (name === undefined)
-					name = document.getElementById("name").value;
-				if (!name) {
-					editor.setValue("");
-					return;
-				}
-				var req = new XMLHttpRequest();
-				req.onload = display;
-				req.open("get", "/libget/stdlib/" + name, true);
-				req.send();
-			};
+            function load2(name) {
+                if (name === undefined)
+                    name = document.getElementById("name").value;
+                if (!name) {
+                    editor.setValue("");
+                    return;
+                }
+                var req = new XMLHttpRequest();
+                req.onload = display;
+                req.open("get", "/libget/stdlib/" + name, true);
+                req.send();
+            };
 
-			function display() {
-				editor.setValue(this.responseText);
-			};
+            function display() {
+                editor.setValue(this.responseText);
+            };
 
-			function keypress(event) {
-				if (event.which == 13 || event.keyCode == 13) {
-					load();
-					return false;
-				}
-				return true;
-			};
-			document.getElementById('load').onclick = load;
-			document.getElementById('name').onkeypress = keypress;
+            function keypress(event) {
+                if (event.which == 13 || event.keyCode == 13) {
+                    load();
+                    return false;
+                }
+                return true;
+            };
+            document.getElementById('load').onclick = load;
+            document.getElementById('name').onkeypress = keypress;
 
-			function update() {
-				editor.setValue("updating...")
-				var req = new XMLHttpRequest();
-				req.onload = display;
-				req.open("post", "/update", true);
-				req.send();
-			}
-			document.getElementById('update').onclick = update;
+            function update() {
+                editor.setValue("updating...")
+                var req = new XMLHttpRequest();
+                req.onload = display;
+                req.open("post", "/update", true);
+                req.send();
+            }
+            document.getElementById('update').onclick = update;
 
-			function goToDefinition(cm) {
-				// TODO if no selection, select current word (maybe with cm.findWordAt)
-				var doc = cm.getDoc();
-				var sel = doc.getSelection();
-				var name = document.getElementById('name');
-				name.value = sel;
-				load();
-			}
-			window.addEventListener("popstate", function(e) {
-				document.getElementById("name").value = location.pathname.substr(9);
-				load2();
-			});
-			// handle non ajax (re)load
-			if (location.pathname.length > 9) {
-				document.getElementById("name").value = location.pathname.substr(9);
-				load2();
-			}
-		};
-	</script>
-	<style>
-		.CodeMirror {
-			border: 1px solid gray;
-			height: 70vh;
-		}
+            function goToDefinition(cm) {
+                // TODO be able to locate to the definitions of variables ands methods
+                var doc = cm.getDoc();
+                var sel;
+                var wordPos;
+                var name = document.getElementById('name');
 
-		.button {
-			padding: 2px;
-			color: white;
-			font-family: sans-serif;
-			font-weight: bold;
-			background-color: blue;
-			cursor: pointer;
-		}
+                sel = doc.getSelection();
+                if (!sel) {
+                    wordPos = cm.findWordAt(cm.getCursor());
+                    sel = cm.getRange(wordPos.anchor, wordPos.head)
+                }
+                name.value = sel;
+                load();
+            }
 
-		#name {
-			font-size: large;
-		}
-	</style>
+            function goto(event) {
+                if (event.which == 123 || event.keyCode == 123) {
+                    goToDefinition(editor);
+                    return false;
+                }
+                return true;
+            }
+            document.getElementsByClassName('CodeMirror')[0].onkeydown = goto;
+
+            window.addEventListener("popstate", function(e) {
+                document.getElementById("name").value = location.pathname.substr(9);
+                load2();
+            });
+            // handle non ajax (re)load
+            if (location.pathname.length > 9) {
+                document.getElementById("name").value = location.pathname.substr(9);
+                load2();
+            }
+        };
+    </script>
+    <style>
+        .CodeMirror {
+            border: 1px solid gray;
+            height: 70vh;
+        }
+
+        .button {
+            padding: 2px;
+            color: white;
+            font-family: sans-serif;
+            font-weight: bold;
+            background-color: blue;
+            cursor: pointer;
+        }
+
+        #name {
+            font-size: large;
+        }
+    </style>
 </head>
 
 <body>
-	<h1>suneido.js Library View</h1>
-	<input id="name" type="text" style="margin-bottom: 1em;"></input>
-	<span id="load" class="button">Load</span>
-	<span id="update" class="button" style="float: right;">Update</span>
-	<br style="clear: both;" />
-	<div id="text"></div>
-	<p>Keyboard shortcuts: Ctrl+F = Search, F3 = Find Next, Shift+F3 = Find Previous, Ctrl+H = Replace, Shift+Ctrl+H = Replace All, Ctrl+/ = comment with //, Shift+Ctrl+/ = comment with /* */, F12 = go to selected name
-	</p>
+    <h1>suneido.js Library View</h1>
+    <input id="name" type="text" style="margin-bottom: 1em;"></input>
+    <span id="load" class="button">Load</span>
+    <span id="update" class="button" style="float: right;">Update</span>
+    <br style="clear: both;" />
+    <div id="text"></div>
+    <p>Keyboard shortcuts: Ctrl+F = Search, F3 = Find Next, Shift+F3 = Find Previous, Ctrl+H = Replace, Shift+Ctrl+H = Replace All, Ctrl+/ = comment with //, Shift+Ctrl+/ = comment with /* */, F12 = go to selected name
+    </p>
 </body>
 
 </html>
