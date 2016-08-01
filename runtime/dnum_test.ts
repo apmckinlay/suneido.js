@@ -28,7 +28,7 @@ eq(n(1000000, -3), "1000");
 
 // toNumber --------------------------------------------------------------------
 
-function toNum(s: string, expected) {
+function toNum(s: string, expected: number) {
     var n = Dnum.parse(s).toNumber();
     assert.equal(n, expected);
     // var dif = Math.abs(n - expected);
@@ -44,7 +44,7 @@ toNum('12.34e-56', 12.34e-56);
 
 // parse -----------------------------------------------------------------------
 
-function parse(s: string, expected) {
+function parse(s: string, expected: null|number|string) {
     var result = Dnum.parse(s);
     eq(result, expected);
 }
@@ -82,8 +82,8 @@ eq(Dnum.MINUS_INF.abs(), 'inf');
 
 // add/sub ---------------------------------------------------------------------
 
-function add_sub(x: Dnum, y: Dnum, sum, dif) {
-    function op(fn, x, y, expected) {
+function add_sub(x: Dnum, y: Dnum, sum: string|number, dif: string|number) {
+    function op(fn: (x: Dnum, y: Dnum) => Dnum, x: Dnum, y: Dnum, expected: string|number) {
         var result = fn(x, y);
         var sfn = (fn === Dnum.add) ? " + " : " - ";
         eq(result, expected);
@@ -110,8 +110,8 @@ add_sub(n(9007199254740990, 126), n(9007199254740990, 126), 'inf', 0); // overfl
 
 // mul -------------------------------------------------------------------------
 
-function mul(x: Dnum, y: Dnum, expected) {
-    function mul2(x, y, expected) {
+function mul(x: Dnum, y: Dnum, expected: string|number) {
+    function mul2(x: Dnum, y: Dnum, expected: string|number) {
         var result = Dnum.mul(x, y);
         eq(result, expected);
     }
@@ -135,8 +135,8 @@ mul(n(1234567890123456), n(1234567890123456), '1.524157875323882e30');
 
 // div -------------------------------------------------------------------------
 
-function div(x, y, expected) {
-    function div2(x, y, expected) {
+function div(x: Dnum, y: Dnum, expected: string|number) {
+    function div2(x: Dnum, y: Dnum, expected: string|number) {
         var result = Dnum.div(x, y);
         eq(result, expected);
     }
@@ -173,11 +173,12 @@ import { runFile } from "./porttests"
 
 runFile("dnum.test", { dnum_add, dnum_sub, dnum_mul, dnum_div, dnum_cmp });
 
-function binary(x, y, z, fn) {
+function binary(x: string, y: string, z: string,
+    fn: (x: Dnum, y: Dnum, z: Dnum) => boolean): boolean {
     return fn(dn(x), dn(y), dn(z))
 }
 
-function ck1(x, y, z, op): boolean {
+function ck1(x: Dnum, y: Dnum, z: Dnum, op: (x: Dnum, y: Dnum) => Dnum): boolean {
     if (!op(x, y).equals(z)) {
         console.log(op.name + " " + x + ", " + y +
             " => " + op(x, y) + " should be " + z);
@@ -186,27 +187,27 @@ function ck1(x, y, z, op): boolean {
         return true;
 }
 
-function dnum_add(x, y, z): boolean {
+function dnum_add(x: string, y: string, z: string): boolean {
     return binary(x, y, z, (x, y, z) =>
         ck1(x, y, z, Dnum.add) && ck1(y, x, z, Dnum.add))
 }
 
-function dnum_sub(x, y, z): boolean {
+function dnum_sub(x: string, y: string, z: string): boolean {
     return binary(x, y, z, (x, y, z) =>
         ck1(x, y, z, Dnum.sub) && ck1(y, x, z.neg(), Dnum.sub))
 }
 
-function dnum_mul(x, y, z): boolean {
+function dnum_mul(x: string, y: string, z: string): boolean {
     return binary(x, y, z, (x, y, z) =>
         ck1(x, y, z, Dnum.mul) && ck1(y, x, z, Dnum.mul))
 }
 
-function dnum_div(x, y, z): boolean {
+function dnum_div(x: string, y: string, z: string): boolean {
     return binary(x, y, z, (x, y, z) =>
         ck1(x, y, z, Dnum.div))
 }
 
-function dnum_cmp(...data): boolean {
+function dnum_cmp(...data: string[]): boolean {
     const n = data.length;
     for (let i = 0; i < n; ++i) {
         let x = dn(data[i]);
@@ -221,7 +222,7 @@ function dnum_cmp(...data): boolean {
     return true;
 }
 
-function dn(s: string) {
+function dn(s: string): Dnum {
     return s == "inf" ? Dnum.INF :
         s == "-inf" ? Dnum.MINUS_INF :
             Dnum.parse(s);

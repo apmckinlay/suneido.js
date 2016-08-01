@@ -6,7 +6,7 @@ import SuObject from "./suobject";
 import Dnum from "./dnum";
 import * as assert from "./assert";
 
-const n = Dnum.make;
+const dn = Dnum.fromNumber;
 
 var ob = new SuObject();
 assert.equal(ob.size(), 0);
@@ -38,7 +38,7 @@ assert.equal(ob.mapsize(), 1);
 
 ob.put(1.5, 15);
 assert.equal(ob.get(1.5), 15);
-assert.equal(ob.get(n(15, -1)), 15);
+assert.equal(ob.get(dn(1.5)), 15);
 
 
 assert.equal(ob.get('x'), undefined);
@@ -77,5 +77,5 @@ ob.put('b', 'Bob');
 assert.equal(ob.toString(), '#(12, 34, b: "Bob")');
 
 ob = new SuObject();
-ob.put('a b', n(1, 3));
+ob.put('a b', dn(1000));
 assert.equal(ob.toString(), '#("a b": 1000)');

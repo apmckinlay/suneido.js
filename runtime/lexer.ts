@@ -160,7 +160,7 @@ export default class Lexer {
         if (!this.matchChar('\\'))
             return this.src[this.si++];
         let save = this.si;
-        let d1, d2, d3;
+        let d1: number, d2: number, d3: number;
         if (this.matchChar('n'))
             return '\n';
         else if (this.matchChar('r'))
@@ -252,14 +252,14 @@ export default class Lexer {
         return true;
     }
 
-    private matchIf(pred: (string) => boolean): boolean {
+    private matchIf(pred: (s: string) => boolean): boolean {
         if (this.si >= this.src.length || !pred(this.src[this.si]))
             return false;
         ++this.si;
         return true;
     }
 
-    private matchWhile(pred: (string) => boolean): boolean {
+    private matchWhile(pred: (s: string) => boolean): boolean {
         let start = this.si;
         while (this.si < this.src.length && pred(this.src[this.si]))
             ++this.si;

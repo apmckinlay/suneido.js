@@ -6,7 +6,7 @@
 type Char = string;
 
 export abstract class CharMatcher {
-    static NONE;
+    static NONE: CharMatcher;
 
     abstract matches(c: Char): boolean;
 

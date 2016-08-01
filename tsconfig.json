@@ -5,6 +5,7 @@
         "sourceMap": true,
         "listFiles": true,
         "target": "es6",
-        "preserveConstEnums": true
+        "preserveConstEnums": true,
+        "noImplicitAny": true
     }
 }

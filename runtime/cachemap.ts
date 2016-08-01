@@ -27,9 +27,7 @@ export default class CacheMap<Key, Data> {
         return data;
     }
     get(key: Key): Data {
-        var i;
-
-        for (i = 0; i < this.next; i++)
+        for (var i = 0; i < this.next; i++)
             if (this.slots[i].key === key) {
                 this.slots[i].lru = this.clock++;
                 return this.slots[i].data;

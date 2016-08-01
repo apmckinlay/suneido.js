@@ -31,7 +31,7 @@ export default class SuObject {
         return this.size();
     }
 
-    static list(...args): SuObject {
+    static list(...args: any[]): SuObject {
         var ob = new SuObject();
         ob.vec = args;
         return ob;
@@ -73,7 +73,7 @@ export default class SuObject {
     }
 
     private migrate(): void {
-        var x;
+        var x: any;
         while (undefined != (x = this.map.get(this.vec.length))) {
             this.map.delete(this.vec.length);
             this.vec.push(x);
@@ -134,7 +134,7 @@ export default class SuObject {
     equals(that: any): boolean {
         if (!SuObject.isSuOb(that))
             return false;
-        return equals2(this, <SuObject>that, null);
+        return SuObject.equals2(this, <SuObject>that, null);
     }
 
     toString(): string {
@@ -144,7 +144,29 @@ export default class SuObject {
     display(): string {
         return this.toString();
     }
-}
+    static equals2(x: SuObject, y: SuObject, stack?: PairStack): boolean {
+        if (x.vec.length != y.vec.length || x.map.size != y.map.size)
+            return false;
+        if (stack == undefined)
+            stack = new PairStack();
+        else if (stack.contains(x, y))
+            return true; // comparison is already in progress
+        stack.push(x, y);
+        try {
+            for (var i = 0; i < x.vec.length; ++i)
+                if (!equals3(x.vec[i], y.vec[i], stack))
+                    return false;
+            var eq = true;
+            x.map.forEach(function(v, k) {
+                if (!equals3(v, y.map.get(k), stack))
+                    eq = false;
+            }); //TODO use for-of once available
+            return eq;
+        } finally {
+            stack.pop();
+        }
+    }
+} // end of SuObject class
 
 function canonical(key: any): any {
     if (key instanceof Dnum)
@@ -160,37 +182,14 @@ function index(key: any): number {
     return Number.isSafeInteger(key) ? key : -1;
 }
 
-function equals2(x, y, stack): boolean {
-    if (x.vec.length != y.vec.length || x.map.size != y.map.size)
-        return false;
-    if (stack == undefined)
-        stack = new PairStack();
-    else if (stack.contains(x, y))
-        return true; // comparison is already in progress
-    stack.push(x, y);
-    try {
-        for (var i = 0; i < x.vec.length; ++i)
-            if (!equals3(x.vec[i], y.vec[i], stack))
-                return false;
-        var eq = true;
-        x.map.forEach(function(v, k) {
-            if (!equals3(v, y.map.get(k), stack))
-                eq = false;
-        }); //TODO use for-of once available
-        return eq;
-    } finally {
-        stack.pop();
-    }
-}
-
-function equals3(x, y, stack): boolean {
+function equals3(x: any, y: any, stack?: PairStack): boolean {
     if (x === y)
         return true;
     if (!SuObject.isSuOb(x))
         return su.is(x, y);
     if (!SuObject.isSuOb(y))
         return false;
-    return equals2(x, y, stack);
+    return SuObject.equals2(x, y, stack);
 }
 
 function keyString(x: any): string {

@@ -2,7 +2,7 @@ import SuDate from "./sudate";
 import * as assert from "./assert";
 
 var sud1 = SuDate.make(2003, 11, 27, 16, 37, 33, 123),
-    sud2,
+    sud2: SuDate,
     sud3 = SuDate.make(2003, 12, 3, 0, 0, 0, 0),
     sud4 = SuDate.make(2003, 12, 3, 0, 0, 12, 345),
     sud5 = SuDate.make(2003, 12, 3, 1, 2, 3, 4),

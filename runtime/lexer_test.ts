@@ -3,7 +3,7 @@ import { Token, keywords } from "./tokens"
 import * as tokens from "./tokens"
 import * as assert from "./assert"
 
-function check(src: string, ...expected): void {
+function check(src: string, ...expected: any[]): void {
     let lexer = new Lexer(src);
     let i = 0;
     for (; ;) {
@@ -85,7 +85,7 @@ check("if 1<2\n/**/Print(12)",
 
 check("@// more\n@", Token.AT, Token.COMMENT, Token.NEWLINE, Token.AT);
 
-function checkValues(token, ...values): void {
+function checkValues(token: Token, ...values: string[]): void {
     let src = values.join(' ');
     let expected = values.map(v => [token, v]);
     check(src, ...expected);
@@ -105,7 +105,7 @@ checkKeywords("break case catch continue class callback default " +
     "dll do else for forever function if new " +
     "switch struct super return throw try while true false");
 
-function checkStrings(...cases) {
+function checkStrings(...cases: string[][]) {
     let src = cases.map(c => c[0]).join(' ');
     let expected = cases.map(c => [Token.STRING, c[1]]);
     check(src, ...expected);

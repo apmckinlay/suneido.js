@@ -222,7 +222,7 @@ export default class Dnum {
      * @param that
      * @returns {boolean} true if that is a number equal to this, else false
      */
-    equals(that): boolean {
+    equals(that: any): boolean {
         if (typeof that === 'number')
             return this.toNumber() === that;
         if (that instanceof Dnum)

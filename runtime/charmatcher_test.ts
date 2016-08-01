@@ -1,7 +1,7 @@
 import { CharMatcher } from "./charmatcher";
 import * as assert from "./assert"
 
-let cm;
+let cm: CharMatcher;
 
 cm = CharMatcher.NONE;
 assert.equal(cm.matches('a'), false);
