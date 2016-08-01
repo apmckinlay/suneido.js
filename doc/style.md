@@ -1,5 +1,7 @@
 * use `let` instead of `var`
 
+* use `const` for immutable values (not for every variable that isn't modified)
+
 * declare and initialize variables immediately before they are used, rather than at the start of a function
 
 * make things private or unexported where possible
@@ -14,8 +16,6 @@
 
 * write range comparisons like `lo <= x && x <= hi` or `x < lo || hi < x`
 
-* use `const` for immutable values (not for every variable that isn't modified)
-
 * use `ob.field` rather than `ob["field"]`
 
 * use all capitals for the names of constants
@@ -27,3 +27,9 @@
 * prefer standalone functions to closures, i.e. pass values as arguments rather than directly accessing context
 
 * use `++` and `--` rather than `+= 1` or `-= 1`
+
+* avoid `null`, use `undefined` instead
+
+* use == or != undefined to check for null or undefined
+
+* avoid default exports
