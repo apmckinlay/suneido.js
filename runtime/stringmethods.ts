@@ -391,7 +391,7 @@ export function tr(s: string, from: string, to: string = ''): string {
 export function unescape(s: string): string {
     assert.that(arguments.length === 1, "usage: string.Unescape()");
     var dst = '';
-    for (let index = new util.IndexOb(0); index.i < s.length; index.i++) {
+    for (let index = { i: 0 }; index.i < s.length; index.i++) {
         if (s.charAt(index.i) === '\\')
             dst += util.doesc(s, index);
         else
