@@ -1,5 +1,6 @@
 import Lexer from "./lexer"
 import { Token, keywords } from "./tokens"
+import * as tokens from "./tokens"
 import * as assert from "./assert"
 
 function check(src: string, ...expected): void {
@@ -37,8 +38,8 @@ function check1(lexer: Lexer, token: Token,
 
 function eqToken(t1: Token, t2: Token) {
     if (t1 !== t2)
-        throw new Error("assert failed: " + Token[t1] + "(" + t1 + ")" +
-            " does not equal " + Token[t2] + "(" + t2 + ")");
+        throw new Error("assert failed: " + (tokens as any).Token[t1] + "(" + t1 + ")" +
+            " does not equal " + (tokens as any).Token[t2] + "(" + t2 + ")");
 }
 
 check("");
@@ -97,7 +98,7 @@ checkValues(Token.IDENTIFIER,
 
 function checkKeywords(src: string) {
     let expected = src.split(' ').map(t =>
-        [Token.IDENTIFIER, t, Token[t.toUpperCase()] || "BAD"])
+        [Token.IDENTIFIER, t, (tokens as any).Token[t.toUpperCase()] || "BAD"])
     check(src, ...expected);
 }
 checkKeywords("break case catch continue class callback default " +

@@ -5,6 +5,7 @@
 import * as fs from "fs";
 import Lexer from "./lexer"
 import { Token } from "./tokens"
+import * as tokens from "./tokens"
 
 const SKIP = true;
 
@@ -111,7 +112,8 @@ class Scanner {
 
     match(expected: Token, skip: boolean = false): void {
         if (this.token !== expected)
-            throw new Error("expected " + Token[expected] + " got " + Token[this.token]);
+            throw new Error("expected " + (tokens as any).Token[expected] +
+                " got " + (tokens as any).Token[this.token]);
         this.next(skip);
     }
 }
