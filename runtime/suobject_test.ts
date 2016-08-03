@@ -1,9 +1,5 @@
-/**
- * Created by andrew on 2015-05-31.
- */
-
-import SuObject from "./suobject";
-import Dnum from "./dnum";
+import { SuObject } from "./suobject";
+import { Dnum } from "./dnum";
 import * as assert from "./assert";
 
 const dn = Dnum.fromNumber;

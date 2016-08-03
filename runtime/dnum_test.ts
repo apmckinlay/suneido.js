@@ -1,4 +1,4 @@
-import Dnum from "./dnum";
+import { Dnum } from "./dnum";
 import * as assert from "./assert";
 
 const n = Dnum.make;

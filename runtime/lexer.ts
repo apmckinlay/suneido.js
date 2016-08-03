@@ -6,7 +6,7 @@
 import { isWhite, isAlpha, isDigit, isHexDigit, isAlphaNum } from "./utility"
 import { Token, keywords } from "./tokens"
 
-export default class Lexer {
+export class Lexer {
     private src: string;
     private si: number;
     private _prev: number;

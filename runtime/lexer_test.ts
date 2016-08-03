@@ -1,4 +1,4 @@
-import Lexer from "./lexer"
+import { Lexer } from "./lexer"
 import { Token, keywords } from "./tokens"
 import * as tokens from "./tokens"
 import * as assert from "./assert"

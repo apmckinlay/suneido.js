@@ -1,7 +1,7 @@
 import * as assert from "./assert";
 import * as util from "./utility";
 import { tr as trImpl } from "./tr";
-import SuObject from "./suobject";
+import { SuObject } from "./suobject";
 
 export function alphaq(s: string): boolean {
     assert.that(arguments.length === 1, "usage: string.Alpha?()");

@@ -1,3 +1,5 @@
+// used by tr
+
 class Slot<Key, Data> {
     constructor(
         public lru: number = null,
@@ -5,7 +7,7 @@ class Slot<Key, Data> {
         public data: Data = null) { }
 }
 
-export default class CacheMap<Key, Data> {
+export class CacheMap<Key, Data> {
     constructor(n: number) {
         this.next = 0;
         this.clock = 0;

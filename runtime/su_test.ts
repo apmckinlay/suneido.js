@@ -1,9 +1,5 @@
-/**
- * Created by andrew on 2015-05-30.
- */
-
-import Dnum from "./dnum";
-import SuObject from "./suobject";
+import { Dnum } from "./dnum";
+import { SuObject } from "./suobject";
 import * as su from "./su";
 
 import * as assert from "./assert";

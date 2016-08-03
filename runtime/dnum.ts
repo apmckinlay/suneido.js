@@ -5,8 +5,6 @@
  * where both are integers.
  * The sign of the number is the sign of the coefficient.
  * Infinite is represented by an infinite coefficient and a large exponent.
- *
- * Created by andrew on 2015-05-17.
  */
 
 import * as assert from "./assert"
@@ -16,7 +14,7 @@ const maxExp = +126;
 const expInf = 127;
 const MAX_COEF_STR = "" + Number.MAX_SAFE_INTEGER;
 
-export default class Dnum {
+export class Dnum {
     private coef: number;
     private exp: number;
 

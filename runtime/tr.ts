@@ -1,4 +1,4 @@
-import CacheMap from "./cachemap";
+import { CacheMap } from "./cachemap";
 
 export function tr(srcstr: string, from: string, to: string): string {
     var srclen: number = srcstr.length;

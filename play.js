@@ -1,7 +1,5 @@
-/**
- * Created by andrew on 2015-05-28.
- */
 "use strict";
+
 require(['runtime/su'], function(su) {
     function run() {
         var src = document.getElementById("su_source").value;

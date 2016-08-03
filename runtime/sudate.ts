@@ -1,4 +1,4 @@
-/** 
+/**
  * Implements Suneido date/times.
  * Represents them as two integers to allow fast pack/unpack.
  * The only export is the SuDate class.
@@ -12,7 +12,7 @@ const month = ["January", "February", "March", "April", "May", "June", "July",
 const weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
     "Saturday"];
 
-export default class SuDate {
+export class SuDate {
     private date: number;
     private time: number;
 

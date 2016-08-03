@@ -2,26 +2,19 @@
  * Uses a JavaScript array and Map
  * Map does not handle object keys so these are disallowed for now.
  * Dnum keys are converted to JavaScript numbers, hopefully losslessly.
- * Iteration through the map must use forEach until TypeScript has for-of
- * Created by andrew on 2015-05-31.
  */
 
-import Dnum from "./dnum";
+import { Dnum } from "./dnum";
 import * as su from "./su";
 
-declare var Map: {
-    new <K, V>(): Map<K, V>;
-    prototype: Map<any, any>;
-};
-
-export default class SuObject {
+export class SuObject {
     private readonly: boolean;
     private defval: any;
     private vec: Array<any>;
     private map: Map<any, any>;
 
-    constructor(readonly = false) {
-        this.readonly = readonly;
+    constructor() {
+        this.readonly = false;
         this.vec = [];
         this.map = new Map();
     }
@@ -45,9 +38,8 @@ export default class SuObject {
         var s = "";
         for (var i = 0; i < x.vec.length; ++i)
             s += x.vec[i] + ', ';
-        x.map.forEach(function(v, k) {
+        for (let [k, v] of x.map)
             s += keyString(k) + ': ' + su.display(v) + ', ';
-        }); //TODO use for-of once available
         return before + s.slice(0, -2) + after;
     }
 
@@ -155,10 +147,9 @@ export default class SuObject {
                 if (!SuObject.equals3(x.vec[i], y.vec[i], stack))
                     return false;
             var eq = true;
-            x.map.forEach(function(v, k) {
+            for (let [k, v] of x.map)
                 if (!SuObject.equals3(v, y.map.get(k), stack))
                     eq = false;
-            }); //TODO use for-of once available
             return eq;
         } finally {
             stack.pop();

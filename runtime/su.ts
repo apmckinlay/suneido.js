@@ -1,15 +1,13 @@
 /**
- * Run-time support routines for suneido.js
- * Created by andrew on 2015-05-25.
+ * Run-time support routines
  */
 
 //TODO global
 //TODO dynget, dynset, dynpush, dynpop
+//TODO object & record builder
 
-import Dnum from "./dnum";
-
-import * as suob from "./suobject";
-import SuObject from "./suobject";
+import { Dnum } from "./dnum";
+import { SuObject } from "./suobject";
 // export { empty_object } from "./suobject";
 
 export function put(ob: any, key: any, val: any): void {

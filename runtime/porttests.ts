@@ -3,7 +3,7 @@
  */
 
 import * as fs from "fs";
-import Lexer from "./lexer"
+import { Lexer } from "./lexer"
 import { Token } from "./tokens"
 import * as tokens from "./tokens"
 

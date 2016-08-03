@@ -1,4 +1,4 @@
-import SuDate from "./sudate";
+import { SuDate } from "./sudate";
 import * as assert from "./assert";
 
 var sud1 = SuDate.make(2003, 11, 27, 16, 37, 33, 123),

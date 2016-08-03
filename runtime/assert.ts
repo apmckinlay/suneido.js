@@ -13,8 +13,6 @@ export function equal(x: any, y: any): void {
 function eq(x: any, y: any): boolean {
     if (x === y)
         return true;
-    if (typeof x == "string" && typeof y == "string")
-        return x == y;
     if (typeof x == "number" && typeof y == "number")
         return x.toPrecision(14) == y.toPrecision(14);
     return false;
