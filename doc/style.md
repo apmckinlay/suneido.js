@@ -1,3 +1,5 @@
+* code should pass tslint with no errors
+
 * use `let` or `const` instead of `var`
 
 * use one `let` or `const` per variable
@@ -14,7 +16,9 @@
 
 * declare function parameter types and return types, but not variables (unless there is a particular reason)
 
-* use ES6 style `import`
+* use ES6 style `import` and `export`
+
+* avoid default exports
 
 * write range comparisons like `lo <= x && x <= hi` or `x < lo || hi < x`
 
@@ -41,8 +45,6 @@
 * use [] instead of .charAt()
 
 * throw Error's (not strings or other values)
-
-* avoid default exports
 
 * use `as` for type assertions, not `<type>`
 
