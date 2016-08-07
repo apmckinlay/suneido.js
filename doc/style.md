@@ -36,6 +36,12 @@
 
 * use == or != undefined to check for null or undefined
 
+* use slice instead of substring
+
+* use [] instead of .charAt()
+
+* throw Error's (not strings or other values)
+
 * avoid default exports
 
 * use `as` for type assertions, not `<type>`
