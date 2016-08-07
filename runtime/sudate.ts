@@ -109,7 +109,7 @@ export class SuDate {
                     tokens[ntokens] = j + 1;
                     ntokens++;
                 } else if (word === "Am" || word === "Pm") {
-                    if (word.charAt(0) === 'P') {
+                    if (word[0] === 'P') {
                         if (dt.hour < 12)
                             dt.hour += 12;
                     } else {
@@ -150,7 +150,7 @@ export class SuDate {
                             dt.minute = digits.get(2);
                             if (len >= 6) {
                                 dt.second = digits.get(2);
-                                if (len == 9)
+                                if (len === 9)
                                     dt.millisecond = digits.get(3);
                             }
                         }
@@ -325,7 +325,7 @@ export class SuDate {
 
     // WARNING: doing this around daylight savings changes may be problematic
     minusMilliseconds(sud2: SuDate): number {
-        if (this.date == sud2.date)
+        if (this.date === sud2.date)
             return this.timeAsMs() - sud2.timeAsMs();
         else
             return this.toDate().getTime() - sud2.toDate().getTime();
@@ -568,7 +568,7 @@ function ampmAhead(s: string, i: number): boolean {
     if (s[i] === ' ')
         i++;
     let str = s.slice(i, i + 2).toLowerCase();
-    return str == 'am' || str == 'pm';
+    return str === 'am' || str === 'pm';
 }
 
 function format(dt: SuDate, fmt: string): string {
@@ -655,14 +655,14 @@ function format(dt: SuDate, fmt: string): string {
             case 'a':
                 dst += dt.hour() < 12 ? 'a' : 'p';
                 if (n > 1) {
-                    dst += 'm'
+                    dst += 'm';
                 }
                 break;
             case 'A':
             case 't':
                 dst += dt.hour() < 12 ? 'A' : 'P';
                 if (n > 1) {
-                    dst += 'M'
+                    dst += 'M';
                 }
                 break;
             case '\'':
@@ -698,7 +698,7 @@ function adjustPatterns(date_patterns: Array<string>, order: string): string {
             i++;
         }
     }
-    assert.that(i === 3, "invalid date format: '" + order + "'")
+    assert.that(i === 3, "invalid date format: '" + order + "'");
     date_patterns[0] = syspatArray.join('');
 
     // swap month-day patterns if system setting is day first
@@ -740,5 +740,5 @@ class Digits {
 function nsub(s: string, i: number, n: number): number {
     if (i + n > s.length)
         return 0;
-    return Number.parseInt(s.substr(i, n))
+    return Number.parseInt(s.substr(i, n));
 }

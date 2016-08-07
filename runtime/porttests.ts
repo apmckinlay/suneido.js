@@ -3,9 +3,9 @@
  */
 
 import * as fs from "fs";
-import { Lexer } from "./lexer"
-import { Token } from "./tokens"
-import * as tokens from "./tokens"
+import { Lexer } from "./lexer";
+import { Token } from "./tokens";
+import * as tokens from "./tokens";
 
 const SKIP = true;
 
@@ -48,7 +48,7 @@ function run1(fixtures: Fixtures, file: string, scan: Scanner): void {
     scan.match(Token.AT);
     let name = scan.value();
     scan.match(Token.IDENTIFIER, SKIP);
-    console.log(file + ": " + name + ":")
+    console.log(file + ": " + name + ":");
     let n = 0;
     let fixture = fixtures[name];
     if (!fixture) {
@@ -69,10 +69,10 @@ function run1(fixtures: Fixtures, file: string, scan: Scanner): void {
             scan.next();
             if (scan.token === Token.COMMA)
                 scan.next(SKIP);
-        } while (scan.token !== Token.EOF && scan.token != Token.NEWLINE);
+        } while (!scan.eol());
         // here's the actual test
         if (!runCase(fixture, args))
-            console.log("\tFAILED: ", args)
+            console.log("\tFAILED: ", args);
         else
             ++n;
         scan.next(SKIP);
@@ -86,7 +86,7 @@ function runCase(fixture: Fixture, args: string[]): boolean {
         return fixture(...args);
     } catch (e) {
         console.log('\t' + e);
-        return false
+        return false;
     }
 }
 
@@ -119,4 +119,9 @@ class Scanner {
                 " got " + (tokens as any).Token[this.token]);
         this.next(skip);
     }
+
+    eol(): boolean {
+        return (this.token === Token.EOF) || (this.token === Token.NEWLINE);
+    }
+
 }

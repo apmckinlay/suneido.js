@@ -15,21 +15,20 @@ export class CacheMap<Key, Data> {
         this.slots = [];
     }
     put(key: Key, data: Data): Data {
-        var lru: number = 0,
-            i: number;
+        let lru: number = 0;
 
         if (this.next < this.n) {
             this.slots[this.next++] = new Slot(this.clock++, key, data);
             return data;
         }
-        for (i = 0; i < this.next; i++)
+        for (let i = 0; i < this.next; i++)
             if (this.slots[i].lru < this.slots[lru].lru)
                 lru = i;
         this.slots[lru] = new Slot(this.clock++, key, data);
         return data;
     }
     get(key: Key): Data {
-        for (var i = 0; i < this.next; i++)
+        for (let i = 0; i < this.next; i++)
             if (this.slots[i].key === key) {
                 this.slots[i].lru = this.clock++;
                 return this.slots[i].data;

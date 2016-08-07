@@ -145,7 +145,13 @@ export const enum Token {
     WHERE
 }
 
-export const keywords = {
+// needed this to avoid error in lexer.ts from tsc
+// may be able to remove in future
+interface StrToTok {
+    [key: string]: Token;
+}
+
+export const keywords: StrToTok = {
     "and": Token.AND,
     "bool": Token.BOOL,
     "break": Token.BREAK,
@@ -191,4 +197,4 @@ export const keywords = {
     "void": Token.VOID,
     "while": Token.WHILE,
     "xor": Token.ISNT,
-}
+};

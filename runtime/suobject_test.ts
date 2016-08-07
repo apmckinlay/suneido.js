@@ -4,7 +4,7 @@ import * as assert from "./assert";
 
 const dn = Dnum.fromNumber;
 
-var ob = new SuObject();
+let ob = new SuObject();
 assert.equal(ob.size(), 0);
 ob.add(123);
 assert.equal(ob.size(), 1);
@@ -48,7 +48,7 @@ assert.throws(function() { ob.put('b', true); },
 ob = new SuObject();
 assert.that(ob.equals(ob));
 assert.that(!ob.equals(123));
-var ob2 = new SuObject();
+let ob2 = new SuObject();
 assert.that(ob.equals(ob2));
 ob.add(123);
 assert.that(!ob.equals(ob2));

@@ -12,11 +12,12 @@ export class SuObject {
     private defval: any;
     private vec: Array<any>;
     private map: Map<any, any>;
+    static EMPTY = new SuObject().setReadonly();
 
-    constructor() {
+    constructor(vec?: any[], map?: Map<any, any>) {
+        this.vec = vec || [];
+        this.map = map || new Map();
         this.readonly = false;
-        this.vec = [];
-        this.map = new Map();
     }
 
     // length property is used by su.range... to be compatible with string
@@ -25,9 +26,7 @@ export class SuObject {
     }
 
     static list(...args: any[]): SuObject {
-        var ob = new SuObject();
-        ob.vec = args;
-        return ob;
+        return new SuObject(args);
     }
 
     static isSuOb(x: any): boolean {
@@ -35,8 +34,8 @@ export class SuObject {
     }
 
     static toString2(x: SuObject, before: string, after: string) {
-        var s = "";
-        for (var i = 0; i < x.vec.length; ++i)
+        let s = "";
+        for (let i = 0; i < x.vec.length; ++i)
             s += x.vec[i] + ', ';
         for (let [k, v] of x.map)
             s += keyString(k) + ': ' + su.display(v) + ', ';
@@ -65,8 +64,8 @@ export class SuObject {
     }
 
     private migrate(): void {
-        var x: any;
-        while (undefined != (x = this.map.get(this.vec.length))) {
+        let x: any;
+        while (undefined !== (x = this.map.get(this.vec.length))) {
             this.map.delete(this.vec.length);
             this.vec.push(x);
         }
@@ -80,7 +79,7 @@ export class SuObject {
 
     put(key: any, value: any): void {
         this.checkReadonly(this);
-        var i = index(key);
+        let i = index(key);
         if (0 <= i && i < this.vec.length)
             this.vec[i] = value;
         else if (i === this.vec.length)
@@ -90,7 +89,7 @@ export class SuObject {
     }
 
     get(key: any): any {
-        var value = this.getIfPresent(this, key);
+        let value = this.getIfPresent(this, key);
         if (value !== undefined)
             return value;
         //TODO handle SuObject defval
@@ -98,19 +97,21 @@ export class SuObject {
     }
 
     getIfPresent(ob: SuObject, key: any): any {
-        var i = index(key);
+        let i = index(key);
         return (0 <= i && i < ob.vec.length) ? ob.vec[i] : this.mapget(key);
     }
 
-    setReadonly(): void {
+    setReadonly(): SuObject {
         if (this.readonly)
-            return;
+            return this;
         this.readonly = true;
         //TODO recursively set readonly
+        return this;
     }
 
-    setDefault(value: any): void {
+    setDefault(value: any): SuObject {
         this.defval = value;
+        return this;
     }
 
     typeName(): string {
@@ -118,9 +119,7 @@ export class SuObject {
     }
 
     slice(i: number, j: number): SuObject {
-        var ob = new SuObject();
-        ob.vec = this.vec.slice(i, j);
-        return ob;
+        return new SuObject(this.vec.slice(i, j));
     }
 
     toString(): string {
@@ -137,16 +136,16 @@ export class SuObject {
         return SuObject.equals2(this, that, new PairStack());
     }
     private static equals2(x: SuObject, y: SuObject, stack: PairStack): boolean {
-        if (x.vec.length != y.vec.length || x.map.size != y.map.size)
+        if (x.vec.length !== y.vec.length || x.map.size !== y.map.size)
             return false;
         if (stack.contains(x, y))
             return true; // comparison is already in progress
         stack.push(x, y);
         try {
-            for (var i = 0; i < x.vec.length; ++i)
+            for (let i = 0; i < x.vec.length; ++i)
                 if (!SuObject.equals3(x.vec[i], y.vec[i], stack))
                     return false;
-            var eq = true;
+            let eq = true;
             for (let [k, v] of x.map)
                 if (!SuObject.equals3(v, y.map.get(k), stack))
                     eq = false;
@@ -183,7 +182,7 @@ function index(key: any): number {
 
 function keyString(x: any): string {
     if (typeof x === 'string' &&
-        -1 !== x.search(/^[_a-zA-Z][_a-zA-Z0-9]*[?!]?$/))
+        /^[_a-zA-Z][_a-zA-Z0-9]*[?!]?$/.test(x))
         return x;
     return su.display(x);
 }
@@ -191,15 +190,15 @@ function keyString(x: any): string {
 class PairStack {
     public stack: Array<any>;
     constructor() {
-        this.stack = []
+        this.stack = [];
     }
     public push(x: any, y: any): void {
         this.stack.push(x);
         this.stack.push(y);
     }
     public contains(x: any, y: any): boolean {
-        for (var i = 0; i < this.stack.length; i += 2)
-            if (this.stack[i] === x && this.stack[i + 1] == y)
+        for (let i = 0; i < this.stack.length; i += 2)
+            if (this.stack[i] === x && this.stack[i + 1] === y)
                 return true;
         return false;
     }

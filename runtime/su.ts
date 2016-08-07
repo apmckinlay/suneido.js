@@ -4,11 +4,10 @@
 
 //TODO global
 //TODO dynget, dynset, dynpush, dynpop
-//TODO object & record builder
+//TODO record builder
 
 import { Dnum } from "./dnum";
 import { SuObject } from "./suobject";
-// export { empty_object } from "./suobject";
 
 export function put(ob: any, key: any, val: any): void {
     if (SuObject.isSuOb(ob))
@@ -19,19 +18,19 @@ export function put(ob: any, key: any, val: any): void {
 
 export function get(x: any, key: any): any {
     if (typeof x === 'string')
-        return <string>x.charAt(toInt(key));
+        return <string>x[toInt(key)];
     if (SuObject.isSuOb(x))
         return <SuObject>x.get(key);
     throw typeName(x) + " does not support get (" + key + ")";
 }
 
 export function rangeto(x: any, i: number, j: number) {
-    var len = x.length;
+    let len = x.length;
     return x.slice(prepFrom(i, len), j);
 }
 
 export function rangelen(x: any, i: number, n: number) {
-    var len = x.length;
+    let len = x.length;
     i = prepFrom(i, len);
     return x.slice(i, i + n);
 }
@@ -85,7 +84,7 @@ function toNum(x: any): number | Dnum {
     if (x === true)
         return 1;
     if (typeof x === 'string') {
-        if (-1 === x.search('[.eE]') && x.length < 14)
+        if (!/[.eE]/.test(x) && x.length < 14)
             return parseInt(x);
         else
             return Dnum.parse(x);
@@ -184,11 +183,11 @@ export function gte(x: any, y: any     ): boolean {
 }
 
 export function match(x: any, y: any     ): boolean {
-    return -1 !== x.search(RegExp(y)); //TODO
+    return RegExp(y).test(x); //TODO
 }
 
 export function matchnot(x: any, y: any     ): boolean {
-    return -1 === x.search(RegExp(y)); //TODO
+    return !RegExp(y).test(x); //TODO
 }
 
 export function toBool(x: any): boolean {
@@ -198,7 +197,7 @@ export function toBool(x: any): boolean {
 }
 
 export function catchMatch(e: string, pat: string): boolean { // TODO
-    if (pat.charAt(0) === '*')
+    if (pat[0] === '*')
         return -1 !== e.indexOf(pat.substring(1));
     else
         return -1 !== e.lastIndexOf(pat, 0);
@@ -206,7 +205,7 @@ export function catchMatch(e: string, pat: string): boolean { // TODO
 }
 
 export function noargs(args: any[]): void {
-    if (args.length != 0)
+    if (args.length !== 0)
         throw "too many arguments";
 }
 
@@ -221,7 +220,7 @@ export function args(args: any[], spec: string) {
 export function typeName(x: any): string {
     if (typeof x.typeName === 'function')
         return x.typeName();
-    var t = typeof x;
+    let t = typeof x;
     switch (t) {
         case 'boolean': return 'Boolean';
         case 'string': return 'String';
@@ -238,7 +237,7 @@ export function display(x: any): string {
     return x.toString();
 }
 
-export var default_single_quotes = false;
+export let default_single_quotes = false;
 
 function displayString(s: string): string {
     if (-1 === s.indexOf('`') &&
@@ -246,11 +245,30 @@ function displayString(s: string): string {
         -1 === s.search(/[^ -~]/))
         return '`' + s + '`';
     s = s.replace('\\', '\\\\');
-    var single_quotes = default_single_quotes
+    let single_quotes = default_single_quotes
         ? -1 === s.indexOf("'")
         : (-1 !== s.indexOf('"') && -1 === s.indexOf("'"));
     if (single_quotes)
         return "'" + s + "'";
     else
         return "\"" + s.replace("\"", "\\\"") + "\"";
+}
+
+export function mandatory() {
+    throw new Error("missing argument");
+}
+
+/**
+ * constructor for object constants i.e. #(...)
+ * named members passed as sequence of key,value
+ */
+export function object(...args: any[]): SuObject {
+    let i = args.indexOf(null);
+    if (i === -1)
+        return new SuObject(args).setReadonly();
+    let vec = args.slice(0, i);
+    let map = new Map<any, any>();
+    for (i++; i < args.length; i += 2)
+        map.set(args[i], args[i + 1]);
+    return new SuObject(vec, map).setReadonly();
 }

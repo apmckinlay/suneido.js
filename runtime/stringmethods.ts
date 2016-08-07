@@ -7,7 +7,7 @@ export function alphaq(s: string): boolean {
     assert.that(arguments.length === 1, "usage: string.Alpha?()");
     if (s.length === 0)
         return false;
-    for (var c of s)
+    for (let c of s)
         if (!util.isAlpha(c))
             return false;
     return true;
@@ -17,7 +17,7 @@ export function alphaNumq(s: string): boolean {
     assert.that(arguments.length === 1, "usage: string.AlphaNum?()");
     if (s.length === 0)
         return false;
-    for (var c of s)
+    for (let c of s)
         if (!util.isAlphaNum(c))
             return false;
     return true;
@@ -29,7 +29,7 @@ export function asc(s: string): number {
 }
 
 function doWithSplit(str: string, sep: string, f: (arg: string) => string) {
-    var a = str.split(sep);
+    let a = str.split(sep);
     a.forEach(function(value, index) {
         a[index] = f(value);
     });
@@ -37,12 +37,12 @@ function doWithSplit(str: string, sep: string, f: (arg: string) => string) {
 }
 
 export function detab(s: string): string {
-    var tabWidth: number = 4,
+    let tabWidth: number = 4,
         spaces: string = "    ",
         replaceTabWithSpace = function(oneLineString: string) {
-            var array = oneLineString.split('\t');
-            for (var i = 0; i < array.length - 1; i++) {
-                var nSpace = tabWidth - array[i].length % tabWidth;
+            let array = oneLineString.split('\t');
+            for (let i = 0; i < array.length - 1; i++) {
+                let nSpace = tabWidth - array[i].length % tabWidth;
                 array[i] = array[i] + spaces.substr(0, nSpace);
             }
             return array.join('');
@@ -54,12 +54,12 @@ export function detab(s: string): string {
 }
 
 export function entab(s: string): string {
-    var tabWidth: number = 4,
+    let tabWidth: number = 4,
         isTab = function(col: number): boolean {
             return col > 0 && (col % tabWidth) === 0;
         },
         replaceSpaceWithTab = function(oneLineString: string) {
-            var strTrim = oneLineString.trim(),
+            let strTrim = oneLineString.trim(),
                 strPre = "",
                 i = 0,
                 col = 0,
@@ -93,11 +93,11 @@ export function entab(s: string): string {
 export function extract(s: string, pattern: string, part?: number): string | boolean {
     assert.that(arguments.length === 2 || arguments.length === 3,
         "usage: string.Extract(pattern, part = 0/1)");
-    var re = new RegExp(pattern),
+    let re = new RegExp(pattern),
         found = s.match(re);
     if (found === null)
         return false;
-    let part_i = (part == undefined)
+    let part_i = (part === undefined)
         ? (found.length === 1) ? 0 : 1
         : part;
     return found[part_i];
@@ -106,34 +106,34 @@ export function extract(s: string, pattern: string, part?: number): string | boo
 export function find(s: string, str: string, pos: number = 0): number {
     assert.that(arguments.length === 2 || arguments.length === 3,
         "usage: string.Find(string, pos = 0)");
-    var i = s.indexOf(str, pos);
+    let i = s.indexOf(str, pos);
     return i === -1 ? s.length : i;
 }
 
-export function findLast(s: string, str: string, pos: number = s.length)
-    : number | boolean {
+export function findLast(s: string, str: string, pos: number = s.length):
+    number | boolean {
     assert.that(arguments.length === 2 || arguments.length === 3,
         "usage: string.FindLast(string, pos = size())");
-    var i = s.lastIndexOf(str, pos);
+    let i = s.lastIndexOf(str, pos);
     return i === -1 ? false : i;
 }
 
 export function find1of(s: string, set: string, pos: number = 0): number {
     assert.that(arguments.length === 2 || arguments.length === 3,
         "usage: string.Find1of(string, pos = 0)");
-    for (var i = Math.max(0, pos); i < s.length; i++) {
-        if (-1 !== set.indexOf(s.charAt(i)))
+    for (let i = Math.max(0, pos); i < s.length; i++) {
+        if (-1 !== set.indexOf(s[i]))
             return i;
     }
-    return s.length
+    return s.length;
 }
 
-export function findLast1of(s: string, set: string, pos: number = s.length - 1)
-    : number | boolean {
+export function findLast1of(s: string, set: string, pos: number = s.length - 1):
+    number | boolean {
     assert.that(arguments.length === 2 || arguments.length === 3,
         "usage: string.FindLast1of(string, pos = size() - 1)");
-    for (var i = Math.min(s.length - 1, pos); i >= 0; i--) {
-        if (-1 !== set.indexOf(s.charAt(i)))
+    for (let i = Math.min(s.length - 1, pos); i >= 0; i--) {
+        if (-1 !== set.indexOf(s[i]))
             return i;
     }
     return false;
@@ -142,18 +142,18 @@ export function findLast1of(s: string, set: string, pos: number = s.length - 1)
 export function findnot1of(s: string, set: string, pos: number = 0): number {
     assert.that(arguments.length === 2 || arguments.length === 3,
         "usage: string.Findnot1of(string, pos = 0)");
-    for (var i = Math.max(0, pos); i < s.length; i++) {
-        if (-1 === set.indexOf(s.charAt(i)))
+    for (let i = Math.max(0, pos); i < s.length; i++) {
+        if (-1 === set.indexOf(s[i]))
             return i;
     }
-    return s.length
+    return s.length;
 }
 
 export function findLastnot1of(s: string, set: string, pos: number = s.length - 1): number | boolean {
     assert.that(arguments.length === 2 || arguments.length === 3,
         "usage: string.FindLastnot1of(string, pos = size() - 1)");
-    for (var i = Math.min(s.length - 1, pos); i >= 0; i--) {
-        if (-1 === set.indexOf(s.charAt(i)))
+    for (let i = Math.min(s.length - 1, pos); i >= 0; i--) {
+        if (-1 === set.indexOf(s[i]))
             return i;
     }
     return false;
@@ -171,8 +171,8 @@ export function lower(s: string): string {
 
 export function lowerq(s: string): boolean {
     assert.that(arguments.length === 1, "usage: string.Lower?()");
-    var result = false;
-    for (var c of s) {
+    let result = false;
+    for (let c of s) {
         if (util.isUpper(c))
             return false;
         else if (util.isLower(c))
@@ -183,15 +183,15 @@ export function lowerq(s: string): boolean {
 
 //TODO: to change after classes for block and callable functions are implemented
 export function mapN(s: string, n: number, f: (s: string) => string): string {
-    var dst = "";
-    for (var i = 0; i < s.length; i += n) {
+    let dst = "";
+    for (let i = 0; i < s.length; i += n) {
         dst += f(s.substr(i, n));
     }
     return dst;
 }
 
 //export function match(s: string, pattern: string, pos: number | boolean = false, prev: boolean = false): suobject.SuObject {
-//    var s: string = prev === false ? s.slice(pos, -1) : s.slice(0, pos),
+//    let s: string = prev === false ? s.slice(pos, -1) : s.slice(0, pos),
 //        arrayMatch = s.match(new RegExp(pattern, 'g')),
 //        strMatch,
 //        indexMatch,
@@ -213,30 +213,29 @@ export function mapN(s: string, n: number, f: (s: string) => string): string {
 
 export function numberq(s: string): boolean {
     assert.that(arguments.length === 1, "usage: string.Number?()");
-    var i: number = 0,
+    let i: number = 0,
         c: string,
-        s: string = s,
         intdigits: boolean,
         fracdigits: boolean;
-    c = s.charAt(i);
+    c = s[i];
     if (c === '+' || c === '-')
-        c = s.charAt(++i);
+        c = s[++i];
     intdigits = util.isDigit(c);
     while (util.isDigit(c))
-        c = s.charAt(++i);
+        c = s[++i];
     if (c === '.')
-        c = s.charAt(++i);
+        c = s[++i];
     fracdigits = util.isDigit(c);
     while (util.isDigit(c))
-        c = s.charAt(++i);
+        c = s[++i];
     if (!intdigits && !fracdigits)
         return false;
     if (c === 'e' || c === 'E') {
-        c = s.charAt(++i);
+        c = s[++i];
         if (c === '-' || c === '+')
-            c = s.charAt(++i);
+            c = s[++i];
         while (util.isDigit(c))
-            c = s.charAt(++i);
+            c = s[++i];
     }
     return i === s.length;
 }
@@ -245,7 +244,7 @@ export function numericq(s: string): boolean {
     assert.that(arguments.length === 1, "usage: string.Numeric?()");
     if (s.length === 0)
         return false;
-    for (var c of s)
+    for (let c of s)
         if (!util.isDigit(c))
             return false;
     return true;
@@ -267,16 +266,16 @@ enum RepStatus { E, U, L, u, l };
 export function replace(s: string, pattern: string, replacement: string | ((m: string) => string) = '', count: number = Infinity): string {
     assert.that(2 <= arguments.length && arguments.length <= 4,
         "usage: string.Replace(pattern, replacement = '', count = false) -> string");
-    var nGroups = (new RegExp(pattern + '|')).exec('').length - 1,      //Calculate how many capture groups dose the regex pattern have
+    let nGroups = (new RegExp(pattern + '|')).exec('').length - 1,      //Calculate how many capture groups dose the regex pattern have
         repCount = 0,
         repF = function(): string {
-            var dst: string = '',
+            let dst: string = '',
                 i: number = 0,
                 c: string,
                 n: number,
                 repStatus: RepStatus = RepStatus.E,
                 handleCase = function(s: string): string {
-                    var res: string;
+                    let res: string;
                     if (s && s.length === 0)
                         return '';
                     switch (repStatus) {
@@ -290,11 +289,11 @@ export function replace(s: string, pattern: string, replacement: string | ((m: s
                             res = s.toLowerCase();
                             break;
                         case RepStatus.u:
-                            res = s.charAt(0).toUpperCase() + s.substr(1);
+                            res = s[0].toUpperCase() + s.substr(1);
                             repStatus = RepStatus.E;
                             break;
                         case RepStatus.l:
-                            res = s.charAt(0).toLowerCase() + s.substr(1);
+                            res = s[0].toLowerCase() + s.substr(1);
                             repStatus = RepStatus.E;
                             break;
                         default:
@@ -308,13 +307,13 @@ export function replace(s: string, pattern: string, replacement: string | ((m: s
                 if (replacement.indexOf("\\=") === 0)
                     return replacement.substr(2);
                 while (i < replacement.length) {
-                    switch (replacement.charAt(i)) {
+                    switch (replacement[i]) {
                         case '&':
                             dst += handleCase(arguments[0]);
                             break;
                         case '\\':
                             if (i + 1 < replacement.length) {
-                                c = replacement.charAt(++i);
+                                c = replacement[++i];
                                 if (util.isDigit(c)) {
                                     n = parseInt(c);
                                     if (n <= nGroups)
@@ -337,7 +336,7 @@ export function replace(s: string, pattern: string, replacement: string | ((m: s
                                 dst += '\\';
                             break;
                         default:
-                            dst += handleCase(replacement.charAt(i));
+                            dst += handleCase(replacement[i]);
                     }
                     i++;
                 }
@@ -356,10 +355,10 @@ export function size(s: string): number {
 export function split(s: string, separator: string): SuObject {
     assert.that(arguments.length === 2, "usage: string.Split(separator)");
     assert.that(separator !== '', "string.Split separator must not be empty string");
-    var arraySplit = s.split(separator);
+    let arraySplit = s.split(separator);
     if (arraySplit[arraySplit.length - 1] === '')
         arraySplit = arraySplit.slice(0, -1);
-    var resOb = new SuObject();
+    let resOb = new SuObject();
     arraySplit.forEach(function(value) { resOb.add(value); });
     return resOb;
 }
@@ -390,12 +389,12 @@ export function tr(s: string, from: string, to: string = ''): string {
 
 export function unescape(s: string): string {
     assert.that(arguments.length === 1, "usage: string.Unescape()");
-    var dst = '';
+    let dst = '';
     for (let index = { i: 0 }; index.i < s.length; index.i++) {
-        if (s.charAt(index.i) === '\\')
+        if (s[index.i] === '\\')
             dst += util.doesc(s, index);
         else
-            dst += s.charAt(index.i);
+            dst += s[index.i];
     }
     return dst;
 }
@@ -407,8 +406,8 @@ export function upper(s: string): string {
 
 export function upperq(s: string): boolean {
     assert.that(arguments.length === 1, "usage: string.Upper?()");
-    var result = false;
-    for (var c of s) {
+    let result = false;
+    for (let c of s) {
         if (util.isLower(c))
             return false;
         else if (util.isUpper(c))

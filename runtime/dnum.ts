@@ -7,7 +7,7 @@
  * Infinite is represented by an infinite coefficient and a large exponent.
  */
 
-import * as assert from "./assert"
+import * as assert from "./assert";
 
 const minExp = -126;
 const maxExp = +126;
@@ -38,24 +38,24 @@ export class Dnum {
         if (s === "0")
             return Dnum.ZERO;
         let i = 0;
-        let sign = s.charAt(i) === '-' ? -1 : 1;
-        if (s.charAt(i) === '+' || s.charAt(i) == '-')
+        let sign = s[i] === '-' ? -1 : 1;
+        if (s[i] === '+' || s[i] === '-')
             i++;
-        var before = spanDigits(s, i);
+        let before = spanDigits(s, i);
         i += before.length;
         before = trimLeft(before, '0');
-        var after = "";
-        if (i < s.length && s.charAt(i) === '.') {
+        let after = "";
+        if (i < s.length && s[i] === '.') {
             i++;
             after = spanDigits(s, i);
             i += after.length;
         }
         after = trimRight(after, '0');
 
-        var exp = 0;
-        if (i < s.length && s.charAt(i).toLowerCase() === 'e') {
+        let exp = 0;
+        if (i < s.length && s[i].toLowerCase() === 'e') {
             i++;
-            var es = spanSignedDigits(s, i);
+            let es = spanSignedDigits(s, i);
             exp = parseInt(es, 10);
             i += es.length;
         }
@@ -66,10 +66,10 @@ export class Dnum {
         let digits = before + after;
         while (cmpNumStr(digits, MAX_COEF_STR) >= 0) {
             exp++;
-            carry = digits.charAt(digits.length - 1) < '5' ? 0 : 1;
+            carry = digits[digits.length - 1] < '5' ? 0 : 1;
             digits = digits.substring(0, digits.length - 1);
         }
-        var coef = carry + parseInt(digits, 10);
+        let coef = carry + parseInt(digits, 10);
         return Dnum.make(sign * coef, exp);
     }
 
@@ -105,26 +105,25 @@ export class Dnum {
      * @returns {string}
      */
     toString(): string {
-        //return '{ ' + this.coef + ', ' + this.exp + ' }';
-        var c = this.coef;
-        var e = this.exp;
+        let c = this.coef;
+        let e = this.exp;
         if (c === 0)
             return "0";
         while (e < 0 && c % 10 === 0) {
             c /= 10;
             e++;
         }
-        var sign = c < 0 ? "-" : "";
+        let sign = c < 0 ? "-" : "";
         if (this.isInf())
             return sign + "inf";
-        var digits = "" + Math.abs(c);
+        let digits = "" + Math.abs(c);
         if (0 <= e && e <= 4)
             return sign + digits + "0".repeat(e);
-        var se = "";
+        let se = "";
         if (-digits.length - 4 < e && e <= -digits.length)
             digits = "." + "0".repeat(-e - digits.length) + digits;
         else if (-digits.length < e && e <= -1) {
-            var i = digits.length + e;
+            let i = digits.length + e;
             digits = digits.substring(0, i) + "." + digits.substring(i);
         } else {
             e += digits.length - 1;
@@ -140,10 +139,10 @@ export class Dnum {
      * @returns {boolean} whether or not the dnum is an integer
      */
     isInt(): boolean {
-        var e = this.exp;
+        let e = this.exp;
         if (e < -16)
             return false;
-        var c = this.coef;
+        let c = this.coef;
         while (e < 0 && c % 10 === 0) {
             c /= 10;
             e++;
@@ -195,9 +194,9 @@ export class Dnum {
     toInt(): number {
         if (this.exp < -16)
             return 0;
-        var n = Dnum.mutable(this);
-        var roundup = false;
-        while (n.exp < 0 && n.coef != 0)
+        let n = Dnum.mutable(this);
+        let roundup = false;
+        while (n.exp < 0 && n.coef !== 0)
             roundup = Dnum.shiftRight(n);
         if (roundup)
             n.coef++;
@@ -224,7 +223,7 @@ export class Dnum {
         if (typeof that === 'number')
             return this.toNumber() === that;
         if (that instanceof Dnum)
-            return 0 == Dnum.cmp(this, that);
+            return 0 === Dnum.cmp(this, that);
         return false;
     }
 
@@ -263,7 +262,7 @@ export class Dnum {
             y = Dnum.mutable(y);
             Dnum.align(x, y);
         }
-        var c = x.coef + y.coef;
+        let c = x.coef + y.coef;
         if (isNaN(c)) // NaN from adding +inf and -inf
             return Dnum.ZERO;
         if (c < Number.MIN_SAFE_INTEGER || Number.MAX_SAFE_INTEGER < c) { // overflow
@@ -281,16 +280,16 @@ export class Dnum {
     private static align(x: Dnum, y: Dnum): void {
         if (x.exp > y.exp) {
             // swap
-            var tmp = x.coef; x.coef = y.coef; y.coef = tmp;
+            let tmp = x.coef; x.coef = y.coef; y.coef = tmp;
             tmp = x.exp; x.exp = y.exp; y.exp = tmp;
         }
         while (y.exp > x.exp && Dnum.shiftLeft(y)) {
         }
 
-        var roundup = false;
+        let roundup = false;
         while (y.exp > x.exp && x.coef !== 0)
             roundup = Dnum.shiftRight(x);
-        if (x.exp != y.exp) {
+        if (x.exp !== y.exp) {
             assert.equal(x.coef, 0);
             x.exp = y.exp;
         } else if (roundup)
@@ -298,7 +297,7 @@ export class Dnum {
     }
 
     private static shiftLeft(n: Dnum): boolean {
-        var c = n.coef * 10;
+        let c = n.coef * 10;
         if (!Number.isSafeInteger(c))
             return false;
         n.coef = c;
@@ -310,7 +309,7 @@ export class Dnum {
     private static shiftRight(n: Dnum): boolean {
         if (n.coef === 0)
             return false;
-        var roundup = (n.coef % 10) >= 5;
+        let roundup = (n.coef % 10) >= 5;
         n.coef = Math.trunc(n.coef / 10);
         if (n.exp < expInf)
             n.exp++;
@@ -359,8 +358,8 @@ export class Dnum {
 } // end of class
 
 function spanSignedDigits(s: string, start: number): string {
-    var i = start;
-    var c = s.charAt(start);
+    let i = start;
+    let c = s[start];
     if (c === '+' || c === '-')
         ++i;
     return s.substring(start, skipDigits(s, i));
@@ -371,8 +370,8 @@ function spanDigits(s: string, start: number): string {
 }
 
 function skipDigits(s: string, i: number): number {
-    var n = s.length;
-    while (i < n && isDigit(s.charAt(i)))
+    let n = s.length;
+    while (i < n && isDigit(s[i]))
         ++i;
     return i;
 }
@@ -382,17 +381,17 @@ function isDigit(c: string): boolean {
 }
 
 function trimRight(s: string, c: string): string {
-    var i = s.length - 1;
-    while (s.charAt(i) === c)
+    let i = s.length - 1;
+    while (s[i] === c)
         i--;
-    return s.substring(0, i + 1)
+    return s.substring(0, i + 1);
 }
 
 function trimLeft(s: string, c: string): string {
-    var i = 0;
-    while (s.charAt(i) === c)
+    let i = 0;
+    while (s[i] === c)
         i++;
-    return s.substring(i)
+    return s.substring(i);
 }
 
 function cmpNumStr(x: string, y: string): number {

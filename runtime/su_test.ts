@@ -4,7 +4,7 @@ import * as su from "./su";
 
 import * as assert from "./assert";
 
-var n = Dnum.make;
+let n = Dnum.make;
 
 function is(x: any, y: any): void {
     assert.that(su.is(x, y), x + " is " + y + " should be true");
@@ -25,7 +25,7 @@ isnt(123, 'hello');
 isnt(n(1), true);
 
 function add(x: any, y: any, expected: any): void {
-    var sum = su.add(x, y);
+    let sum = su.add(x, y);
     assert.that(su.is(sum, expected), "add " + x + ", " + y +
         " expected " + expected + " got " + sum);
     sum = su.add(y, x);
@@ -38,10 +38,10 @@ add(n(1), 2, n(3));
 
 assert.equal(su.get('hello', 1), 'e');
 assert.equal(su.get('hello', n(1)), 'e');
-assert.throws(function() { su.get('hello', 'x') },
+assert.throws(function() { su.get('hello', 'x'); },
     /can't convert String to integer/);
 
-var ob = new SuObject();
+let ob = new SuObject();
 su.put(ob, 'n', 123);
 assert.equal(su.get(ob, 'n'), 123);
 
@@ -63,8 +63,8 @@ assert.equal(su.rangelen("abcde", -2, 1), "d");
 assert.equal(su.rangelen("abcde", 3, 0), "");
 assert.equal(su.rangelen("abcde", 3, -3), "");
 
-var list = SuObject.list;
-function eq(x: any, y: any) { assert.that(x.equals(y), x + " should be " + y) }
+let list = SuObject.list;
+function eq(x: any, y: any) { assert.that(x.equals(y), x + " should be " + y); }
 eq(su.rangeto(list(0, 1, 2, 3, 4), 2, 9), list(2, 3, 4));
 eq(su.rangeto(list(0, 1, 2, 3, 4), 1, 4), list(1, 2, 3));
 eq(su.rangeto(list(0, 1, 2, 3, 4), 1, -1), list(1, 2, 3));

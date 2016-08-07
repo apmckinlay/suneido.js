@@ -35,7 +35,7 @@ export abstract class CharMatcher {
         return n;
     }
     indexIn(s: string): number {
-        let i = 0
+        let i = 0;
         for (let c of s) {
             if (this.matches(c))
                 return i;
@@ -58,7 +58,7 @@ class Is extends CharMatcher {
         super();
     }
     matches(c: Char): boolean {
-        return c == this.c;
+        return c === this.c;
     }
 }
 

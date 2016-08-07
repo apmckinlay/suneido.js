@@ -4,9 +4,9 @@ import * as assert from "./assert";
 const n = Dnum.make;
 
 function eq(x: Dnum, y?: string | number) {
-    if (typeof y == "string")
+    if (typeof y === "string")
         assert.equal(x.toString(), y);
-    else if (typeof y == "number")
+    else if (typeof y === "number")
         assert.equal(x.toNumber(), y);
     else
         assert.equal(x, y);
@@ -29,9 +29,9 @@ eq(n(1000000, -3), "1000");
 // toNumber --------------------------------------------------------------------
 
 function toNum(s: string, expected: number) {
-    var n = Dnum.parse(s).toNumber();
+    let n = Dnum.parse(s).toNumber();
     assert.equal(n, expected);
-    // var dif = Math.abs(n - expected);
+    // let dif = Math.abs(n - expected);
     // assert.that(dif < Math.abs(n) / 1e12, "expected " + expected + " got " + n);
 }
 toNum('1234', 1234);
@@ -44,8 +44,8 @@ toNum('12.34e-56', 12.34e-56);
 
 // parse -----------------------------------------------------------------------
 
-function parse(s: string, expected: null|number|string) {
-    var result = Dnum.parse(s);
+function parse(s: string, expected: number|string): void {
+    let result = Dnum.parse(s);
     eq(result, expected);
 }
 parse("0", 0);
@@ -59,13 +59,13 @@ parse("123x", null);
 parse("x123", null);
 parse("12x34", null);
 parse("1e3x", null);
-parse(".333333333333333333333", ".3333333333333333")
-parse(".33333333333333333333", ".3333333333333333")
-parse(".3333333333333333333", ".3333333333333333")
-parse(".333333333333333333", ".3333333333333333")
-parse(".33333333333333333", ".3333333333333333")
-parse(".3333333333333333", ".3333333333333333")
-parse(".6666666666666666666", ".6666666666666667")
+parse(".333333333333333333333", ".3333333333333333");
+parse(".33333333333333333333", ".3333333333333333");
+parse(".3333333333333333333", ".3333333333333333");
+parse(".333333333333333333", ".3333333333333333");
+parse(".33333333333333333", ".3333333333333333");
+parse(".3333333333333333", ".3333333333333333");
+parse(".6666666666666666666", ".6666666666666667");
 
 // abs/neg ---------------------------------------------------------------------
 
@@ -84,14 +84,14 @@ eq(Dnum.MINUS_INF.abs(), 'inf');
 
 function add_sub(x: Dnum, y: Dnum, sum: string|number, dif: string|number) {
     function op(fn: (x: Dnum, y: Dnum) => Dnum, x: Dnum, y: Dnum, expected: string|number) {
-        var result = fn(x, y);
-        var sfn = (fn === Dnum.add) ? " + " : " - ";
+        let result = fn(x, y);
+        let sfn = (fn === Dnum.add) ? " + " : " - ";
         eq(result, expected);
     }
     op(Dnum.add, x, y, sum);
     op(Dnum.sub, x, y, dif);
     op(Dnum.add, y, x, sum);
-    if (dif != 0)
+    if (dif !== 0)
         op(Dnum.sub, y, x, '-' + dif);
     if (sum !== 0) {
         op(Dnum.add, x.neg(), y.neg(), '-' + sum);
@@ -112,7 +112,7 @@ add_sub(n(9007199254740990, 126), n(9007199254740990, 126), 'inf', 0); // overfl
 
 function mul(x: Dnum, y: Dnum, expected: string|number) {
     function mul2(x: Dnum, y: Dnum, expected: string|number) {
-        var result = Dnum.mul(x, y);
+        let result = Dnum.mul(x, y);
         eq(result, expected);
     }
     mul2(x, y, expected);
@@ -137,7 +137,7 @@ mul(n(1234567890123456), n(1234567890123456), '1.524157875323882e30');
 
 function div(x: Dnum, y: Dnum, expected: string|number) {
     function div2(x: Dnum, y: Dnum, expected: string|number) {
-        var result = Dnum.div(x, y);
+        let result = Dnum.div(x, y);
         eq(result, expected);
     }
     div2(x, y, expected);
@@ -165,17 +165,17 @@ assert.that(n(123, 3).isInt());
 assert.that(n(123000, -3).isInt());
 assert.that(!n(123, -3).isInt());
 
-assert.that(0 == Dnum.cmp(Dnum.fromNumber(1.5), n(15, -1)));
+assert.that(0 === Dnum.cmp(Dnum.fromNumber(1.5), n(15, -1)));
 
 // porttests -------------------------------------------------------------------
 
-import { runFile } from "./porttests"
+import { runFile } from "./porttests";
 
 runFile("dnum.test", { dnum_add, dnum_sub, dnum_mul, dnum_div, dnum_cmp });
 
 function binary(x: string, y: string, z: string,
     fn: (x: Dnum, y: Dnum, z: Dnum) => boolean): boolean {
-    return fn(dn(x), dn(y), dn(z))
+    return fn(dn(x), dn(y), dn(z));
 }
 
 function ck1(x: Dnum, y: Dnum, z: Dnum, op: (x: Dnum, y: Dnum) => Dnum): boolean {
@@ -189,29 +189,29 @@ function ck1(x: Dnum, y: Dnum, z: Dnum, op: (x: Dnum, y: Dnum) => Dnum): boolean
 
 function dnum_add(x: string, y: string, z: string): boolean {
     return binary(x, y, z, (x, y, z) =>
-        ck1(x, y, z, Dnum.add) && ck1(y, x, z, Dnum.add))
+        ck1(x, y, z, Dnum.add) && ck1(y, x, z, Dnum.add));
 }
 
 function dnum_sub(x: string, y: string, z: string): boolean {
     return binary(x, y, z, (x, y, z) =>
-        ck1(x, y, z, Dnum.sub) && ck1(y, x, z.neg(), Dnum.sub))
+        ck1(x, y, z, Dnum.sub) && ck1(y, x, z.neg(), Dnum.sub));
 }
 
 function dnum_mul(x: string, y: string, z: string): boolean {
     return binary(x, y, z, (x, y, z) =>
-        ck1(x, y, z, Dnum.mul) && ck1(y, x, z, Dnum.mul))
+        ck1(x, y, z, Dnum.mul) && ck1(y, x, z, Dnum.mul));
 }
 
 function dnum_div(x: string, y: string, z: string): boolean {
     return binary(x, y, z, (x, y, z) =>
-        ck1(x, y, z, Dnum.div))
+        ck1(x, y, z, Dnum.div));
 }
 
 function dnum_cmp(...data: string[]): boolean {
     const n = data.length;
     for (let i = 0; i < n; ++i) {
         let x = dn(data[i]);
-        if (Dnum.cmp(x, x) != 0)
+        if (Dnum.cmp(x, x) !== 0)
             return false;
         for (let j = i + 1; j < n; ++j) {
             let y = dn(data[j]);
@@ -223,7 +223,7 @@ function dnum_cmp(...data: string[]): boolean {
 }
 
 function dn(s: string): Dnum {
-    return s == "inf" ? Dnum.INF :
-        s == "-inf" ? Dnum.MINUS_INF :
+    return s === "inf" ? Dnum.INF :
+        s === "-inf" ? Dnum.MINUS_INF :
             Dnum.parse(s);
 }

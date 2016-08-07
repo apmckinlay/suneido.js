@@ -1,6 +1,5 @@
-/// <reference path="../node.d.ts" />
-
 // import will run code
+
 import "./porttests_test";
 console.log("dnum_test");
 import "./dnum_test";

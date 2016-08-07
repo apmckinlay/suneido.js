@@ -3,8 +3,8 @@
  * Used by portable tests (porttests.ts)
  */
 
-import { isWhite, isAlpha, isDigit, isHexDigit, isAlphaNum } from "./utility"
-import { Token, keywords } from "./tokens"
+import { isWhite, isAlpha, isDigit, isHexDigit, isAlphaNum } from "./utility";
+import { Token, keywords } from "./tokens";
 
 export class Lexer {
     private src: string;
@@ -114,7 +114,7 @@ export class Lexer {
                         : Token.DOT;
             default:
                 return isDigit(c) ? this.number()
-                    : (c == '_' || isAlpha(c)) ? this.identifier()
+                    : (c === '_' || isAlpha(c)) ? this.identifier()
                         : Token.ERROR;
         }
     }
@@ -122,19 +122,19 @@ export class Lexer {
     private whitespace(): Token {
         let eol = false;
         for (; isWhite(this.src[this.si]); ++this.si)
-            if (this.src[this.si] == '\n' || this.src[this.si] == '\r')
+            if (this.src[this.si] === '\n' || this.src[this.si] === '\r')
                 eol = true;
         return eol ? Token.NEWLINE : Token.WHITESPACE;
     }
 
     private lineComment(): Token {
-        this.matchWhile(c => c != '\r' && c != '\n');
+        this.matchWhile(c => c !== '\r' && c !== '\n');
         return Token.COMMENT;
     }
 
     private spanComment(): Token {
         while (this.si < this.src.length &&
-            (this.src[this.si] != '*' || this.src[this.si + 1] != '/'))
+            (this.src[this.si] !== '*' || this.src[this.si + 1] !== '/'))
             ++this.si;
         if (this.si < this.src.length)
             this.si += 2;
@@ -142,7 +142,7 @@ export class Lexer {
     }
 
     private rawString(): Token {
-        this.matchWhile(c => c != '`');
+        this.matchWhile(c => c !== '`');
         this.matchChar('`');
         this._value = this.src.slice(this._prev + 1, this.si - 1);
         return Token.STRING;
@@ -150,7 +150,7 @@ export class Lexer {
 
     private quotedString(quote: string): Token {
         let str = "";
-        while (this.si < this.src.length && this.src[this.si] != quote)
+        while (this.si < this.src.length && this.src[this.si] !== quote)
             str += this.escape();
         this.matchChar(quote);
         this._value = str;
@@ -203,7 +203,7 @@ export class Lexer {
         if (this.matchChar('.'))
             this.matchWhile(isDigit);
         this.exponent();
-        if (this.src[this.si - 1] == '.')
+        if (this.src[this.si - 1] === '.')
             --this.si; // don't absorb trailing period
         this.setValue();
         return Token.NUMBER;
@@ -221,7 +221,7 @@ export class Lexer {
     private exponent(): void {
         let save = this.si;
         if (this.matchChar('e') || this.matchChar('E')) {
-            this.matchIf(c => c == '+' || c == '-');
+            this.matchIf(c => c === '+' || c === '-');
             if (this.matchWhile(isDigit))
                 return;
         }
@@ -229,24 +229,24 @@ export class Lexer {
     }
 
     private identifier(): Token {
-        this.matchWhile(c => isAlphaNum(c) || c == '_');
-        this.matchIf(c => c == '!' || c == '?');
+        this.matchWhile(c => isAlphaNum(c) || c === '_');
+        this.matchIf(c => c === '!' || c === '?');
         this.setValue();
 
         this._keyword = keywords[this._value];
         let isop = isOperatorKeyword(this._keyword);
-        if (isop && this.src[this.si] == ':')
+        if (isop && this.src[this.si] === ':')
             this._keyword = undefined;
         return this._keyword && isop ? this._keyword : Token.IDENTIFIER;
 
         function isOperatorKeyword(t: Token): boolean {
-            return t == Token.IS || t == Token.ISNT || t == Token.AND ||
-                t == Token.OR || t == Token.NOT;
+            return t === Token.IS || t === Token.ISNT || t === Token.AND ||
+                t === Token.OR || t === Token.NOT;
         }
     }
 
     private matchChar(c: string): boolean {
-        if (this.src[this.si] != c)
+        if (this.src[this.si] !== c)
             return false;
         ++this.si;
         return true;

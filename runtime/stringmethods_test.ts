@@ -2,7 +2,7 @@ import * as ss from "./stringmethods";
 import * as util from "./utility";
 import * as assert from "./assert";
 
-var str1: string,
+let str1: string,
     str2: string,
     expected: string;
 
@@ -137,9 +137,9 @@ assert.equal(ss.replace(str1, "[hw](.)(.)", "\\=&#\\2\\1"), "&#\\2\\1lo &#\\2\\1
 assert.equal(ss.replace(str1, "[hw](.)(.)", "\\U&#\\2\\E\\1"), "HEL#Lelo WOR#Rold");
 assert.equal(ss.replace(str1, "[hw](.)(.)", "&#\\u\\2\\1"), "hel#Lelo wor#Rold");
 assert.equal(ss.replace(str1, "xxx", "haha"), "hello world");
-assert.equal(ss.replace(str1, "([hw])(\s?)(.)", "\\2"), "llo rld")
+assert.equal(ss.replace(str1, "([hw])(\s?)(.)", "\\2"), "llo rld");
 assert.equal(ss.replace(str1, "\\w+", "\\u&"), "Hello World");
-assert.equal(ss.replace(str1, ".", function(m) { return m.toUpperCase() }), "HELLO WORLD");
+assert.equal(ss.replace(str1, ".", function(m) { return m.toUpperCase(); }), "HELLO WORLD");
 
 str1 = "hello world";
 assert.equal(ss.size(str1), 11);
@@ -147,7 +147,7 @@ str1 = "";
 assert.equal(ss.size(""), 0);
 
 str1 = "";
-var split = ss.split(str1, ',')
+let split = ss.split(str1, ',');
 assert.equal(ss.split(str1, ',').toString(), '#()');
 str1 = "one two three";
 assert.equal(ss.split(str1, '.').toString(), '#(one two three)');
