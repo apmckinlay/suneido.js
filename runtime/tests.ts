@@ -1,5 +1,7 @@
 // import will run code
 
+console.log("calling convention");
+import "./callconvtest"; // has to be first due to module issues
 import "./porttests_test";
 console.log("dnum_test");
 import "./dnum_test";

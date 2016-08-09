@@ -1,3 +1,5 @@
+const jreq = require('equals');
+
 /** Asserts that the expr === true */
 export function that(expr: boolean, msg?: string): void {
     if (expr !== true)
@@ -15,7 +17,7 @@ function eq(x: any, y: any): boolean {
         return true;
     if (typeof x === "number" && typeof y === "number")
         return x.toPrecision(14) === y.toPrecision(14);
-    return false;
+    return jreq(x, y);
 }
 
 /** Asserts that the function throws an exception */

@@ -4,14 +4,13 @@
 .vscode/*
 
 runtime/*.js
+!runtime/callconvtest.js
 
 .DS_Store
 
 porttests.js
 
-runtime/node_modules/*
-runtime/.babelrc
-runtime/package.json
+node_modules/*
 .atomignore
 
 .alm/sessionsV2.json
