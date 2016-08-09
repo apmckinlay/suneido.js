@@ -29,10 +29,6 @@ export class SuObject {
         return new SuObject(args);
     }
 
-    static isSuOb(x: any): boolean {
-        return typeof x === 'object' && x instanceof SuObject;
-    }
-
     static toString2(x: SuObject, before: string, after: string) {
         let s = "";
         for (let i = 0; i < x.vec.length; ++i)
@@ -131,7 +127,7 @@ export class SuObject {
     }
 
     equals(that: any): boolean {
-        if (!SuObject.isSuOb(that))
+        if (!(that instanceof SuObject))
             return false;
         return SuObject.equals2(this, that, new PairStack());
     }
@@ -157,9 +153,9 @@ export class SuObject {
     private static equals3(x: any, y: any, stack?: PairStack): boolean {
         if (x === y)
             return true;
-        if (!SuObject.isSuOb(x))
+        if (!(x instanceof SuObject))
             return su.is(x, y);
-        if (!SuObject.isSuOb(y))
+        if (!(y instanceof SuObject))
             return false;
         return SuObject.equals2(x, y, stack);
     }
@@ -168,15 +164,15 @@ export class SuObject {
 
 function canonical(key: any): any {
     if (key instanceof Dnum)
-        return (<Dnum>key).toNumber();
+        return key.toNumber();
     if (typeof key === 'object')
         throw "suneido.js objects do not support object keys";
     return key;
 }
 
 function index(key: any): number {
-    if (key instanceof Dnum && (<Dnum>key).isInt())
-        key = (<Dnum>key).toInt();
+    if (key instanceof Dnum && key.isInt())
+        key = key.toInt();
     return Number.isSafeInteger(key) ? key : -1;
 }
 

@@ -48,6 +48,12 @@
             "check-operator",
             "check-separator",
             "check-type"
+        ],
+        "one-variable-per-declaration": [
+            true
+        ],
+        "no-angle-bracket-type-assertion": [
+            true
         ]
     }
 }

@@ -44,8 +44,8 @@ export function tr(srcstr: string, from: string, to: string): string {
 }
 
 function makset(s: string): string {
-    let dash = s.indexOf('-', 1),
-        p: string;
+    let dash = s.indexOf('-', 1);
+    let p: string;
 
     if (dash === -1 || dash === (s.length - 1))
         return s; // no ranges to expand

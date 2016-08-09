@@ -1,12 +1,12 @@
 import { SuDate } from "./sudate";
 import * as assert from "./assert";
 
-let sud1 = SuDate.make(2003, 11, 27, 16, 37, 33, 123),
-    sud2: SuDate,
-    sud3 = SuDate.make(2003, 12, 3, 0, 0, 0, 0),
-    sud4 = SuDate.make(2003, 12, 3, 0, 0, 12, 345),
-    sud5 = SuDate.make(2003, 12, 3, 1, 2, 3, 4),
-    sud6 = SuDate.make(2005, 1, 1, 16, 37, 33, 123);
+let sud1 = SuDate.make(2003, 11, 27, 16, 37, 33, 123);
+let sud2: SuDate;
+let sud3 = SuDate.make(2003, 12, 3, 0, 0, 0, 0);
+let sud4 = SuDate.make(2003, 12, 3, 0, 0, 12, 345);
+let sud5 = SuDate.make(2003, 12, 3, 1, 2, 3, 4);
+let sud6 = SuDate.make(2005, 1, 1, 16, 37, 33, 123);
 
 assert.equal(sud1.year(), 2003);
 assert.equal(sud1.month(), 11);

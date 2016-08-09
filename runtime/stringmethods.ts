@@ -37,16 +37,16 @@ function doWithSplit(str: string, sep: string, f: (arg: string) => string) {
 }
 
 export function detab(s: string): string {
-    let tabWidth: number = 4,
-        spaces: string = "    ",
-        replaceTabWithSpace = function(oneLineString: string) {
-            let array = oneLineString.split('\t');
-            for (let i = 0; i < array.length - 1; i++) {
-                let nSpace = tabWidth - array[i].length % tabWidth;
-                array[i] = array[i] + spaces.substr(0, nSpace);
-            }
-            return array.join('');
-        };
+    let tabWidth: number = 4;
+    let spaces: string = "    ";
+    function replaceTabWithSpace(oneLineString: string) {
+        let array = oneLineString.split('\t');
+        for (let i = 0; i < array.length - 1; i++) {
+            let nSpace = tabWidth - array[i].length % tabWidth;
+            array[i] = array[i] + spaces.substr(0, nSpace);
+        }
+        return array.join('');
+    }
     assert.that(arguments.length === 1, "usage: string.Detab()");
     return doWithSplit(s, '\r', function(s) {
         return doWithSplit(s, '\n', replaceTabWithSpace);
@@ -54,36 +54,36 @@ export function detab(s: string): string {
 }
 
 export function entab(s: string): string {
-    let tabWidth: number = 4,
-        isTab = function(col: number): boolean {
-            return col > 0 && (col % tabWidth) === 0;
-        },
-        replaceSpaceWithTab = function(oneLineString: string) {
-            let strTrim = oneLineString.trim(),
-                strPre = "",
-                i = 0,
-                col = 0,
-                dstcol = 0;
-            for (i = 0; i < oneLineString.length; i++) {
-                if (oneLineString[i] === ' ')
-                    col++;
-                else if (oneLineString[i] === '\t')
-                    for (col++; !isTab(col); col++)
-                        ;
-                else
-                    break;
+    let tabWidth: number = 4;
+    function isTab(col: number): boolean {
+        return col > 0 && (col % tabWidth) === 0;
+    }
+    function replaceSpaceWithTab(oneLineString: string) {
+        let strTrim = oneLineString.trim();
+        let strPre = "";
+        let i = 0;
+        let col = 0;
+        let dstcol = 0;
+        for (i = 0; i < oneLineString.length; i++) {
+            if (oneLineString[i] === ' ')
+                col++;
+            else if (oneLineString[i] === '\t')
+                for (col++; !isTab(col); col++)
+                    ;
+            else
+                break;
+        }
+        if (i >= oneLineString.length)
+            return "";
+        for (i = 0; i <= col; i++)
+            if (isTab(i)) {
+                strPre += '\t';
+                dstcol = i;
             }
-            if (i >= oneLineString.length)
-                return "";
-            for (i = 0; i <= col; i++)
-                if (isTab(i)) {
-                    strPre += '\t';
-                    dstcol = i;
-                }
-            for (; dstcol < col; dstcol++)
-                strPre += ' ';
-            return strPre + strTrim;
-        };
+        for (; dstcol < col; dstcol++)
+            strPre += ' ';
+        return strPre + strTrim;
+    }
     assert.that(arguments.length === 1, "usage: string.Entab()");
     return doWithSplit(s, '\r', function(s) {
         return doWithSplit(s, '\n', replaceSpaceWithTab);
@@ -93,8 +93,8 @@ export function entab(s: string): string {
 export function extract(s: string, pattern: string, part?: number): string | boolean {
     assert.that(arguments.length === 2 || arguments.length === 3,
         "usage: string.Extract(pattern, part = 0/1)");
-    let re = new RegExp(pattern),
-        found = s.match(re);
+    let re = new RegExp(pattern);
+    let found = s.match(re);
     if (found === null)
         return false;
     let part_i = (part === undefined)
@@ -213,10 +213,10 @@ export function mapN(s: string, n: number, f: (s: string) => string): string {
 
 export function numberq(s: string): boolean {
     assert.that(arguments.length === 1, "usage: string.Number?()");
-    let i: number = 0,
-        c: string,
-        intdigits: boolean,
-        fracdigits: boolean;
+    let i: number = 0;
+    let c: string;
+    let intdigits: boolean;
+    let fracdigits: boolean;
     c = s[i];
     if (c === '+' || c === '-')
         c = s[++i];
@@ -263,87 +263,88 @@ export function repeat(s: string, count: number): string {
 
 enum RepStatus { E, U, L, u, l };
 //TODO: to change after classes for block and callable functions are implemented
-export function replace(s: string, pattern: string, replacement: string | ((m: string) => string) = '', count: number = Infinity): string {
+export function replace(s: string, pattern: string,
+    replacement: string | ((m: string) => string) = '', count: number = Infinity): string {
     assert.that(2 <= arguments.length && arguments.length <= 4,
         "usage: string.Replace(pattern, replacement = '', count = false) -> string");
-    let nGroups = (new RegExp(pattern + '|')).exec('').length - 1,      //Calculate how many capture groups dose the regex pattern have
-        repCount = 0,
-        repF = function(): string {
-            let dst: string = '',
-                i: number = 0,
-                c: string,
-                n: number,
-                repStatus: RepStatus = RepStatus.E,
-                handleCase = function(s: string): string {
-                    let res: string;
-                    if (s && s.length === 0)
-                        return '';
-                    switch (repStatus) {
-                        case RepStatus.E:
-                            res = s;
-                            break;
-                        case RepStatus.U:
-                            res = s.toUpperCase();
-                            break;
-                        case RepStatus.L:
-                            res = s.toLowerCase();
-                            break;
-                        case RepStatus.u:
-                            res = s[0].toUpperCase() + s.substr(1);
-                            repStatus = RepStatus.E;
-                            break;
-                        case RepStatus.l:
-                            res = s[0].toLowerCase() + s.substr(1);
-                            repStatus = RepStatus.E;
-                            break;
-                        default:
-                            throw new Error("unreachable");
-                    }
-                    return res;
-                };
-            if (repCount++ >= count)
-                return arguments[0];
-            if (typeof replacement === "string") {
-                if (replacement.indexOf("\\=") === 0)
-                    return replacement.substr(2);
-                while (i < replacement.length) {
-                    switch (replacement[i]) {
-                        case '&':
-                            dst += handleCase(arguments[0]);
-                            break;
-                        case '\\':
-                            if (i + 1 < replacement.length) {
-                                c = replacement[++i];
-                                if (util.isDigit(c)) {
-                                    n = parseInt(c);
-                                    if (n <= nGroups)
-                                        dst += handleCase(arguments[n]);
-                                } else if (c === 'u')
-                                    repStatus = RepStatus.u;
-                                else if (c === 'U')
-                                    repStatus = RepStatus.U;
-                                else if (c === 'l')
-                                    repStatus = RepStatus.l;
-                                else if (c === 'L')
-                                    repStatus = RepStatus.L;
-                                else if (c === 'E')
-                                    repStatus = RepStatus.E;
-                                else if (c === '\\')
-                                    dst += '\\';
-                                else
-                                    dst += c;
-                            } else
+    let nGroups = (new RegExp(pattern + '|')).exec('').length - 1;      //Calculate how many capture groups dose the regex pattern have
+    let repCount = 0;
+    function repF(): string {
+        let dst: string = '';
+        let i: number = 0;
+        let c: string;
+        let n: number;
+        let repStatus: RepStatus = RepStatus.E;
+        function handleCase(s: string): string {
+            let res: string;
+            if (s && s.length === 0)
+                return '';
+            switch (repStatus) {
+                case RepStatus.E:
+                    res = s;
+                    break;
+                case RepStatus.U:
+                    res = s.toUpperCase();
+                    break;
+                case RepStatus.L:
+                    res = s.toLowerCase();
+                    break;
+                case RepStatus.u:
+                    res = s[0].toUpperCase() + s.substr(1);
+                    repStatus = RepStatus.E;
+                    break;
+                case RepStatus.l:
+                    res = s[0].toLowerCase() + s.substr(1);
+                    repStatus = RepStatus.E;
+                    break;
+                default:
+                    throw new Error("unreachable");
+            }
+            return res;
+        }
+        if (repCount++ >= count)
+            return arguments[0];
+        if (typeof replacement === "string") {
+            if (replacement.indexOf("\\=") === 0)
+                return replacement.substr(2);
+            while (i < replacement.length) {
+                switch (replacement[i]) {
+                    case '&':
+                        dst += handleCase(arguments[0]);
+                        break;
+                    case '\\':
+                        if (i + 1 < replacement.length) {
+                            c = replacement[++i];
+                            if (util.isDigit(c)) {
+                                n = parseInt(c);
+                                if (n <= nGroups)
+                                    dst += handleCase(arguments[n]);
+                            } else if (c === 'u')
+                                repStatus = RepStatus.u;
+                            else if (c === 'U')
+                                repStatus = RepStatus.U;
+                            else if (c === 'l')
+                                repStatus = RepStatus.l;
+                            else if (c === 'L')
+                                repStatus = RepStatus.L;
+                            else if (c === 'E')
+                                repStatus = RepStatus.E;
+                            else if (c === '\\')
                                 dst += '\\';
-                            break;
-                        default:
-                            dst += handleCase(replacement[i]);
-                    }
-                    i++;
+                            else
+                                dst += c;
+                        } else
+                            dst += '\\';
+                        break;
+                    default:
+                        dst += handleCase(replacement[i]);
                 }
-            } else
-                dst = replacement(arguments[0]);
-            return dst;
-        };
+                i++;
+            }
+        } else
+            dst = replacement(arguments[0]);
+        return dst;
+    };
     return s.replace(new RegExp(pattern, 'g'), repF);
 }
 

@@ -160,7 +160,9 @@ export class Lexer {
         if (!this.matchChar('\\'))
             return this.src[this.si++];
         let save = this.si;
-        let d1: number, d2: number, d3: number;
+        let d1: number;
+        let d2: number;
+        let d3: number;
         if (this.matchChar('n'))
             return '\n';
         else if (this.matchChar('r'))

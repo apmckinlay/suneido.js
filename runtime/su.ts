@@ -13,17 +13,17 @@ import { SuObject } from "./suobject";
 export const empty_object = new SuObject().setReadonly();
 
 export function put(ob: any, key: any, val: any): void {
-    if (SuObject.isSuOb(ob))
-        <SuObject>ob.put(key, val);
+    if (ob instanceof SuObject)
+        ob.put(key, val);
     else
         throw typeName(ob) + " does not support put (" + key + ")";
 }
 
 export function get(x: any, key: any): any {
     if (typeof x === 'string')
-        return <string>x[toInt(key)];
-    if (SuObject.isSuOb(x))
-        return <SuObject>x.get(key);
+        return x[toInt(key)];
+    if (x instanceof SuObject)
+        return x.get(key);
     throw typeName(x) + " does not support get (" + key + ")";
 }
 
@@ -74,8 +74,8 @@ export function bitnot(x: any): number {
 function toInt(x: any): number {
     if (Number.isSafeInteger(x))
         return x;
-    if (x instanceof Dnum && <Dnum>x.isInt())
-        return (<Dnum>x).toInt();
+    if (x instanceof Dnum && x.isInt())
+        return x.toInt();
     throw "can't convert " + typeName(x) + " to integer";
 }
 
@@ -96,7 +96,7 @@ function toNum(x: any): number | Dnum {
 }
 
 function toDnum(x: number | Dnum): Dnum {
-    return (typeof x === 'number') ? Dnum.make(x) : <Dnum>x;
+    return (typeof x === 'number') ? Dnum.make(x) : x;
 }
 
 export function add(x: any, y: any): any {

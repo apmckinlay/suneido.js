@@ -2,9 +2,9 @@ import * as ss from "./stringmethods";
 import * as util from "./utility";
 import * as assert from "./assert";
 
-let str1: string,
-    str2: string,
-    expected: string;
+let str1: string;
+let str2: string;
+let expected: string;
 
 str1 = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 assert.that(ss.alphaq(str1), "check method alphaq() with all letters");

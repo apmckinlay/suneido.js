@@ -25,8 +25,8 @@ export class SuDate {
     static make(year: number, month: number, day: number,
         hour: number, minute: number, second: number, millisecond: number): SuDate {
         //TODO validation
-        let date = (year << 9) | (month << 5) | day,
-            time = (hour << 22) | (minute << 16) | (second << 10) | millisecond;
+        let date = (year << 9) | (month << 5) | day;
+        let time = (hour << 22) | (minute << 16) | (second << 10) | millisecond;
         return new SuDate(date, time);
     }
 
@@ -73,29 +73,29 @@ export class SuDate {
         enum TokenType { YEAR, MONTH, DAY, HOUR, MINUTE, SECOND, MILLISECOND }
         const minval = [0, 1, 1, 0, 0, 0, 0];
         const maxval = [3000, 12, 31, 23, 59, 59, 999];
-        const NOTSET = 9999,
-            MAXTOKENS = 20;
+        const NOTSET = 9999;
+        const MAXTOKENS = 20;
         let dt = {
             year: NOTSET, month: 0, day: 0,
             hour: NOTSET, minute: NOTSET, second: NOTSET, millisecond: 0
-        },
-            date_patterns = [
-                "", // set to system default
-                "md",
-                "dm",
-                "dmy",
-                "mdy",
-                "ymd"
-            ],
-            syspat = adjustPatterns(date_patterns, order),
-            types: Array<TokenType> = [],
-            tokens: Array<number> = [],
-            ntokens = 0,
-            got_time = false,
-            prev: string = null,
-            curPattern: string,
-            part: TokenType;
-        // types.fill(TokenType.UNK);
+        };
+        let date_patterns = [
+            "", // set to system default
+            "md",
+            "dm",
+            "dmy",
+            "mdy",
+            "ymd"
+        ];
+        let syspat = adjustPatterns(date_patterns, order);
+        let types: Array<TokenType> = [];
+        let tokens: Array<number> = [];
+        let ntokens = 0;
+        let got_time = false;
+        let prev: string = null;
+        let curPattern: string;
+        let part: TokenType;
+
         let i = 0;
         while (i < s.length) {
             assert.that(ntokens < MAXTOKENS,
@@ -688,9 +688,9 @@ function format(dt: SuDate, fmt: string): string {
 }
 
 function adjustPatterns(date_patterns: Array<string>, order: string): string {
-    let i: number = 0,
-        prev: string = null,
-        syspatArray: Array<string> = [];
+    let i: number = 0;
+    let prev: string = null;
+    let syspatArray: Array<string> = [];
     for (let j = 0; order[j] && i < 3; prev = order[j], j++) {
         if (order[j] !== prev &&
             ((order[j] === 'y') || (order[j] === 'M') || (order[j] === 'd'))) {
