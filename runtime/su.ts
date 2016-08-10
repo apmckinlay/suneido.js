@@ -9,6 +9,7 @@
 
 import { Dnum } from "./dnum";
 import { SuObject } from "./suobject";
+import { SuValue } from "./suvalue";
 
 export const empty_object = new SuObject().setReadonly();
 
@@ -155,13 +156,10 @@ function isNum(x: any): boolean {
 export function is(x: any, y: any): boolean {
     if (x === y)
         return true;
-    if (typeof x === 'number' && typeof y === 'number')
-        return false;
-    if (x instanceof Dnum)
+    if (x instanceof SuValue)
         return x.equals(y);
-    if (y instanceof Dnum)
+    if (y instanceof SuValue)
         return y.equals(x);
-    // TODO suneido objects
     return false;
 }
 

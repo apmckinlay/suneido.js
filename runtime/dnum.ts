@@ -8,17 +8,19 @@
  */
 
 import * as assert from "./assert";
+import { SuValue } from "./suvalue";
 
 const minExp = -126;
 const maxExp = +126;
 const expInf = 127;
 const MAX_COEF_STR = "" + Number.MAX_SAFE_INTEGER;
 
-export class Dnum {
+export class Dnum extends SuValue {
     private coef: number;
     private exp: number;
 
     /*private*/ constructor(coef: number, exp: number) {
+        super();
         this.coef = coef;
         this.exp = exp;
     }

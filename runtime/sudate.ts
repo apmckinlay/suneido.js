@@ -6,17 +6,19 @@
 
 import * as assert from "./assert";
 import * as util from "./utility";
+import { SuValue } from "./suvalue";
 
 const month = ["January", "February", "March", "April", "May", "June", "July",
     "August", "September", "October", "November", "December"];
 const weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
     "Saturday"];
 
-export class SuDate {
+export class SuDate extends SuValue {
     private date: number;
     private time: number;
 
     constructor(date: number, time: number) {
+        super();
         this.date = date;
         this.time = time;
         Object.freeze(this); // SuDate is immutable
@@ -36,6 +38,10 @@ export class SuDate {
 
     datePart(): number {
         return this.date;
+    }
+
+    equals(that: any): boolean {
+        return this.date === that.date && this.time === that.time;
     }
 
     /** compare compares two sudates, returning Zero, Negative or Positive */

@@ -42,7 +42,7 @@ ob.setDefault(0);
 assert.equal(ob.get('x'), 0);
 
 ob.setReadonly();
-assert.throws(function() { ob.put('b', true); },
+assert.throws(() => ob.put('b', true),
     /can't modify readonly objects/);
 
 ob = new SuObject();

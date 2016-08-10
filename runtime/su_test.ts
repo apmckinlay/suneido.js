@@ -15,6 +15,14 @@ is('hello', 'hello');
 is(123, 123);
 is(123, n(123));
 is(n(15, -1), 1.5);
+let x = su.mkObject();
+isnt(x, 123);
+let y = su.mkObject();
+is(x, y);
+x = su.mkObject(123);
+isnt(x, y);
+y = su.mkObject(123);
+is(x, y);
 
 function isnt(x: any, y: any): void {
     assert.that(su.isnt(x, y), x + " isnt " + y + " should be true");

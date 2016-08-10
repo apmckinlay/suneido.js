@@ -6,8 +6,9 @@
 
 import { Dnum } from "./dnum";
 import * as su from "./su";
+import { SuValue } from "./suvalue";
 
-export class SuObject {
+export class SuObject extends SuValue {
     private readonly: boolean;
     private defval: any;
     private vec: Array<any>;
@@ -15,6 +16,7 @@ export class SuObject {
     static EMPTY = new SuObject().setReadonly();
 
     constructor(vec?: any[], map?: Map<any, any>) {
+        super();
         this.vec = vec || [];
         this.map = map || new Map();
         this.readonly = false;
@@ -141,11 +143,10 @@ export class SuObject {
             for (let i = 0; i < x.vec.length; ++i)
                 if (!SuObject.equals3(x.vec[i], y.vec[i], stack))
                     return false;
-            let eq = true;
             for (let [k, v] of x.map)
                 if (!SuObject.equals3(v, y.map.get(k), stack))
-                    eq = false;
-            return eq;
+                    return false;
+            return true;
         } finally {
             stack.pop();
         }
