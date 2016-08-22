@@ -70,13 +70,14 @@ export class SuObject extends SuValue {
         }
     }
 
-    add(x: any): void {
+    add(x: any): SuObject {
         this.checkReadonly(this);
         this.vec.push(x);
         this.migrate();
+        return this;
     }
 
-    put(key: any, value: any): void {
+    put(key: any, value: any): SuObject {
         this.checkReadonly(this);
         let i = index(key);
         if (0 <= i && i < this.vec.length)
@@ -85,6 +86,7 @@ export class SuObject extends SuValue {
             this.add(value);
         else
             this.map.set(key, value);
+        return this;
     }
 
     get(key: any): any {
