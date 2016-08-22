@@ -15,6 +15,7 @@ export class SuObject extends SuValue {
     private map: Map<any, any>;
     static EMPTY = new SuObject().setReadonly();
 
+    /** WARNING: the object will take ownership of the array and map */
     constructor(vec?: any[], map?: Map<any, any>) {
         super();
         this.vec = vec || [];
