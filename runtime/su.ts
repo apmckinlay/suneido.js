@@ -296,3 +296,15 @@ export function toObject(map: Map<any, any>): Object {
         ob[k] = v;
     return ob;
 }
+
+export function call(f: any, ...args: any[]): any {
+    return f(...args); //TODO
+}
+
+export function callNamed(f: any, named: any, ...args: any[]) {
+    return f(name, ...args); //TODO
+}
+
+export function callAt(f: any, args: SuObject): any {
+    return f(args); //TODO
+}
