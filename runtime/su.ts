@@ -297,14 +297,40 @@ export function toObject(map: Map<any, any>): Object {
     return ob;
 }
 
-export function call(f: any, ...args: any[]): any {
-    return f(...args); //TODO
+export function typename(x: any): string {
+    return x === null ? "null"
+        : x === undefined ? "undefined"
+            : typeof x;
 }
 
-export function callNamed(f: any, named: any, ...args: any[]) {
-    return f(name, ...args); //TODO
+// Note: only Suneido values and strings are callable
+
+// Note: using apply because spread (...) is slow in V8
+
+export function call(f: any, ...args: any[]): any {
+    let call = f.call;
+    if (call)
+        return call.apply(undefined, args);
+    //  TODO strings
+    cantCall(f);
+}
+
+export function callNamed(f: any, ...args: any[]) {
+    let call = f.callNamed;
+    if (call)
+        return call.apply(undefined, args);
+    //  TODO strings
+    cantCall(f);
 }
 
 export function callAt(f: any, args: SuObject): any {
-    return f(args); //TODO
+    let call = f.callAt;
+    if (call)
+        return call(args);
+    //  TODO strings
+    cantCall(f);
+}
+
+function cantCall(f: any): never {
+    throw new Error("can't call " + typename(f));
 }

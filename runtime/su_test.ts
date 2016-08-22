@@ -94,3 +94,21 @@ disp(n(1234, -2), '12.34');
 disp('hello', '"hello"');
 disp('a\\b', '`a\\b`');
 disp('a"b', "'a\"b'");
+
+assert.equal(su.typename(null), "null");
+assert.equal(su.typename(undefined), "undefined");
+assert.equal(su.typename(123), "number");
+assert.equal(su.typename("foo"), "string");
+
+let f = {
+    call: function(...args: any[]) { return ['call', args]; },
+    callAt: function(arg: any) { return ['callAt', arg]; },
+    callNamed: function(named: any, ...args: any[]) { return ['callNamed', named, args]; },
+};
+
+assert.equal(su.call(f, 1, 2), ['call', [1, 2]]);
+ob = new SuObject().add(1).put('a', 2);
+assert.equal(su.callAt(f, ob), ['callAt', ob]);
+assert.equal(su.callNamed(f, { a: 3, b: 4 }, 1, 2), ['callNamed', { a: 3, b: 4 }, [1, 2]]);
+assert.throws(() => su.call(123), /can't call/);
+
