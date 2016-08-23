@@ -9,7 +9,7 @@ export function that(expr: boolean, msg?: string): void {
 /** Asserts that the two values are == */
 export function equal(x: any, y: any): void {
     if (!eq(x, y))
-        throw new Error("assert failed: " + x + " does not equal " + y);
+        throw new Error("assert failed: " + x + " does not equal: " + y);
 }
 
 function eq(x: any, y: any): boolean {
