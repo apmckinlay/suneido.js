@@ -305,7 +305,7 @@ export function typename(x: any): string {
 
 // Note: only Suneido values and strings are callable
 
-// Note: using apply because spread (...) is slow in V8
+// Note: using apply until better spread (...) performance in v8
 
 export function call(f: any, ...args: any[]): any {
     let call = f.call;
@@ -333,4 +333,16 @@ export function callAt(f: any, args: SuObject): any {
 
 function cantCall(f: any): never {
     throw new Error("can't call " + typename(f));
+}
+
+/**
+ * Call a method on an object.
+ * Method name includes call type e.g. Foo, Foo_callAt, Foo_callNamed
+ */
+export function invoke(ob: any, method: string, ...args: any[]): any {
+    return getMethod(ob, method).apply(ob, args);
+}
+
+function getMethod(ob: any, method: string): any {
+    return ob[method]; // TODO (e.g. handle Default)
 }
