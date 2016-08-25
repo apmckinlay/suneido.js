@@ -1,9 +1,6 @@
 ---
-layout:  default
-title: suneido.js
 ---
-
-{{ title }}
+suneido.js
 ==========
 [Building & Running](buildrun.html)
 
