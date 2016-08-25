@@ -5,8 +5,9 @@
  */
 
 import { Dnum } from "./dnum";
-import * as su from "./su";
 import { SuValue } from "./suvalue";
+import display from "./display";
+import is from "./is";
 
 export class SuObject extends SuValue {
     private readonly: boolean;
@@ -37,7 +38,7 @@ export class SuObject extends SuValue {
         for (let i = 0; i < x.vec.length; ++i)
             s += x.vec[i] + ', ';
         for (let [k, v] of x.map)
-            s += keyString(k) + ': ' + su.display(v) + ', ';
+            s += keyString(k) + ': ' + display(v) + ', ';
         return before + s.slice(0, -2) + after;
     }
 
@@ -158,7 +159,7 @@ export class SuObject extends SuValue {
         if (x === y)
             return true;
         if (!(x instanceof SuObject))
-            return su.is(x, y);
+            return is(x, y);
         if (!(y instanceof SuObject))
             return false;
         return SuObject.equals2(x, y, stack);
@@ -184,7 +185,7 @@ function keyString(x: any): string {
     if (typeof x === 'string' &&
         /^[_a-zA-Z][_a-zA-Z0-9]*[?!]?$/.test(x))
         return x;
-    return su.display(x);
+    return display(x);
 }
 
 class PairStack {

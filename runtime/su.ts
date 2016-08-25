@@ -10,6 +10,10 @@
 import { Dnum } from "./dnum";
 import { SuObject } from "./suobject";
 import { SuValue } from "./suvalue";
+import display from "./display";
+import is from "./is";
+
+export { display, is };
 
 export const empty_object = new SuObject().setReadonly();
 
@@ -153,16 +157,6 @@ function isNum(x: any): boolean {
     return typeof x === 'number' || x instanceof Dnum;
 }
 
-export function is(x: any, y: any): boolean {
-    if (x === y)
-        return true;
-    if (x instanceof SuValue)
-        return x.equals(y);
-    if (y instanceof SuValue)
-        return y.equals(x);
-    return false;
-}
-
 export function isnt(x: any, y: any): boolean {
     return !is(x, y); //TODO
 }
@@ -228,31 +222,6 @@ export function typeName(x: any): string {
         case 'number': return 'Number';
     }
     return t;
-}
-
-export function display(x: any): string {
-    if (typeof x.display === 'function')
-        return x.display();
-    if (typeof x === 'string')
-        return displayString(x);
-    return x.toString();
-}
-
-export let default_single_quotes = false;
-
-function displayString(s: string): string {
-    if (-1 === s.indexOf('`') &&
-        -1 !== s.indexOf('\\') &&
-        -1 === s.search(/[^ -~]/))
-        return '`' + s + '`';
-    s = s.replace('\\', '\\\\');
-    let single_quotes = default_single_quotes
-        ? -1 === s.indexOf("'")
-        : (-1 !== s.indexOf('"') && -1 === s.indexOf("'"));
-    if (single_quotes)
-        return "'" + s + "'";
-    else
-        return "\"" + s.replace("\"", "\\\"") + "\"";
 }
 
 export function mandatory() {
@@ -331,7 +300,7 @@ export function callAt(f: any, args: SuObject): any {
     cantCall(f);
 }
 
-function cantCall(f: any): never {
+function cantCall(f: any) {
     throw new Error("can't call " + typename(f));
 }
 
