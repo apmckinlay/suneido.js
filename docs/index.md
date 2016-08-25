@@ -6,4 +6,4 @@ title: suneido.js
 
 suneido.js
 ==========
-[Style Guide](style.md)
+[Style Guide](style.html)
