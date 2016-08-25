@@ -1,3 +1,8 @@
+---
+layout:  default
+title: suneido.js
+---
+
 Requirements
 ------------
 Node.js ("current", not "stable")
