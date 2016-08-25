@@ -5,15 +5,27 @@
     <meta charset="UTF-8">
     <title>suneido.js playground</title>
     <style type="text/css">
-        body {
-            font-family: sans-serif;
+        html, body {
+          height: 98%;
         }
-
+        body {
+          font-family: sans-serif;
+          display: flex;
+          flex-flow: column nowrap;
+          align-items: flex-start;
+        }
         textarea {
             font-family: monospace;
             font-size: large;
+            box-sizing: border-box;
+            Xmargin-top: 10px;
             width: 100%;
-            margin-top: 7px;
+            flex-grow: 3;
+            border: 0;
+            background-color: #dddddd;
+        }
+        textarea.result {
+          flex-grow: 1;
         }
     </style>
     <script src="runtime/su_bundle.js"></script>
@@ -47,36 +59,23 @@
 
 <body>
     <h1>suneido.js playground</h1>
-        <label>
-            Suneido source code
-            <br/>
-            <textarea id="su_source" rows="9"></textarea>
-        </label>
-        <br />
-        <br />
-        <label>
-            Suneido result
-            <br />
-            <textarea id="su_result" rows="5" readonly="readonly"></textarea>
-        </label>
-        <br />
-        <br />
-        <label>
-            JavaScript
-            <br/>
-            <textarea id="js_source" rows="9" readonly="readonly"></textarea>
-        </label>
-        <br />
-        <br />
-        <label>
-            JavaScript result
-            <br />
-            <textarea id="js_result" rows="5" readonly="readonly"></textarea>
-        </label>
-        <br />
-        <br />
-        <span id="run" style="font-size: x-large; padding: 5px; color: white;
-            font-weight: bold; background-color: green">Run</span>
+    Suneido source code
+    <br/>
+    <textarea id="su_source"></textarea>
+    <br/>
+    Suneido result
+    <br />
+    <textarea id="su_result" class="result" readonly="readonly"></textarea>
+    <br/>
+    JavaScript
+    <textarea id="js_source" readonly="readonly"></textarea>
+    <br/>
+    JavaScript result
+    <br />
+    <textarea id="js_result" class="result" readonly="readonly"></textarea>
+    <br/>
+    <span id="run" style="font-size: x-large; padding: 5px; color: white;
+        font-weight: bold; background-color: green">Run</span>
 </body>
 
 </html>
