@@ -1,7 +1,7 @@
 {
     "compileOnSave": true,
     "compilerOptions": {
-        "module": "umd",
+        "module": "commonjs",
         "sourceMap": true,
         "target": "es6",
         "preserveConstEnums": true,

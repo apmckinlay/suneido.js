@@ -12,49 +12,71 @@
         textarea {
             font-family: monospace;
             font-size: large;
+            width: 100%;
+            margin-top: 7px;
         }
     </style>
-    <script data-main="play" src="http://requirejs.org/docs/release/2.1.18/comments/require.js"></script>
+    <script src="runtime/su_bundle.js"></script>
+    <script type="text/javascript">
+    window.onload = function () {
+        function run() {
+            var src = document.getElementById("su_source").value;
+            var req = new XMLHttpRequest();
+            req.onload = results;
+            req.open("post", "/run", true);
+            req.send(src);
+        }
+
+        function results() {
+            var result = JSON.parse(this.responseText);
+            document.getElementById("su_result").value = result.su_result;
+            document.getElementById("js_source").value = result.js_source;
+            var js_result;
+            try {
+                js_result = eval(result.js_source + '.call();');
+            } catch (e) {
+                js_result = e;
+            }
+            document.getElementById("js_result").value = js_result;
+        }
+        
+        document.getElementById('run').onclick = run;
+    };
+    </script>
 </head>
 
 <body>
     <h1>suneido.js playground</h1>
-    <div style="float: left; margin-right: 1em;">
         <label>
             Suneido source code
             <br/>
-            <textarea id="su_source" rows="9" cols="50"></textarea>
+            <textarea id="su_source" rows="9"></textarea>
         </label>
         <br />
         <br />
         <label>
             Suneido result
             <br />
-            <textarea id="su_result" rows="5" cols="50" readonly="readonly"></textarea>
+            <textarea id="su_result" rows="5" readonly="readonly"></textarea>
         </label>
         <br />
         <br />
-    </div>
-    <div style="float: left; ">
         <label>
             JavaScript
             <br/>
-            <textarea id="js_source" rows="9" cols="50" readonly="readonly"></textarea>
+            <textarea id="js_source" rows="9" readonly="readonly"></textarea>
         </label>
         <br />
         <br />
         <label>
             JavaScript result
             <br />
-            <textarea id="js_result" rows="5" cols="50" readonly="readonly"></textarea>
+            <textarea id="js_result" rows="5" readonly="readonly"></textarea>
         </label>
         <br />
         <br />
-    </div>
-    <div style="clear: both;">
         <span id="run" style="font-size: x-large; padding: 5px; color: white;
             font-weight: bold; background-color: green">Run</span>
-    </div>
 </body>
 
 </html>
