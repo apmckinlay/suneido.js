@@ -3,8 +3,7 @@ layout:  default
 title: suneido.js
 ---
 
-
-suneido.js
+{{ title }}
 ==========
 [Building & Running](buildrun.html)
 
