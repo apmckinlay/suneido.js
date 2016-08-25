@@ -1,3 +1,8 @@
+---
+layout:  default
+title: Style Guide
+---
+
 * code should pass tslint with no errors
 
 * use `let` or `const` instead of `var`
