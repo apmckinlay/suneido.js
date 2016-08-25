@@ -26,30 +26,31 @@ update(`one
         two
         three`);
 update(`function su_func(a, b, c) {
-    }
-    //BUILTIN Func(a, b, c)
-    //GENERATED start
-    su_func.call = su_func;
-    su_func.callNamed = function (named, a, b, c) {
-        ({ a = a, b = b, c = c } = named);
-        return su_func(a, b, c);
-    };
-    su_func.callAt = function (args) {
-        return su_func.callNamed(su.toObject(args.map), ...args.vec);
-    };
-    //GENERATED end`);
+        }
+        //BUILTIN Func(a, b, c)
+        //GENERATED start
+        su_func.call = su_func;
+        su_func.callNamed = function (named, a, b, c) {
+            ({ a = a, b = b, c = c } = named);
+            return su_func(a, b, c);
+        };
+        su_func.callAt = function (args) {
+            return su_func.callNamed(su.toObject(args.map), ...args.vec);
+        };
+        //GENERATED end`);
 
 update(`class Foo {
-        Bar(x, y) {
+            Bar(x, y) {
+            }
         }
         //BUILTIN Foo.Bar(x, y)
         //GENERATED start
-        Bar_callNamed($named, x, y) {
+        Foo.prototype.Bar.call = Foo.prototype.Bar;
+        Foo.prototype.Bar.callNamed = function ($named, x, y) {
             ({ x = x, y = y } = $named);
             return Foo.Bar(x, y);
-        }
-        Bar_callAt(args) {
-            return Foo.Bar_callNamed(su.toObject(args.map), ...args.vec);
-        }
-        //GENERATED end
-    }`);
+        };
+        Foo.prototype.Bar.callAt = function (args) {
+            return Foo.Bar.callNamed(su.toObject(args.map), ...args.vec);
+        };
+        //GENERATED end`);

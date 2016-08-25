@@ -49,13 +49,14 @@ function generate(line: string): string[] {
 function genMethod(name: string, params: string) {
     let [clas, meth] = name.split('.');
     return [
-        `${meth}_callNamed($named, ${params}) {`,
+        `${clas}.prototype.${meth}.call = ${clas}.prototype.${meth};`,
+        `${clas}.prototype.${meth}.callNamed = function ($named, ${params}) {`,
         `    ({ ${assigns(params)} } = $named);`,
         `    return ${clas}.${meth}(${params});`,
-        `}`,
-        `${meth}_callAt(args) {`,
-        `    return ${clas}.${meth}_callNamed(su.toObject(args.map), ...args.vec);`,
-        `}`,
+        `};`,
+        `${clas}.prototype.${meth}.callAt = function (args) {`,
+        `    return ${clas}.${meth}.callNamed(su.toObject(args.map), ...args.vec);`,
+        `};`,
     ];
 }
 
