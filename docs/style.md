@@ -1,7 +1,7 @@
 ---
-layout:  default
-title: Style Guide
 ---
+Style Guide
+===========
 
 * code should pass tslint with no errors
 
@@ -55,4 +55,4 @@ title: Style Guide
 
 * minimize the use of type assertions
 
-https://basarat.gitbooks.io/typescript/content/docs/types/type-assertion.html
+(https://basarat.gitbooks.io/typescript/content/docs/types/type-assertion.html)
