@@ -1,7 +1,7 @@
 ---
-layout:  default
-title: Building & Running
 ---
+Building & Running
+==================
 
 Requirements
 ------------
