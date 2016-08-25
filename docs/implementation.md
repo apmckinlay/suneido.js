@@ -1,6 +1,6 @@
 suneido.js Implementation
 =========================
-
+ 
 String
 -------
 Use plain JavaScript strings with no wrapper.
