@@ -1,5 +1,7 @@
-suneido.js Implementation
-=========================
+---
+---
+Implementation
+==============
  
 String
 -------
