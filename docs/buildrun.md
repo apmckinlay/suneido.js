@@ -1,6 +1,6 @@
 ---
 layout:  default
-title: suneido.js
+title: Building & Running
 ---
 
 Requirements
