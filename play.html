@@ -12,13 +12,12 @@
           font-family: sans-serif;
           display: flex;
           flex-flow: column nowrap;
-          align-items: flex-start;
+          Xalign-items: flex-start;
         }
         textarea {
             font-family: monospace;
             font-size: large;
             box-sizing: border-box;
-            Xmargin-top: 10px;
             width: 100%;
             flex-grow: 3;
             border: 0;
@@ -27,11 +26,30 @@
         textarea.result {
           flex-grow: 1;
         }
+        #topright {
+            float: right;
+        }
+        #run, #clear {
+            font-size: large;
+            padding: 5px;
+            color: white;
+            font-weight: bold;
+            background-color: green;
+        }
+        #sample {
+            font-size: large;
+            margin-top: .5em;
+            margin-right: 1em;
+        }
     </style>
     <script src="runtime/su_bundle.js"></script>
+    <script src="play_samples.js"></script>
     <script type="text/javascript">
     window.onload = function () {
         function run() {
+            document.getElementById("su_result").value = ''
+            document.getElementById("js_source").value = ''
+            document.getElementById("js_result").value = ''
             var src = document.getElementById("su_source").value;
             var req = new XMLHttpRequest();
             req.onload = results;
@@ -40,25 +58,81 @@
         }
 
         function results() {
+            if (this.status !== 200) {
+                document.getElementById("su_result").value =
+                    this.status + ' ' + this.statusText;
+                return
+            }
             var result = JSON.parse(this.responseText);
             document.getElementById("su_result").value = result.su_result;
-            document.getElementById("js_source").value = result.js_source;
+// strip function wrapper if present
+s = result.js_source
+try {
+    if (s.startsWith('(function () {') && s.endsWith('})().call()')) {
+        let cons = fromto(s, '\n    let $const = [', '\n    ];');
+        let body = between(s, 'function $f() {\n', '    }\n    $f.call = $f;');
+        s = cons + body;
+    }
+} catch (e) {
+    s = s + '\nERROR in strip ' + e;
+}
+            document.getElementById("js_source").value = s;
             var js_result;
             try {
-                js_result = eval(result.js_source + '.call();');
+                js_result = eval(result.js_source);
             } catch (e) {
                 js_result = e;
             }
             document.getElementById("js_result").value = js_result;
         }
-        
+        function between(s, start, end) {
+            let i = s.indexOf(start) + start.length;
+            let j = s.indexOf(end);
+            if (i === -1 || j === -1)
+                throw new Error("between " + i + ', ' + j);
+            return s.slice(i, j);
+        }
+        function fromto(s, start, end) {
+            let i = s.indexOf(start);
+            let j = s.indexOf(end) + end.length;
+            if (i === -1 || j === -1)
+                return "";
+            return s.slice(i, j);
+        }
+
         document.getElementById('run').onclick = run;
+
+        document.getElementById('clear').onclick = function () {
+            document.getElementById('sample').value = ''
+            document.getElementById("su_source").value = ''
+            document.getElementById("su_result").value = ''
+            document.getElementById("js_source").value = ''
+            document.getElementById("js_result").value = ''
+        };
+
+
+        document.getElementById('sample').onclick = function () {
+            var which = document.getElementById('sample').value;
+            if (which)
+                document.getElementById("su_source").value = play_samples[which];
+        };
     };
     </script>
 </head>
 
 <body>
-    <h1>suneido.js playground</h1>
+    <h1>suneido.js playground
+        <div id="topright">
+            <span style="font-size: large;">Samples</span>
+            <select id="sample">
+                <option></option>
+                <option>class</option>
+                <option>function</option>
+            </select>
+            <span id="run">Run</span>
+            <span id="clear">Clear</span>
+        </div>
+        </h1>
     Suneido source code
     <br/>
     <textarea id="su_source"></textarea>
@@ -73,9 +147,6 @@
     JavaScript result
     <br />
     <textarea id="js_result" class="result" readonly="readonly"></textarea>
-    <br/>
-    <span id="run" style="font-size: x-large; padding: 5px; color: white;
-        font-weight: bold; background-color: green">Run</span>
 </body>
 
 </html>
