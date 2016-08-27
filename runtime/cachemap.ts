@@ -1,10 +1,8 @@
 // used by tr
 
 class Slot<Key, Data> {
-    constructor(
-        public lru: number = null,
-        public key: Key = null,
-        public data: Data = null) { }
+    constructor(public lru: number, public key: Key, public data: Data) {
+    }
 }
 
 export class CacheMap<Key, Data> {
@@ -15,19 +13,19 @@ export class CacheMap<Key, Data> {
         this.slots = [];
     }
     put(key: Key, data: Data): Data {
-        let lru: number = 0;
-
+        let slot: number;
         if (this.next < this.n) {
-            this.slots[this.next++] = new Slot(this.clock++, key, data);
-            return data;
+            slot = this.next++;
+        } else {
+            slot = 0;
+            for (let i = 0; i < this.next; i++)
+                if (this.slots[i].lru < this.slots[slot].lru)
+                    slot = i;
         }
-        for (let i = 0; i < this.next; i++)
-            if (this.slots[i].lru < this.slots[lru].lru)
-                lru = i;
-        this.slots[lru] = new Slot(this.clock++, key, data);
+        this.slots[slot] = new Slot(this.clock++, key, data);
         return data;
     }
-    get(key: Key): Data {
+    get(key: Key): Data | null {
         for (let i = 0; i < this.next; i++)
             if (this.slots[i].key === key) {
                 this.slots[i].lru = this.clock++;

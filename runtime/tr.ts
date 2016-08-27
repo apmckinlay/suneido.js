@@ -43,9 +43,11 @@ export function tr(srcstr: string, from: string, to: string): string {
     return dst;
 }
 
+let cache = new CacheMap<string, string>(10); // static
+
 function makset(s: string): string {
     let dash = s.indexOf('-', 1);
-    let p: string;
+    let p: string | null;
 
     if (dash === -1 || dash === (s.length - 1))
         return s; // no ranges to expand
@@ -53,8 +55,6 @@ function makset(s: string): string {
         return p;
     return cache.put(s, expandRanges(s));
 }
-
-let cache = new CacheMap<string, string>(10); // static
 
 function expandRanges(s: string): string {
     let dst: string = '';

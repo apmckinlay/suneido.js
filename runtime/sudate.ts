@@ -75,7 +75,7 @@ export class SuDate extends SuValue {
      * @param {string} order string, order pattern helps to parse date string
      * @returns {Object} a sudate, or sufalse if not a valid date
      */
-    static parse(s: string, order: string): SuDate {
+    static parse(s: string, order: string): SuDate | null {
         enum TokenType { YEAR, MONTH, DAY, HOUR, MINUTE, SECOND, MILLISECOND }
         const minval = [0, 1, 1, 0, 0, 0, 0];
         const maxval = [3000, 12, 31, 23, 59, 59, 999];
@@ -98,7 +98,7 @@ export class SuDate extends SuValue {
         let tokens: Array<number> = [];
         let ntokens = 0;
         let got_time = false;
-        let prev: string = null;
+        let prev: string | null = null;
         let curPattern: string;
         let part: TokenType;
 
@@ -270,7 +270,7 @@ export class SuDate extends SuValue {
      * @param {string} s string
      * @returns {Object} a sudate, or sufalse if not a valid date
      */
-    static literal(s: string): SuDate {
+    static literal(s: string): SuDate | null {
         if (s.startsWith('#'))
             s = s.substr(1);
         let sn = s.indexOf('.');
@@ -429,7 +429,8 @@ export class SuDate extends SuValue {
                 let s = util.capitalizeFirstLetter(firstDay.toLowerCase());
                 i = weekday.findIndex(x => x.startsWith(s));
                 assert.that(i !== undefined, "usage: date.WeekDay( <day of week> )");
-            } else if (!isNaN(firstDay)) {
+            } else if (typeof firstDay === 'number' &&
+                0 <= firstDay && firstDay <= 6) {
                 i = firstDay;
             } else {
                 assert.that(false, "usage: date.WeekDay( <day of week> )");
@@ -565,11 +566,6 @@ function normalize(year: number, month: number, day: number,
     return SuDate.make(year, month, day, hour, minute, second, millisecond);
 }
 
-/** extract n chars from the position start of string s and translate into integer */
-function getNumber(s: string, start: number, n: number): number {
-    return parseInt(s.slice(start, start + n));
-}
-
 function ampmAhead(s: string, i: number): boolean {
     if (s[i] === ' ')
         i++;
@@ -695,7 +691,7 @@ function format(dt: SuDate, fmt: string): string {
 
 function adjustPatterns(date_patterns: Array<string>, order: string): string {
     let i: number = 0;
-    let prev: string = null;
+    let prev: string | null = null;
     let syspatArray: Array<string> = [];
     for (let j = 0; order[j] && i < 3; prev = order[j], j++) {
         if (order[j] !== prev &&

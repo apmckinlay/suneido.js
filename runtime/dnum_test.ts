@@ -3,8 +3,10 @@ import * as assert from "./assert";
 
 const n = Dnum.make;
 
-function eq(x: Dnum, y?: string | number) {
-    if (typeof y === "string")
+function eq(x: Dnum | null, y?: string | number | null): void {
+    if (x === null || y === null)
+        assert.equal(x, y);
+    else if (typeof y === "string")
         assert.equal(x.toString(), y);
     else if (typeof y === "number")
         assert.equal(x.toNumber(), y);
@@ -29,7 +31,7 @@ eq(n(1000000, -3), "1000");
 // toNumber --------------------------------------------------------------------
 
 function toNum(s: string, expected: number) {
-    let n = Dnum.parse(s).toNumber();
+    let n = Dnum.parse(s) !.toNumber();
     assert.equal(n, expected);
     // let dif = Math.abs(n - expected);
     // assert.that(dif < Math.abs(n) / 1e12, "expected " + expected + " got " + n);
@@ -44,7 +46,7 @@ toNum('12.34e-56', 12.34e-56);
 
 // parse -----------------------------------------------------------------------
 
-function parse(s: string, expected: number|string): void {
+function parse(s: string, expected: number | string | null): void {
     let result = Dnum.parse(s);
     eq(result, expected);
 }
@@ -82,10 +84,9 @@ eq(Dnum.MINUS_INF.abs(), 'inf');
 
 // add/sub ---------------------------------------------------------------------
 
-function add_sub(x: Dnum, y: Dnum, sum: string|number, dif: string|number) {
-    function op(fn: (x: Dnum, y: Dnum) => Dnum, x: Dnum, y: Dnum, expected: string|number) {
+function add_sub(x: Dnum, y: Dnum, sum: string | number, dif: string | number) {
+    function op(fn: (x: Dnum, y: Dnum) => Dnum, x: Dnum, y: Dnum, expected: string | number) {
         let result = fn(x, y);
-        let sfn = (fn === Dnum.add) ? " + " : " - ";
         eq(result, expected);
     }
     op(Dnum.add, x, y, sum);
@@ -110,8 +111,8 @@ add_sub(n(9007199254740990, 126), n(9007199254740990, 126), 'inf', 0); // overfl
 
 // mul -------------------------------------------------------------------------
 
-function mul(x: Dnum, y: Dnum, expected: string|number) {
-    function mul2(x: Dnum, y: Dnum, expected: string|number) {
+function mul(x: Dnum, y: Dnum, expected: string | number) {
+    function mul2(x: Dnum, y: Dnum, expected: string | number) {
         let result = Dnum.mul(x, y);
         eq(result, expected);
     }
@@ -135,8 +136,8 @@ mul(n(1234567890123456), n(1234567890123456), '1.524157875323882e30');
 
 // div -------------------------------------------------------------------------
 
-function div(x: Dnum, y: Dnum, expected: string|number) {
-    function div2(x: Dnum, y: Dnum, expected: string|number) {
+function div(x: Dnum, y: Dnum, expected: string | number) {
+    function div2(x: Dnum, y: Dnum, expected: string | number) {
         let result = Dnum.div(x, y);
         eq(result, expected);
     }
@@ -225,5 +226,5 @@ function dnum_cmp(...data: string[]): boolean {
 function dn(s: string): Dnum {
     return s === "inf" ? Dnum.INF :
         s === "-inf" ? Dnum.MINUS_INF :
-            Dnum.parse(s);
+            Dnum.parse(s) !;
 }

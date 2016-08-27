@@ -1,5 +1,5 @@
 import { Lexer } from "./lexer";
-import { Token, keywords } from "./tokens";
+import { Token } from "./tokens";
 import * as tokens from "./tokens";
 import * as assert from "./assert";
 
@@ -33,7 +33,7 @@ function check1(lexer: Lexer, token: Token,
     if (expval)
         assert.equal(lexer.value(), expval);
     if (expkw)
-        eqToken(lexer.keyword(), expkw);
+        eqToken(lexer.keyword()!, expkw);
 }
 
 function eqToken(t1: Token, t2: Token) {

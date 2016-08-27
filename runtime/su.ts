@@ -9,7 +9,6 @@
 
 import { Dnum } from "./dnum";
 import { SuObject } from "./suobject";
-import { SuValue } from "./suvalue";
 import display from "./display";
 import is from "./is";
 
@@ -92,10 +91,11 @@ function toNum(x: any): number | Dnum {
     if (x === true)
         return 1;
     if (typeof x === 'string') {
+        let n: Dnum | null;
         if (!/[.eE]/.test(x) && x.length < 14)
             return parseInt(x);
-        else
-            return Dnum.parse(x);
+        else if (n = Dnum.parse(x))
+            return n;
     }
     throw "can't convert " + typeName(x) + " to number";
 }
@@ -153,10 +153,6 @@ export function bitxor(x: any, y: any): number {
     return x ^ y; //TODO
 }
 
-function isNum(x: any): boolean {
-    return typeof x === 'number' || x instanceof Dnum;
-}
-
 export function isnt(x: any, y: any): boolean {
     return !is(x, y); //TODO
 }
@@ -208,7 +204,7 @@ export function argsall(args: any[]) {
     return args; //TODO
 }
 
-export function args(args: any[], spec: string) {
+export function args(args: any[], _spec: string) {
     return args; //TODO
 }
 
@@ -300,7 +296,7 @@ export function callAt(f: any, args: SuObject): any {
     cantCall(f);
 }
 
-function cantCall(f: any) {
+function cantCall(f: any): never {
     throw new Error("can't call " + typename(f));
 }
 

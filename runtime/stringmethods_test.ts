@@ -147,7 +147,6 @@ str1 = "";
 assert.equal(ss.size(""), 0);
 
 str1 = "";
-let split = ss.split(str1, ',');
 assert.equal(ss.split(str1, ',').toString(), '#()');
 str1 = "one two three";
 assert.equal(ss.split(str1, '.').toString(), '#(one two three)');

@@ -10,7 +10,7 @@ export const END = "//GENERATED end";
 const BUILTIN = "//BUILTIN";
 
 export function removeOld(lines: string[]): void {
-    let end: number;
+    let end: number | undefined;
     // process in reverse so removals don't change indexes
     for (let i = lines.length - 1; i >= 0; i--) {
         let line = lines[i].trim();
@@ -31,7 +31,7 @@ function insertNew(lines: string[]): void {
     for (let i = 0; i < lines.length; i++) {
         let line = lines[i];
         if (line.trim().startsWith(BUILTIN)) {
-            let [indent] = line.match(/^\s*/);
+            let [indent] = line.match(/^\s*/)!;
             let insert = generate(line).map(s => indent + s);
             lines.splice(i + 1, 0, indent + START, ...insert, indent + END);
         }
@@ -40,7 +40,7 @@ function insertNew(lines: string[]): void {
 
 function generate(line: string): string[] {
     let [, name, params] =
-        line.match(/BUILTIN (\w+(?:.\w+)?[?!]?)\((.*)\)/);
+        line.match(/BUILTIN (\w+(?:.\w+)?[?!]?)\((.*)\)/)!;
     return name.includes('.')
         ? genMethod(name, params)
         : genFunction(name, params);

@@ -46,7 +46,7 @@ function missing() {
 
 function run1(fixtures: Fixtures, file: string, scan: Scanner): void {
     scan.match(Token.AT);
-    let name = scan.value();
+    let name = scan.value()!;
     scan.match(Token.IDENTIFIER, SKIP);
     console.log(file + ": " + name + ":");
     let n = 0;
@@ -55,7 +55,6 @@ function run1(fixtures: Fixtures, file: string, scan: Scanner): void {
         console.log("\tMISSING FIXTURE");
         fixture = missing;
     }
-    let ok = true;
     while (scan.token !== Token.EOF && scan.token !== Token.AT) {
         let args: string[] = [];
         do {

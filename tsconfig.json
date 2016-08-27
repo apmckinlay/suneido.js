@@ -5,7 +5,12 @@
         "sourceMap": true,
         "target": "es6",
         "preserveConstEnums": true,
-        "noImplicitAny": true
+        "noImplicitAny": true,
+        "noImplicitReturns": true,
+        "strictNullChecks": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true
     },
     "exclude": [
         "node_modules"

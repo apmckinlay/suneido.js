@@ -26,7 +26,7 @@ export class Dnum extends SuValue {
     }
 
     static fromNumber(n: number): Dnum {
-        return Dnum.parse(n.toString()); // is there a better way?
+        return Dnum.parse(n.toString())!; // is there a better way?
     }
 
     /**
@@ -34,7 +34,7 @@ export class Dnum extends SuValue {
      * @param s {string}
      * @returns {object|false} a dnum, or null if not a valid number
      */
-    static parse(s: string): Dnum {
+    static parse(s: string): Dnum | null {
         if (typeof s !== "string" || s.length === 0)
             return null; // invalid input
         if (s === "0")

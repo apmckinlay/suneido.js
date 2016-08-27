@@ -47,20 +47,20 @@ assert.equal(sud1.formatEn("yyyy-MM-dd H:mm"), "2003-11-27 16:37");
 assert.equal(sud1.formatEn("dd \\de MMM"), "27 de Nov");
 assert.equal(sud1.formatEn("dd 'de' MMM"), "27 de Nov");
 
-sud2 = SuDate.parse("#20150326.122334456", "yyyyMMdd");
+sud2 = SuDate.parse("#20150326.122334456", "yyyyMMdd")!;
 assert.equal(sud2.formatEn("yyyy-MM-dd H:mm:ss"), "2015-03-26 12:23:34");
-sud2 = SuDate.parse("2000/3/4 8:34:56", "yyyyMMdd");
+sud2 = SuDate.parse("2000/3/4 8:34:56", "yyyyMMdd")!;
 assert.equal(sud2.formatEn("yyyy-MM-dd H:mm:ss"), "2000-03-04 8:34:56");
 
-sud2 = SuDate.literal("#19990101");
+sud2 = SuDate.literal("#19990101")!;
 assert.equal(sud2.toString(), "#19990101.000000000");
-sud2 = SuDate.literal("#19990101.010203456");
+sud2 = SuDate.literal("#19990101.010203456")!;
 assert.equal(sud2.toString(), "#19990101.010203456");
-sud2 = SuDate.literal("");
+sud2 = SuDate.literal("")!;
 assert.that(sud2 === null, "Check method literal() with empty string");
-sud2 = SuDate.literal("#19990229");
+sud2 = SuDate.literal("#19990229")!;
 assert.that(sud2 === null, "Check method literal() with invalid date argument");
-sud2 = SuDate.literal("#19990229.285959000");
+sud2 = SuDate.literal("#19990229.285959000")!;
 assert.that(sud2 === null, "Check method literal() with invalid time argument");
 
 sud1 = SuDate.timestamp();

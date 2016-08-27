@@ -267,7 +267,7 @@ export function replace(s: string, pattern: string,
     replacement: string | ((m: string) => string) = '', count: number = Infinity): string {
     assert.that(2 <= arguments.length && arguments.length <= 4,
         "usage: string.Replace(pattern, replacement = '', count = false) -> string");
-    let nGroups = (new RegExp(pattern + '|')).exec('').length - 1;      //Calculate how many capture groups dose the regex pattern have
+    let nGroups = (new RegExp(pattern + '|')).exec('')!.length - 1;      //Calculate how many capture groups dose the regex pattern have
     let repCount = 0;
     function repF(): string {
         let dst: string = '';

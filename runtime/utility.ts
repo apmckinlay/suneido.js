@@ -76,7 +76,14 @@ export function isUpper(char: string): boolean {
 }
 
 /** should be called with i pointing at backslash */
-export function doesc(src: string, index: {i: number}): string {
+export function doesc(src: string, index: { i: number }): string {
+    function hexval(c: string): number {
+        let cCode = c.toLowerCase().charCodeAt(0);
+        return cCode <= 57 ? cCode - 48 : cCode - 97 + 10;
+    }
+    function octval(c: string): number {
+        return c.charCodeAt(0) - 48;
+    }
     let dstCode: number;
     index.i++;
     switch (src[index.i]) {
@@ -91,7 +98,8 @@ export function doesc(src: string, index: {i: number}): string {
                 index.i += 2;
                 dstCode = 16 * hexval(src[index.i - 1]) + hexval(src[index.i]);
                 return String.fromCharCode(dstCode);
-            }
+            } else
+                break;
         case '\\':
         case '"':
         case '\'':
@@ -105,11 +113,6 @@ export function doesc(src: string, index: {i: number}): string {
                 return String.fromCharCode(dstCode);
             }
     }
-    function hexval(c: string): number {
-        let cCode = c.toLowerCase().charCodeAt(0);
-        return cCode <= 57 ? cCode - 48 : cCode - 97 + 10;
-    }
-    function octval(c: string): number {
-        return c.charCodeAt(0) - 48;
-    }
+    index.i--;
+    return src[index.i];
 }

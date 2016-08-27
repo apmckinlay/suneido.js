@@ -155,7 +155,7 @@ export class SuObject extends SuValue {
             stack.pop();
         }
     }
-    private static equals3(x: any, y: any, stack?: PairStack): boolean {
+    private static equals3(x: any, y: any, stack: PairStack): boolean {
         if (x === y)
             return true;
         if (!(x instanceof SuObject))

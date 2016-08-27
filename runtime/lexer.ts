@@ -9,24 +9,24 @@ import { Token, keywords } from "./tokens";
 export class Lexer {
     private src: string;
     private si: number;
-    private _prev: number;
-    private _value: string;
-    private _keyword: Token;
+    private _prev: number | undefined;
+    private _value: string | undefined;
+    private _keyword: Token | undefined;
 
     constructor(src: string) {
         this.src = src;
         this.si = 0;
     }
 
-    prev(): number {
+    prev(): number | undefined {
         return this._prev;
     }
 
-    value(): string {
+    value(): string | undefined {
         return this._value;
     }
 
-    keyword(): Token {
+    keyword(): Token | undefined {
         return this._keyword;
     }
 
@@ -160,9 +160,9 @@ export class Lexer {
         if (!this.matchChar('\\'))
             return this.src[this.si++];
         let save = this.si;
-        let d1: number;
-        let d2: number;
-        let d3: number;
+        let d1: number | null;
+        let d2: number | null;
+        let d3: number | null;
         if (this.matchChar('n'))
             return '\n';
         else if (this.matchChar('r'))
@@ -186,7 +186,7 @@ export class Lexer {
             return '\\';
         }
     }
-    private digit(radix: number): number {
+    private digit(radix: number): number | null {
         const ASCII_ZERO = '0'.charCodeAt(0);
         const ASCII_A = 'a'.charCodeAt(0);
 
@@ -235,7 +235,7 @@ export class Lexer {
         this.matchIf(c => c === '!' || c === '?');
         this.setValue();
 
-        this._keyword = keywords[this._value];
+        this._keyword = keywords[this._value!];
         let isop = isOperatorKeyword(this._keyword);
         if (isop && this.src[this.si] === ':')
             this._keyword = undefined;
@@ -269,7 +269,7 @@ export class Lexer {
     }
 
     private setValue(): void {
-        this._value = this.src.substring(this._prev, this.si);
+        this._value = this.src.substring(this._prev!, this.si);
     }
 
 }

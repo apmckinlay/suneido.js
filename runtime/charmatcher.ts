@@ -46,7 +46,7 @@ export abstract class CharMatcher {
 }
 
 class None extends CharMatcher {
-    matches(c: string): boolean {
+    matches(_c: string): boolean {
         return false;
     }
 }
