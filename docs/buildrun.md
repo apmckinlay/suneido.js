@@ -7,7 +7,7 @@ Requirements
 ------------
 Node.js ("current", not "stable")
 
-TypeScript
+TypeScript 2
 ```
 npm install -g typescript)
 ```
