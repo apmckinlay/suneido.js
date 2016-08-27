@@ -43,17 +43,13 @@ export function tr(srcstr: string, from: string, to: string): string {
     return dst;
 }
 
-let cache = new CacheMap<string, string>(10); // static
+let cache = new CacheMap<string, string>(10, expandRanges); // static
 
 function makset(s: string): string {
     let dash = s.indexOf('-', 1);
-    let p: string | null;
-
     if (dash === -1 || dash === (s.length - 1))
         return s; // no ranges to expand
-    if (p = cache.get(s))
-        return p;
-    return cache.put(s, expandRanges(s));
+    return cache.get(s);
 }
 
 function expandRanges(s: string): string {

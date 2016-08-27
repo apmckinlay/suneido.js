@@ -6,36 +6,30 @@ class Slot<Key, Data> {
 }
 
 export class CacheMap<Key, Data> {
-    constructor(n: number) {
-        this.next = 0;
+    private slots: Slot<Key, Data>[];
+    private clock: number;
+
+    constructor(private n: number, private func: (k: Key) => Data) {
         this.clock = 0;
-        this.n = n;
         this.slots = [];
     }
-    put(key: Key, data: Data): Data {
-        let slot: number;
-        if (this.next < this.n) {
-            slot = this.next++;
-        } else {
-            slot = 0;
-            for (let i = 0; i < this.next; i++)
-                if (this.slots[i].lru < this.slots[slot].lru)
-                    slot = i;
-        }
-        this.slots[slot] = new Slot(this.clock++, key, data);
-        return data;
-    }
-    get(key: Key): Data | null {
-        for (let i = 0; i < this.next; i++)
+
+    /** get or calculate data */
+    get(key: Key): Data {
+        let lru = 0;
+        // single pass both searches and finds lru
+        for (let i = 0; i < this.slots.length; i++) {
             if (this.slots[i].key === key) {
                 this.slots[i].lru = this.clock++;
                 return this.slots[i].data;
             }
-        return null;
+            if (this.slots[i].lru < this.slots[lru].lru)
+                lru = i;
+        }
+        if (this.slots.length < this.n)
+            lru = this.slots.length;
+        let data = this.func(key);
+        this.slots[lru] = new Slot(this.clock++, key, data);
+        return data;
     }
-
-    private next: number;
-    private clock: number;
-    private n: number;
-    private slots: Slot<Key, Data>[];
 }
