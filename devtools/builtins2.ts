@@ -43,35 +43,60 @@ function generate(line: string): string[] {
         line.match(/BUILTIN (\w+(?:.\w+)?[?!]?)\((.*)\)/)!;
     return name.includes('.')
         ? genMethod(name, params)
-        : genFunction(name, params);
+        : params.includes('@')
+            ? genAtFunction(name, params)
+            : genFunction(name, params);
 }
 
 function genMethod(name: string, params: string) {
     let [clas, meth] = name.split('.');
+    let f = `(${clas}.prototype.${meth} as any)`;
     return [
-        `${clas}.prototype.${meth}.call = ${clas}.prototype.${meth};`,
-        `${clas}.prototype.${meth}.callNamed = function ($named, ${params}) {`,
+        `${f}.\$call = ${clas}.prototype.${meth};`,
+        `${f}.\$callNamed = function ($named: any, ${decls(params)}) {`,
         `    ({ ${assigns(params)} } = $named);`,
-        `    return ${clas}.${meth}(${params});`,
+        `    return ${clas}.prototype.${meth}(${params});`,
         `};`,
-        `${clas}.prototype.${meth}.callAt = function (args) {`,
-        `    return ${clas}.${meth}.callNamed(su.toObject(args.map), ...args.vec);`,
+        `${f}.\$callAt = function (args: SuObject) {`,
+        `    return ${f}.\$callNamed(su.toObject(args.map), ...args.vec);`,
         `};`,
+        `${f}.\$params = '${params}';`
+    ];
+}
+
+function genAtFunction(name: string, params: string) {
+    let su_name = 'su_' + name[0].toLowerCase() + name.slice(1); // TODO trailing ?!
+    let f = '(' + su_name + ' as any)';
+    return [
+        `${f}.\$callAt = ${su_name};`,
+        `${f}.\$call = function (...args: any[]) {`,
+        `    return ${su_name}(new SuObject(args));`,
+        `};`,
+        `${f}.\$callNamed = function (named: any, ...args: any[]) {`,
+        `    return ${su_name}(new SuObject(args, su.toMap(named)));`,
+        `};`,
+        `${f}.\$params = '${params}';`
     ];
 }
 
 function genFunction(name: string, params: string) {
     let su_name = 'su_' + name[0].toLowerCase() + name.slice(1); // TODO trailing ?!
+    let f = '(' + su_name + ' as any)';
     return [
-        `${su_name}.call = ${su_name};`,
-        `${su_name}.callNamed = function (named, ${params}) {`,
-        `    ({ ${assigns(params)} } = named);`,
+        `${f}.\$call = ${su_name};`,
+        `${f}.\$callNamed = function ($named: any, ${decls(params)}) {`,
+        `    ({ ${assigns(params)} } = $named);`,
         `    return ${su_name}(${params});`,
         `};`,
-        `${su_name}.callAt = function (args) {`,
-        `    return ${su_name}.callNamed(su.toObject(args.map), ...args.vec);`,
+        `${f}.\$callAt = function (args: SuObject) {`,
+        `    return ${f}.\$callNamed(su.toObject(args.map), ...args.vec);`,
         `};`,
+        `${f}.\$params = '${params}';`
     ];
+}
+
+function decls(params: string) {
+    return params.split(/, ?/).map(p => p + ': any').join(', ');
 }
 
 function assigns(params: string) {

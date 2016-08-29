@@ -9,18 +9,22 @@ import { SuValue } from "./suvalue";
 import display from "./display";
 import is from "./is";
 
+import * as assert from "./assert";
+
 export class SuObject extends SuValue {
     private readonly: boolean;
     private defval: any;
-    private vec: Array<any>;
-    private map: Map<any, any>;
+    public vec: Array<any>;    // public only for readonly access
+    public map: Map<any, any>; // public only for readonly access
     static EMPTY = new SuObject().setReadonly();
 
     /** WARNING: the object will take ownership of the array and map */
     constructor(vec?: any[], map?: Map<any, any>) {
         super();
         this.vec = vec || [];
+        assert.that(Array.isArray(this.vec));
         this.map = map || new Map();
+        assert.that(this.map instanceof Map);
         this.readonly = false;
     }
 

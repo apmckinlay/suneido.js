@@ -11,6 +11,7 @@ import { Dnum } from "./dnum";
 import { SuObject } from "./suobject";
 import display from "./display";
 import is from "./is";
+import { suglobals } from "./globals";
 
 export { display, is };
 
@@ -273,7 +274,7 @@ export function typename(x: any): string {
 // Note: using apply until better spread (...) performance in v8
 
 export function call(f: any, ...args: any[]): any {
-    let call = f.call;
+    let call = f.$call;
     if (call)
         return call.apply(undefined, args);
     //  TODO strings
@@ -281,7 +282,7 @@ export function call(f: any, ...args: any[]): any {
 }
 
 export function callNamed(f: any, ...args: any[]) {
-    let call = f.callNamed;
+    let call = f.$callNamed;
     if (call)
         return call.apply(undefined, args);
     //  TODO strings
@@ -289,7 +290,7 @@ export function callNamed(f: any, ...args: any[]) {
 }
 
 export function callAt(f: any, args: SuObject): any {
-    let call = f.callAt;
+    let call = f.$callAt;
     if (call)
         return call(args);
     //  TODO strings
@@ -310,4 +311,11 @@ export function invoke(ob: any, method: string, ...args: any[]): any {
 
 function getMethod(ob: any, method: string): any {
     return ob[method]; // TODO (e.g. handle Default)
+}
+
+export function global(name: string) {
+    let x = suglobals[name];
+    if (!x)
+        throw new Error("can't find " + name);
+    return x;
 }
