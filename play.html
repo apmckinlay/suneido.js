@@ -71,43 +71,29 @@
                         this.status + ' ' + this.statusText;
                     return
                 }
-                var result = JSON.parse(this.responseText);
+                let result = JSON.parse(this.responseText);
                 document.getElementById("su_result").value = result.su_result;
-                s = result.js_source
+                let s = result.js_source
                 // strip function wrapper if present
                 try {
                     if (s.startsWith('(function () {') && s.endsWith('})().call()')) {
-                        let cons = fromto(s, '\n    let $const = [', '\n    ];');
-                        let body = between(s, 'function $f() {\n', '    }\n    $f.$call = $f;');
-                        s = cons + '\n' + body;
+                        let [, cons] = s.match(/\n    (let \$const = \[[\s\S]*\n    \];\n)/) || ['', ''];
+                        cons = cons.replace(/^    /mg, '');
+                        let [, body] = s.match(/function \$f\(\) \{\n([\s\S]*)}\n    \$f\.\$call = \$f;/);
+                        body = body.replace(/^        /mg, '');
+                        s = cons + body;
                     }
                 } catch (e) {
                     s = s + '\nERROR in strip ' + e;
                 }
                 document.getElementById("js_source").value = s;
-                var js_result;
+                let js_result;
                 try {
                     js_result = eval(result.js_source);
                 } catch (e) {
                     js_result = e;
                 }
                 document.getElementById("js_result").value = js_result;
-            }
-
-            function between(s, start, end) {
-                let i = s.indexOf(start) + start.length;
-                let j = s.indexOf(end);
-                if (i === -1 || j === -1)
-                    throw new Error("between " + i + ', ' + j);
-                return s.slice(i, j);
-            }
-
-            function fromto(s, start, end) {
-                let i = s.indexOf(start);
-                let j = s.indexOf(end) + end.length;
-                if (i === -1 || j === -1)
-                    return "";
-                return s.slice(i, j);
             }
 
             document.getElementById('run').onclick = run;
