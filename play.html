@@ -79,17 +79,18 @@
                     if (s.startsWith('(function () {') && s.endsWith('})().call()')) {
                         let [, cons] = s.match(/\n    (let \$const = \[[\s\S]*\n    \];\n)/) || ['', ''];
                         cons = cons.replace(/^    /mg, '');
-                        let [, body] = s.match(/function \$f\(\) \{\n([\s\S]*)}\n    \$f\.\$call = \$f;/);
+let a = s.match(/function \$f\(\) \{\r?\n([\s\S]*)\}\r?\n    \$f\./);
+                        let [, body] = s.match(/function \$f\(\) \{\r?\n([\s\S]*)\}\r?\n    \$f\.\$call = \$f;/);
                         body = body.replace(/^        /mg, '');
                         s = cons + body;
                     }
                 } catch (e) {
-                    s = s + '\nERROR in strip ' + e;
+                    s = 'ERROR in strip ' + e + '\n' + s;
                 }
                 document.getElementById("js_source").value = s;
                 let js_result;
                 try {
-                    js_result = eval(result.js_source);
+                    js_result = su.display(eval(result.js_source));
                 } catch (e) {
                     js_result = e;
                 }

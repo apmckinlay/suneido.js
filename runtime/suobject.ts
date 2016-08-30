@@ -40,7 +40,7 @@ export class SuObject extends SuValue {
     static toString2(x: SuObject, before: string, after: string) {
         let s = "";
         for (let i = 0; i < x.vec.length; ++i)
-            s += x.vec[i] + ', ';
+            s += display(x.vec[i]) + ', ';
         for (let [k, v] of x.map)
             s += keyString(k) + ': ' + display(v) + ', ';
         return before + s.slice(0, -2) + after;

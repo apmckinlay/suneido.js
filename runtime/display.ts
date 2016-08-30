@@ -20,5 +20,5 @@ function displayString(s: string): string {
     if (single_quotes)
         return "'" + s + "'";
     else
-        return "\"" + s.replace("\"", "\\\"") + "\"";
+        return '"' + s.replace('"', '\\"') + '"';
 }

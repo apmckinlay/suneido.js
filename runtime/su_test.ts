@@ -101,9 +101,9 @@ assert.equal(su.typename(123), "number");
 assert.equal(su.typename("foo"), "string");
 
 let f = {
-    call: function(...args: any[]) { return ['call', args]; },
-    callAt: function(arg: any) { return ['callAt', arg]; },
-    callNamed: function(named: any, ...args: any[]) { return ['callNamed', named, args]; },
+    $call: function(...args: any[]) { return ['call', args]; },
+    $callAt: function(arg: any) { return ['callAt', arg]; },
+    $callNamed: function(named: any, ...args: any[]) { return ['callNamed', named, args]; },
 };
 
 assert.equal(su.call(f, 1, 2), ['call', [1, 2]]);

@@ -1,5 +1,6 @@
-const su = require("./su.js");
+const util = require("./utility.js");
 const assert = require("./assert.js");
+const su = require("./su.js");
 
 "use strict";
 
@@ -15,7 +16,7 @@ let f = (function () {
     $f.call = $f;
     $f.callNamed = $callNamed;
     $f.callAt = function (args) {
-        return $callNamed(su.toObject(args.map), ...args.vec);
+        return $callNamed(util.mapToOb(args.map), ...args.vec);
     };
     $f.params = 'a, b=1, c=2';
     return $f
@@ -48,7 +49,7 @@ const g = (function () {
         return $f(su.mkObject2(args));
     };
     $f.callNamed = function (named, ...args) {
-        return $f(su.mkObject2(args, su.toMap(named)));
+        return $f(su.mkObject2(args, util.obToMap(named)));
     };
     $f.params = '@args';
     return $f

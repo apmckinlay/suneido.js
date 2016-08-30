@@ -75,3 +75,7 @@ assert.equal(ob.toString(), '#(12, 34, b: "Bob")');
 ob = new SuObject();
 ob.put('a b', dn(1000));
 assert.equal(ob.toString(), '#("a b": 1000)');
+
+ob = new SuObject();
+ob.add('a b');
+assert.equal(ob.toString(), '#("a b")');

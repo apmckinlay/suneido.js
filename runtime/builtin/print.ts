@@ -1,5 +1,5 @@
 import { SuObject } from '../suobject';
-import * as su from '../su';
+import * as util from '../utility';
 
 export function su_print(args: SuObject) {
     console.log(SuObject.toString2(args, '', ''));
@@ -11,7 +11,7 @@ export function su_print(args: SuObject) {
     return su_print(new SuObject(args));
 };
 (su_print as any).$callNamed = function (named: any, ...args: any[]) {
-    return su_print(new SuObject(args, su.toMap(named)));
+    return su_print(new SuObject(args, util.obToMap(named)));
 };
 (su_print as any).$params = '@args';
 //GENERATED end
