@@ -12,7 +12,7 @@ import "./sudate_test";
 console.log("suobject_test");
 import "./suobject_test";
 console.log("stringmethods_test");
-import "./stringmethods_test";
+import "./builtin/stringmethods_test";
 console.log("tr_test");
 import "./tr_test";
 console.log("lexer_test");
