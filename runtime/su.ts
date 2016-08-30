@@ -12,7 +12,7 @@ import { SuObject } from "./suobject";
 import display from "./display";
 import is from "./is";
 import { suglobals } from "./globals";
-import { StringMethods } from "./stringmethods";
+import { StringMethods } from "./builtin/stringmethods";
 const sm: any = StringMethods.prototype;
 
 export { display, is };

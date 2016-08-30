@@ -1,7 +1,7 @@
-import * as assert from "./assert";
-import * as util from "./utility";
-import { tr as trImpl } from "./tr";
-import { SuObject } from "./suobject";
+import * as assert from "../assert";
+import * as util from "../utility";
+import { tr } from "../tr";
+import { SuObject } from "../suobject";
 
 export class StringMethods {
 
@@ -378,7 +378,7 @@ export class StringMethods {
     Tr(this: string, from: string, to: string = ''): string {
         assert.that(arguments.length === 1 || arguments.length === 2,
             "usage: string.Tr(from [ , to ] )");
-        return trImpl(this, from, to);
+        return tr(this, from, to);
     }
 
     Unescape(this: string): string {
