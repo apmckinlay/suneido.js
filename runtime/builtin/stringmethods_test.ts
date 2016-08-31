@@ -90,11 +90,15 @@ assert.that(!sm['Lower?'].call(str1), "check method lowerq() with no letter stri
 str1 = "";
 assert.that(!sm['Lower?'].call(str1), "check method lowerq() with empty string");
 
+function capFirst(s: string): string {
+    return util.capitalizeFirstLetter(s);
+}
+(capFirst as any).$call = capFirst;
 str1 = "";
-str2 = sm.MapN.call(str1, 2, (it: any) => util.capitalizeFirstLetter(it));
+str2 = sm.MapN.call(str1, 2, capFirst);
 assert.equal(str2, "");
 str1 = "hello world";
-str2 = sm.MapN.call(str1, 2, (it: any) => util.capitalizeFirstLetter(it));
+str2 = sm.MapN.call(str1, 2, capFirst);
 assert.equal(str2, "HeLlO WoRlD");
 
 str1 = "-123.456";
@@ -141,7 +145,7 @@ assert.equal(sm.Replace.call(str1, "[hw](.)(.)", "&#\\u\\2\\1"), "hel#Lelo wor#R
 assert.equal(sm.Replace.call(str1, "xxx", "haha"), "hello world");
 assert.equal(sm.Replace.call(str1, "([hw])(\s?)(.)", "\\2"), "llo rld");
 assert.equal(sm.Replace.call(str1, "\\w+", "\\u&"), "Hello World");
-assert.equal(sm.Replace.call(str1, ".", (m: any) => m.toUpperCase()), "HELLO WORLD");
+assert.equal(sm.Replace.call(str1, ".", capFirst), "HELLO WORLD");
 
 str1 = "";
 assert.equal(sm.Size.call(""), 0);

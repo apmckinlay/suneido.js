@@ -174,11 +174,10 @@ export class StringMethods {
         return result;
     }
 
-    //TODO: to change after classes for block and callable functions are implemented
-    MapN(this: string, n: number, f: (s: string) => string): string {
+    MapN(this: string, n: number, f: any): string {
         let dst = "";
         for (let i = 0; i < this.length; i += n) {
-            dst += f(this.substr(i, n));
+            dst += f.$call.call(undefined, this.substr(i, n));
         }
         return dst;
     }
@@ -256,7 +255,7 @@ export class StringMethods {
 
     //TODO: to change after classes for block and callable functions are implemented
     Replace(this: string, pattern: string,
-        replacement: string | ((m: string) => string) = '', count: number = Infinity): string {
+        replacement: any = '', count: number = Infinity): string {
         enum RepStatus { E, U, L, u, l };
         assert.that(1 <= arguments.length && arguments.length <= 3,
             "usage: string.Replace(pattern, replacement = '', count = false) -> string");
@@ -335,7 +334,7 @@ export class StringMethods {
                     i++;
                 }
             } else
-                dst = replacement(arguments[0]);
+                dst = replacement.$call.call(undefined, arguments[0]);
             return dst;
         };
         return this.replace(new RegExp(pattern, 'g'), repF);
