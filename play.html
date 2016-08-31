@@ -79,7 +79,6 @@
                     if (s.startsWith('(function () {') && s.endsWith('})().call()')) {
                         let [, cons] = s.match(/\n    (let \$const = \[[\s\S]*\n    \];\n)/) || ['', ''];
                         cons = cons.replace(/^    /mg, '');
-let a = s.match(/function \$f\(\) \{\r?\n([\s\S]*)\}\r?\n    \$f\./);
                         let [, body] = s.match(/function \$f\(\) \{\r?\n([\s\S]*)\}\r?\n    \$f\.\$call = \$f;/);
                         body = body.replace(/^        /mg, '');
                         s = cons + body;
@@ -116,6 +115,10 @@ let a = s.match(/function \$f\(\) \{\r?\n([\s\S]*)\}\r?\n    \$f\./);
                     document.getElementById("js_result").value = '';
                 }
             };
+
+            let sel = document.getElementById('sample');
+            for (name in play_samples)
+                sel.options[sel.options.length] = new Option(name, name);
         };
     </script>
 </head>
@@ -126,15 +129,13 @@ let a = s.match(/function \$f\(\) \{\r?\n([\s\S]*)\}\r?\n    \$f\./);
             <span style="font-size: large;">Samples</span>
             <select id="sample">
                 <option></option>
-                <option>class</option>
-                <option>function</option>
             </select>
             <span id="run">Run</span>
             <span id="clear">Clear</span>
         </div>
         </h1> Suneido source code
     <br/>
-    <textarea id="su_source"></textarea>
+    <textarea id="su_source" spellcheck="false"></textarea>
     <br/> Suneido result
     <br />
     <textarea id="su_result" class="result" readonly="readonly"></textarea>
