@@ -3,7 +3,6 @@
  * Run-time support routines
  */
 
-//TODO global
 //TODO dynget, dynset, dynpush, dynpop
 //TODO record builder
 
@@ -14,6 +13,12 @@ import is from "./is";
 import { suglobals } from "./globals";
 import { StringMethods } from "./builtin/stringmethods";
 const sm: any = StringMethods.prototype;
+import { NumberMethods } from "./builtin/numbermethods";
+const nm: any = NumberMethods.prototype;
+import { FunctionMethods } from "./builtin/functionmethods";
+const fm: any = FunctionMethods.prototype;
+
+type Num = number | Dnum;
 
 export { display, is };
 
@@ -35,14 +40,21 @@ export function get(x: any, key: any): any {
 }
 
 export function rangeto(x: any, i: number, j: number) {
+    sliceable(x);
     let len = x.length;
     return x.slice(prepFrom(i, len), j);
 }
 
 export function rangelen(x: any, i: number, n: number) {
+    sliceable(x);
     let len = x.length;
     i = prepFrom(i, len);
     return x.slice(i, i + n);
+}
+
+function sliceable(x: any): void {
+    if (typeof x !== 'string' && !(x instanceof SuObject))
+        throw typeName(x) + " does not support slice";
 }
 
 function prepFrom(from: number, len: number) {
@@ -75,7 +87,7 @@ export function not(x: any): boolean {
 }
 
 export function bitnot(x: any): number {
-    return ~x; // TODO
+    return ~toInt(x);
 }
 
 function toInt(x: any): number {
@@ -86,7 +98,7 @@ function toInt(x: any): number {
     throw "can't convert " + typeName(x) + " to integer";
 }
 
-function toNum(x: any): number | Dnum {
+function toNum(x: any): Num {
     if (typeof x === 'number' || x instanceof Dnum)
         return x;
     if (x === false || x === "")
@@ -107,7 +119,7 @@ function toDnum(x: number | Dnum): Dnum {
     return (typeof x === 'number') ? Dnum.make(x) : x;
 }
 
-export function add(x: any, y: any): any {
+export function add(x: any, y: any): Num {
     x = toNum(x);
     y = toNum(y);
     if (typeof x === 'number' && typeof y === 'number')
@@ -116,44 +128,69 @@ export function add(x: any, y: any): any {
         return Dnum.add(toDnum(x), toDnum(y));
 }
 
-export function sub(x: any, y: any) {
-    return x - y; //TODO
+export function sub(x: any, y: any): Num {
+    x = toNum(x);
+    y = toNum(y);
+    if (typeof x === 'number' && typeof y === 'number')
+        return x - y;
+    else
+        return Dnum.sub(toDnum(x), toDnum(y));
 }
 
 export function cat(x: any, y: any): string {
-    return "" + x + y; //TODO
+    return toStr(x) + toStr(y);
 }
 
-export function mul(x: any, y: any) {
-    return x * y; //TODO
+function toStr(x: any): string {
+    if (typeof x === 'string')
+        return x;
+    else if (x === true)
+        return "true";
+    else if (x === false)
+        return "false";
+    else if (typeof x === 'number' || x instanceof Dnum)
+        return x.toString();
+    else
+        throw new Error("can't convert " + typeName(x) + " to String");
 }
 
-export function div(x: any, y: any) {
-    return x / y; //TODO
+export function mul(x: any, y: any): Num {
+    x = toNum(x);
+    y = toNum(y);
+    if (typeof x === 'number' && typeof y === 'number')
+        return x * y;
+    else
+        return Dnum.mul(toDnum(x), toDnum(y));
 }
 
-export function mod(x: any, y: any) {
-    return x % y; //TODO
+export function div(x: any, y: any): Dnum {
+    x = toNum(x);
+    y = toNum(y);
+    return Dnum.div(toDnum(x), toDnum(y));
+}
+
+export function mod(x: any, y: any): number {
+    return toInt(x) % toInt(y);
 }
 
 export function lshift(x: any, y: any): number {
-    return x << y; //TODO
+    return toInt(x) << toInt(y);
 }
 
 export function rshift(x: any, y: any): number {
-    return x >> y; //TODO
+    return toInt(x) >> toInt(y);
 }
 
 export function bitand(x: any, y: any): number {
-    return x & y; //TODO
+    return toInt(x) & toInt(y);
 }
 
 export function bitor(x: any, y: any): number {
-    return x | y; //TODO
+    return toInt(x) | toInt(y);
 }
 
 export function bitxor(x: any, y: any): number {
-    return x ^ y; //TODO
+    return toInt(x) ^ toInt(y);
 }
 
 export function isnt(x: any, y: any): boolean {
@@ -186,7 +223,7 @@ export function matchnot(x: any, y: any): boolean {
 
 export function toBool(x: any): boolean {
     if (x !== true && x !== false)
-        throw "can't convert " + typeof x + " to boolean";
+        throw "can't convert " + typename(x) + " to boolean";
     return x;
 }
 
@@ -198,20 +235,9 @@ export function catchMatch(e: string, pat: string): boolean { // TODO
 
 }
 
-export function noargs(args: any[]): void {
-    if (args.length !== 0)
-        throw "too many arguments";
-}
-
-export function argsall(args: any[]) {
-    return args; //TODO
-}
-
-export function args(args: any[], _spec: string) {
-    return args; //TODO
-}
-
 export function typeName(x: any): string {
+    if (x === undefined)
+        throw new Error("uninitialized");
     if (typeof x.typeName === 'function')
         return x.typeName();
     let t = typeof x;
@@ -301,9 +327,16 @@ export function invoke(ob: any, method: string, ...args: any[]): any {
 }
 
 function getMethod(ob: any, method: string): any {
-    if (typeof ob === 'string')
+    let type = typeof ob;
+    if (type === 'string')
         return sm[method];
-    return ob[method]; // TODO (e.g. handle Default)
+    else if (type === 'number' || ob instanceof Dnum)
+        return nm[method];
+    else if (type === 'function')
+        return fm[method];
+    else
+        throw new Error("method not found: " + typename(ob) + "." + method);
+    // TODO
 }
 
 export function global(name: string) {
