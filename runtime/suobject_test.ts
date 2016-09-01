@@ -6,7 +6,7 @@ const dn = Dnum.fromNumber;
 
 let ob = new SuObject();
 assert.equal(ob.size(), 0);
-ob.add(123);
+ob.Add(123);
 assert.equal(ob.size(), 1);
 ob.put('a', 'hi');
 assert.equal(ob.size(), 2);
@@ -22,7 +22,7 @@ assert.equal(ob.get('b'), undefined);
 ob.put(2, 22);
 assert.equal(ob.vecsize(), 1);
 assert.equal(ob.mapsize(), 2);
-ob.add(11);
+ob.Add(11);
 assert.equal(ob.vecsize(), 3);
 assert.equal(ob.mapsize(), 1);
 ob.put(4, 44);
@@ -38,10 +38,10 @@ assert.equal(ob.get(dn(1.5)), 15);
 
 
 assert.equal(ob.get('x'), undefined);
-ob.setDefault(0);
+ob.Set_default(0);
 assert.equal(ob.get('x'), 0);
 
-ob.setReadonly();
+ob.Set_readonly();
 assert.throws(() => ob.put('b', true),
     /can't modify readonly objects/);
 
@@ -50,10 +50,10 @@ assert.that(ob.equals(ob));
 assert.that(!ob.equals(123));
 let ob2 = new SuObject();
 assert.that(ob.equals(ob2));
-ob.add(123);
+ob.Add(123);
 assert.that(!ob.equals(ob2));
 assert.that(!ob2.equals(ob));
-ob2.add(123);
+ob2.Add(123);
 assert.that(ob.equals(ob2));
 assert.that(ob2.equals(ob));
 ob.put('a', 'alpha');
@@ -66,8 +66,8 @@ assert.that(ob2.equals(ob));
 
 ob = new SuObject();
 assert.equal(ob.toString(), '#()');
-ob.add(12);
-ob.add(34);
+ob.Add(12);
+ob.Add(34);
 assert.equal(ob.toString(), '#(12, 34)');
 ob.put('b', 'Bob');
 assert.equal(ob.toString(), '#(12, 34, b: "Bob")');
@@ -77,5 +77,5 @@ ob.put('a b', dn(1000));
 assert.equal(ob.toString(), '#("a b": 1000)');
 
 ob = new SuObject();
-ob.add('a b');
+ob.Add('a b');
 assert.equal(ob.toString(), '#("a b")');

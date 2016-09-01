@@ -26,7 +26,7 @@ type Num = number | Dnum;
 
 export { display, is, mandatory, maxargs };
 
-export const empty_object = new SuObject().setReadonly();
+export const empty_object = new SuObject().Set_readonly();
 
 export function put(ob: any, key: any, val: any): void {
     if (ob instanceof SuObject)
@@ -45,29 +45,17 @@ export function get(x: any, key: any): any {
 
 export function rangeto(x: any, i: number, j: number) {
     sliceable(x);
-    let len = x.length;
-    return x.slice(prepFrom(i, len), j);
+    return x.slice(i, j);
 }
 
 export function rangelen(x: any, i: number, n: number) {
     sliceable(x);
-    let len = x.length;
-    i = prepFrom(i, len);
-    return x.slice(i, i + n);
+    return x.slice(i, n < 0 ? n : i + n);
 }
 
 function sliceable(x: any): void {
     if (typeof x !== 'string' && !(x instanceof SuObject))
         throw type(x) + " does not support slice";
-}
-
-function prepFrom(from: number, len: number) {
-    if (from < 0) {
-        from += len;
-        if (from < 0)
-            from = 0;
-    }
-    return from;
 }
 
 export function inc(x: any) {
@@ -263,12 +251,12 @@ function err(s: string): void {
 export function mkObject(...args: any[]): SuObject {
     let i = args.indexOf(null);
     if (i === -1)
-        return new SuObject(args).setReadonly();
+        return new SuObject(args).Set_readonly();
     let vec = args.slice(0, i);
     let map = new Map<any, any>();
     for (i++; i < args.length; i += 2)
         map.set(args[i], args[i + 1]);
-    return new SuObject(vec, map).setReadonly();
+    return new SuObject(vec, map).Set_readonly();
 }
 
 export function mkObject2(vec: any[], map?: Map<any, any>): SuObject {
@@ -319,8 +307,32 @@ export function invoke(ob: any, method: string, ...args: any[]): any {
     if (f) {
         let call = f.$call;
         if (call)
-            return f.apply(ob, args);
+            return call.apply(ob, args);
     }
+    methodNotFound(ob, method);
+}
+
+export function invokeNamed(ob: any, method: string, ...args: any[]): any {
+    let f = getMethod(ob, method);
+    if (f) {
+        let call = f.$callNamed;
+        if (call)
+            return call.apply(ob, args);
+    }
+    methodNotFound(ob, method);
+}
+
+export function invokeAt(ob: any, method: string, args: SuObject): any {
+    let f = getMethod(ob, method);
+    if (f) {
+        let call = f.$callAt;
+        if (call)
+            return call.call(ob, args);
+    }
+    methodNotFound(ob, method);
+}
+
+function methodNotFound(ob: any, method: string): never {
     throw new Error("method not found: " + type(ob) + "." + method);
 }
 

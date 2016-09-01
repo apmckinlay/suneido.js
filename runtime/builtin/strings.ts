@@ -345,9 +345,7 @@ export class Strings {
         let arraySplit = this.split(separator);
         if (arraySplit[arraySplit.length - 1] === '')
             arraySplit = arraySplit.slice(0, -1);
-        let resOb = new SuObject();
-        arraySplit.forEach((x: any) => resOb.add(x));
-        return resOb;
+        return new SuObject(arraySplit);
     }
 
     Substr(this: string, start: number = mandatory(), length: number = this.length): string {

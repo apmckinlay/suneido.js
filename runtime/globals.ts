@@ -17,8 +17,9 @@ suglobals.Print = su_print;
 import { su_type } from "./builtin/type";
 suglobals.Type = su_type;
 
-import { su_object } from "./builtin/objects";
+import { su_object, su_objectq } from "./builtin/objects";
 suglobals.Object = su_object;
+suglobals['Object?'] = su_objectq;
 
 import { su_date, su_dateq } from "./builtin/dates";
 suglobals.Date = su_date;

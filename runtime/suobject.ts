@@ -8,6 +8,7 @@ import { Dnum } from "./dnum";
 import { SuValue } from "./suvalue";
 import { display } from "./display";
 import { is } from "./is";
+import { mandatory, maxargs } from "./args";
 
 import * as assert from "./assert";
 
@@ -16,7 +17,7 @@ export class SuObject extends SuValue {
     private defval: any;
     public vec: Array<any>;    // public only for readonly access
     public map: Map<any, any>; // public only for readonly access
-    static EMPTY = new SuObject().setReadonly();
+    static EMPTY = new SuObject().Set_readonly();
 
     /** WARNING: the object will take ownership of the array and map */
     constructor(vec?: any[], map?: Map<any, any>) {
@@ -58,6 +59,18 @@ export class SuObject extends SuValue {
         return this.map.size;
     }
 
+    Size(list = false, named = false): number {
+        maxargs(2, arguments.length);
+        if (list === named)
+            return this.size();
+        else if (list === true)
+            return this.vecsize();
+        else if (named === true)
+            return this.mapsize();
+        else
+            throw new Error("SuObject.Size bad args");
+    }
+
     private checkReadonly(ob: SuObject): void {
         if (ob.readonly)
             throw "can't modify readonly objects";
@@ -75,7 +88,8 @@ export class SuObject extends SuValue {
         }
     }
 
-    add(x: any): SuObject {
+    Add(x: any = mandatory()): SuObject {
+        maxargs(1, arguments.length);
         this.checkReadonly(this);
         this.vec.push(x);
         this.migrate();
@@ -88,7 +102,7 @@ export class SuObject extends SuValue {
         if (0 <= i && i < this.vec.length)
             this.vec[i] = value;
         else if (i === this.vec.length)
-            this.add(value);
+            this.Add(value);
         else
             this.map.set(key, value);
         return this;
@@ -107,7 +121,8 @@ export class SuObject extends SuValue {
         return (0 <= i && i < ob.vec.length) ? ob.vec[i] : this.mapget(key);
     }
 
-    setReadonly(): SuObject {
+    Set_readonly(): SuObject {
+        maxargs(0, arguments.length);
         if (this.readonly)
             return this;
         this.readonly = true;
@@ -115,7 +130,8 @@ export class SuObject extends SuValue {
         return this;
     }
 
-    setDefault(value: any): SuObject {
+    Set_default(value: any = null): SuObject {
+        maxargs(1, arguments.length);
         this.defval = value;
         return this;
     }
@@ -124,6 +140,12 @@ export class SuObject extends SuValue {
         return "Object";
     }
 
+    Slice(i: number = mandatory(), n: number = this.vecsize()): SuObject {
+        maxargs(2, arguments.length);
+        return this.slice(i, n < 0 ? n : i + n);
+    }
+
+    // used by su ranges, must match string.slice
     slice(i: number, j: number): SuObject {
         return new SuObject(this.vec.slice(i, j));
     }
