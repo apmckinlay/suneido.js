@@ -8,13 +8,13 @@ let sud4 = SuDate.make(2003, 12, 3, 0, 0, 12, 345);
 let sud5 = SuDate.make(2003, 12, 3, 1, 2, 3, 4);
 let sud6 = SuDate.make(2005, 1, 1, 16, 37, 33, 123);
 
-assert.equal(sud1.year(), 2003);
-assert.equal(sud1.month(), 11);
-assert.equal(sud1.day(), 27);
-assert.equal(sud1.hour(), 16);
-assert.equal(sud1.minute(), 37);
-assert.equal(sud1.second(), 33);
-assert.equal(sud1.millisecond(), 123);
+assert.equal(sud1.Year(), 2003);
+assert.equal(sud1.Month(), 11);
+assert.equal(sud1.Day(), 27);
+assert.equal(sud1.Hour(), 16);
+assert.equal(sud1.Minute(), 37);
+assert.equal(sud1.Second(), 33);
+assert.equal(sud1.Millisecond(), 123);
 
 assert.equal(sud1.weekday(), 4);
 assert.equal(sud1.weekday("MON"), 3);
@@ -53,7 +53,11 @@ sud2 = SuDate.parse("2000/3/4 8:34:56", "yyyyMMdd")!;
 assert.equal(sud2.formatEn("yyyy-MM-dd H:mm:ss"), "2000-03-04 8:34:56");
 
 sud2 = SuDate.literal("#19990101")!;
-assert.equal(sud2.toString(), "#19990101.000000000");
+assert.equal(sud2.toString(), "#19990101");
+sud2 = SuDate.literal("#19990101.1234")!;
+assert.equal(sud2.toString(), "#19990101.1234");
+sud2 = SuDate.literal("#19990101.123456")!;
+assert.equal(sud2.toString(), "#19990101.123456");
 sud2 = SuDate.literal("#19990101.010203456")!;
 assert.equal(sud2.toString(), "#19990101.010203456");
 sud2 = SuDate.literal("")!;

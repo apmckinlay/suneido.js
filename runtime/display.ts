@@ -1,5 +1,7 @@
-export default function display(x: any): string {
-    if (typeof x.display === 'function')
+import { SuValue } from "./suvalue";
+
+export function display(x: any): string {
+    if (x instanceof SuValue)
         return x.display();
     if (typeof x === 'string')
         return displayString(x);

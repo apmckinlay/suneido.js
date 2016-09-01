@@ -53,7 +53,7 @@ export function isAlphaNum(char: string): boolean {
     return isAlpha(char) || isDigit(char);
 }
 
-export function capitalizeFirstLetter(s: string): string {
+export function capitalize(s: string): string {
     return s[0].toUpperCase() + s.slice(1);
 }
 

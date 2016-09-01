@@ -1,6 +1,6 @@
 import { SuValue } from "./suvalue";
 
-export default function is(x: any, y: any): boolean {
+export function is(x: any, y: any): boolean {
     if (x === y)
         return true;
     if (x instanceof SuValue)

@@ -1,6 +1,7 @@
 import { Dnum } from "../dnum";
 import { SuObject } from "../suobject";
 import * as util from "../utility";
+import { maxargs } from "../args";
 
 type Num = number | Dnum;
 
@@ -11,14 +12,17 @@ function int(n: Num): number {
 export class NumberMethods {
 
     Chr(this: Num): string {
+        maxargs(0, arguments.length);
         return String.fromCharCode(int(this));
     }
 
     Int(this: Num): number {
+        maxargs(0, arguments.length);
         return int(this);
     }
 
     Hex(this: Num): string {
+        maxargs(0, arguments.length);
         return int(this).toString(16);
     }
 

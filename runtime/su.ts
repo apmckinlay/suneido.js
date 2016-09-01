@@ -8,9 +8,13 @@
 
 import { Dnum } from "./dnum";
 import { SuObject } from "./suobject";
-import display from "./display";
-import is from "./is";
+import { SuDate } from "./sudate";
+import { SuValue } from "./suvalue";
+import { display } from "./display";
+import { is } from "./is";
 import { suglobals } from "./globals";
+import { mandatory, maxargs } from "./args";
+import * as util from "./utility";
 import { StringMethods } from "./builtin/stringmethods";
 const sm: any = StringMethods.prototype;
 import { NumberMethods } from "./builtin/numbermethods";
@@ -20,7 +24,7 @@ const fm: any = FunctionMethods.prototype;
 
 type Num = number | Dnum;
 
-export { display, is };
+export { display, is, mandatory, maxargs };
 
 export const empty_object = new SuObject().setReadonly();
 
@@ -28,7 +32,7 @@ export function put(ob: any, key: any, val: any): void {
     if (ob instanceof SuObject)
         ob.put(key, val);
     else
-        throw typeName(ob) + " does not support put (" + key + ")";
+        throw type(ob) + " does not support put (" + key + ")";
 }
 
 export function get(x: any, key: any): any {
@@ -36,7 +40,7 @@ export function get(x: any, key: any): any {
         return x[toInt(key)];
     if (x instanceof SuObject)
         return x.get(key);
-    throw typeName(x) + " does not support get (" + key + ")";
+    throw type(x) + " does not support get (" + key + ")";
 }
 
 export function rangeto(x: any, i: number, j: number) {
@@ -54,7 +58,7 @@ export function rangelen(x: any, i: number, n: number) {
 
 function sliceable(x: any): void {
     if (typeof x !== 'string' && !(x instanceof SuObject))
-        throw typeName(x) + " does not support slice";
+        throw type(x) + " does not support slice";
 }
 
 function prepFrom(from: number, len: number) {
@@ -95,7 +99,7 @@ function toInt(x: any): number {
         return x;
     if (x instanceof Dnum && x.isInt())
         return x.toInt();
-    throw "can't convert " + typeName(x) + " to integer";
+    throw "can't convert " + type(x) + " to integer";
 }
 
 function toNum(x: any): Num {
@@ -112,7 +116,7 @@ function toNum(x: any): Num {
         else if (n = Dnum.parse(x))
             return n;
     }
-    throw "can't convert " + typeName(x) + " to number";
+    throw "can't convert " + type(x) + " to number";
 }
 
 function toDnum(x: number | Dnum): Dnum {
@@ -151,7 +155,7 @@ function toStr(x: any): string {
     else if (typeof x === 'number' || x instanceof Dnum)
         return x.toString();
     else
-        throw new Error("can't convert " + typeName(x) + " to String");
+        throw new Error("can't convert " + type(x) + " to String");
 }
 
 export function mul(x: any, y: any): Num {
@@ -223,7 +227,7 @@ export function matchnot(x: any, y: any): boolean {
 
 export function toBool(x: any): boolean {
     if (x !== true && x !== false)
-        throw "can't convert " + typename(x) + " to boolean";
+        throw "can't convert " + type(x) + " to boolean";
     return x;
 }
 
@@ -235,22 +239,12 @@ export function catchMatch(e: string, pat: string): boolean { // TODO
 
 }
 
-export function typeName(x: any): string {
+export function type(x: any): string {
     if (x === undefined)
         throw new Error("uninitialized");
-    if (typeof x.typeName === 'function')
-        return x.typeName();
-    let t = typeof x;
-    switch (t) {
-        case 'boolean': return 'Boolean';
-        case 'string': return 'String';
-        case 'number': return 'Number';
-    }
-    return t;
-}
-
-export function mandatory() {
-    throw new Error("missing argument");
+    return x === null ? "null"
+        : x instanceof SuValue ? x.type()
+        : util.capitalize(typeof x);
 }
 
 export function mknum(s: string) {
@@ -281,10 +275,8 @@ export function mkObject2(vec: any[], map?: Map<any, any>): SuObject {
     return new SuObject(vec, map);
 }
 
-export function typename(x: any): string {
-    return x === null ? "null"
-        : x === undefined ? "undefined"
-            : typeof x;
+export function mkdate(s: string): SuDate {
+    return SuDate.literal(s)!;
 }
 
 // Note: only Suneido values and strings are callable
@@ -316,26 +308,34 @@ export function callAt(f: any, args: SuObject): any {
 }
 
 function cantCall(f: any): never {
-    throw new Error("can't call " + typename(f));
+    throw new Error("can't call " + type(f));
 }
 
 /**
  * Call a method on an object.
  */
 export function invoke(ob: any, method: string, ...args: any[]): any {
-    return getMethod(ob, method).apply(ob, args);
+    let f = getMethod(ob, method);
+    if (f) {
+        let call = f.$call;
+        if (call)
+            return f.apply(ob, args);
+    }
+    throw new Error("method not found: " + type(ob) + "." + method);
 }
 
 function getMethod(ob: any, method: string): any {
-    let type = typeof ob;
-    if (type === 'string')
+    let t = typeof ob;
+    if (t === 'string')
         return sm[method];
-    else if (type === 'number' || ob instanceof Dnum)
+    if (t === 'number' || ob instanceof Dnum)
         return nm[method];
-    else if (type === 'function')
+    let f = ob[method];
+    if (typeof f === 'function')
+        return f;
+    if (t === 'function')
         return fm[method];
-    else
-        throw new Error("method not found: " + typename(ob) + "." + method);
+    throw new Error("method not found: " + type(ob) + "." + method);
     // TODO
 }
 

@@ -1,9 +1,11 @@
 import * as util from "../utility";
 import { SuObject } from "../suobject";
+import { maxargs } from "../args";
 
 export class FunctionMethods {
 
     Params(this: any): string {
+        maxargs(0, arguments.length);
         let p = this.$params;
         return p ? '(' + p + ')' : '';
     }

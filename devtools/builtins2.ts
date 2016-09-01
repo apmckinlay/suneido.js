@@ -81,7 +81,7 @@ function genAtFunction(name: string, params: string) {
 }
 
 function genFunction(name: string, params: string) {
-    let su_name = 'su_' + name[0].toLowerCase() + name.slice(1); // TODO trailing ?!
+    let su_name = 'su_' + name[0].toLowerCase() + name.slice(1).replace(/\?$/, 'q');
     let f = '(' + su_name + ' as any)';
     return [
         `${f}.$call = ${su_name};`,

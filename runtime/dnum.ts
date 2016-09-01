@@ -229,7 +229,7 @@ export class Dnum extends SuValue {
         return false;
     }
 
-    typeName(): string {
+    type(): string {
         return "Number";
     }
 

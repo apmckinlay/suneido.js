@@ -2,11 +2,12 @@ import * as assert from "../assert";
 import * as util from "../utility";
 import { tr } from "../tr";
 import { SuObject } from "../suobject";
+import { mandatory, maxargs } from "../args";
 
 export class StringMethods {
 
     ['Alpha?'](this: string): boolean {
-        assert.that(arguments.length === 0, "usage: string.Alpha?()");
+        maxargs(0, arguments.length);
         if (this.length === 0)
             return false;
         for (let c of this)
@@ -16,7 +17,7 @@ export class StringMethods {
     }
 
     ['AlphaNum?'](this: string): boolean {
-        assert.that(arguments.length === 0, "usage: string.AlphaNum?()");
+        maxargs(0, arguments.length);
         if (this.length === 0)
             return false;
         for (let c of this)
@@ -26,13 +27,14 @@ export class StringMethods {
     }
 
     Asc(this: string): number {
-        assert.that(arguments.length === 0, "usage: string.Asc()");
+        maxargs(0, arguments.length);
         return this.charCodeAt(0) || 0;
     }
 
     Detab(this: string): string {
-        let tabWidth: number = 4;
-        let spaces: string = "    ";
+        maxargs(0, arguments.length);
+        const tabWidth: number = 4;
+        const spaces: string = "    ";
         function replaceTabWithSpace(oneLineString: string) {
             let array = oneLineString.split('\t');
             for (let i = 0; i < array.length - 1; i++) {
@@ -41,13 +43,13 @@ export class StringMethods {
             }
             return array.join('');
         }
-        assert.that(arguments.length === 0, "usage: string.Detab()");
         return doWithSplit(this, '\r',
             (s) => doWithSplit(s, '\n', replaceTabWithSpace));
     }
 
     Entab(this: string): string {
-        let tabWidth: number = 4;
+        maxargs(0, arguments.length);
+        const tabWidth: number = 4;
         function isTab(col: number): boolean {
             return col > 0 && (col % tabWidth) === 0;
         }
@@ -77,14 +79,12 @@ export class StringMethods {
                 strPre += ' ';
             return strPre + strTrim;
         }
-        assert.that(arguments.length === 0, "usage: string.Entab()");
         return doWithSplit(this, '\r',
             (s) => doWithSplit(s, '\n', replaceSpaceWithTab));
     }
 
-    Extract(this: string, pattern: string, part?: number): string | boolean {
-        assert.that(arguments.length === 1 || arguments.length === 2,
-            "usage: string.Extract(pattern, part = 0/1)");
+    Extract(this: string, pattern: string = mandatory(), part?: number): string | boolean {
+        maxargs(2, arguments.length);
         let re = new RegExp(pattern);
         let found = this.match(re);
         if (found === null)
@@ -95,24 +95,21 @@ export class StringMethods {
         return found[part_i];
     }
 
-    Find(this: string, str: string, pos: number = 0): number {
-        assert.that(arguments.length === 1 || arguments.length === 2,
-            "usage: string.Find(string, pos = 0)");
+    Find(this: string, str: string = mandatory(), pos: number = 0): number {
+        maxargs(2, arguments.length);
         let i = this.indexOf(str, pos);
         return i === -1 ? this.length : i;
     }
 
-    FindLast(this: string, str: string, pos: number = this.length):
+    FindLast(this: string, str: string = mandatory(), pos: number = this.length):
         number | boolean {
-        assert.that(arguments.length === 1 || arguments.length === 2,
-            "usage: string.FindLast(string, pos = size())");
+        maxargs(2, arguments.length);
         let i = this.lastIndexOf(str, pos);
         return i === -1 ? false : i;
     }
 
-    Find1of(this: string, chars: string, pos: number = 0): number {
-        assert.that(arguments.length === 1 || arguments.length === 2,
-            "usage: string.Find1of(string, pos = 0)");
+    Find1of(this: string, chars: string = mandatory(), pos: number = 0): number {
+        maxargs(2, arguments.length);
         for (let i = Math.max(0, pos); i < this.length; i++) {
             if (-1 !== chars.indexOf(this[i]))
                 return i;
@@ -120,10 +117,9 @@ export class StringMethods {
         return this.length;
     }
 
-    FindLast1of(this: string, chars: string, pos: number = this.length - 1):
+    FindLast1of(this: string, chars: string = mandatory(), pos: number = this.length - 1):
         number | boolean {
-        assert.that(arguments.length === 1 || arguments.length === 2,
-            "usage: string.FindLast1of(string, pos = size() - 1)");
+        maxargs(2, arguments.length);
         for (let i = Math.min(this.length - 1, pos); i >= 0; i--) {
             if (-1 !== chars.indexOf(this[i]))
                 return i;
@@ -131,9 +127,8 @@ export class StringMethods {
         return false;
     }
 
-    Findnot1of(this: string, chars: string, pos: number = 0): number {
-        assert.that(arguments.length === 1 || arguments.length === 2,
-            "usage: string.Findnot1of(string, pos = 0)");
+    Findnot1of(this: string, chars: string = mandatory(), pos: number = 0): number {
+        maxargs(2, arguments.length);
         for (let i = Math.max(0, pos); i < this.length; i++) {
             if (-1 === chars.indexOf(this[i]))
                 return i;
@@ -141,10 +136,9 @@ export class StringMethods {
         return this.length;
     }
 
-    FindLastnot1of(this: string, chars: string, pos: number = this.length - 1):
+    FindLastnot1of(this: string, chars: string = mandatory(), pos: number = this.length - 1):
         number | boolean {
-        assert.that(arguments.length === 1 || arguments.length === 2,
-            "usage: string.FindLastnot1of(string, pos = size() - 1)");
+        maxargs(2, arguments.length);
         for (let i = Math.min(this.length - 1, pos); i >= 0; i--) {
             if (-1 === chars.indexOf(this[i]))
                 return i;
@@ -152,18 +146,18 @@ export class StringMethods {
         return false;
     }
 
-    ['Has?'](this: string, str: string): boolean {
-        assert.that(arguments.length === 1, "usage: string.Has?(string)");
+    ['Has?'](this: string, str: string = mandatory()): boolean {
+        maxargs(1, arguments.length);
         return this.indexOf(str) !== -1;
     }
 
     Lower(this: string): string {
-        assert.that(arguments.length === 0, "usage: string.Lower()");
+        maxargs(0, arguments.length);
         return this.toLowerCase();
     }
 
     ['Lower?'](this: string): boolean {
-        assert.that(arguments.length === 0, "usage: string.Lower?()");
+        maxargs(0, arguments.length);
         let result = false;
         for (let c of this) {
             if (util.isUpper(c))
@@ -174,7 +168,8 @@ export class StringMethods {
         return result;
     }
 
-    MapN(this: string, n: number, f: any): string {
+    MapN(this: string, n: number = mandatory(), f: any = mandatory()): string {
+        maxargs(2, arguments.length);
         let dst = "";
         for (let i = 0; i < this.length; i += n) {
             dst += f.$call.call(undefined, this.substr(i, n));
@@ -204,7 +199,7 @@ export class StringMethods {
 
 
     ['Number?'](this: string): boolean {
-        assert.that(arguments.length === 0, "usage: string.Number?()");
+        maxargs(0, arguments.length);
         let i: number = 0;
         let c: string;
         let intdigits: boolean;
@@ -233,7 +228,7 @@ export class StringMethods {
     }
 
     ['Numeric?'](this: string): boolean {
-        assert.that(arguments.length === 0, "usage: string.Numeric?()");
+        maxargs(0, arguments.length);
         if (this.length === 0)
             return false;
         for (let c of this)
@@ -242,24 +237,23 @@ export class StringMethods {
         return true;
     }
 
-    ['Prefix?'](this: string, str: string, pos: number = 0): boolean {
-        assert.that(arguments.length === 1 || arguments.length === 2,
-            "usage: string.Prefix?(string, pos = 0)");
+    ['Prefix?'](this: string, str: string = mandatory(), pos: number = 0): boolean {
+        maxargs(2, arguments.length);
         return this.startsWith(str, pos);
     }
 
-    Repeat(this: string, count: number): string {
-        assert.that(arguments.length === 1, "usage: string.Repeat(count)");
+    Repeat(this: string, count: number = mandatory()): string {
+        maxargs(1, arguments.length);
         return this.repeat(Math.max(0, count));
     }
 
     //TODO: to change after classes for block and callable functions are implemented
-    Replace(this: string, pattern: string,
+    Replace(this: string, pattern: string = mandatory(),
         replacement: any = '', count: number = Infinity): string {
+        maxargs(3, arguments.length);
         enum RepStatus { E, U, L, u, l };
-        assert.that(1 <= arguments.length && arguments.length <= 3,
-            "usage: string.Replace(pattern, replacement = '', count = false) -> string");
-        let nGroups = (new RegExp(pattern + '|')).exec('') !.length - 1;      //Calculate how many capture groups dose the regex pattern have
+        //Calculate how many capture groups dose the regex pattern have
+        let nGroups = (new RegExp(pattern + '|')).exec('')!.length - 1;
         let repCount = 0;
         function repF(): string {
             let dst: string = '';
@@ -345,8 +339,8 @@ export class StringMethods {
         return this.length;
     }
 
-    Split(this: string, separator: string): SuObject {
-        assert.that(arguments.length === 1, "usage: string.Split(separator)");
+    Split(this: string, separator: string = mandatory()): SuObject {
+        maxargs(1, arguments.length);
         assert.that(separator !== '', "string.Split separator must not be empty string");
         let arraySplit = this.split(separator);
         if (arraySplit[arraySplit.length - 1] === '')
@@ -356,8 +350,8 @@ export class StringMethods {
         return resOb;
     }
 
-    Substr(this: string, start: number, length: number = this.length): string {
-        assert.that(arguments.length === 1 || arguments.length === 2, "usage: string(i[,n])");
+    Substr(this: string, start: number = mandatory(), length: number = this.length): string {
+        maxargs(2, arguments.length);
         if (start < 0)
             start += this.length;
         if (start < 0)
@@ -369,19 +363,18 @@ export class StringMethods {
         return this.substr(start, length);
     }
 
-    ['Suffix?'](this: string, str: string): boolean {
-        assert.that(arguments.length === 1, "usage: string.Suffix?(string)");
+    ['Suffix?'](this: string, str: string = mandatory()): boolean {
+        maxargs(1, arguments.length);
         return this.endsWith(str);
     }
 
-    Tr(this: string, from: string, to: string = ''): string {
-        assert.that(arguments.length === 1 || arguments.length === 2,
-            "usage: string.Tr(from [ , to ] )");
+    Tr(this: string, from: string = mandatory(), to: string = ''): string {
+        maxargs(2, arguments.length);
         return tr(this, from, to);
     }
 
     Unescape(this: string): string {
-        assert.that(arguments.length === 0, "usage: string.Unescape()");
+        maxargs(0, arguments.length);
         let dst = '';
         for (let index = { i: 0 }; index.i < this.length; index.i++) {
             if (this[index.i] === '\\')
@@ -393,12 +386,12 @@ export class StringMethods {
     }
 
     Upper(this: string): string {
-        assert.that(arguments.length === 0, "usage: string.Upper()");
+        maxargs(0, arguments.length);
         return this.toUpperCase();
     }
 
     ['Upper?'](this: string): boolean {
-        assert.that(arguments.length === 0, "usage: string.Upper?()");
+        maxargs(0, arguments.length);
         let result = false;
         for (let c of this) {
             if (util.isLower(c))

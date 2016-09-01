@@ -91,7 +91,7 @@ str1 = "";
 assert.that(!sm['Lower?'].call(str1), "check method lowerq() with empty string");
 
 function capFirst(s: string): string {
-    return util.capitalizeFirstLetter(s);
+    return util.capitalize(s);
 }
 (capFirst as any).$call = capFirst;
 str1 = "";

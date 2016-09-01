@@ -53,11 +53,13 @@ let ob = new SuObject();
 su.put(ob, 'n', 123);
 assert.equal(su.get(ob, 'n'), 123);
 
-assert.equal(su.typeName(true), 'Boolean');
-assert.equal(su.typeName('hello'), 'String');
-assert.equal(su.typeName(123), 'Number');
-assert.equal(su.typeName(n(123)), 'Number');
-assert.equal(su.typeName(new SuObject()), 'Object');
+assert.equal(su.type(true), 'Boolean');
+assert.equal(su.type('hello'), 'String');
+assert.equal(su.type(123), 'Number');
+assert.equal(su.type(n(123)), 'Number');
+assert.equal(su.type(new SuObject()), 'Object');
+assert.equal(su.type(null), "null");
+assert.throws(() => su.type(undefined), /uninitialized/);
 
 assert.equal(su.rangeto("abcde", 1, 4), "bcd");
 assert.equal(su.rangeto("abcde", 2, 9), "cde");
@@ -94,11 +96,6 @@ disp(n(1234, -2), '12.34');
 disp('hello', '"hello"');
 disp('a\\b', '`a\\b`');
 disp('a"b', "'a\"b'");
-
-assert.equal(su.typename(null), "null");
-assert.equal(su.typename(undefined), "undefined");
-assert.equal(su.typename(123), "number");
-assert.equal(su.typename("foo"), "string");
 
 let f = {
     $call: function(...args: any[]) { return ['call', args]; },

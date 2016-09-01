@@ -6,8 +6,8 @@
 
 import { Dnum } from "./dnum";
 import { SuValue } from "./suvalue";
-import display from "./display";
-import is from "./is";
+import { display } from "./display";
+import { is } from "./is";
 
 import * as assert from "./assert";
 
@@ -120,7 +120,7 @@ export class SuObject extends SuValue {
         return this;
     }
 
-    typeName(): string {
+    type(): string {
         return "Object";
     }
 
