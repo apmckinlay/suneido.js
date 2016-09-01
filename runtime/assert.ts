@@ -1,4 +1,6 @@
 const jreq = require('equals');
+import { is } from "./is";
+import { SuValue } from "./suvalue";
 
 /** Asserts that the expr === true */
 export function that(expr: boolean, msg?: string): void {
@@ -17,6 +19,8 @@ function eq(x: any, y: any): boolean {
         return true;
     if (typeof x === "number" && typeof y === "number")
         return x.toPrecision(14) === y.toPrecision(14);
+    if (x instanceof SuValue || y instanceof SuValue)
+        return is(x, y);
     return jreq(x, y);
 }
 

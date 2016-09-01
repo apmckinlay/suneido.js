@@ -7,7 +7,7 @@
 import * as assert from "./assert";
 import * as util from "./utility";
 import { SuValue } from "./suvalue";
-import { maxargs } from "./args";
+import { maxargs, mandatory } from "./args";
 
 const month = ["January", "February", "March", "April", "May", "June", "July",
     "August", "September", "October", "November", "December"];
@@ -58,20 +58,6 @@ export class SuDate extends SuValue {
     /** @return An SuDate for the current local date & time */
     static now() {
         return SuDate.fromDate(new Date());
-    }
-
-    static prev = SuDate.now();
-
-    /**
-     * timestamp returns a unique sudate based on current time
-     * @returns {Object} a sudate
-     */
-    static timestamp(): SuDate {
-        let ts = SuDate.now();
-        if (SuDate.compare(ts, SuDate.prev) <= 0)
-            ts = SuDate.prev.plus({ milliseconds: 1 });
-        SuDate.prev = ts;
-        return ts;
     }
 
     /**
@@ -305,8 +291,8 @@ export class SuDate extends SuValue {
      * @param {string} fmt
      * @returns {string} a date and time string in given format
      */
-    formatEn(fmt: string): string {
-        assert.that(arguments.length === 1, "usage: date.Format(format)");
+    FormatEn(fmt: string = mandatory()): string {
+        maxargs(1, arguments.length);
         return format(this, fmt);
     }
 
@@ -315,8 +301,9 @@ export class SuDate extends SuValue {
      * @param args {Object} a group of unit and offset pairs
      * @returns {object} a copy of sudate
      */
-    plus({ years = 0, months = 0, days = 0,
-        hours = 0, minutes = 0, seconds = 0, milliseconds = 0 }): SuDate {
+    Plus(years = 0, months = 0, days = 0,
+        hours = 0, minutes = 0, seconds = 0, milliseconds = 0): SuDate {
+        maxargs(7, arguments.length);
         years += this.Year();
         months += this.Month();
         days += this.Day();
@@ -327,28 +314,13 @@ export class SuDate extends SuValue {
         return normalize(years, months, days, hours, minutes, seconds, milliseconds);
     }
 
-    private timeAsMs(): number {
-        return this.Millisecond() +
-            1000 * (this.Second() +
-                60 * (this.Minute() +
-                    60 * this.Hour()));
-    }
-
-    // WARNING: doing this around daylight savings changes may be problematic
-    minusMilliseconds(sud2: SuDate): number {
-        if (this.date === sud2.date)
-            return this.timeAsMs() - sud2.timeAsMs();
-        else
-            return this.toDate().getTime() - sud2.toDate().getTime();
-    }
-
     /**
      * minusDays returns the number of days between two dates
      * @param sud2 {Object}  another sudate
      * @returns {number}
      */
-    minusDays(sud2: SuDate): number {
-        assert.that(arguments.length === 1, "usage: date.Minus(date)");
+    MinusDays(sud2: SuDate = mandatory()): number {
+        maxargs(1, arguments.length);
         let timeDiff = this.toDate().getTime() - sud2.toDate().getTime();
         return Math.ceil(timeDiff / (1000 * 3600 * 24));
     }
@@ -358,8 +330,8 @@ export class SuDate extends SuValue {
      * @param sud2 {Object}  another sudate
      * @returns {number}
      */
-    minusSeconds(sud2: SuDate): number {
-        assert.that(arguments.length === 1, "usage: date.MinusSeconds(date)");
+    MinusSeconds(sud2: SuDate = mandatory()): number {
+        maxargs(1, arguments.length);
         let timeDiff = this.toDate().getTime() - sud2.toDate().getTime();
         return timeDiff / 1000;
     }
@@ -425,9 +397,8 @@ export class SuDate extends SuValue {
      * @param {string|number}  firstDay to start count
      * @returns {number}
      */
-    weekday(firstDay?: string | number): number {
-        assert.that(arguments.length === 0 || arguments.length === 1,
-            "usage: date.WeekDay(firstDay = 'Sun')");
+    WeekDay(firstDay: string | number = "Sun"): number {
+        maxargs(1, arguments.length);
         let i = 0;
         if (arguments.length === 1) {
             if (typeof firstDay === "string") {
@@ -472,7 +443,7 @@ export class SuDate extends SuValue {
     }
 
     static fromDate(d: Date): SuDate {
-        return SuDate.make(d.getFullYear(), d.getMonth(), d.getDate(),
+        return SuDate.make(d.getFullYear(), d.getMonth() + 1, d.getDate(),
             d.getHours(), d.getMinutes(), d.getSeconds(), d.getMilliseconds());
     }
 
@@ -619,7 +590,7 @@ function format(dt: SuDate, fmt: string): string {
                 }
                 break;
             case 'd':
-                let wd = dt.weekday();
+                let wd = dt.WeekDay();
                 let d = dt.Day();
                 if (n > 3) {
                     dst += weekday[wd];
