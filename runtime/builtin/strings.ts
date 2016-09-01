@@ -4,7 +4,7 @@ import { tr } from "../tr";
 import { SuObject } from "../suobject";
 import { mandatory, maxargs } from "../args";
 
-export class StringMethods {
+export class Strings {
 
     ['Alpha?'](this: string): boolean {
         maxargs(0, arguments.length);
@@ -412,364 +412,364 @@ function doWithSplit(str: string, sep: string, f: (arg: string) => string) {
     return a.join(sep);
 }
 
-//BUILTIN StringMethods.Alpha?()
+//BUILTIN Strings.Alpha?()
 //GENERATED start
-(StringMethods.prototype['Alpha?'] as any).$call = StringMethods.prototype['Alpha?'];
-(StringMethods.prototype['Alpha?'] as any).$callNamed = function (_named: any) {
-    return StringMethods.prototype['Alpha?'].call(this);
+(Strings.prototype['Alpha?'] as any).$call = Strings.prototype['Alpha?'];
+(Strings.prototype['Alpha?'] as any).$callNamed = function (_named: any) {
+    return Strings.prototype['Alpha?'].call(this);
 };
-(StringMethods.prototype['Alpha?'] as any).$callAt = function (args: SuObject) {
-    return (StringMethods.prototype['Alpha?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+(Strings.prototype['Alpha?'] as any).$callAt = function (args: SuObject) {
+    return (Strings.prototype['Alpha?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(StringMethods.prototype['Alpha?'] as any).$params = '';
+(Strings.prototype['Alpha?'] as any).$params = '';
 //GENERATED end
 
-//BUILTIN StringMethods.AlphaNum?()
+//BUILTIN Strings.AlphaNum?()
 //GENERATED start
-(StringMethods.prototype['AlphaNum?'] as any).$call = StringMethods.prototype['AlphaNum?'];
-(StringMethods.prototype['AlphaNum?'] as any).$callNamed = function (_named: any) {
-    return StringMethods.prototype['AlphaNum?'].call(this);
+(Strings.prototype['AlphaNum?'] as any).$call = Strings.prototype['AlphaNum?'];
+(Strings.prototype['AlphaNum?'] as any).$callNamed = function (_named: any) {
+    return Strings.prototype['AlphaNum?'].call(this);
 };
-(StringMethods.prototype['AlphaNum?'] as any).$callAt = function (args: SuObject) {
-    return (StringMethods.prototype['AlphaNum?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+(Strings.prototype['AlphaNum?'] as any).$callAt = function (args: SuObject) {
+    return (Strings.prototype['AlphaNum?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(StringMethods.prototype['AlphaNum?'] as any).$params = '';
+(Strings.prototype['AlphaNum?'] as any).$params = '';
 //GENERATED end
 
-//BUILTIN StringMethods.Asc()
+//BUILTIN Strings.Asc()
 //GENERATED start
-(StringMethods.prototype['Asc'] as any).$call = StringMethods.prototype['Asc'];
-(StringMethods.prototype['Asc'] as any).$callNamed = function (_named: any) {
-    return StringMethods.prototype['Asc'].call(this);
+(Strings.prototype['Asc'] as any).$call = Strings.prototype['Asc'];
+(Strings.prototype['Asc'] as any).$callNamed = function (_named: any) {
+    return Strings.prototype['Asc'].call(this);
 };
-(StringMethods.prototype['Asc'] as any).$callAt = function (args: SuObject) {
-    return (StringMethods.prototype['Asc'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+(Strings.prototype['Asc'] as any).$callAt = function (args: SuObject) {
+    return (Strings.prototype['Asc'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(StringMethods.prototype['Asc'] as any).$params = '';
+(Strings.prototype['Asc'] as any).$params = '';
 //GENERATED end
 
-//BUILTIN StringMethods.Detab()
+//BUILTIN Strings.Detab()
 //GENERATED start
-(StringMethods.prototype['Detab'] as any).$call = StringMethods.prototype['Detab'];
-(StringMethods.prototype['Detab'] as any).$callNamed = function (_named: any) {
-    return StringMethods.prototype['Detab'].call(this);
+(Strings.prototype['Detab'] as any).$call = Strings.prototype['Detab'];
+(Strings.prototype['Detab'] as any).$callNamed = function (_named: any) {
+    return Strings.prototype['Detab'].call(this);
 };
-(StringMethods.prototype['Detab'] as any).$callAt = function (args: SuObject) {
-    return (StringMethods.prototype['Detab'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+(Strings.prototype['Detab'] as any).$callAt = function (args: SuObject) {
+    return (Strings.prototype['Detab'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(StringMethods.prototype['Detab'] as any).$params = '';
+(Strings.prototype['Detab'] as any).$params = '';
 //GENERATED end
 
-//BUILTIN StringMethods.Entab()
+//BUILTIN Strings.Entab()
 //GENERATED start
-(StringMethods.prototype['Entab'] as any).$call = StringMethods.prototype['Entab'];
-(StringMethods.prototype['Entab'] as any).$callNamed = function (_named: any) {
-    return StringMethods.prototype['Entab'].call(this);
+(Strings.prototype['Entab'] as any).$call = Strings.prototype['Entab'];
+(Strings.prototype['Entab'] as any).$callNamed = function (_named: any) {
+    return Strings.prototype['Entab'].call(this);
 };
-(StringMethods.prototype['Entab'] as any).$callAt = function (args: SuObject) {
-    return (StringMethods.prototype['Entab'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+(Strings.prototype['Entab'] as any).$callAt = function (args: SuObject) {
+    return (Strings.prototype['Entab'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(StringMethods.prototype['Entab'] as any).$params = '';
+(Strings.prototype['Entab'] as any).$params = '';
 //GENERATED end
 
-//BUILTIN StringMethods.Extract(pattern, part=false)
+//BUILTIN Strings.Extract(pattern, part=false)
 //GENERATED start
-(StringMethods.prototype['Extract'] as any).$call = StringMethods.prototype['Extract'];
-(StringMethods.prototype['Extract'] as any).$callNamed = function ($named: any, pattern: any, part: any) {
+(Strings.prototype['Extract'] as any).$call = Strings.prototype['Extract'];
+(Strings.prototype['Extract'] as any).$callNamed = function ($named: any, pattern: any, part: any) {
     ({ pattern = pattern, part = part } = $named);
-    return StringMethods.prototype['Extract'].call(this, pattern, part);
+    return Strings.prototype['Extract'].call(this, pattern, part);
 };
-(StringMethods.prototype['Extract'] as any).$callAt = function (args: SuObject) {
-    return (StringMethods.prototype['Extract'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+(Strings.prototype['Extract'] as any).$callAt = function (args: SuObject) {
+    return (Strings.prototype['Extract'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(StringMethods.prototype['Extract'] as any).$params = 'pattern, part=false';
+(Strings.prototype['Extract'] as any).$params = 'pattern, part=false';
 //GENERATED end
 
-//BUILTIN StringMethods.Find(s, pos=0)
+//BUILTIN Strings.Find(s, pos=0)
 //GENERATED start
-(StringMethods.prototype['Find'] as any).$call = StringMethods.prototype['Find'];
-(StringMethods.prototype['Find'] as any).$callNamed = function ($named: any, s: any, pos: any) {
+(Strings.prototype['Find'] as any).$call = Strings.prototype['Find'];
+(Strings.prototype['Find'] as any).$callNamed = function ($named: any, s: any, pos: any) {
     ({ s = s, pos = pos } = $named);
-    return StringMethods.prototype['Find'].call(this, s, pos);
+    return Strings.prototype['Find'].call(this, s, pos);
 };
-(StringMethods.prototype['Find'] as any).$callAt = function (args: SuObject) {
-    return (StringMethods.prototype['Find'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+(Strings.prototype['Find'] as any).$callAt = function (args: SuObject) {
+    return (Strings.prototype['Find'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(StringMethods.prototype['Find'] as any).$params = 's, pos=0';
+(Strings.prototype['Find'] as any).$params = 's, pos=0';
 //GENERATED end
 
-//BUILTIN StringMethods.FindLast(s, pos=99999)
+//BUILTIN Strings.FindLast(s, pos=99999)
 //GENERATED start
-(StringMethods.prototype['FindLast'] as any).$call = StringMethods.prototype['FindLast'];
-(StringMethods.prototype['FindLast'] as any).$callNamed = function ($named: any, s: any, pos: any) {
+(Strings.prototype['FindLast'] as any).$call = Strings.prototype['FindLast'];
+(Strings.prototype['FindLast'] as any).$callNamed = function ($named: any, s: any, pos: any) {
     ({ s = s, pos = pos } = $named);
-    return StringMethods.prototype['FindLast'].call(this, s, pos);
+    return Strings.prototype['FindLast'].call(this, s, pos);
 };
-(StringMethods.prototype['FindLast'] as any).$callAt = function (args: SuObject) {
-    return (StringMethods.prototype['FindLast'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+(Strings.prototype['FindLast'] as any).$callAt = function (args: SuObject) {
+    return (Strings.prototype['FindLast'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(StringMethods.prototype['FindLast'] as any).$params = 's, pos=99999';
+(Strings.prototype['FindLast'] as any).$params = 's, pos=99999';
 //GENERATED end
 
-//BUILTIN StringMethods.Find1of(s, chars, pos=0)
+//BUILTIN Strings.Find1of(s, chars, pos=0)
 //GENERATED start
-(StringMethods.prototype['Find1of'] as any).$call = StringMethods.prototype['Find1of'];
-(StringMethods.prototype['Find1of'] as any).$callNamed = function ($named: any, s: any, chars: any, pos: any) {
+(Strings.prototype['Find1of'] as any).$call = Strings.prototype['Find1of'];
+(Strings.prototype['Find1of'] as any).$callNamed = function ($named: any, s: any, chars: any, pos: any) {
     ({ s = s, chars = chars, pos = pos } = $named);
-    return StringMethods.prototype['Find1of'].call(this, s, chars, pos);
+    return Strings.prototype['Find1of'].call(this, s, chars, pos);
 };
-(StringMethods.prototype['Find1of'] as any).$callAt = function (args: SuObject) {
-    return (StringMethods.prototype['Find1of'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+(Strings.prototype['Find1of'] as any).$callAt = function (args: SuObject) {
+    return (Strings.prototype['Find1of'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(StringMethods.prototype['Find1of'] as any).$params = 's, chars, pos=0';
+(Strings.prototype['Find1of'] as any).$params = 's, chars, pos=0';
 //GENERATED end
 
-//BUILTIN StringMethods.FindLast1of(s, chars, pos=99999)
+//BUILTIN Strings.FindLast1of(s, chars, pos=99999)
 //GENERATED start
-(StringMethods.prototype['FindLast1of'] as any).$call = StringMethods.prototype['FindLast1of'];
-(StringMethods.prototype['FindLast1of'] as any).$callNamed = function ($named: any, s: any, chars: any, pos: any) {
+(Strings.prototype['FindLast1of'] as any).$call = Strings.prototype['FindLast1of'];
+(Strings.prototype['FindLast1of'] as any).$callNamed = function ($named: any, s: any, chars: any, pos: any) {
     ({ s = s, chars = chars, pos = pos } = $named);
-    return StringMethods.prototype['FindLast1of'].call(this, s, chars, pos);
+    return Strings.prototype['FindLast1of'].call(this, s, chars, pos);
 };
-(StringMethods.prototype['FindLast1of'] as any).$callAt = function (args: SuObject) {
-    return (StringMethods.prototype['FindLast1of'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+(Strings.prototype['FindLast1of'] as any).$callAt = function (args: SuObject) {
+    return (Strings.prototype['FindLast1of'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(StringMethods.prototype['FindLast1of'] as any).$params = 's, chars, pos=99999';
+(Strings.prototype['FindLast1of'] as any).$params = 's, chars, pos=99999';
 //GENERATED end
 
-//BUILTIN StringMethods.Findnot1of(s, chars, pos=0)
+//BUILTIN Strings.Findnot1of(s, chars, pos=0)
 //GENERATED start
-(StringMethods.prototype['Findnot1of'] as any).$call = StringMethods.prototype['Findnot1of'];
-(StringMethods.prototype['Findnot1of'] as any).$callNamed = function ($named: any, s: any, chars: any, pos: any) {
+(Strings.prototype['Findnot1of'] as any).$call = Strings.prototype['Findnot1of'];
+(Strings.prototype['Findnot1of'] as any).$callNamed = function ($named: any, s: any, chars: any, pos: any) {
     ({ s = s, chars = chars, pos = pos } = $named);
-    return StringMethods.prototype['Findnot1of'].call(this, s, chars, pos);
+    return Strings.prototype['Findnot1of'].call(this, s, chars, pos);
 };
-(StringMethods.prototype['Findnot1of'] as any).$callAt = function (args: SuObject) {
-    return (StringMethods.prototype['Findnot1of'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+(Strings.prototype['Findnot1of'] as any).$callAt = function (args: SuObject) {
+    return (Strings.prototype['Findnot1of'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(StringMethods.prototype['Findnot1of'] as any).$params = 's, chars, pos=0';
+(Strings.prototype['Findnot1of'] as any).$params = 's, chars, pos=0';
 //GENERATED end
 
-//BUILTIN StringMethods.FindLastnot1of(s, chars, pos=99999)
+//BUILTIN Strings.FindLastnot1of(s, chars, pos=99999)
 //GENERATED start
-(StringMethods.prototype['FindLastnot1of'] as any).$call = StringMethods.prototype['FindLastnot1of'];
-(StringMethods.prototype['FindLastnot1of'] as any).$callNamed = function ($named: any, s: any, chars: any, pos: any) {
+(Strings.prototype['FindLastnot1of'] as any).$call = Strings.prototype['FindLastnot1of'];
+(Strings.prototype['FindLastnot1of'] as any).$callNamed = function ($named: any, s: any, chars: any, pos: any) {
     ({ s = s, chars = chars, pos = pos } = $named);
-    return StringMethods.prototype['FindLastnot1of'].call(this, s, chars, pos);
+    return Strings.prototype['FindLastnot1of'].call(this, s, chars, pos);
 };
-(StringMethods.prototype['FindLastnot1of'] as any).$callAt = function (args: SuObject) {
-    return (StringMethods.prototype['FindLastnot1of'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+(Strings.prototype['FindLastnot1of'] as any).$callAt = function (args: SuObject) {
+    return (Strings.prototype['FindLastnot1of'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(StringMethods.prototype['FindLastnot1of'] as any).$params = 's, chars, pos=99999';
+(Strings.prototype['FindLastnot1of'] as any).$params = 's, chars, pos=99999';
 //GENERATED end
 
-//BUILTIN StringMethods.Has?(s)
+//BUILTIN Strings.Has?(s)
 //GENERATED start
-(StringMethods.prototype['Has?'] as any).$call = StringMethods.prototype['Has?'];
-(StringMethods.prototype['Has?'] as any).$callNamed = function ($named: any, s: any) {
+(Strings.prototype['Has?'] as any).$call = Strings.prototype['Has?'];
+(Strings.prototype['Has?'] as any).$callNamed = function ($named: any, s: any) {
     ({ s = s } = $named);
-    return StringMethods.prototype['Has?'].call(this, s);
+    return Strings.prototype['Has?'].call(this, s);
 };
-(StringMethods.prototype['Has?'] as any).$callAt = function (args: SuObject) {
-    return (StringMethods.prototype['Has?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+(Strings.prototype['Has?'] as any).$callAt = function (args: SuObject) {
+    return (Strings.prototype['Has?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(StringMethods.prototype['Has?'] as any).$params = 's';
+(Strings.prototype['Has?'] as any).$params = 's';
 //GENERATED end
 
-//BUILTIN StringMethods.Lower()
+//BUILTIN Strings.Lower()
 //GENERATED start
-(StringMethods.prototype['Lower'] as any).$call = StringMethods.prototype['Lower'];
-(StringMethods.prototype['Lower'] as any).$callNamed = function (_named: any) {
-    return StringMethods.prototype['Lower'].call(this);
+(Strings.prototype['Lower'] as any).$call = Strings.prototype['Lower'];
+(Strings.prototype['Lower'] as any).$callNamed = function (_named: any) {
+    return Strings.prototype['Lower'].call(this);
 };
-(StringMethods.prototype['Lower'] as any).$callAt = function (args: SuObject) {
-    return (StringMethods.prototype['Lower'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+(Strings.prototype['Lower'] as any).$callAt = function (args: SuObject) {
+    return (Strings.prototype['Lower'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(StringMethods.prototype['Lower'] as any).$params = '';
+(Strings.prototype['Lower'] as any).$params = '';
 //GENERATED end
 
-//BUILTIN StringMethods.Lower?()
+//BUILTIN Strings.Lower?()
 //GENERATED start
-(StringMethods.prototype['Lower?'] as any).$call = StringMethods.prototype['Lower?'];
-(StringMethods.prototype['Lower?'] as any).$callNamed = function (_named: any) {
-    return StringMethods.prototype['Lower?'].call(this);
+(Strings.prototype['Lower?'] as any).$call = Strings.prototype['Lower?'];
+(Strings.prototype['Lower?'] as any).$callNamed = function (_named: any) {
+    return Strings.prototype['Lower?'].call(this);
 };
-(StringMethods.prototype['Lower?'] as any).$callAt = function (args: SuObject) {
-    return (StringMethods.prototype['Lower?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+(Strings.prototype['Lower?'] as any).$callAt = function (args: SuObject) {
+    return (Strings.prototype['Lower?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(StringMethods.prototype['Lower?'] as any).$params = '';
+(Strings.prototype['Lower?'] as any).$params = '';
 //GENERATED end
 
-//BUILTIN StringMethods.MapN()
+//BUILTIN Strings.MapN()
 //GENERATED start
-(StringMethods.prototype['MapN'] as any).$call = StringMethods.prototype['MapN'];
-(StringMethods.prototype['MapN'] as any).$callNamed = function (_named: any) {
-    return StringMethods.prototype['MapN'].call(this);
+(Strings.prototype['MapN'] as any).$call = Strings.prototype['MapN'];
+(Strings.prototype['MapN'] as any).$callNamed = function (_named: any) {
+    return Strings.prototype['MapN'].call(this);
 };
-(StringMethods.prototype['MapN'] as any).$callAt = function (args: SuObject) {
-    return (StringMethods.prototype['MapN'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+(Strings.prototype['MapN'] as any).$callAt = function (args: SuObject) {
+    return (Strings.prototype['MapN'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(StringMethods.prototype['MapN'] as any).$params = '';
+(Strings.prototype['MapN'] as any).$params = '';
 //GENERATED end
 
-//BUILTIN StringMethods.Number?()
+//BUILTIN Strings.Number?()
 //GENERATED start
-(StringMethods.prototype['Number?'] as any).$call = StringMethods.prototype['Number?'];
-(StringMethods.prototype['Number?'] as any).$callNamed = function (_named: any) {
-    return StringMethods.prototype['Number?'].call(this);
+(Strings.prototype['Number?'] as any).$call = Strings.prototype['Number?'];
+(Strings.prototype['Number?'] as any).$callNamed = function (_named: any) {
+    return Strings.prototype['Number?'].call(this);
 };
-(StringMethods.prototype['Number?'] as any).$callAt = function (args: SuObject) {
-    return (StringMethods.prototype['Number?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+(Strings.prototype['Number?'] as any).$callAt = function (args: SuObject) {
+    return (Strings.prototype['Number?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(StringMethods.prototype['Number?'] as any).$params = '';
+(Strings.prototype['Number?'] as any).$params = '';
 //GENERATED end
 
-//BUILTIN StringMethods.Numeric?()
+//BUILTIN Strings.Numeric?()
 //GENERATED start
-(StringMethods.prototype['Numeric?'] as any).$call = StringMethods.prototype['Numeric?'];
-(StringMethods.prototype['Numeric?'] as any).$callNamed = function (_named: any) {
-    return StringMethods.prototype['Numeric?'].call(this);
+(Strings.prototype['Numeric?'] as any).$call = Strings.prototype['Numeric?'];
+(Strings.prototype['Numeric?'] as any).$callNamed = function (_named: any) {
+    return Strings.prototype['Numeric?'].call(this);
 };
-(StringMethods.prototype['Numeric?'] as any).$callAt = function (args: SuObject) {
-    return (StringMethods.prototype['Numeric?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+(Strings.prototype['Numeric?'] as any).$callAt = function (args: SuObject) {
+    return (Strings.prototype['Numeric?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(StringMethods.prototype['Numeric?'] as any).$params = '';
+(Strings.prototype['Numeric?'] as any).$params = '';
 //GENERATED end
 
-//BUILTIN StringMethods.Prefix?(s, pos=0)
+//BUILTIN Strings.Prefix?(s, pos=0)
 //GENERATED start
-(StringMethods.prototype['Prefix?'] as any).$call = StringMethods.prototype['Prefix?'];
-(StringMethods.prototype['Prefix?'] as any).$callNamed = function ($named: any, s: any, pos: any) {
+(Strings.prototype['Prefix?'] as any).$call = Strings.prototype['Prefix?'];
+(Strings.prototype['Prefix?'] as any).$callNamed = function ($named: any, s: any, pos: any) {
     ({ s = s, pos = pos } = $named);
-    return StringMethods.prototype['Prefix?'].call(this, s, pos);
+    return Strings.prototype['Prefix?'].call(this, s, pos);
 };
-(StringMethods.prototype['Prefix?'] as any).$callAt = function (args: SuObject) {
-    return (StringMethods.prototype['Prefix?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+(Strings.prototype['Prefix?'] as any).$callAt = function (args: SuObject) {
+    return (Strings.prototype['Prefix?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(StringMethods.prototype['Prefix?'] as any).$params = 's, pos=0';
+(Strings.prototype['Prefix?'] as any).$params = 's, pos=0';
 //GENERATED end
 
-//BUILTIN StringMethods.Repeat(n)
+//BUILTIN Strings.Repeat(n)
 //GENERATED start
-(StringMethods.prototype['Repeat'] as any).$call = StringMethods.prototype['Repeat'];
-(StringMethods.prototype['Repeat'] as any).$callNamed = function ($named: any, n: any) {
+(Strings.prototype['Repeat'] as any).$call = Strings.prototype['Repeat'];
+(Strings.prototype['Repeat'] as any).$callNamed = function ($named: any, n: any) {
     ({ n = n } = $named);
-    return StringMethods.prototype['Repeat'].call(this, n);
+    return Strings.prototype['Repeat'].call(this, n);
 };
-(StringMethods.prototype['Repeat'] as any).$callAt = function (args: SuObject) {
-    return (StringMethods.prototype['Repeat'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+(Strings.prototype['Repeat'] as any).$callAt = function (args: SuObject) {
+    return (Strings.prototype['Repeat'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(StringMethods.prototype['Repeat'] as any).$params = 'n';
+(Strings.prototype['Repeat'] as any).$params = 'n';
 //GENERATED end
 
-//BUILTIN StringMethods.Replace(pat, rep="", count=99999)
+//BUILTIN Strings.Replace(pat, rep="", count=99999)
 //GENERATED start
-(StringMethods.prototype['Replace'] as any).$call = StringMethods.prototype['Replace'];
-(StringMethods.prototype['Replace'] as any).$callNamed = function ($named: any, pat: any, rep: any, count: any) {
+(Strings.prototype['Replace'] as any).$call = Strings.prototype['Replace'];
+(Strings.prototype['Replace'] as any).$callNamed = function ($named: any, pat: any, rep: any, count: any) {
     ({ pat = pat, rep = rep, count = count } = $named);
-    return StringMethods.prototype['Replace'].call(this, pat, rep, count);
+    return Strings.prototype['Replace'].call(this, pat, rep, count);
 };
-(StringMethods.prototype['Replace'] as any).$callAt = function (args: SuObject) {
-    return (StringMethods.prototype['Replace'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+(Strings.prototype['Replace'] as any).$callAt = function (args: SuObject) {
+    return (Strings.prototype['Replace'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(StringMethods.prototype['Replace'] as any).$params = 'pat, rep="", count=99999';
+(Strings.prototype['Replace'] as any).$params = 'pat, rep="", count=99999';
 //GENERATED end
 
-//BUILTIN StringMethods.Size()
+//BUILTIN Strings.Size()
 //GENERATED start
-(StringMethods.prototype['Size'] as any).$call = StringMethods.prototype['Size'];
-(StringMethods.prototype['Size'] as any).$callNamed = function (_named: any) {
-    return StringMethods.prototype['Size'].call(this);
+(Strings.prototype['Size'] as any).$call = Strings.prototype['Size'];
+(Strings.prototype['Size'] as any).$callNamed = function (_named: any) {
+    return Strings.prototype['Size'].call(this);
 };
-(StringMethods.prototype['Size'] as any).$callAt = function (args: SuObject) {
-    return (StringMethods.prototype['Size'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+(Strings.prototype['Size'] as any).$callAt = function (args: SuObject) {
+    return (Strings.prototype['Size'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(StringMethods.prototype['Size'] as any).$params = '';
+(Strings.prototype['Size'] as any).$params = '';
 //GENERATED end
 
-//BUILTIN StringMethods.Split(sep)
+//BUILTIN Strings.Split(sep)
 //GENERATED start
-(StringMethods.prototype['Split'] as any).$call = StringMethods.prototype['Split'];
-(StringMethods.prototype['Split'] as any).$callNamed = function ($named: any, sep: any) {
+(Strings.prototype['Split'] as any).$call = Strings.prototype['Split'];
+(Strings.prototype['Split'] as any).$callNamed = function ($named: any, sep: any) {
     ({ sep = sep } = $named);
-    return StringMethods.prototype['Split'].call(this, sep);
+    return Strings.prototype['Split'].call(this, sep);
 };
-(StringMethods.prototype['Split'] as any).$callAt = function (args: SuObject) {
-    return (StringMethods.prototype['Split'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+(Strings.prototype['Split'] as any).$callAt = function (args: SuObject) {
+    return (Strings.prototype['Split'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(StringMethods.prototype['Split'] as any).$params = 'sep';
+(Strings.prototype['Split'] as any).$params = 'sep';
 //GENERATED end
 
-//BUILTIN StringMethods.Substr(i, n=99999)
+//BUILTIN Strings.Substr(i, n=99999)
 //GENERATED start
-(StringMethods.prototype['Substr'] as any).$call = StringMethods.prototype['Substr'];
-(StringMethods.prototype['Substr'] as any).$callNamed = function ($named: any, i: any, n: any) {
+(Strings.prototype['Substr'] as any).$call = Strings.prototype['Substr'];
+(Strings.prototype['Substr'] as any).$callNamed = function ($named: any, i: any, n: any) {
     ({ i = i, n = n } = $named);
-    return StringMethods.prototype['Substr'].call(this, i, n);
+    return Strings.prototype['Substr'].call(this, i, n);
 };
-(StringMethods.prototype['Substr'] as any).$callAt = function (args: SuObject) {
-    return (StringMethods.prototype['Substr'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+(Strings.prototype['Substr'] as any).$callAt = function (args: SuObject) {
+    return (Strings.prototype['Substr'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(StringMethods.prototype['Substr'] as any).$params = 'i, n=99999';
+(Strings.prototype['Substr'] as any).$params = 'i, n=99999';
 //GENERATED end
 
-//BUILTIN StringMethods.Suffix?()
+//BUILTIN Strings.Suffix?()
 //GENERATED start
-(StringMethods.prototype['Suffix?'] as any).$call = StringMethods.prototype['Suffix?'];
-(StringMethods.prototype['Suffix?'] as any).$callNamed = function (_named: any) {
-    return StringMethods.prototype['Suffix?'].call(this);
+(Strings.prototype['Suffix?'] as any).$call = Strings.prototype['Suffix?'];
+(Strings.prototype['Suffix?'] as any).$callNamed = function (_named: any) {
+    return Strings.prototype['Suffix?'].call(this);
 };
-(StringMethods.prototype['Suffix?'] as any).$callAt = function (args: SuObject) {
-    return (StringMethods.prototype['Suffix?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+(Strings.prototype['Suffix?'] as any).$callAt = function (args: SuObject) {
+    return (Strings.prototype['Suffix?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(StringMethods.prototype['Suffix?'] as any).$params = '';
+(Strings.prototype['Suffix?'] as any).$params = '';
 //GENERATED end
 
-//BUILTIN StringMethods.Tr(from, to="")
+//BUILTIN Strings.Tr(from, to="")
 //GENERATED start
-(StringMethods.prototype['Tr'] as any).$call = StringMethods.prototype['Tr'];
-(StringMethods.prototype['Tr'] as any).$callNamed = function ($named: any, from: any, to: any) {
+(Strings.prototype['Tr'] as any).$call = Strings.prototype['Tr'];
+(Strings.prototype['Tr'] as any).$callNamed = function ($named: any, from: any, to: any) {
     ({ from = from, to = to } = $named);
-    return StringMethods.prototype['Tr'].call(this, from, to);
+    return Strings.prototype['Tr'].call(this, from, to);
 };
-(StringMethods.prototype['Tr'] as any).$callAt = function (args: SuObject) {
-    return (StringMethods.prototype['Tr'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+(Strings.prototype['Tr'] as any).$callAt = function (args: SuObject) {
+    return (Strings.prototype['Tr'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(StringMethods.prototype['Tr'] as any).$params = 'from, to=""';
+(Strings.prototype['Tr'] as any).$params = 'from, to=""';
 //GENERATED end
 
-//BUILTIN StringMethods.Unescape()
+//BUILTIN Strings.Unescape()
 //GENERATED start
-(StringMethods.prototype['Unescape'] as any).$call = StringMethods.prototype['Unescape'];
-(StringMethods.prototype['Unescape'] as any).$callNamed = function (_named: any) {
-    return StringMethods.prototype['Unescape'].call(this);
+(Strings.prototype['Unescape'] as any).$call = Strings.prototype['Unescape'];
+(Strings.prototype['Unescape'] as any).$callNamed = function (_named: any) {
+    return Strings.prototype['Unescape'].call(this);
 };
-(StringMethods.prototype['Unescape'] as any).$callAt = function (args: SuObject) {
-    return (StringMethods.prototype['Unescape'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+(Strings.prototype['Unescape'] as any).$callAt = function (args: SuObject) {
+    return (Strings.prototype['Unescape'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(StringMethods.prototype['Unescape'] as any).$params = '';
+(Strings.prototype['Unescape'] as any).$params = '';
 //GENERATED end
 
-//BUILTIN StringMethods.Upper()
+//BUILTIN Strings.Upper()
 //GENERATED start
-(StringMethods.prototype['Upper'] as any).$call = StringMethods.prototype['Upper'];
-(StringMethods.prototype['Upper'] as any).$callNamed = function (_named: any) {
-    return StringMethods.prototype['Upper'].call(this);
+(Strings.prototype['Upper'] as any).$call = Strings.prototype['Upper'];
+(Strings.prototype['Upper'] as any).$callNamed = function (_named: any) {
+    return Strings.prototype['Upper'].call(this);
 };
-(StringMethods.prototype['Upper'] as any).$callAt = function (args: SuObject) {
-    return (StringMethods.prototype['Upper'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+(Strings.prototype['Upper'] as any).$callAt = function (args: SuObject) {
+    return (Strings.prototype['Upper'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(StringMethods.prototype['Upper'] as any).$params = '';
+(Strings.prototype['Upper'] as any).$params = '';
 //GENERATED end
 
-//BUILTIN StringMethods.Upper?()
+//BUILTIN Strings.Upper?()
 //GENERATED start
-(StringMethods.prototype['Upper?'] as any).$call = StringMethods.prototype['Upper?'];
-(StringMethods.prototype['Upper?'] as any).$callNamed = function (_named: any) {
-    return StringMethods.prototype['Upper?'].call(this);
+(Strings.prototype['Upper?'] as any).$call = Strings.prototype['Upper?'];
+(Strings.prototype['Upper?'] as any).$callNamed = function (_named: any) {
+    return Strings.prototype['Upper?'].call(this);
 };
-(StringMethods.prototype['Upper?'] as any).$callAt = function (args: SuObject) {
-    return (StringMethods.prototype['Upper?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+(Strings.prototype['Upper?'] as any).$callAt = function (args: SuObject) {
+    return (Strings.prototype['Upper?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(StringMethods.prototype['Upper?'] as any).$params = '';
+(Strings.prototype['Upper?'] as any).$params = '';
 //GENERATED end

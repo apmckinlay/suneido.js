@@ -1,8 +1,8 @@
-import { StringMethods } from "./stringmethods";
+import { Strings } from "./strings";
 import * as util from "../utility";
 import * as assert from "../assert";
 
-const sm = StringMethods.prototype;
+const sm = Strings.prototype;
 
 let str1: string;
 let str2: string;

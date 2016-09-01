@@ -15,12 +15,12 @@ import { is } from "./is";
 import { suglobals } from "./globals";
 import { mandatory, maxargs } from "./args";
 import * as util from "./utility";
-import { StringMethods } from "./builtin/stringmethods";
-const sm: any = StringMethods.prototype;
-import { NumberMethods } from "./builtin/numbermethods";
-const nm: any = NumberMethods.prototype;
-import { FunctionMethods } from "./builtin/functionmethods";
-const fm: any = FunctionMethods.prototype;
+import { Strings } from "./builtin/strings";
+const sm: any = Strings.prototype;
+import { Numbers } from "./builtin/numbers";
+const nm: any = Numbers.prototype;
+import { Functions } from "./builtin/functions";
+const fm: any = Functions.prototype;
 
 type Num = number | Dnum;
 
