@@ -59,4 +59,4 @@ In the browser go to one of:
 * localhost://libview
 * localhost://play.html
 
-If you make changes to the stdlib code you will need to refresh the browser page.
+If you make changes to the stdlib code you may need to refresh the browser page.

@@ -8,6 +8,9 @@
  * See builtins_test.ts for examples
  */
 
+//TODO -r to just remove generated
+//TODO multiple files
+
 import * as fs from "fs";
 import * as b from "./builtins2";
 
