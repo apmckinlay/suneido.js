@@ -129,11 +129,7 @@ export function sub(x: any, y: any): Num {
         return Dnum.sub(toDnum(x), toDnum(y));
 }
 
-export function cat(x: any, y: any): string {
-    return toStr(x) + toStr(y);
-}
-
-function toStr(x: any): string {
+export function toStr(x: any): string {
     if (typeof x === 'string')
         return x;
     else if (x === true)
