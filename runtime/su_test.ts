@@ -109,4 +109,28 @@ assert.equal(su.callAt(f, ob), ['callAt', ob]);
 assert.equal(su.callNamed(f, { a: 3, b: 4 }, 1, 2), ['callNamed', { a: 3, b: 4 }, [1, 2]]);
 assert.throws(() => su.call(123), /can't call/);
 
-//TODO lang port test
+// lang port test
+
+import { runFile } from "./porttests";
+
+runFile("lang.test", { lang_range, lang_sub });
+
+function lang_range(s: string, i: string|number, j: string|number, expected: string): boolean {
+    i = Number(i);
+    j = Number(j);
+    let ob = new SuObject(s.split(''));
+    let expected_ob = new SuObject(expected.split(''));
+    return su.rangeto(s, i, j) === expected &&
+        su.is(su.rangeto(ob, i, j), expected_ob);
+}
+
+function lang_sub(...args: string[]): boolean {
+    let expected = args.pop()!;
+    let s = args[0];
+    let i = Number(args[1]);
+    let n = arguments.length === 3 ? 999 : Number(args[2]);
+    let ob = new SuObject(s.split(''));
+    let expected_ob = new SuObject(expected.split(''));
+    return su.rangelen(s, i, n) === expected &&
+        su.is(su.rangelen(ob, i, n), expected_ob);
+}

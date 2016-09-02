@@ -36,6 +36,6 @@ import { runFile } from "./porttests";
 
 runFile("tr.test", { "tr": trFixture });
 
-function trFixture(s: string, from: string, to: string, expected: string) {
+function trFixture(s: string, from: string, to: string, expected: string): boolean {
     return tr(s, from, to) === expected;
 }
