@@ -1,7 +1,8 @@
-export function update(source: string): string {
+export function update(source: string, generate = false): string {
     let lines = source.split(/\r?\n/);
     removeOld(lines);
-    insertNew(lines);
+    if (generate)
+        insertNew(lines);
     return lines.join('\r\n');
 }
 
