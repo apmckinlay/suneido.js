@@ -43,10 +43,27 @@ function generate(line: string): string[] {
     let [, name, params] =
         line.match(/BUILTIN (\w+(?:.\w+[?!]?)?)\((.*)\)/)!;
     return name.includes('.')
-        ? genMethod(name, params)
+        ? params.includes('@')
+            ? genAtMethod(name, params)
+            : genMethod(name, params)
         : params.includes('@')
             ? genAtFunction(name, params)
             : genFunction(name, params);
+}
+
+function genAtMethod(name: string, params: string) {
+    let [clas, meth] = name.split('.');
+    let f = `(${clas}.prototype['${meth}'] as any)`;
+    return [
+        `${f}.$callAt = ${clas}.prototype['${meth}'];`,
+        `${f}.$call = function (...args: any[]) {`,
+        `    return ${clas}.prototype['${meth}'].call(this, new SuObject(args));`,
+        `};`,
+        `${f}.$callNamed = function (named: any, ...args: any[]) {`,
+        `    return ${clas}.prototype['${meth}'].call(this, new SuObject(args, util.obToMap(named)));`,
+        `};`,
+        `${f}.$params = '${params}';`
+    ];
 }
 
 function genMethod(name: string, params: string) {
