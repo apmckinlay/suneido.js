@@ -109,16 +109,78 @@ export class SuObject extends SuValue {
     }
 
     get(key: any): any {
-        let value = this.getIfPresent(this, key);
-        if (value !== undefined)
-            return value;
-        //TODO handle SuObject defval
-        return this.defval;
+        return this.getDefault(key, this.defval);
     }
 
-    getIfPresent(ob: SuObject, key: any): any {
+    getDefault(key: any, def: any): any {
+        let value = this.getIfPresent(key);
+        if (value === undefined)
+            return def;
+        return value;
+    }
+
+    //TODO handle def block
+    GetDefault(key: any = mandatory(), def: any = mandatory()): any {
+        maxargs(2, arguments.length);
+        return this.getDefault(key, def);
+    }
+
+    getIfPresent(key: any): any {
         let i = index(key);
-        return (0 <= i && i < ob.vec.length) ? ob.vec[i] : this.mapget(key);
+        return (0 <= i && i < this.vec.length) ? this.vec[i] : this.mapget(key);
+    }
+
+    Find(value: any = mandatory()): any {
+        maxargs(1, arguments.length);
+        for (let i = 0; i < this.vec.length; i++)
+            if (is(this.vec[i], value))
+                return i;
+        for (let [k, v] of this.map)
+            if (is(v, value))
+                return k;
+        return false;
+    }
+
+    ['Member?'](key: any = mandatory()): boolean {
+        maxargs(1, arguments.length);
+        let i = index(key);
+        return (0 <= i && i < this.vec.length) || this.map.has(key);
+    }
+
+    //NOTE: not lazy
+    Members(list = false, named = false): SuObject {
+        maxargs(2, arguments.length);
+        if (list === false && named === false)
+            list = named = true;
+        let ms: any[] = [];
+        if (list === true)
+            ms.push(...this.vec.keys());
+        if (named === true)
+            ms.push(...this.map.keys());
+        return new SuObject(ms);
+    }
+
+    Delete(args: SuObject): SuObject {
+        this.checkReadonly(this);
+        if (args.getDefault('all', false) === true)
+            this.clear();
+        else
+            for (let x of args.vec)
+                this.erase(x);
+        return this;
+    }
+
+    clear(): void {
+        this.vec = [];
+        this.map = new Map();
+    }
+
+    erase(key: any): void {
+        let i = index(key);
+        if (0 <= i && i < this.vec.length)
+            this.vec.splice(i, 1);
+        else
+            this.map.delete(key);
     }
 
     Set_readonly(): SuObject {
@@ -138,6 +200,13 @@ export class SuObject extends SuValue {
 
     type(): string {
         return "Object";
+    }
+
+    Copy(): SuObject {
+        maxargs(0, arguments.length);
+        let copy = new SuObject(this.vec.slice(), new Map(this.map));
+        copy.defval = this.defval;
+        return copy;
     }
 
     Slice(i: number = mandatory(), n: number = this.vecsize()): SuObject {
