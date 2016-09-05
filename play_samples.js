@@ -32,5 +32,11 @@ f.Params()`,
 
 'object.Size':
 `x = #(1, 2, a: 3)
-'Size() ' $ x.Size() $ ' (list:) ' $ x.Size(list:) $ ' (named:) ' $ x.Size(named:)`,
+'Size ' $ x.Size() $ ' list: ' $ x.Size(list:) $ ' named: ' $ x.Size(named:)`,
+
+'block':
+`b = {|y| x + y }
+x = 100
+b(1)`
+
 }

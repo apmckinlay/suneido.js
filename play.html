@@ -79,7 +79,7 @@
                     if (s.startsWith('(function () {') && s.endsWith('})().call()')) {
                         let [, cons] = s.match(/\n    (let \$const = \[[\s\S]*\n    \];\n)/) || ['', ''];
                         cons = cons.replace(/^    /mg, '');
-                        let [, body] = s.match(/function \$f\(\) \{\r?\n([\s\S]*)\}\r?\n    \$f\.\$call = \$f;/);
+                        let [, body] = s.match(/let \$f = function \(\) \{\r?\n([\s\S]*)\};\r?\n    \$f\.\$call = \$f;/);
                         body = body.replace(/^        /mg, '');
                         s = cons + body;
                     }
