@@ -5,32 +5,6 @@ import * as assert from "./assert";
 
 let n = Dnum.make;
 
-function is(x: any, y: any): void {
-    assert.that(su.is(x, y), x + " is " + y + " should be true");
-    assert.that(su.is(y, x), y + " is " + x + " should be true");
-}
-is(true, true);
-is('hello', 'hello');
-is(123, 123);
-is(123, n(123));
-is(n(15, -1), 1.5);
-let x = su.mkObject();
-isnt(x, 123);
-let y = su.mkObject();
-is(x, y);
-x = su.mkObject(123);
-isnt(x, y);
-y = su.mkObject(123);
-is(x, y);
-
-function isnt(x: any, y: any): void {
-    assert.that(su.isnt(x, y), x + " isnt " + y + " should be true");
-    assert.that(su.isnt(y, x), y + " isnt " + x + " should be true");
-}
-isnt(true, false);
-isnt(123, 'hello');
-isnt(n(1), true);
-
 function add(x: any, y: any, expected: any): void {
     let sum = su.add(x, y);
     assert.that(su.is(sum, expected), "add " + x + ", " + y +
@@ -77,16 +51,6 @@ eq(su.rangelen(list(0, 1, 2, 3, 4), 2, 9), list(2, 3, 4));
 eq(su.rangelen(list(0, 1, 2, 3, 4), -2, 1), list(3));
 eq(su.rangelen(list(0, 1, 2, 3, 4), 3, 0), list());
 eq(su.rangelen(list(0, 1, 2, 3, 4), 3, -3), list());
-
-function disp(x: any, expected: string) {
-    assert.equal(su.display(x), expected);
-}
-disp(true, 'true');
-disp(123, '123');
-disp(n(1234, -2), '12.34');
-disp('hello', '"hello"');
-disp('a\\b', '`a\\b`');
-disp('a"b', "'a\"b'");
 
 let f = {
     $call: function(...args: any[]) { return ['call', args]; },
