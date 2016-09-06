@@ -45,6 +45,7 @@ ob.Set_readonly();
 assert.throws(() => ob.put('b', true),
     /can't modify readonly objects/);
 
+// equals
 ob = new SuObject();
 assert.that(ob.equals(ob));
 assert.that(!ob.equals(123));
@@ -64,6 +65,23 @@ ob2.put('a', 'alpha');
 assert.that(ob.equals(ob2));
 assert.that(ob2.equals(ob));
 
+// cmp
+function cmp(x: SuObject, y: SuObject, expected: number): void {
+    assert.equal(x.compareTo(y), expected);
+    assert.equal(y.compareTo(x), -expected);
+}
+ob = new SuObject();
+cmp(ob, ob, 0);
+ob2 = new SuObject();
+cmp(ob, ob2, 0);
+ob.Add(123);
+cmp(ob, ob2, +1);
+ob2.Add(Dnum.fromNumber(123));
+cmp(ob, ob2, 0);
+ob.Add(456);
+cmp(ob, ob2, +1);
+
+// toString
 ob = new SuObject();
 assert.equal(ob.toString(), '#()');
 ob.Add(12);

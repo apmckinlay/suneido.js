@@ -9,12 +9,12 @@
 import { Dnum } from "./dnum";
 import { SuObject } from "./suobject";
 import { SuDate } from "./sudate";
-import { SuValue } from "./suvalue";
+import { type } from "./type";
 import { display } from "./display";
 import { is } from "./is";
+import { cmp } from "./cmp";
 import { suglobals } from "./globals";
 import { mandatory, maxargs } from "./args";
-import * as util from "./utility";
 import { Strings } from "./builtin/strings";
 const sm: any = Strings.prototype;
 import { Numbers } from "./builtin/numbers";
@@ -182,23 +182,23 @@ export function bitxor(x: any, y: any): number {
 }
 
 export function isnt(x: any, y: any): boolean {
-    return !is(x, y); //TODO
+    return !is(x, y);
 }
 
 export function lt(x: any, y: any): boolean {
-    return x < y; //TODO
+    return cmp(x, y) < 0;
 }
 
 export function lte(x: any, y: any): boolean {
-    return x <= y; //TODO
+    return cmp(x, y) <= 0;
 }
 
 export function gt(x: any, y: any): boolean {
-    return x > y; //TODO
+    return cmp(x, y) > 0;
 }
 
 export function gte(x: any, y: any): boolean {
-    return x >= y; //TODO
+    return cmp(x, y) >= 0;
 }
 
 export function match(x: any, y: any): boolean {
@@ -221,14 +221,6 @@ export function catchMatch(e: string, pat: string): boolean { // TODO
     else
         return -1 !== e.lastIndexOf(pat, 0);
 
-}
-
-export function type(x: any): string {
-    if (x === undefined)
-        throw new Error("uninitialized");
-    return x === null ? "null"
-        : x instanceof SuValue ? x.type()
-        : util.capitalize(typeof x);
 }
 
 export function mknum(s: string) {

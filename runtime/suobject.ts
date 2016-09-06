@@ -9,6 +9,8 @@ import { SuValue } from "./suvalue";
 import { display } from "./display";
 import { is } from "./is";
 import { mandatory, maxargs } from "./args";
+import { cmp } from "./cmp";
+import * as util from "./utility";
 
 import * as assert from "./assert";
 
@@ -227,6 +229,13 @@ export class SuObject extends SuValue {
         return this.toString();
     }
 
+    // ['Sort!'](lt?: (x: any, y: any) => boolean): SuObject {
+    //     this.vec.sort((x, y) => {
+
+    //     });
+    //     return this;
+    // }
+
     equals(that: any): boolean {
         if (!(that instanceof SuObject))
             return false;
@@ -258,6 +267,31 @@ export class SuObject extends SuValue {
         if (!(y instanceof SuObject))
             return false;
         return SuObject.equals2(x, y, stack);
+    }
+
+    /** Only compares vector, ignores map */
+    compareTo(that: any): number {
+        if (this === that)
+            return 0;
+        return this.compare2(that, new PairStack());
+    }
+    private compare2(that: SuObject, stack: PairStack): number {
+        if (stack.contains(this, that))
+            return 0; // comparison is already in progress
+        stack.push(this, that);
+        let ord: number;
+        for (let i = 0; i < this.vec.length && i < that.vec.length; ++i)
+        if (0 !== (ord = SuObject.compare3(this.vec[i], that.vec[i], stack)))
+            return ord;
+        return util.cmp(this.vec.length, that.vec.length);
+    }
+    private static compare3(x: any, y: any, stack: PairStack): number {
+        if (x === y)
+            return 0;
+        else if (x instanceof SuObject && y instanceof SuObject)
+            return x.compare2(y, stack);
+        else
+            return cmp(x, y);
     }
 
 } // end of SuObject class

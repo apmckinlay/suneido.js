@@ -1,11 +1,11 @@
-import * as su from "../su";
+import { type } from "../type";
 import { mandatory, maxargs } from "../args";
 import * as util from "../utility";
 import { SuObject } from "../suobject";
 
 export function su_type(x: any = mandatory()): string {
     maxargs(1, arguments.length);
-    return su.type(x);
+    return type(x);
 }
 
 //BUILTIN Type(x)

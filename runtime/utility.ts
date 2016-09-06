@@ -139,3 +139,13 @@ export function mapToOb(map: Map<any, any>): Object {
     return ob;
 }
 
+export type Cmp = -1 | 0 | 1;
+
+export function cmp(x: any, y: any): Cmp {
+        if (x < y)
+            return -1;
+        else if (x > y)
+            return 1;
+        else
+            return 0;
+}

@@ -19,13 +19,15 @@ export class Dnum extends SuValue {
     private coef: number;
     private exp: number;
 
-    /*private*/ constructor(coef: number, exp: number) {
+    private constructor(coef: number, exp: number) {
         super();
         this.coef = coef;
         this.exp = exp;
     }
 
     static fromNumber(n: number): Dnum {
+        if (Number.isSafeInteger(n))
+            return new Dnum(n, 0);
         return Dnum.parse(n.toString())!; // is there a better way?
     }
 
@@ -229,12 +231,12 @@ export class Dnum extends SuValue {
         return false;
     }
 
-    type(): string {
-        return "Number";
-    }
-
-    display(): string {
-        return this.toString();
+    compareTo(that: any): number {
+        if (typeof that === 'number')
+            that = Dnum.fromNumber(that);
+        else if (! (that instanceof Dnum))
+            throw new Error("Dnum.compareTo incompatible type");
+        return Dnum.cmp(this, that);
     }
 
     // cmp compares two dnums, returning 0, -1, or +1
@@ -247,6 +249,14 @@ export class Dnum extends SuValue {
             return 0;
         else
             return Dnum.sub(x, y).sign();
+    }
+
+    type(): string {
+        return "Number";
+    }
+
+    display(): string {
+        return this.toString();
     }
 
     // sub returns the difference of two dnums

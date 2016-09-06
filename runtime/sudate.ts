@@ -49,10 +49,17 @@ export class SuDate extends SuValue {
         return this.date === that.date && this.time === that.time;
     }
 
+    compareTo(that: any): number {
+        if (that instanceof SuDate)
+            return SuDate.cmp(this, that);
+        else
+            throw new Error("SuDate compareTo incompatible type");
+    }
+
     /** compare compares two sudates, returning Zero, Negative or Positive */
-    static compare(sd1: SuDate, sd2: SuDate): number {
-        let res = sd1.date - sd2.date;
-        return res !== 0 ? res : sd1.time - sd2.time;
+    static cmp(sd1: SuDate, sd2: SuDate): number {
+        return util.cmp(sd1.date, sd2.date) ||
+            util.cmp(sd1.time, sd2.time);
     }
 
     /** @return An SuDate for the current local date & time */

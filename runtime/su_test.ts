@@ -1,7 +1,6 @@
 import { Dnum } from "./dnum";
 import { SuObject } from "./suobject";
 import * as su from "./su";
-
 import * as assert from "./assert";
 
 let n = Dnum.make;
@@ -52,14 +51,6 @@ assert.throws(function() { su.get('hello', 'x'); },
 let ob = new SuObject();
 su.put(ob, 'n', 123);
 assert.equal(su.get(ob, 'n'), 123);
-
-assert.equal(su.type(true), 'Boolean');
-assert.equal(su.type('hello'), 'String');
-assert.equal(su.type(123), 'Number');
-assert.equal(su.type(n(123)), 'Number');
-assert.equal(su.type(new SuObject()), 'Object');
-assert.equal(su.type(null), "null");
-assert.throws(() => su.type(undefined), /uninitialized/);
 
 assert.equal(su.rangeto("abcde", 1, 4), "bcd");
 assert.equal(su.rangeto("abcde", 2, 9), "cde");

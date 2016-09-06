@@ -19,6 +19,10 @@ console.log("lexer_test");
 import "./lexer_test";
 console.log("charmatcher_test");
 import "./charmatcher_test";
+console.log("cmp_test");
+import "./cmp_test";
+console.log("type_test");
+import "./type_test";
 
 console.log("finished");
 process.exit();
