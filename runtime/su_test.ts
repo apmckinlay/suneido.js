@@ -1,9 +1,9 @@
-import { Dnum } from "./dnum";
+import { SuNum } from "./sunum";
 import { SuObject } from "./suobject";
 import * as su from "./su";
 import * as assert from "./assert";
 
-let n = Dnum.make;
+let n = SuNum.make;
 
 function add(x: any, y: any, expected: any): void {
     let sum = su.add(x, y);

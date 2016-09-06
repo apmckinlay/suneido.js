@@ -1,12 +1,12 @@
 import { cmp } from "./cmp";
-import { Dnum } from "./dnum";
+import { SuNum } from "./sunum";
 import { SuDate } from "./sudate";
 import { SuObject } from "./suobject";
 import * as assert from "./assert";
 
-let n1 = Dnum.fromNumber(-1e99);
-let n2 = Dnum.parse('.5');
-let n3 = Dnum.fromNumber(1e99);
+let n1 = SuNum.fromNumber(-1e99);
+let n2 = SuNum.parse('.5');
+let n3 = SuNum.fromNumber(1e99);
 
 let d1 = SuDate.literal('17000101');
 let d2 = SuDate.literal('20160906');

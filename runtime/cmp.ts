@@ -1,6 +1,6 @@
 import { type } from "./type";
 import { SuValue } from "./suvalue";
-import { Dnum } from "./dnum";
+import { SuNum } from "./sunum";
 import * as util from "./utility";
 
 /**
@@ -19,9 +19,9 @@ export function cmp(x: any, y: any): number {
     }
 
     if (xType === 'number')
-        x = Dnum.fromNumber(x);
+        x = SuNum.fromNumber(x);
     if (yType === 'number')
-        y = Dnum.fromNumber(y);
+        y = SuNum.fromNumber(y);
 
     xType = type(x);
     yType = type(y);

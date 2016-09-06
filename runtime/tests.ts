@@ -3,8 +3,8 @@
 console.log("calling convention");
 import "./callconvtest"; // has to be first due to module issues
 import "./porttests_test";
-console.log("dnum_test");
-import "./dnum_test";
+console.log("sunum_test");
+import "./sunum_test";
 console.log("su_test");
 import "./su_test";
 console.log("sudate_test");

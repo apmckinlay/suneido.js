@@ -1,10 +1,10 @@
 /**
  * Uses a JavaScript array and Map
  * Map does not handle object keys so these are disallowed for now.
- * Dnum keys are converted to JavaScript numbers, hopefully losslessly.
+ * SuNum keys are converted to JavaScript numbers, hopefully losslessly.
  */
 
-import { Dnum } from "./dnum";
+import { SuNum } from "./sunum";
 import { SuValue } from "./suvalue";
 import { display } from "./display";
 import { is } from "./is";
@@ -297,7 +297,7 @@ export class SuObject extends SuValue {
 } // end of SuObject class
 
 function canonical(key: any): any {
-    if (key instanceof Dnum)
+    if (key instanceof SuNum)
         return key.toNumber();
     if (typeof key === 'object')
         throw "suneido.js objects do not support object keys";
@@ -305,7 +305,7 @@ function canonical(key: any): any {
 }
 
 function index(key: any): number {
-    if (key instanceof Dnum && key.isInt())
+    if (key instanceof SuNum && key.isInt())
         key = key.toInt();
     return Number.isSafeInteger(key) ? key : -1;
 }

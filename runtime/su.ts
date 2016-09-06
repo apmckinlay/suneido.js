@@ -6,7 +6,7 @@
 //TODO dynget, dynset, dynpush, dynpop
 //TODO record builder
 
-import { Dnum } from "./dnum";
+import { SuNum } from "./sunum";
 import { SuObject } from "./suobject";
 import { SuDate } from "./sudate";
 import { type } from "./type";
@@ -22,7 +22,7 @@ const nm: any = Numbers.prototype;
 import { Functions } from "./builtin/functions";
 const fm: any = Functions.prototype;
 
-type Num = number | Dnum;
+type Num = number | SuNum;
 
 export { display, is, mandatory, maxargs };
 
@@ -85,30 +85,30 @@ export function bitnot(x: any): number {
 function toInt(x: any): number {
     if (Number.isSafeInteger(x))
         return x;
-    if (x instanceof Dnum && x.isInt())
+    if (x instanceof SuNum && x.isInt())
         return x.toInt();
     throw "can't convert " + type(x) + " to integer";
 }
 
 function toNum(x: any): Num {
-    if (typeof x === 'number' || x instanceof Dnum)
+    if (typeof x === 'number' || x instanceof SuNum)
         return x;
     if (x === false || x === "")
         return 0;
     if (x === true)
         return 1;
     if (typeof x === 'string') {
-        let n: Dnum | null;
+        let n: SuNum | null;
         if (!/[.eE]/.test(x) && x.length < 14)
             return parseInt(x);
-        else if (n = Dnum.parse(x))
+        else if (n = SuNum.parse(x))
             return n;
     }
     throw "can't convert " + type(x) + " to number";
 }
 
-function toDnum(x: number | Dnum): Dnum {
-    return (typeof x === 'number') ? Dnum.make(x) : x;
+function toSuNum(x: number | SuNum): SuNum {
+    return (typeof x === 'number') ? SuNum.make(x) : x;
 }
 
 export function add(x: any, y: any): Num {
@@ -117,7 +117,7 @@ export function add(x: any, y: any): Num {
     if (typeof x === 'number' && typeof y === 'number')
         return x + y;
     else
-        return Dnum.add(toDnum(x), toDnum(y));
+        return SuNum.add(toSuNum(x), toSuNum(y));
 }
 
 export function sub(x: any, y: any): Num {
@@ -126,7 +126,7 @@ export function sub(x: any, y: any): Num {
     if (typeof x === 'number' && typeof y === 'number')
         return x - y;
     else
-        return Dnum.sub(toDnum(x), toDnum(y));
+        return SuNum.sub(toSuNum(x), toSuNum(y));
 }
 
 export function toStr(x: any): string {
@@ -136,7 +136,7 @@ export function toStr(x: any): string {
         return "true";
     else if (x === false)
         return "false";
-    else if (typeof x === 'number' || x instanceof Dnum)
+    else if (typeof x === 'number' || x instanceof SuNum)
         return x.toString();
     else
         throw new Error("can't convert " + type(x) + " to String");
@@ -148,13 +148,13 @@ export function mul(x: any, y: any): Num {
     if (typeof x === 'number' && typeof y === 'number')
         return x * y;
     else
-        return Dnum.mul(toDnum(x), toDnum(y));
+        return SuNum.mul(toSuNum(x), toSuNum(y));
 }
 
-export function div(x: any, y: any): Dnum {
+export function div(x: any, y: any): SuNum {
     x = toNum(x);
     y = toNum(y);
-    return Dnum.div(toDnum(x), toDnum(y));
+    return SuNum.div(toSuNum(x), toSuNum(y));
 }
 
 export function mod(x: any, y: any): number {
@@ -224,7 +224,7 @@ export function catchMatch(e: string, pat: string): boolean { // TODO
 }
 
 export function mknum(s: string) {
-    return Dnum.parse(s) ||
+    return SuNum.parse(s) ||
         err("can't convert " + display(s) + " to number");
 }
 
@@ -328,7 +328,7 @@ function getMethod(ob: any, method: string): any {
     let t = typeof ob;
     if (t === 'string')
         return sm[method];
-    if (t === 'number' || ob instanceof Dnum)
+    if (t === 'number' || ob instanceof SuNum)
         return nm[method];
     let f = ob[method];
     if (typeof f === 'function')

@@ -1,12 +1,12 @@
-import { Dnum } from "../dnum";
+import { SuNum } from "../sunum";
 import { SuObject } from "../suobject";
 import * as util from "../utility";
 import { maxargs } from "../args";
 
-type Num = number | Dnum;
+type Num = number | SuNum;
 
 function int(n: Num): number {
-    return n instanceof Dnum ? n.toInt() : n;
+    return n instanceof SuNum ? n.toInt() : n;
 }
 
 export class Numbers {

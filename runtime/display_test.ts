@@ -1,5 +1,5 @@
 import { display } from "./display";
-import { Dnum } from "./dnum";
+import { SuNum } from "./sunum";
 import * as assert from "./assert";
 
 function disp(x: any, expected: string) {
@@ -7,7 +7,7 @@ function disp(x: any, expected: string) {
 }
 disp(true, 'true');
 disp(123, '123');
-disp(Dnum.make(1234, -2), '12.34');
+disp(SuNum.make(1234, -2), '12.34');
 disp('hello', '"hello"');
 disp('a\\b', '`a\\b`');
 disp('a"b', "'a\"b'");

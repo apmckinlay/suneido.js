@@ -1,8 +1,8 @@
 import { SuObject } from "./suobject";
-import { Dnum } from "./dnum";
+import { SuNum } from "./sunum";
 import * as assert from "./assert";
 
-const dn = Dnum.fromNumber;
+const dn = SuNum.fromNumber;
 
 let ob = new SuObject();
 assert.equal(ob.size(), 0);
@@ -14,7 +14,7 @@ assert.equal(ob.length, 2);
 assert.equal(ob.vecsize(), 1);
 assert.equal(ob.mapsize(), 1);
 assert.equal(ob.get(0), 123);
-assert.equal(ob.get(Dnum.ZERO), 123);
+assert.equal(ob.get(SuNum.ZERO), 123);
 assert.equal(ob.get(1), undefined);
 assert.equal(ob.get('a'), 'hi');
 assert.equal(ob.get('b'), undefined);
@@ -76,7 +76,7 @@ ob2 = new SuObject();
 cmp(ob, ob2, 0);
 ob.Add(123);
 cmp(ob, ob2, +1);
-ob2.Add(Dnum.fromNumber(123));
+ob2.Add(SuNum.fromNumber(123));
 cmp(ob, ob2, 0);
 ob.Add(456);
 cmp(ob, ob2, +1);
