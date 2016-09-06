@@ -6,5 +6,5 @@ bundle: runtime/*.js runtime/builtin/*.js
 builtins: runtime/builtin/*.ts
 	node devtools/builtins.js $^
 
-test:
-	node runtime/tests.js
+test: runtime/*_test.js runtime/builtin/*_test.js
+	node runtime/tests.js $^
