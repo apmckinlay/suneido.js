@@ -173,3 +173,16 @@ export function su_objectq(x: any = mandatory()): boolean {
 };
 (SuObject.prototype['Slice'] as any).$params = 'i, n=99999';
 //GENERATED end
+
+//BUILTIN SuObject.Sort!(lt)
+//GENERATED start
+(SuObject.prototype['Sort!'] as any).$call = SuObject.prototype['Sort!'];
+(SuObject.prototype['Sort!'] as any).$callNamed = function ($named: any, lt: any) {
+    ({ lt = lt } = $named);
+    return SuObject.prototype['Sort!'].call(this, lt);
+};
+(SuObject.prototype['Sort!'] as any).$callAt = function (args: SuObject) {
+    return (SuObject.prototype['Sort!'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(SuObject.prototype['Sort!'] as any).$params = 'lt';
+//GENERATED end

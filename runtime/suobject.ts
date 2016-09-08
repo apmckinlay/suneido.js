@@ -229,12 +229,11 @@ export class SuObject extends SuValue {
         return this.toString();
     }
 
-    // ['Sort!'](lt?: (x: any, y: any) => boolean): SuObject {
-    //     this.vec.sort((x, y) => {
-
-    //     });
-    //     return this;
-    // }
+    ['Sort!'](lt?: Lt): SuObject {
+        let c = lt ? lt_to_cmp(lt) : cmp;
+        this.vec.sort(c);
+        return this;
+    }
 
     equals(that: any): boolean {
         if (!(that instanceof SuObject))
@@ -281,8 +280,8 @@ export class SuObject extends SuValue {
         stack.push(this, that);
         let ord: number;
         for (let i = 0; i < this.vec.length && i < that.vec.length; ++i)
-        if (0 !== (ord = SuObject.compare3(this.vec[i], that.vec[i], stack)))
-            return ord;
+            if (0 !== (ord = SuObject.compare3(this.vec[i], that.vec[i], stack)))
+                return ord;
         return util.cmp(this.vec.length, that.vec.length);
     }
     private static compare3(x: any, y: any, stack: PairStack): number {
@@ -295,6 +294,20 @@ export class SuObject extends SuValue {
     }
 
 } // end of SuObject class
+
+type Lt = (x: any, y: any) => boolean;
+type Cmp = (x: any, y: any) => -1|0|1;
+
+function lt_to_cmp(lt: Lt): Cmp {
+    return (x: any, y: any) => {
+        if (lt(x, y))
+            return -1;
+        else if (lt(y, x))
+            return 1;
+        else
+            return 0;
+    };
+}
 
 function canonical(key: any): any {
     if (key instanceof SuNum)

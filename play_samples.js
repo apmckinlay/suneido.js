@@ -37,6 +37,10 @@ f.Params()`,
 'block':
 `b = {|y| x + y }
 x = 100
-b(1)`
+b(1)`,
+
+'object.Sort':
+`x = #(8, 4, 6, 3, 9, 6, 7)
+x.Sort!({|x,y| x > y })`,
 
 }
