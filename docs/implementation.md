@@ -3,17 +3,19 @@
 Implementation
 ==============
 
+SuValue is the base class for SuNum, SuDate, SuObject, and RootClass
+
 String
 -------
 Use plain JavaScript strings with no wrapper.
 
 Number
 ------
-Use both plain JavaScript numbers and our own Dnum's.
+Use plain JavaScript numbers when they are safe integers and our own SuNum (decimal floating point) otherwise.
 
-A Dnum is internally represented as a pair of JavaScript safe integer numbers, a coefficient and an exponent. This gives 53 bit range which is almost 16 decimal digits. See dnum.ts
+An SuNum is internally represented as a pair of JavaScript safe integer numbers, a coefficient and an exponent. This gives 53 bit range which is almost 16 decimal digits. See dnum.ts
 
-Note: This means 64 bit integers are not supported.
+Note: This means 64 bit integers are __not__ supported.
 
 Date
 ----
@@ -37,7 +39,7 @@ Functions are JavaScript functions with properties for the three call adapters (
 
 Calling Conventions
 -------------------
-Three entry points to functions to minimize preambles - un-named arguments only, with named arguments, and @args. Named arguments are passed as a JavaScript object as the first argument. @args are passed as an SuObject.
+Three entry points to functions to minimize preambles - un-named arguments only ($call, $invoke), with named arguments ($callNamed, $invokeNamed), and @args ($callAt, $invokeAt). Named arguments are passed as a JavaScript object as the first argument. @args are passed as an SuObject.
 
 Mandatory arguments have a default value of mandatory() e.g. function (x = mandatory()).
 
@@ -45,10 +47,22 @@ To detect too many arguments (which JavaScript ignores) use maxargs e.g. maxargs
 
 For built-in functions and methods the adapters are generated based on special comments in the code.
 
+Blocks
+------
+Use JavaScript ES6/2015 arrow functions since they preserve "this".
+
+Use exceptions for return, break, continue as in cSuneido and jSuneido.
+
 Classes
 -------
-Use JavaScript "this" (???)
+Classes are translated to plain JavaScript objects. (see JsTranslateClass)
 
-Closures
---------
-Use JavaScript closures (???)
+Inheritance is via JavaScript prototype.
+
+Use normal JavaScript "this".
+
+Members (including methods) are regular properties.
+
+Classes are frozen to ensure they are not modified.
+
+Use a RootClass as the ultimate prototype. (see rootclass.ts)

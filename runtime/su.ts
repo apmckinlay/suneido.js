@@ -10,7 +10,7 @@ import { SuValue } from "./suvalue";
 import { SuNum } from "./sunum";
 import { SuObject } from "./suobject";
 import { SuDate } from "./sudate";
-import { type, CLASSY } from "./type";
+import { type } from "./type";
 import { display } from "./display";
 import { is } from "./is";
 import { cmp } from "./cmp";
@@ -26,7 +26,7 @@ import { RootClass } from "./rootclass";
 
 type Num = number | SuNum;
 
-export { display, is, mandatory, maxargs, CLASSY };
+export { display, is, mandatory, maxargs };
 
 export const empty_object = new SuObject().Set_readonly();
 
@@ -335,12 +335,13 @@ function getMethod(ob: any, method: string): any {
         return sm[method];
     if (t === 'number' || ob instanceof SuNum)
         return nm[method];
-    //TODO for instances, start lookup in class
-    let f = ob[method];
-    if (typeof f === 'function')
-        return f;
     if (t === 'function')
         return fm[method];
+    // for instances, start lookup in class
+    let start = Object.isFrozen(ob) ? ob : Object.getPrototypeOf(ob);
+    let f = start[method];
+    if (typeof f === 'function')
+        return f;
     methodNotFound(ob, method);
 }
 

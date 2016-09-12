@@ -7,6 +7,7 @@
 import { SuValue } from "./suvalue";
 import { SuObject } from "./suobject";
 import { maxargs } from "./args";
+import { is } from "./is";
 import * as util from "./utility";
 
 export class RootClass extends SuValue {
@@ -21,30 +22,45 @@ export class RootClass extends SuValue {
     }
 
     put(key: any, val: any): void {
-        this[key] = val;
+        try {
+            this[key] = val;
+        } catch (e) {
+            if (!e.toString().includes("Cannot assign to read only property"))
+                throw e;
+            // classes are frozen which makes their properties read-only
+            // which means we can't do simple assignment
+            Object.defineProperty(this, key,
+                { enumerable: true, configurable: true, writable: true, value: val });
+        }
     }
 
     type(): string {
-        return "Object";
+        return this.isClass() ? "Class" : "Object";
     }
 
     display(): string { //TODO
-        return Object.isFrozen(this) ? "class" : "instance";
+        return this.isClass() ? "class" : "instance";
     }
 
     equals(that: any): boolean {
-        //TODO instance equality
-        return this === that;
+        if (this.isClass())
+            return this === that;
+        else {
+            return instanceEquals(this, that);
+        }
     }
 
     compareTo(_that: any): number {
         throw new Error("class/instance compare not implemented");
     }
 
-    //
+    isClass(): boolean {
+        return Object.isFrozen(this);
+    }
+
+    // external methods
 
     New(): any {
-        return Object.create(this);
     }
 
     Size(): number {
@@ -52,7 +68,7 @@ export class RootClass extends SuValue {
         return Object.keys(this).length;
     }
 
-    Members(): SuObject {
+    Members(): SuObject { //TODO list:, named:, all:
         maxargs(0, arguments.length);
         return new SuObject(Object.keys(this));
     }
@@ -85,6 +101,18 @@ export class RootClass extends SuValue {
             x[k] = this[k];
         return x;
     }
+} // end of RootClass
+
+function instanceEquals(x: any, y: any): boolean {
+    if (Object.getPrototypeOf(x) !== Object.getPrototypeOf(y))
+        return false;
+    let xkeys = Object.keys(x);
+    if (xkeys.length !== y.Size())
+        return false;
+    for (let k of xkeys)
+        if (!y.hasOwnProperty(k) || !is(x[k], y[k]))
+            return false;
+    return true;
 }
 
 //BUILTIN RootClass.New()
