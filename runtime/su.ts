@@ -6,10 +6,11 @@
 //TODO dynget, dynset, dynpush, dynpop
 //TODO record builder
 
+import { SuValue } from "./suvalue";
 import { SuNum } from "./sunum";
 import { SuObject } from "./suobject";
 import { SuDate } from "./sudate";
-import { type } from "./type";
+import { type, CLASSY } from "./type";
 import { display } from "./display";
 import { is } from "./is";
 import { cmp } from "./cmp";
@@ -21,24 +22,28 @@ import { Numbers } from "./builtin/numbers";
 const nm: any = Numbers.prototype;
 import { Functions } from "./builtin/functions";
 const fm: any = Functions.prototype;
+import { RootClass } from "./rootclass";
 
 type Num = number | SuNum;
 
-export { display, is, mandatory, maxargs };
+export { display, is, mandatory, maxargs, CLASSY };
 
 export const empty_object = new SuObject().Set_readonly();
 
-export function put(ob: any, key: any, val: any): void {
-    if (ob instanceof SuObject)
+export const root_class = RootClass.prototype;
+
+export function put(ob: any, key: any, val: any): any {
+    if (ob instanceof SuValue)
         ob.put(key, val);
     else
         throw type(ob) + " does not support put (" + key + ")";
+    return val;
 }
 
 export function get(x: any, key: any): any {
     if (typeof x === 'string')
         return x[toInt(key)];
-    if (x instanceof SuObject)
+    if (x instanceof SuValue)
         return x.get(key);
     throw type(x) + " does not support get (" + key + ")";
 }
@@ -330,13 +335,13 @@ function getMethod(ob: any, method: string): any {
         return sm[method];
     if (t === 'number' || ob instanceof SuNum)
         return nm[method];
+    //TODO for instances, start lookup in class
     let f = ob[method];
     if (typeof f === 'function')
         return f;
     if (t === 'function')
         return fm[method];
-    throw new Error("method not found: " + type(ob) + "." + method);
-    // TODO
+    methodNotFound(ob, method);
 }
 
 export function global(name: string) {
@@ -344,4 +349,22 @@ export function global(name: string) {
     if (!x)
         throw new Error("can't find " + name);
     return x;
+}
+
+export function instantiate(clas: any, ...args: any[]): any {
+    let instance = Object.create(clas);
+    invoke(instance, 'New', ...args); // but spread is slow
+    return instance;
+}
+
+export function instantiateAt(clas: any, args: SuObject): any {
+    let instance = Object.create(clas);
+    invokeAt(instance, 'New', args);
+    return instance;
+}
+
+export function instantiateNamed(clas: any, ...args: any[]): any {
+    let instance = Object.create(clas);
+    invokeNamed(instance, 'New', ...args); // but spread is slow
+    return instance;
 }

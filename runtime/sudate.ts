@@ -73,7 +73,7 @@ export class SuDate extends SuValue {
      * @param {string} order string, order pattern helps to parse date string
      * @returns {Object} a sudate, or sufalse if not a valid date
      */
-    static parse(s: string, order: string): SuDate | null {
+    static parse(s: string, order: string = "yMd"): SuDate | null {
         enum TokenType { YEAR, MONTH, DAY, HOUR, MINUTE, SECOND, MILLISECOND }
         const minval = [0, 1, 1, 0, 0, 0, 0];
         const maxval = [3000, 12, 31, 23, 59, 59, 999];

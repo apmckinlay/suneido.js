@@ -5,4 +5,10 @@ export abstract class SuValue {
     display(): string {
         return this.toString();
     }
+    get(_key: any): any {
+        throw new Error(this.type + " does not support get");
+    }
+    put(_key: any, _val: any): void {
+        throw new Error(this.type + " does not support put");
+    }
 }

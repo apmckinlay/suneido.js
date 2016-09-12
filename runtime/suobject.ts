@@ -73,8 +73,8 @@ export class SuObject extends SuValue {
             throw new Error("SuObject.Size bad args");
     }
 
-    private checkReadonly(ob: SuObject): void {
-        if (ob.readonly)
+    private checkReadonly(): void {
+        if (this.readonly)
             throw "can't modify readonly objects";
     }
 
@@ -92,14 +92,14 @@ export class SuObject extends SuValue {
 
     Add(x: any = mandatory()): SuObject {
         maxargs(1, arguments.length);
-        this.checkReadonly(this);
+        this.checkReadonly();
         this.vec.push(x);
         this.migrate();
         return this;
     }
 
     put(key: any, value: any): SuObject {
-        this.checkReadonly(this);
+        this.checkReadonly();
         let i = index(key);
         if (0 <= i && i < this.vec.length)
             this.vec[i] = value;
@@ -163,7 +163,7 @@ export class SuObject extends SuValue {
     }
 
     Delete(args: SuObject): SuObject {
-        this.checkReadonly(this);
+        this.checkReadonly();
         if (args.getDefault('all', false) === true)
             this.clear();
         else
@@ -230,6 +230,7 @@ export class SuObject extends SuValue {
     }
 
     ['Sort!'](lt?: Lt): SuObject {
+        this.checkReadonly();
         let c = lt ? lt_to_cmp(lt) : cmp;
         this.vec.sort(c);
         return this;

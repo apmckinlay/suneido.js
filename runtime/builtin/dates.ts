@@ -20,23 +20,36 @@ export function su_dateq(x: any = mandatory()): boolean {
 (su_dateq as any).$params = 'x';
 //GENERATED end
 
-//TODO constructor args
-export function su_date() {
-    return SuDate.now();
+export function su_date(s?: string, order?: string,
+    year?: number, month?: number, day?: number,
+    hour?: number, minute?: number, second?: number, millisecond?: number) {
+    if (year || month || day || hour || minute || second || millisecond) {
+        if (s)
+            throw new Error("bad arguments to Date");
+        let t = SuDate.now();
+        ({ year = t.Year(), month = t.Month(), day = t.Day(), hour = t.Hour(),
+            minute = t.Minute(), second = t.Second(), millisecond = t.Millisecond()
+            } = { year, month, day, hour, minute, second, millisecond });
+        return SuDate.make(year, month, day, hour, minute, second, millisecond);
+    } else if (s)
+        return SuDate.parse(s, order);
+    else
+        return SuDate.now();
 }
 (su_date as any).Begin = su_begin;
 (su_date as any).End = su_end;
 
-//BUILTIN Date()
+//BUILTIN Date(str="", order="yMd", year=false, month=false, day=false, hour=false, minute=false, second=false, millisecond=false)
 //GENERATED start
 (su_date as any).$call = su_date;
-(su_date as any).$callNamed = function (_named: any) {
-    return su_date();
+(su_date as any).$callNamed = function ($named: any, str: any, order: any, year: any, month: any, day: any, hour: any, minute: any, second: any, millisecond: any) {
+    ({ str = str, order = order, year = year, month = month, day = day, hour = hour, minute = minute, second = second, millisecond = millisecond } = $named);
+    return su_date(str, order, year, month, day, hour, minute, second, millisecond);
 };
 (su_date as any).$callAt = function (args: SuObject) {
     return (su_date as any).$callNamed(util.mapToOb(args.map), ...args.vec);
 };
-(su_date as any).$params = '';
+(su_date as any).$params = 'str="", order="yMd", year=false, month=false, day=false, hour=false, minute=false, second=false, millisecond=false';
 //GENERATED end
 
 const BEGIN = SuDate.literal('17000101')!;
