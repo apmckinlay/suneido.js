@@ -8,3 +8,5 @@ export function type(x: any): string {
         : x instanceof SuValue ? x.type()
         : capitalize(typeof x);
 }
+
+//TODO Type(block) => "Block"

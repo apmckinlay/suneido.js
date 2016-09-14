@@ -121,10 +121,14 @@ export class SuObject extends SuValue {
         return value;
     }
 
-    //TODO handle def block
     GetDefault(key: any = mandatory(), def: any = mandatory()): any {
         maxargs(2, arguments.length);
-        return this.getDefault(key, def);
+        let val = this.getDefault(key, undefined);
+        if (val !== undefined)
+            return val;
+        if (typeof def === "function")
+            return def.$call();
+        return def;
     }
 
     getIfPresent(key: any): any {

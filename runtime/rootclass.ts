@@ -22,6 +22,8 @@ export class RootClass extends SuValue {
     }
 
     put(key: any, val: any): void {
+        if (this.isClass())
+            throw new Error("Class does not support put");
         try {
             this[key] = val;
         } catch (e) {

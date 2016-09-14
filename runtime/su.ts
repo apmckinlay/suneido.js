@@ -5,6 +5,7 @@
 
 //TODO dynget, dynset, dynpush, dynpop
 //TODO record builder
+//TODO iter, next, blockreturn
 
 import { SuValue } from "./suvalue";
 import { SuNum } from "./sunum";
@@ -23,6 +24,7 @@ const nm: any = Numbers.prototype;
 import { Functions } from "./builtin/functions";
 const fm: any = Functions.prototype;
 import { RootClass } from "./rootclass";
+import { libload } from "./libload";
 
 type Num = number | SuNum;
 
@@ -141,7 +143,7 @@ export function toStr(x: any): string {
         return "true";
     else if (x === false)
         return "false";
-    else if (typeof x === 'number' || x instanceof SuNum)
+    else if (typeof x === 'number' || x instanceof SuNum || x instanceof Error)
         return x.toString();
     else
         throw new Error("can't convert " + type(x) + " to String");
@@ -347,8 +349,10 @@ function getMethod(ob: any, method: string): any {
 
 export function global(name: string) {
     let x = suglobals[name];
-    if (!x)
-        throw new Error("can't find " + name);
+    if (x !== undefined)
+        return x;
+    x = libload(name);
+    suglobals[name] = x;
     return x;
 }
 

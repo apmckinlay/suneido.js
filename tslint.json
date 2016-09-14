@@ -9,7 +9,7 @@
             "spaces"
         ],
         "no-duplicate-variable": true,
-        "no-eval": true,
+        "no-eval": false, // need for libload.ts
         "no-internal-module": true,
         "no-trailing-whitespace": true,
         "no-unsafe-finally": true,

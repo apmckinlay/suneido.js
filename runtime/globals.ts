@@ -8,6 +8,10 @@ export const suglobals: any = {};
 import { SuObject } from "./suobject";
 suglobals.Suneido = new SuObject();
 
+// temp so BuiltDate works
+import { SuDate } from "./sudate";
+suglobals.Suneido.put('Built', SuDate.literal('20160913'));
+
 import { su_display } from "./builtin/display";
 suglobals.Display = su_display;
 
@@ -25,9 +29,16 @@ import { su_date, su_dateq } from "./builtin/dates";
 suglobals.Date = su_date;
 suglobals['Date?'] = su_dateq;
 
+import { su_assert } from "./builtin/assert";
+suglobals.Assert = su_assert;
+
+// temporary till we can compile the real Test
+import { RootClass } from "./rootclass";
+suglobals.Test = RootClass.prototype;
+
 /** FOR TESTING PURPOSES ONLY! */
 suglobals.Def = su_def;
-export function su_def(global: string, value: any): any {
+function su_def(global: string, value: any): any {
     Object.freeze(value);
     suglobals[global] = value;
     return value;
