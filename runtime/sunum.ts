@@ -192,22 +192,27 @@ export class SuNum extends SuValue {
     }
 
     /**
-     * @returns {number} the integer value of a SuNum,
-     * zero if the absolute value < 1, infinite if too large
+     * @returns {number} the integer part of a SuNum either rounded or truncated
+     * zero if the absolute value < .5, infinite if too large
      */
-    toInt(): number {
-        if (this.exp < -16)
+    toInt(trunc = false): number {
+        if (this.exp < -16 || this.coef === 0)
             return 0;
         let n = SuNum.mutable(this);
+
+        while (n.exp > 0 && SuNum.shiftLeft(n)) {
+        }
+
         let roundup = false;
         while (n.exp < 0 && n.coef !== 0)
             roundup = SuNum.shiftRight(n);
-        if (roundup)
-            n.coef++;
-        if (n.exp > 0)
-            return n.coef > 0 ? Number.POSITIVE_INFINITY : Number.NEGATIVE_INFINITY;
-        else if (n.exp < 0)
+        if (roundup && !trunc)
+            n.coef += (this.coef < 0 ? -1 : +1);
+
+        if (n.exp < 0 || n.coef === 0)
             return 0;
+        else if (n.exp > 0)
+            return n.coef > 0 ? Number.POSITIVE_INFINITY : Number.NEGATIVE_INFINITY;
         else
             return n.coef;
     }
@@ -321,7 +326,7 @@ export class SuNum extends SuValue {
     private static shiftRight(n: SuNum): boolean {
         if (n.coef === 0)
             return false;
-        let roundup = (n.coef % 10) >= 5;
+        let roundup = Math.abs(n.coef % 10) >= 5;
         n.coef = Math.trunc(n.coef / 10);
         if (n.exp < expInf)
             n.exp++;

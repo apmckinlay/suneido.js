@@ -20,9 +20,14 @@ export function su_numberq(x: any): boolean {
 };
 (su_numberq as any).$params = 'value';
 //GENERATED end
-//
+
+// round to integer
 function int(n: Num): number {
-    return n instanceof SuNum ? n.toInt() : n;
+    if (n instanceof SuNum)
+        return n.toInt();
+    if (Number.isSafeInteger(n))
+        return n;
+    throw new Error("not safe integer: " + n);
 }
 
 export class Numbers {
@@ -32,9 +37,15 @@ export class Numbers {
         return String.fromCharCode(int(this));
     }
 
+    // truncate fractional part, no rounding
     Int(this: Num): number {
         maxargs(0, arguments.length);
-        return int(this);
+        let n = this; // need this to satisfy type checking with TypeScript 2.0.2
+        if (n instanceof SuNum)
+            return n.toInt(true); // truncate
+        if (Number.isSafeInteger(n))
+            return n;
+        throw new Error("not safe integer: " + n);
     }
 
     Hex(this: Num): string {

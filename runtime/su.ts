@@ -75,20 +75,25 @@ function sliceable(x: any): void {
         throw type(x) + " does not support slice";
 }
 
-export function inc(x: any) {
-    return x + 1; // TODO
+export function inc(x: any): Num {
+    return add(x, 1);
 }
 
-export function dec(x: any) {
-    return x - 1; // TODO
+export function dec(x: any): Num {
+    return sub(x, 1);
 }
 
-export function uadd(x: any) {
-    return +x; // TODO
+export function uadd(x: any): Num {
+    return toNum(x);
 }
 
-export function usub(x: any) {
-    return -x; // TODO
+export function usub(x: any): Num {
+    x = toNum(x);
+    if (typeof x === 'number')
+        return -x;
+    else if (x instanceof SuNum)
+        return x.neg();
+    throw new Error("unreachable");
 }
 
 export function not(x: any): boolean {
@@ -115,10 +120,10 @@ function toNum(x: any): Num {
     if (x === true)
         return 1;
     if (typeof x === 'string') {
-        let n: SuNum | null;
         if (!/[.eE]/.test(x) && x.length < 14)
             return parseInt(x);
-        else if (n = SuNum.parse(x))
+        let n = SuNum.parse(x);
+        if (n)
             return n;
     }
     throw "can't convert " + type(x) + " to number";

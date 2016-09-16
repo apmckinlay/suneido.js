@@ -166,6 +166,19 @@ assert.that(n(123, 3).isInt());
 assert.that(n(123000, -3).isInt());
 assert.that(!n(123, -3).isInt());
 
+assert.equal(n(0).toInt(), 0);
+assert.equal(n(1, -9).toInt(), 0);
+assert.equal(n(1, -1).toInt(), 0);
+assert.equal(n(9, -1).toInt(), 1);
+assert.equal(n(-1, -1).toInt(), 0);
+assert.equal(n(-9, -1).toInt(), -1);
+assert.equal(n(1, 3).toInt(), 1000);
+assert.equal(n(123456, -3).toInt(), 123);
+assert.equal(dn('123.111').toInt(), 123);
+assert.equal(dn('123.999').toInt(), 124);
+assert.equal(dn('-123.111').toInt(), -123);
+assert.equal(dn('-123.999').toInt(), -124);
+
 assert.that(0 === SuNum.cmp(SuNum.fromNumber(1.5), n(15, -1)));
 
 // porttests -------------------------------------------------------------------
