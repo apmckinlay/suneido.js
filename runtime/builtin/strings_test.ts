@@ -122,7 +122,7 @@ str1 = "hello world";
 assert.that(sm['Prefix?'].call(str1, "he"), "check method 'hello world'.prefixq('he')");
 assert.that(!sm['Prefix?'].call(str1, "world"), "check method 'hello world'.prefixq('world')");
 assert.that(sm['Prefix?'].call(str1, "world", 6), "check method 'hello world'.prefixq('world', 6)");
-assert.that(!sm['Prefix?'].call(str1, "world", -5), "check method 'hello world'.prefixq('world', -5)");
+assert.that(sm['Prefix?'].call(str1, "world", -5), "check method 'hello world'.prefixq('world', -5)");
 assert.that(!sm['Prefix?'].call("", "hell", 0), "check method ''.prefixq('hell', 0)");
 assert.that(sm['Prefix?'].call("", "", 0), "check method ''.prefixq('', 0)");
 

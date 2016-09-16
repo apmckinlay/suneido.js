@@ -5,7 +5,7 @@ export function display(x: any): string {
         return x.display();
     if (typeof x === 'string')
         return displayString(x);
-    return x.toString();
+    return String(x);
 }
 
 export let default_single_quotes = false;

@@ -14,14 +14,14 @@ export class RootClass extends SuValue {
 
     // SuValue methods
 
-    get(key: any): any {
+    get(this: any, key: any): any {
         let val = this[key];
         if (val === undefined)
             throw new Error("member not found " + key);
         return val;
     }
 
-    put(key: any, val: any): void {
+    put(this: any, key: any, val: any): void {
         if (this.isClass())
             throw new Error("Class does not support put");
         try {
@@ -62,6 +62,32 @@ export class RootClass extends SuValue {
 
     // external methods
 
+    $call(this: any) {
+        if (this.isClass())
+            return this.CallClass.$call.apply(this, arguments);
+        else
+            return this.Call.$call.apply(this, arguments);
+    }
+    $callAt(this: any) {
+        if (this.isClass())
+            return this.CallClass.$callAt.apply(this, arguments);
+        else
+            return this.Call.$callAt.apply(this, arguments);
+    }
+    $callNamed(this: any) {
+        if (this.isClass())
+            return this.CallClass.$callNamed.apply(this, arguments);
+        else
+            return this.Call.$callNamed.apply(this, arguments);
+    }
+
+    /** default CallClass creates new instance */
+    CallClass(): any {
+        let instance: any = Object.create(this);
+        instance.New.$call.apply(instance, arguments);
+        return instance;
+    }
+
     New(): any {
     }
 
@@ -80,7 +106,7 @@ export class RootClass extends SuValue {
         return key in this;
     }
 
-    Delete(key: string = "", all: boolean = false): any {
+    Delete(this: any, key: string = "", all: boolean = false): any {
         maxargs(2, arguments.length);
         if (Object.isFrozen(this))
             throw new Error("method not found: class.Delete");
@@ -94,7 +120,7 @@ export class RootClass extends SuValue {
         return this;
     }
 
-    Copy(): any {
+    Copy(this: any): any {
         maxargs(0, arguments.length);
         if (Object.isFrozen(this))
             throw new Error("method not found: class.Copy");
@@ -116,6 +142,19 @@ function instanceEquals(x: any, y: any): boolean {
             return false;
     return true;
 }
+
+(RootClass.prototype['CallClass'] as any).$call = RootClass.prototype['CallClass'];
+(RootClass.prototype['CallClass'] as any).$callAt = function () {
+        let instance: any = Object.create(this);
+        instance.New.$callAt.apply(instance, arguments);
+        return instance;
+};
+(RootClass.prototype['CallClass'] as any).$callNamed = function () {
+        let instance: any = Object.create(this);
+        instance.New.$callNamed.apply(instance, arguments);
+        return instance;
+};
+(RootClass.prototype['CallClass'] as any).$params = '@args';
 
 //BUILTIN RootClass.New()
 //GENERATED start

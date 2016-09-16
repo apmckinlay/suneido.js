@@ -10,7 +10,7 @@ suglobals.Suneido = new SuObject();
 
 // temp so BuiltDate works
 import { SuDate } from "./sudate";
-suglobals.Suneido.put('Built', SuDate.literal('20160913'));
+suglobals.Suneido.put('BuiltDate', SuDate.literal('20160913'));
 
 import { su_display } from "./builtin/display";
 suglobals.Display = su_display;
@@ -29,12 +29,14 @@ import { su_date, su_dateq } from "./builtin/dates";
 suglobals.Date = su_date;
 suglobals['Date?'] = su_dateq;
 
-import { su_assert } from "./builtin/assert";
-suglobals.Assert = su_assert;
+import { su_built } from "./builtin/built";
+suglobals.Built = su_built;
 
-// temporary till we can compile the real Test
-import { RootClass } from "./rootclass";
-suglobals.Test = RootClass.prototype;
+import { su_stringq } from "./builtin/strings";
+suglobals['String?'] = su_stringq;
+
+import { su_numberq } from "./builtin/numbers";
+suglobals['Number?'] = su_numberq;
 
 /** FOR TESTING PURPOSES ONLY! */
 suglobals.Def = su_def;

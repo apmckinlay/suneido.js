@@ -1,8 +1,25 @@
 import * as assert from "../assert";
 import * as util from "../utility";
 import { tr } from "../tr";
+import { global } from "../global";
 import { SuObject } from "../suobject";
 import { mandatory, maxargs } from "../args";
+
+export function su_stringq(x: any): boolean {
+    return typeof x === 'string';
+}
+//BUILTIN String?(value)
+//GENERATED start
+(su_stringq as any).$call = su_stringq;
+(su_stringq as any).$callNamed = function ($named: any, value: any) {
+    ({ value = value } = $named);
+    return su_stringq(value);
+};
+(su_stringq as any).$callAt = function (args: SuObject) {
+    return (su_stringq as any).$callNamed(util.mapToOb(args.map), ...args.vec);
+};
+(su_stringq as any).$params = 'value';
+//GENERATED end
 
 export class Strings {
 
@@ -81,6 +98,11 @@ export class Strings {
         }
         return doWithSplit(this, '\r',
             (s) => doWithSplit(s, '\n', replaceSpaceWithTab));
+    }
+
+    Eval(this: string): any {
+        //NOTE only support global names, not constants or expressions
+        return global(this);
     }
 
     Extract(this: string, pattern: string = mandatory(), part?: number): string | boolean {
@@ -221,8 +243,11 @@ export class Strings {
             c = this[++i];
             if (c === '-' || c === '+')
                 c = this[++i];
+            let j = i;
             while (util.isDigit(c))
                 c = this[++i];
+            if (j === i)
+                return false; // no digits after 'e'
         }
         return i === this.length;
     }
@@ -239,6 +264,8 @@ export class Strings {
 
     ['Prefix?'](this: string, str: string = mandatory(), pos: number = 0): boolean {
         maxargs(2, arguments.length);
+        if (pos < 0)
+            pos += this.length;
         return this.startsWith(str, pos);
     }
 
@@ -252,7 +279,7 @@ export class Strings {
         replacement: any = '', count: number = Infinity): string {
         maxargs(3, arguments.length);
         enum RepStatus { E, U, L, u, l };
-        //Calculate how many capture groups dose the regex pattern have
+        // Calculate how many capture groups the regex pattern has
         let nGroups = (new RegExp(pattern + '|')).exec('')!.length - 1;
         let repCount = 0;
         function repF(): string {
@@ -468,6 +495,18 @@ function doWithSplit(str: string, sep: string, f: (arg: string) => string) {
     return (Strings.prototype['Entab'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
 (Strings.prototype['Entab'] as any).$params = '';
+//GENERATED end
+
+//BUILTIN Strings.Eval()
+//GENERATED start
+(Strings.prototype['Eval'] as any).$call = Strings.prototype['Eval'];
+(Strings.prototype['Eval'] as any).$callNamed = function (_named: any) {
+    return Strings.prototype['Eval'].call(this);
+};
+(Strings.prototype['Eval'] as any).$callAt = function (args: SuObject) {
+    return (Strings.prototype['Eval'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(Strings.prototype['Eval'] as any).$params = '';
 //GENERATED end
 
 //BUILTIN Strings.Extract(pattern, part=false)

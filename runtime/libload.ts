@@ -4,5 +4,9 @@ export function libload(name: string) {
     req.send();
     if (req.status !== 200)
         throw new Error("can't find " + name);
-    return eval(req.responseText);
+    try {
+        return eval(req.responseText);
+    } catch (e) {
+        throw new Error("error loading " + name);
+    }
 }

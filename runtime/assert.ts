@@ -1,3 +1,8 @@
+/**
+ * @file
+ * Used for tests.
+ */
+
 const jreq = require('equals');
 import { is } from "./is";
 import { SuValue } from "./suvalue";

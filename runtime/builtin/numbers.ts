@@ -5,6 +5,22 @@ import { maxargs } from "../args";
 
 type Num = number | SuNum;
 
+export function su_numberq(x: any): boolean {
+    return typeof x === 'number' || x instanceof SuNum;
+}
+//BUILTIN Number?(value)
+//GENERATED start
+(su_numberq as any).$call = su_numberq;
+(su_numberq as any).$callNamed = function ($named: any, value: any) {
+    ({ value = value } = $named);
+    return su_numberq(value);
+};
+(su_numberq as any).$callAt = function (args: SuObject) {
+    return (su_numberq as any).$callNamed(util.mapToOb(args.map), ...args.vec);
+};
+(su_numberq as any).$params = 'value';
+//GENERATED end
+//
 function int(n: Num): number {
     return n instanceof SuNum ? n.toInt() : n;
 }

@@ -15,8 +15,7 @@ import { type } from "./type";
 import { display } from "./display";
 import { is } from "./is";
 import { cmp } from "./cmp";
-import { suglobals } from "./globals";
-import { mandatory, maxargs } from "./args";
+import { global } from "./global";
 import { Strings } from "./builtin/strings";
 const sm: any = Strings.prototype;
 import { Numbers } from "./builtin/numbers";
@@ -24,11 +23,12 @@ const nm: any = Numbers.prototype;
 import { Functions } from "./builtin/functions";
 const fm: any = Functions.prototype;
 import { RootClass } from "./rootclass";
-import { libload } from "./libload";
+import { mapToOb, obToMap } from "./utility";
 
 type Num = number | SuNum;
 
-export { display, is, mandatory, maxargs };
+export { mandatory, maxargs } from "./args";
+export { display, is, global, mapToOb, obToMap };
 
 export const empty_object = new SuObject().Set_readonly();
 
@@ -43,8 +43,16 @@ export function put(ob: any, key: any, val: any): any {
 }
 
 export function get(x: any, key: any): any {
-    if (typeof x === 'string')
-        return x[toInt(key)];
+    if (typeof x === 'string') {
+        let i = toInt(key);
+        let n = x.length;
+        if (i < 0) {
+            i += n;
+            if (i < 0)
+                return "";
+        }
+        return i < n ? x[i] : "";
+    }
     if (x instanceof SuValue)
         return x.get(key);
     throw type(x) + " does not support get (" + key + ")";
@@ -57,7 +65,9 @@ export function rangeto(x: any, i: number, j: number) {
 
 export function rangelen(x: any, i: number, n: number) {
     sliceable(x);
-    return x.slice(i, n < 0 ? n : i + n);
+    if (n < 0)
+        n = 0;
+    return x.slice(i, i + n);
 }
 
 function sliceable(x: any): void {
@@ -173,7 +183,7 @@ export function lshift(x: any, y: any): number {
 }
 
 export function rshift(x: any, y: any): number {
-    return toInt(x) >> toInt(y);
+    return toInt(x) >>> toInt(y);
 }
 
 export function bitand(x: any, y: any): number {
@@ -209,11 +219,22 @@ export function gte(x: any, y: any): boolean {
 }
 
 export function match(x: any, y: any): boolean {
-    return RegExp(y).test(x); //TODO
+    return regex(y).test(x); //TODO
 }
 
 export function matchnot(x: any, y: any): boolean {
-    return !RegExp(y).test(x); //TODO
+    return !regex(y).test(x); //TODO
+}
+
+//TEMP until we implement Suneido regular expresssions
+function regex(pat: string): RegExp {
+    pat = pat
+        .replace('[:upper:]', 'A-Z')
+        .replace('[:lower:]', 'a-z')
+        .replace('[:alpha:]', 'a-zA-Z')
+        .replace(`\\A`, '^') // not quite correct
+        .replace('\\Z', '$');
+    return new RegExp(pat);
 }
 
 export function toBool(x: any): boolean {
@@ -259,7 +280,7 @@ export function mkObject2(vec: any[], map?: Map<any, any>): SuObject {
 }
 
 export function mkdate(s: string): SuDate {
-    return SuDate.literal(s)!;
+    return SuDate.literal(s) !;
 }
 
 // Note: only Suneido values and strings are callable
@@ -268,23 +289,23 @@ export function mkdate(s: string): SuDate {
 
 export function call(f: any, ...args: any[]): any {
     let call = f.$call;
-    if (call)
-        return call.apply(undefined, args);
+    if (typeof call === 'function')
+        return call.apply(f, args);
     //  TODO strings
     cantCall(f);
 }
 
 export function callNamed(f: any, ...args: any[]) {
     let call = f.$callNamed;
-    if (call)
-        return call.apply(undefined, args);
+    if (typeof call === 'function')
+        return call.apply(f, args);
     //  TODO strings
     cantCall(f);
 }
 
 export function callAt(f: any, args: SuObject): any {
     let call = f.$callAt;
-    if (call)
+    if (typeof call === 'function')
         return call(args);
     //  TODO strings
     cantCall(f);
@@ -301,7 +322,7 @@ export function invoke(ob: any, method: string, ...args: any[]): any {
     let f = getMethod(ob, method);
     if (f) {
         let call = f.$call;
-        if (call)
+        if (typeof call === 'function')
             return call.apply(ob, args);
     }
     methodNotFound(ob, method);
@@ -311,7 +332,7 @@ export function invokeNamed(ob: any, method: string, ...args: any[]): any {
     let f = getMethod(ob, method);
     if (f) {
         let call = f.$callNamed;
-        if (call)
+        if (typeof call === 'function')
             return call.apply(ob, args);
     }
     methodNotFound(ob, method);
@@ -321,7 +342,7 @@ export function invokeAt(ob: any, method: string, args: SuObject): any {
     let f = getMethod(ob, method);
     if (f) {
         let call = f.$callAt;
-        if (call)
+        if (typeof call === 'function')
             return call.call(ob, args);
     }
     methodNotFound(ob, method);
@@ -334,26 +355,14 @@ function methodNotFound(ob: any, method: string): never {
 function getMethod(ob: any, method: string): any {
     let t = typeof ob;
     if (t === 'string')
-        return sm[method];
+        return sm[method] || global('Strings')[method];
     if (t === 'number' || ob instanceof SuNum)
-        return nm[method];
+        return nm[method] || global('Numbers')[method];
     if (t === 'function')
         return fm[method];
     // for instances, start lookup in class
     let start = Object.isFrozen(ob) ? ob : Object.getPrototypeOf(ob);
-    let f = start[method];
-    if (typeof f === 'function')
-        return f;
-    methodNotFound(ob, method);
-}
-
-export function global(name: string) {
-    let x = suglobals[name];
-    if (x !== undefined)
-        return x;
-    x = libload(name);
-    suglobals[name] = x;
-    return x;
+    return start[method] || global('Objects')[method];
 }
 
 export function instantiate(clas: any, ...args: any[]): any {
