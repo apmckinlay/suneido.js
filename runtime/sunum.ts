@@ -1,63 +1,65 @@
 /**
- * dnum implements immutable decimal floating point numbers
+ * SuNum implements immutable decimal floating point numbers
  * on top of JavaScript binary floating point numbers
  * The representation is a coefficient and an exponent
  * where both are integers.
  * The sign of the number is the sign of the coefficient.
  * Infinite is represented by an infinite coefficient and a large exponent.
- *
- * Created by andrew on 2015-05-17.
  */
 
-import * as assert from "./assert"
+import * as assert from "./assert";
+import { SuValue } from "./suvalue";
 
 const minExp = -126;
 const maxExp = +126;
 const expInf = 127;
 const MAX_COEF_STR = "" + Number.MAX_SAFE_INTEGER;
 
-export default class Dnum {
+export class SuNum extends SuValue {
     private coef: number;
     private exp: number;
 
-    /*private*/ constructor(coef: number, exp: number) {
+    private constructor(coef: number, exp: number) {
+        super();
         this.coef = coef;
         this.exp = exp;
     }
 
-    static fromNumber(n: number): Dnum {
-        return Dnum.parse(n.toString()); // is there a better way?
+    static fromNumber(n: number): SuNum {
+        if (Number.isSafeInteger(n))
+            return new SuNum(n, 0);
+        return SuNum.parse(n.toString())!; // is there a better way?
     }
 
     /**
-     * Convert a string to a dnum.
+     * Convert a string to a SuNum.
      * @param s {string}
-     * @returns {object|false} a dnum, or null if not a valid number
+     * @returns {object|false} a SuNum, or null if not a valid number
      */
-    static parse(s: string): Dnum {
+    static parse(s: string): SuNum | null {
         if (typeof s !== "string" || s.length === 0)
             return null; // invalid input
         if (s === "0")
-            return Dnum.ZERO;
+            return SuNum.ZERO;
         let i = 0;
-        let sign = s.charAt(i) === '-' ? -1 : 1;
-        if (s.charAt(i) === '+' || s.charAt(i) == '-')
+        let sign = s[i] === '-' ? -1 : 1;
+        if (s[i] === '+' || s[i] === '-')
             i++;
-        var before = spanDigits(s, i);
+        let before = spanDigits(s, i);
         i += before.length;
         before = trimLeft(before, '0');
-        var after = "";
-        if (i < s.length && s.charAt(i) === '.') {
+        let after = "";
+        if (i < s.length && s[i] === '.') {
             i++;
             after = spanDigits(s, i);
             i += after.length;
         }
         after = trimRight(after, '0');
 
-        var exp = 0;
-        if (i < s.length && s.charAt(i).toLowerCase() === 'e') {
+        let exp = 0;
+        if (i < s.length && s[i].toLowerCase() === 'e') {
             i++;
-            var es = spanSignedDigits(s, i);
+            let es = spanSignedDigits(s, i);
             exp = parseInt(es, 10);
             i += es.length;
         }
@@ -68,65 +70,64 @@ export default class Dnum {
         let digits = before + after;
         while (cmpNumStr(digits, MAX_COEF_STR) >= 0) {
             exp++;
-            carry = digits.charAt(digits.length - 1) < '5' ? 0 : 1;
+            carry = digits[digits.length - 1] < '5' ? 0 : 1;
             digits = digits.substring(0, digits.length - 1);
         }
-        var coef = carry + parseInt(digits, 10);
-        return Dnum.make(sign * coef, exp);
+        let coef = carry + parseInt(digits, 10);
+        return SuNum.make(sign * coef, exp);
     }
 
     /**
-    * make constructs a dnum
+    * make constructs a SuNum
     * @param {number} coef integer, may be infinite
     * @param {number} [exp=0] integer, outside range of -126 to 126 will become infinite
-    * @returns {Object} an immutable dnum
+    * @returns {Object} an immutable SuNum
     */
-    static make(coef: number, exp: number = 0): Dnum {
+    static make(coef: number, exp: number = 0): SuNum {
         if (coef === 0)
-            return Dnum.ZERO;
+            return SuNum.ZERO;
         if (coef === Number.NEGATIVE_INFINITY)
-            return Dnum.MINUS_INF;
+            return SuNum.MINUS_INF;
         if (coef === Number.POSITIVE_INFINITY)
-            return Dnum.INF;
+            return SuNum.INF;
         if (!Number.isSafeInteger(coef))
-            throw "Dnum.make invalid coefficient: " + coef;
+            throw "SuNum.make invalid coefficient: " + coef;
         else if (!Number.isSafeInteger(exp))
-            throw "Dnum.make invalid exponent: " + exp;
+            throw "SuNum.make invalid exponent: " + exp;
         if (exp < minExp)
-            return Dnum.ZERO;
+            return SuNum.ZERO;
         if (exp > maxExp)
-            return coef < 0 ? Dnum.MINUS_INF : Dnum.INF;
-        return Object.freeze(new Dnum(coef, exp));
+            return coef < 0 ? SuNum.MINUS_INF : SuNum.INF;
+        return Object.freeze(new SuNum(coef, exp));
     }
 
     /**
-     * toString converts a Dnum to a string.
+     * toString converts a SuNum to a string.
      * If the exponent is 0 it will print the number as an integer.
      * Otherwise it will try to avoid scientific notation
      * adding up to 4 zeroes at the end or 3 zeroes at the beginning.
      * @returns {string}
      */
     toString(): string {
-        //return '{ ' + this.coef + ', ' + this.exp + ' }';
-        var c = this.coef;
-        var e = this.exp;
+        let c = this.coef;
+        let e = this.exp;
         if (c === 0)
             return "0";
         while (e < 0 && c % 10 === 0) {
             c /= 10;
             e++;
         }
-        var sign = c < 0 ? "-" : "";
+        let sign = c < 0 ? "-" : "";
         if (this.isInf())
             return sign + "inf";
-        var digits = "" + Math.abs(c);
+        let digits = "" + Math.abs(c);
         if (0 <= e && e <= 4)
             return sign + digits + "0".repeat(e);
-        var se = "";
+        let se = "";
         if (-digits.length - 4 < e && e <= -digits.length)
             digits = "." + "0".repeat(-e - digits.length) + digits;
         else if (-digits.length < e && e <= -1) {
-            var i = digits.length + e;
+            let i = digits.length + e;
             digits = digits.substring(0, i) + "." + digits.substring(i);
         } else {
             e += digits.length - 1;
@@ -139,13 +140,13 @@ export default class Dnum {
     }
 
     /**
-     * @returns {boolean} whether or not the dnum is an integer
+     * @returns {boolean} whether or not the SuNum is an integer
      */
     isInt(): boolean {
-        var e = this.exp;
+        let e = this.exp;
         if (e < -16)
             return false;
-        var c = this.coef;
+        let c = this.coef;
         while (e < 0 && c % 10 === 0) {
             c /= 10;
             e++;
@@ -154,14 +155,14 @@ export default class Dnum {
     }
 
     /**
-     * @returns {boolean} whether or not the dnum is zero
+     * @returns {boolean} whether or not the SuNum is zero
      */
     isZero(): boolean {
         return this.coef === 0;
     }
 
     /**
-     * @returns {boolean} whether or not the dnum is infinite
+     * @returns {boolean} whether or not the SuNum is infinite
      */
     isInf(): boolean {
         return !isFinite(this.coef);
@@ -175,44 +176,49 @@ export default class Dnum {
     }
 
     /**
-     * @returns {Object} the negative of a dnum (but not negative zero)
+     * @returns {Object} the negative of a SuNum (but not negative zero)
      */
-    neg(): Dnum {
+    neg(): SuNum {
         if (this.coef === 0)
-            return Dnum.ZERO; // avoid -0 coefficient
-        return Dnum.make(-this.coef, this.exp);
+            return SuNum.ZERO; // avoid -0 coefficient
+        return SuNum.make(-this.coef, this.exp);
     }
 
     /**
-     * @returns {Object} the absolute value of a dnum
+     * @returns {Object} the absolute value of a SuNum
      */
-    abs(): Dnum {
-        return Dnum.make(Math.abs(this.coef), this.exp);
+    abs(): SuNum {
+        return SuNum.make(Math.abs(this.coef), this.exp);
     }
 
     /**
-     * @returns {number} the integer value of a dnum,
-     * zero if the absolute value < 1, infinite if too large
+     * @returns {number} the integer part of a SuNum either rounded or truncated
+     * zero if the absolute value < .5, infinite if too large
      */
-    toInt(): number {
-        if (this.exp < -16)
+    toInt(trunc = false): number {
+        if (this.exp < -16 || this.coef === 0)
             return 0;
-        var n = Dnum.mutable(this);
-        var roundup = false;
-        while (n.exp < 0 && n.coef != 0)
-            roundup = Dnum.shiftRight(n);
-        if (roundup)
-            n.coef++;
-        if (n.exp > 0)
+        let n = SuNum.mutable(this);
+
+        while (n.exp > 0 && SuNum.shiftLeft(n)) {
+        }
+
+        let roundup = false;
+        while (n.exp < 0 && n.coef !== 0)
+            roundup = SuNum.shiftRight(n);
+        if (roundup && !trunc)
+            n.coef += (this.coef < 0 ? -1 : +1);
+
+        if (n.exp < 0 || n.coef === 0)
+            return 0;
+        else if (n.exp > 0)
             return n.coef > 0 ? Number.POSITIVE_INFINITY : Number.NEGATIVE_INFINITY;
-        else if (n.exp < 0)
-            return 0;
         else
             return n.coef;
     }
 
     /**
-     * @returns {number} this dnum converted to a JavaScript number
+     * @returns {number} this SuNum converted to a JavaScript number
      */
     toNumber(): number {
         return this.coef * Math.pow(10, this.exp);
@@ -225,12 +231,32 @@ export default class Dnum {
     equals(that: any): boolean {
         if (typeof that === 'number')
             return this.toNumber() === that;
-        if (that instanceof Dnum)
-            return 0 == Dnum.cmp(this, that);
+        if (that instanceof SuNum)
+            return 0 === SuNum.cmp(this, that);
         return false;
     }
 
-    typeName(): string {
+    compareTo(that: any): number {
+        if (typeof that === 'number')
+            that = SuNum.fromNumber(that);
+        else if (! (that instanceof SuNum))
+            throw new Error("SuNum.compareTo incompatible type");
+        return SuNum.cmp(this, that);
+    }
+
+    // cmp compares two SuNums, returning 0, -1, or +1
+    static cmp(x: SuNum, y: SuNum): number {
+        if (x.sign() < y.sign())
+            return -1;
+        else if (x.sign() > y.sign())
+            return +1;
+        else if (SuNum.same(x, y))
+            return 0;
+        else
+            return SuNum.sub(x, y).sign();
+    }
+
+    type(): string {
         return "Number";
     }
 
@@ -238,69 +264,57 @@ export default class Dnum {
         return this.toString();
     }
 
-    // cmp compares two dnums, returning 0, -1, or +1
-    static cmp(x: Dnum, y: Dnum): number {
-        if (x.sign() < y.sign())
-            return -1;
-        else if (x.sign() > y.sign())
-            return +1;
-        else if (Dnum.same(x, y))
-            return 0;
-        else
-            return Dnum.sub(x, y).sign();
-    }
-
-    // sub returns the difference of two dnums
-    static sub(x: Dnum, y: Dnum): Dnum {
+    // sub returns the difference of two SuNums
+    static sub(x: SuNum, y: SuNum): SuNum {
         // could avoid copy by duplicating add code
-        y = Dnum.mutable(y);
+        y = SuNum.mutable(y);
         y.coef *= -1;
-        return Dnum.add(x, y);
+        return SuNum.add(x, y);
     }
 
-    // add returns the sum of two dnums
-    static add(x: Dnum, y: Dnum): Dnum {
+    // add returns the sum of two SuNums
+    static add(x: SuNum, y: SuNum): SuNum {
         if (x.exp !== y.exp) {
-            x = Dnum.mutable(x);
-            y = Dnum.mutable(y);
-            Dnum.align(x, y);
+            x = SuNum.mutable(x);
+            y = SuNum.mutable(y);
+            SuNum.align(x, y);
         }
-        var c = x.coef + y.coef;
+        let c = x.coef + y.coef;
         if (isNaN(c)) // NaN from adding +inf and -inf
-            return Dnum.ZERO;
+            return SuNum.ZERO;
         if (c < Number.MIN_SAFE_INTEGER || Number.MAX_SAFE_INTEGER < c) { // overflow
-            x = Dnum.mutable(x);
-            y = Dnum.mutable(y);
-            if (Dnum.shiftRight(x))
+            x = SuNum.mutable(x);
+            y = SuNum.mutable(y);
+            if (SuNum.shiftRight(x))
                 x.coef++;
-            if (Dnum.shiftRight(y))
+            if (SuNum.shiftRight(y))
                 y.coef++;
             c = x.coef + y.coef;
         }
-        return Dnum.make(c, x.exp);
+        return SuNum.make(c, x.exp);
     }
 
-    private static align(x: Dnum, y: Dnum): void {
+    private static align(x: SuNum, y: SuNum): void {
         if (x.exp > y.exp) {
             // swap
-            var tmp = x.coef; x.coef = y.coef; y.coef = tmp;
+            let tmp = x.coef; x.coef = y.coef; y.coef = tmp;
             tmp = x.exp; x.exp = y.exp; y.exp = tmp;
         }
-        while (y.exp > x.exp && Dnum.shiftLeft(y)) {
+        while (y.exp > x.exp && SuNum.shiftLeft(y)) {
         }
 
-        var roundup = false;
+        let roundup = false;
         while (y.exp > x.exp && x.coef !== 0)
-            roundup = Dnum.shiftRight(x);
-        if (x.exp != y.exp) {
+            roundup = SuNum.shiftRight(x);
+        if (x.exp !== y.exp) {
             assert.equal(x.coef, 0);
             x.exp = y.exp;
         } else if (roundup)
             x.coef += x.coef < 0 ? -1 : +1;
     }
 
-    private static shiftLeft(n: Dnum): boolean {
-        var c = n.coef * 10;
+    private static shiftLeft(n: SuNum): boolean {
+        let c = n.coef * 10;
         if (!Number.isSafeInteger(c))
             return false;
         n.coef = c;
@@ -309,51 +323,51 @@ export default class Dnum {
         return true;
     }
 
-    private static shiftRight(n: Dnum): boolean {
+    private static shiftRight(n: SuNum): boolean {
         if (n.coef === 0)
             return false;
-        var roundup = (n.coef % 10) >= 5;
+        let roundup = Math.abs(n.coef % 10) >= 5;
         n.coef = Math.trunc(n.coef / 10);
         if (n.exp < expInf)
             n.exp++;
         return roundup;
     }
 
-    // mul returns the product of two dnums
-    static mul(x: Dnum, y: Dnum): Dnum {
+    // mul returns the product of two SuNums
+    static mul(x: SuNum, y: SuNum): SuNum {
         return convert(x.coef * y.coef, x.exp + y.exp);
     }
 
-    // div returns the quotient of two dnums
-    static div(x: Dnum, y: Dnum): Dnum {
+    // div returns the quotient of two SuNums
+    static div(x: SuNum, y: SuNum): SuNum {
         if (x.isZero())
-            return Dnum.ZERO;
+            return SuNum.ZERO;
         else if (y.isZero())
-            return Dnum.inf(x.sign());
+            return SuNum.inf(x.sign());
         else if (x.isInf()) {
             let sign = x.sign() * y.sign();
-            return y.isInf() ? Dnum.make(sign) : Dnum.inf(sign);
+            return y.isInf() ? SuNum.make(sign) : SuNum.inf(sign);
         } else if (y.isInf())
-            return Dnum.ZERO;
+            return SuNum.ZERO;
         return convert(x.coef / y.coef, x.exp - y.exp);
     }
 
     // helpers ---------------------------------------------------------------------
 
-    static inf(sign: number): Dnum {
-        return sign < 1 ? Dnum.MINUS_INF : Dnum.INF;
+    static inf(sign: number): SuNum {
+        return sign < 1 ? SuNum.MINUS_INF : SuNum.INF;
     }
 
     // return a mutable version of a number
-    private static mutable(n: Dnum): Dnum {
-        return Object.isFrozen(n) ? new Dnum(n.coef, n.exp) : n;
+    private static mutable(n: SuNum): SuNum {
+        return Object.isFrozen(n) ? new SuNum(n.coef, n.exp) : n;
     }
 
-    static ZERO = Object.freeze(new Dnum(0, 0));
-    static INF = Object.freeze(new Dnum(Number.POSITIVE_INFINITY, expInf));
-    static MINUS_INF = Object.freeze(new Dnum(Number.NEGATIVE_INFINITY, expInf));
+    static ZERO = Object.freeze(new SuNum(0, 0));
+    static INF = Object.freeze(new SuNum(Number.POSITIVE_INFINITY, expInf));
+    static MINUS_INF = Object.freeze(new SuNum(Number.NEGATIVE_INFINITY, expInf));
 
-    private static same(x: Dnum, y: Dnum): boolean {
+    private static same(x: SuNum, y: SuNum): boolean {
         // warning: 1e2 will not be the "same" as 100
         return x.coef === y.coef && x.exp === y.exp;
     }
@@ -361,8 +375,8 @@ export default class Dnum {
 } // end of class
 
 function spanSignedDigits(s: string, start: number): string {
-    var i = start;
-    var c = s.charAt(start);
+    let i = start;
+    let c = s[start];
     if (c === '+' || c === '-')
         ++i;
     return s.substring(start, skipDigits(s, i));
@@ -373,8 +387,8 @@ function spanDigits(s: string, start: number): string {
 }
 
 function skipDigits(s: string, i: number): number {
-    var n = s.length;
-    while (i < n && isDigit(s.charAt(i)))
+    let n = s.length;
+    while (i < n && isDigit(s[i]))
         ++i;
     return i;
 }
@@ -384,17 +398,17 @@ function isDigit(c: string): boolean {
 }
 
 function trimRight(s: string, c: string): string {
-    var i = s.length - 1;
-    while (s.charAt(i) === c)
+    let i = s.length - 1;
+    while (s[i] === c)
         i--;
-    return s.substring(0, i + 1)
+    return s.substring(0, i + 1);
 }
 
 function trimLeft(s: string, c: string): string {
-    var i = 0;
-    while (s.charAt(i) === c)
+    let i = 0;
+    while (s[i] === c)
         i++;
-    return s.substring(i)
+    return s.substring(i);
 }
 
 function cmpNumStr(x: string, y: string): number {
@@ -403,13 +417,13 @@ function cmpNumStr(x: string, y: string): number {
     return x > y ? +1 : x < y ? -1 : 0;
 }
 
-export function convert(c: number, e: number): Dnum {
+export function convert(c: number, e: number): SuNum {
     if (c === Number.NEGATIVE_INFINITY)
-        return Dnum.MINUS_INF;
+        return SuNum.MINUS_INF;
     if (c === Number.POSITIVE_INFINITY)
-        return Dnum.INF;
+        return SuNum.INF;
     if (Number.isSafeInteger(c))
-        return Dnum.make(c, e); // fast path
+        return SuNum.make(c, e); // fast path
     c *= Math.pow(10, e);
-    return Dnum.fromNumber(c);
+    return SuNum.fromNumber(c);
 }

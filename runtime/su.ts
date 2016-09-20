@@ -1,66 +1,99 @@
 /**
- * Run-time support routines for suneido.js
- * Created by andrew on 2015-05-25.
+ * @file
+ * Run-time support routines
  */
 
-//TODO global
 //TODO dynget, dynset, dynpush, dynpop
+//TODO record builder
+//TODO iter, next, blockreturn
 
-import Dnum from "./dnum";
+import { SuValue } from "./suvalue";
+import { SuNum } from "./sunum";
+import { SuObject } from "./suobject";
+import { SuDate } from "./sudate";
+import { type } from "./type";
+import { display } from "./display";
+import { is } from "./is";
+import { cmp } from "./cmp";
+import { global } from "./global";
+import { Strings } from "./builtin/strings";
+const sm: any = Strings.prototype;
+import { Numbers } from "./builtin/numbers";
+const nm: any = Numbers.prototype;
+import { Functions } from "./builtin/functions";
+const fm: any = Functions.prototype;
+import { RootClass } from "./rootclass";
+import { mapToOb, obToMap } from "./utility";
 
-import * as suob from "./suobject";
-import SuObject from "./suobject";
-// export { empty_object } from "./suobject";
+type Num = number | SuNum;
 
-export function put(ob: any, key: any, val: any): void {
-    if (SuObject.isSuOb(ob))
-        <SuObject>ob.put(key, val);
+export { mandatory, maxargs } from "./args";
+export { display, is, global, mapToOb, obToMap };
+
+export const empty_object = new SuObject().Set_readonly();
+
+export const root_class = RootClass.prototype;
+
+export function put(ob: any, key: any, val: any): any {
+    if (ob instanceof SuValue)
+        ob.put(key, val);
     else
-        throw typeName(ob) + " does not support put (" + key + ")";
+        throw type(ob) + " does not support put (" + key + ")";
+    return val;
 }
 
 export function get(x: any, key: any): any {
-    if (typeof x === 'string')
-        return <string>x.charAt(toInt(key));
-    if (SuObject.isSuOb(x))
-        return <SuObject>x.get(key);
-    throw typeName(x) + " does not support get (" + key + ")";
+    if (typeof x === 'string') {
+        let i = toInt(key);
+        let n = x.length;
+        if (i < 0) {
+            i += n;
+            if (i < 0)
+                return "";
+        }
+        return i < n ? x[i] : "";
+    }
+    if (x instanceof SuValue)
+        return x.get(key);
+    throw type(x) + " does not support get (" + key + ")";
 }
 
 export function rangeto(x: any, i: number, j: number) {
-    var len = x.length;
-    return x.slice(prepFrom(i, len), j);
+    sliceable(x);
+    return x.slice(i, j);
 }
 
 export function rangelen(x: any, i: number, n: number) {
-    var len = x.length;
-    i = prepFrom(i, len);
+    sliceable(x);
+    if (n < 0)
+        n = 0;
     return x.slice(i, i + n);
 }
 
-function prepFrom(from: number, len: number) {
-    if (from < 0) {
-        from += len;
-        if (from < 0)
-            from = 0;
-    }
-    return from;
+function sliceable(x: any): void {
+    if (typeof x !== 'string' && !(x instanceof SuObject))
+        throw type(x) + " does not support slice";
 }
 
-export function inc(x: any) {
-    return x + 1; // TODO
+export function inc(x: any): Num {
+    return add(x, 1);
 }
 
-export function dec(x: any) {
-    return x - 1; // TODO
+export function dec(x: any): Num {
+    return sub(x, 1);
 }
 
-export function uadd(x: any) {
-    return +x; // TODO
+export function uadd(x: any): Num {
+    return toNum(x);
 }
 
-export function usub(x: any) {
-    return -x; // TODO
+export function usub(x: any): Num {
+    x = toNum(x);
+    if (typeof x === 'number')
+        return -x;
+    else if (x instanceof SuNum)
+        return x.neg();
+    throw new Error("unreachable");
 }
 
 export function not(x: any): boolean {
@@ -68,191 +101,289 @@ export function not(x: any): boolean {
 }
 
 export function bitnot(x: any): number {
-    return ~x; // TODO
+    return ~toInt(x);
 }
 
 function toInt(x: any): number {
     if (Number.isSafeInteger(x))
         return x;
-    if (x instanceof Dnum && <Dnum>x.isInt())
-        return (<Dnum>x).toInt();
-    throw "can't convert " + typeName(x) + " to integer";
+    if (x instanceof SuNum && x.isInt())
+        return x.toInt();
+    throw "can't convert " + type(x) + " to integer";
 }
 
-function toNum(x: any): number | Dnum {
-    if (typeof x === 'number' || x instanceof Dnum)
+function toNum(x: any): Num {
+    if (typeof x === 'number' || x instanceof SuNum)
         return x;
     if (x === false || x === "")
         return 0;
     if (x === true)
         return 1;
     if (typeof x === 'string') {
-        if (-1 === x.search('[.eE]') && x.length < 14)
+        if (!/[.eE]/.test(x) && x.length < 14)
             return parseInt(x);
-        else
-            return Dnum.parse(x);
+        let n = SuNum.parse(x);
+        if (n)
+            return n;
     }
-    throw "can't convert " + typeName(x) + " to number";
+    throw "can't convert " + type(x) + " to number";
 }
 
-function toDnum(x: number | Dnum): Dnum {
-    return (typeof x === 'number') ? Dnum.make(x) : <Dnum>x;
+function toSuNum(x: number | SuNum): SuNum {
+    return (typeof x === 'number') ? SuNum.make(x) : x;
 }
 
-export function add(x: any, y: any): any {
+export function add(x: any, y: any): Num {
     x = toNum(x);
     y = toNum(y);
     if (typeof x === 'number' && typeof y === 'number')
         return x + y;
     else
-        return Dnum.add(toDnum(x), toDnum(y));
+        return SuNum.add(toSuNum(x), toSuNum(y));
 }
 
-export function sub(x: any, y: any) {
-    return x - y; //TODO
+export function sub(x: any, y: any): Num {
+    x = toNum(x);
+    y = toNum(y);
+    if (typeof x === 'number' && typeof y === 'number')
+        return x - y;
+    else
+        return SuNum.sub(toSuNum(x), toSuNum(y));
 }
 
-export function cat(x: any, y: any): string {
-    return "" + x + y; //TODO
+export function toStr(x: any): string {
+    if (typeof x === 'string')
+        return x;
+    else if (x === true)
+        return "true";
+    else if (x === false)
+        return "false";
+    else if (typeof x === 'number' || x instanceof SuNum || x instanceof Error)
+        return x.toString();
+    else
+        throw new Error("can't convert " + type(x) + " to String");
 }
 
-export function mul(x: any, y: any) {
-    return x * y; //TODO
+export function mul(x: any, y: any): Num {
+    x = toNum(x);
+    y = toNum(y);
+    if (typeof x === 'number' && typeof y === 'number')
+        return x * y;
+    else
+        return SuNum.mul(toSuNum(x), toSuNum(y));
 }
 
-export function div(x: any, y: any) {
-    return x / y; //TODO
+export function div(x: any, y: any): SuNum {
+    x = toNum(x);
+    y = toNum(y);
+    return SuNum.div(toSuNum(x), toSuNum(y));
 }
 
-export function mod(x: any, y: any) {
-    return x % y; //TODO
+export function mod(x: any, y: any): number {
+    return toInt(x) % toInt(y);
 }
 
 export function lshift(x: any, y: any): number {
-    return x << y; //TODO
+    return toInt(x) << toInt(y);
 }
 
 export function rshift(x: any, y: any): number {
-    return x >> y; //TODO
+    return toInt(x) >>> toInt(y);
 }
 
 export function bitand(x: any, y: any): number {
-    return x & y; //TODO
+    return toInt(x) & toInt(y);
 }
 
 export function bitor(x: any, y: any): number {
-    return x | y; //TODO
+    return toInt(x) | toInt(y);
 }
 
 export function bitxor(x: any, y: any): number {
-    return x ^ y; //TODO
-}
-
-function isNum(x: any): boolean {
-    return typeof x === 'number' || x instanceof Dnum;
-}
-
-export function is(x: any, y: any): boolean {
-    if (x === y)
-        return true;
-    if (typeof x === 'number' && typeof y === 'number')
-        return false;
-    if (x instanceof Dnum)
-        return x.equals(y);
-    if (y instanceof Dnum)
-        return y.equals(x);
-    // TODO suneido objects
-    return false;
+    return toInt(x) ^ toInt(y);
 }
 
 export function isnt(x: any, y: any): boolean {
-    return !is(x, y); //TODO
+    return !is(x, y);
 }
 
 export function lt(x: any, y: any): boolean {
-    return x < y; //TODO
+    return cmp(x, y) < 0;
 }
 
-export function lte(x: any, y: any     ): boolean {
-    return x <= y; //TODO
+export function lte(x: any, y: any): boolean {
+    return cmp(x, y) <= 0;
 }
 
-export function gt(x: any, y: any     ): boolean {
-    return x > y; //TODO
+export function gt(x: any, y: any): boolean {
+    return cmp(x, y) > 0;
 }
 
-export function gte(x: any, y: any     ): boolean {
-    return x >= y; //TODO
+export function gte(x: any, y: any): boolean {
+    return cmp(x, y) >= 0;
 }
 
-export function match(x: any, y: any     ): boolean {
-    return -1 !== x.search(RegExp(y)); //TODO
+export function match(x: any, y: any): boolean {
+    return regex(y).test(x); //TODO
 }
 
-export function matchnot(x: any, y: any     ): boolean {
-    return -1 === x.search(RegExp(y)); //TODO
+export function matchnot(x: any, y: any): boolean {
+    return !regex(y).test(x); //TODO
+}
+
+//TEMP until we implement Suneido regular expresssions
+function regex(pat: string): RegExp {
+    pat = pat
+        .replace('[:upper:]', 'A-Z')
+        .replace('[:lower:]', 'a-z')
+        .replace('[:alpha:]', 'a-zA-Z')
+        .replace(`\\A`, '^') // not quite correct
+        .replace('\\Z', '$');
+    return new RegExp(pat);
 }
 
 export function toBool(x: any): boolean {
     if (x !== true && x !== false)
-        throw "can't convert " + typeof x + " to boolean";
+        throw "can't convert " + type(x) + " to boolean";
     return x;
 }
 
 export function catchMatch(e: string, pat: string): boolean { // TODO
-    if (pat.charAt(0) === '*')
+    if (pat[0] === '*')
         return -1 !== e.indexOf(pat.substring(1));
     else
         return -1 !== e.lastIndexOf(pat, 0);
 
 }
 
-export function noargs(args: any[]): void {
-    if (args.length != 0)
-        throw "too many arguments";
+export function mknum(s: string) {
+    return SuNum.parse(s) ||
+        err("can't convert " + display(s) + " to number");
 }
 
-export function argsall(args: any[]) {
-    return args; //TODO
+function err(s: string): void {
+    throw new Error(s);
 }
 
-export function args(args: any[], spec: string) {
-    return args; //TODO
+/**
+ * constructor for object constants i.e. #(...)
+ * named members passed as sequence of key,value
+ */
+export function mkObject(...args: any[]): SuObject {
+    let i = args.indexOf(null);
+    if (i === -1)
+        return new SuObject(args).Set_readonly();
+    let vec = args.slice(0, i);
+    let map = new Map<any, any>();
+    for (i++; i < args.length; i += 2)
+        map.set(args[i], args[i + 1]);
+    return new SuObject(vec, map).Set_readonly();
 }
 
-export function typeName(x: any): string {
-    if (typeof x.typeName === 'function')
-        return x.typeName();
-    var t = typeof x;
-    switch (t) {
-        case 'boolean': return 'Boolean';
-        case 'string': return 'String';
-        case 'number': return 'Number';
+export function mkObject2(vec: any[], map?: Map<any, any>): SuObject {
+    return new SuObject(vec, map);
+}
+
+export function mkdate(s: string): SuDate {
+    return SuDate.literal(s) !;
+}
+
+// Note: only Suneido values and strings are callable
+
+// Note: using apply until better spread (...) performance in v8
+
+export function call(f: any, ...args: any[]): any {
+    let call = f.$call;
+    if (typeof call === 'function')
+        return call.apply(f, args);
+    //  TODO strings
+    cantCall(f);
+}
+
+export function callNamed(f: any, ...args: any[]) {
+    let call = f.$callNamed;
+    if (typeof call === 'function')
+        return call.apply(f, args);
+    //  TODO strings
+    cantCall(f);
+}
+
+export function callAt(f: any, args: SuObject): any {
+    let call = f.$callAt;
+    if (typeof call === 'function')
+        return call(args);
+    //  TODO strings
+    cantCall(f);
+}
+
+function cantCall(f: any): never {
+    throw new Error("can't call " + type(f));
+}
+
+/**
+ * Call a method on an object.
+ */
+export function invoke(ob: any, method: string, ...args: any[]): any {
+    let f = getMethod(ob, method);
+    if (f) {
+        let call = f.$call;
+        if (typeof call === 'function')
+            return call.apply(ob, args);
     }
-    return t;
+    methodNotFound(ob, method);
 }
 
-export function display(x: any): string {
-    if (typeof x.display === 'function')
-        return x.display();
-    if (typeof x === 'string')
-        return displayString(x);
-    return x.toString();
+export function invokeNamed(ob: any, method: string, ...args: any[]): any {
+    let f = getMethod(ob, method);
+    if (f) {
+        let call = f.$callNamed;
+        if (typeof call === 'function')
+            return call.apply(ob, args);
+    }
+    methodNotFound(ob, method);
 }
 
-export var default_single_quotes = false;
+export function invokeAt(ob: any, method: string, args: SuObject): any {
+    let f = getMethod(ob, method);
+    if (f) {
+        let call = f.$callAt;
+        if (typeof call === 'function')
+            return call.call(ob, args);
+    }
+    methodNotFound(ob, method);
+}
 
-function displayString(s: string): string {
-    if (-1 === s.indexOf('`') &&
-        -1 !== s.indexOf('\\') &&
-        -1 === s.search(/[^ -~]/))
-        return '`' + s + '`';
-    s = s.replace('\\', '\\\\');
-    var single_quotes = default_single_quotes
-        ? -1 === s.indexOf("'")
-        : (-1 !== s.indexOf('"') && -1 === s.indexOf("'"));
-    if (single_quotes)
-        return "'" + s + "'";
-    else
-        return "\"" + s.replace("\"", "\\\"") + "\"";
+function methodNotFound(ob: any, method: string): never {
+    throw new Error("method not found: " + type(ob) + "." + method);
+}
+
+function getMethod(ob: any, method: string): any {
+    let t = typeof ob;
+    if (t === 'string')
+        return sm[method] || global('Strings')[method];
+    if (t === 'number' || ob instanceof SuNum)
+        return nm[method] || global('Numbers')[method];
+    if (t === 'function')
+        return fm[method];
+    // for instances, start lookup in class
+    let start = Object.isFrozen(ob) ? ob : Object.getPrototypeOf(ob);
+    return start[method] || global('Objects')[method];
+}
+
+export function instantiate(clas: any, ...args: any[]): any {
+    let instance = Object.create(clas);
+    invoke(instance, 'New', ...args); // but spread is slow
+    return instance;
+}
+
+export function instantiateAt(clas: any, args: SuObject): any {
+    let instance = Object.create(clas);
+    invokeAt(instance, 'New', args);
+    return instance;
+}
+
+export function instantiateNamed(clas: any, ...args: any[]): any {
+    let instance = Object.create(clas);
+    invokeNamed(instance, 'New', ...args); // but spread is slow
+    return instance;
 }

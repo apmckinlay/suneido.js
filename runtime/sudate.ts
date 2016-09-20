@@ -1,4 +1,4 @@
-/** 
+/**
  * Implements Suneido date/times.
  * Represents them as two integers to allow fast pack/unpack.
  * The only export is the SuDate class.
@@ -6,17 +6,20 @@
 
 import * as assert from "./assert";
 import * as util from "./utility";
+import { SuValue } from "./suvalue";
+import { maxargs, mandatory } from "./args";
 
 const month = ["January", "February", "March", "April", "May", "June", "July",
     "August", "September", "October", "November", "December"];
 const weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
     "Saturday"];
 
-export default class SuDate {
+export class SuDate extends SuValue {
     private date: number;
     private time: number;
 
-    constructor(date: number, time: number) {
+    private constructor(date: number, time: number) {
+        super();
         this.date = date;
         this.time = time;
         Object.freeze(this); // SuDate is immutable
@@ -25,9 +28,13 @@ export default class SuDate {
     static make(year: number, month: number, day: number,
         hour: number, minute: number, second: number, millisecond: number): SuDate {
         //TODO validation
-        let date = (year << 9) | (month << 5) | day,
-            time = (hour << 22) | (minute << 16) | (second << 10) | millisecond;
+        let date = (year << 9) | (month << 5) | day;
+        let time = (hour << 22) | (minute << 16) | (second << 10) | millisecond;
         return new SuDate(date, time);
+    }
+
+    type(): string {
+        return "Date";
     }
 
     timePart(): number {
@@ -38,29 +45,26 @@ export default class SuDate {
         return this.date;
     }
 
+    equals(that: any): boolean {
+        return this.date === that.date && this.time === that.time;
+    }
+
+    compareTo(that: any): number {
+        if (that instanceof SuDate)
+            return SuDate.cmp(this, that);
+        else
+            throw new Error("SuDate compareTo incompatible type");
+    }
+
     /** compare compares two sudates, returning Zero, Negative or Positive */
-    static compare(sd1: SuDate, sd2: SuDate): number {
-        let res = sd1.date - sd2.date;
-        return res !== 0 ? res : sd1.time - sd2.time;
+    static cmp(sd1: SuDate, sd2: SuDate): number {
+        return util.cmp(sd1.date, sd2.date) ||
+            util.cmp(sd1.time, sd2.time);
     }
 
     /** @return An SuDate for the current local date & time */
     static now() {
         return SuDate.fromDate(new Date());
-    }
-
-    static prev = SuDate.now();
-
-    /**
-     * timestamp returns a unique sudate based on current time
-     * @returns {Object} a sudate
-     */
-    static timestamp(): SuDate {
-        let ts = SuDate.now();
-        if (SuDate.compare(ts, SuDate.prev) <= 0)
-            ts = SuDate.prev.plus({ milliseconds: 1 });
-        SuDate.prev = ts;
-        return ts;
     }
 
     /**
@@ -69,33 +73,33 @@ export default class SuDate {
      * @param {string} order string, order pattern helps to parse date string
      * @returns {Object} a sudate, or sufalse if not a valid date
      */
-    static parse(s: string, order: string): SuDate {
+    static parse(s: string, order: string = "yMd"): SuDate | null {
         enum TokenType { YEAR, MONTH, DAY, HOUR, MINUTE, SECOND, MILLISECOND }
         const minval = [0, 1, 1, 0, 0, 0, 0];
         const maxval = [3000, 12, 31, 23, 59, 59, 999];
-        const NOTSET = 9999,
-            MAXTOKENS = 20;
+        const NOTSET = 9999;
+        const MAXTOKENS = 20;
         let dt = {
             year: NOTSET, month: 0, day: 0,
             hour: NOTSET, minute: NOTSET, second: NOTSET, millisecond: 0
-        },
-            date_patterns = [
-                "", // set to system default
-                "md",
-                "dm",
-                "dmy",
-                "mdy",
-                "ymd"
-            ],
-            syspat = adjustPatterns(date_patterns, order),
-            types: Array<TokenType> = [],
-            tokens: Array<number> = [],
-            ntokens = 0,
-            got_time = false,
-            prev: string = null,
-            curPattern: string,
-            part: TokenType;
-        // types.fill(TokenType.UNK);
+        };
+        let date_patterns = [
+            "", // set to system default
+            "md",
+            "dm",
+            "dmy",
+            "mdy",
+            "ymd"
+        ];
+        let syspat = adjustPatterns(date_patterns, order);
+        let types: Array<TokenType> = [];
+        let tokens: Array<number> = [];
+        let ntokens = 0;
+        let got_time = false;
+        let prev: string | null = null;
+        let curPattern: string;
+        let part: TokenType;
+
         let i = 0;
         while (i < s.length) {
             assert.that(ntokens < MAXTOKENS,
@@ -109,7 +113,7 @@ export default class SuDate {
                     tokens[ntokens] = j + 1;
                     ntokens++;
                 } else if (word === "Am" || word === "Pm") {
-                    if (word.charAt(0) === 'P') {
+                    if (word[0] === 'P') {
                         if (dt.hour < 12)
                             dt.hour += 12;
                     } else {
@@ -150,7 +154,7 @@ export default class SuDate {
                             dt.minute = digits.get(2);
                             if (len >= 6) {
                                 dt.second = digits.get(2);
-                                if (len == 9)
+                                if (len === 9)
                                     dt.millisecond = digits.get(3);
                             }
                         }
@@ -210,9 +214,9 @@ export default class SuDate {
         }
 
         let current = SuDate.now();
-        let thisyr = current.year();
-        let thismo = current.month();
-        let thisd = current.day();
+        let thisyr = current.Year();
+        let thismo = current.Month();
+        let thisd = current.Day();
 
         if (i < date_patterns.length) {
             // use match
@@ -264,7 +268,7 @@ export default class SuDate {
      * @param {string} s string
      * @returns {Object} a sudate, or sufalse if not a valid date
      */
-    static literal(s: string): SuDate {
+    static literal(s: string): SuDate | null {
         if (s.startsWith('#'))
             s = s.substr(1);
         let sn = s.indexOf('.');
@@ -294,8 +298,8 @@ export default class SuDate {
      * @param {string} fmt
      * @returns {string} a date and time string in given format
      */
-    formatEn(fmt: string): string {
-        assert.that(arguments.length === 1, "usage: date.Format(format)");
+    FormatEn(fmt: string = mandatory()): string {
+        maxargs(1, arguments.length);
         return format(this, fmt);
     }
 
@@ -304,31 +308,17 @@ export default class SuDate {
      * @param args {Object} a group of unit and offset pairs
      * @returns {object} a copy of sudate
      */
-    plus({ years = 0, months = 0, days = 0,
-        hours = 0, minutes = 0, seconds = 0, milliseconds = 0 }): SuDate {
-        years += this.year();
-        months += this.month();
-        days += this.day();
-        hours += this.hour();
-        minutes += this.minute();
-        seconds += this.second();
-        milliseconds += this.millisecond();
+    Plus(years = 0, months = 0, days = 0,
+        hours = 0, minutes = 0, seconds = 0, milliseconds = 0): SuDate {
+        maxargs(7, arguments.length);
+        years += this.Year();
+        months += this.Month();
+        days += this.Day();
+        hours += this.Hour();
+        minutes += this.Minute();
+        seconds += this.Second();
+        milliseconds += this.Millisecond();
         return normalize(years, months, days, hours, minutes, seconds, milliseconds);
-    }
-
-    private timeAsMs(): number {
-        return this.millisecond() +
-            1000 * (this.second() +
-                60 * (this.minute() +
-                    60 * this.hour()));
-    }
-
-    // WARNING: doing this around daylight savings changes may be problematic
-    minusMilliseconds(sud2: SuDate): number {
-        if (this.date == sud2.date)
-            return this.timeAsMs() - sud2.timeAsMs();
-        else
-            return this.toDate().getTime() - sud2.toDate().getTime();
     }
 
     /**
@@ -336,8 +326,8 @@ export default class SuDate {
      * @param sud2 {Object}  another sudate
      * @returns {number}
      */
-    minusDays(sud2: SuDate): number {
-        assert.that(arguments.length === 1, "usage: date.Minus(date)");
+    MinusDays(sud2: SuDate = mandatory()): number {
+        maxargs(1, arguments.length);
         let timeDiff = this.toDate().getTime() - sud2.toDate().getTime();
         return Math.ceil(timeDiff / (1000 * 3600 * 24));
     }
@@ -347,8 +337,8 @@ export default class SuDate {
      * @param sud2 {Object}  another sudate
      * @returns {number}
      */
-    minusSeconds(sud2: SuDate): number {
-        assert.that(arguments.length === 1, "usage: date.MinusSeconds(date)");
+    MinusSeconds(sud2: SuDate = mandatory()): number {
+        maxargs(1, arguments.length);
         let timeDiff = this.toDate().getTime() - sud2.toDate().getTime();
         return timeDiff / 1000;
     }
@@ -356,56 +346,56 @@ export default class SuDate {
     /**
      * @returns {number} year portion of the date
      */
-    year(): number {
-        assert.that(arguments.length === 0, "usage: date.Year()");
+    Year(): number {
+        maxargs(0, arguments.length);
         return this.date >> 9;
     }
 
     /**
      * @returns {number} month portion of the date
      */
-    month(): number {
-        assert.that(arguments.length === 0, "usage: date.Month()");
+    Month(): number {
+        maxargs(0, arguments.length);
         return (this.date >> 5) & 0xf;
     }
 
     /**
      * @returns {number} day portion of the date
      */
-    day(): number {
-        assert.that(arguments.length === 0, "usage: date.Day()");
+    Day(): number {
+        maxargs(0, arguments.length);
         return this.date & 0x1f;
     }
 
     /**
      * @returns {number} hour portion of the date
      */
-    hour(): number {
-        assert.that(arguments.length === 0, "usage: date.Hour()");
+    Hour(): number {
+        maxargs(0, arguments.length);
         return this.time >> 22;
     }
 
     /**
      * @returns {number} minute portion of the date
      */
-    minute(): number {
-        assert.that(arguments.length === 0, "usage: date.Minute()");
+    Minute(): number {
+        maxargs(0, arguments.length);
         return (this.time >> 16) & 0x3f;
     }
 
     /**
      * @returns {number} second portion of the date
      */
-    second(): number {
-        assert.that(arguments.length === 0, "usage: date.Second()");
+    Second(): number {
+        maxargs(0, arguments.length);
         return (this.time >> 10) & 0x3f;
     }
 
     /**
      * @returns {number} millisecond portion of the date
      */
-    millisecond(): number {
-        assert.that(arguments.length === 0, "usage: date.Millisecond()");
+    Millisecond(): number {
+        maxargs(0, arguments.length);
         return this.time & 0x3ff;
     }
 
@@ -414,16 +404,16 @@ export default class SuDate {
      * @param {string|number}  firstDay to start count
      * @returns {number}
      */
-    weekday(firstDay?: string | number): number {
-        assert.that(arguments.length === 0 || arguments.length === 1,
-            "usage: date.WeekDay(firstDay = 'Sun')");
+    WeekDay(firstDay: string | number = "Sun"): number {
+        maxargs(1, arguments.length);
         let i = 0;
         if (arguments.length === 1) {
             if (typeof firstDay === "string") {
-                let s = util.capitalizeFirstLetter(firstDay.toLowerCase());
+                let s = util.capitalize(firstDay.toLowerCase());
                 i = weekday.findIndex(x => x.startsWith(s));
                 assert.that(i !== undefined, "usage: date.WeekDay( <day of week> )");
-            } else if (!isNaN(firstDay)) {
+            } else if (typeof firstDay === 'number' &&
+                0 <= firstDay && firstDay <= 6) {
                 i = firstDay;
             } else {
                 assert.that(false, "usage: date.WeekDay( <day of week> )");
@@ -435,25 +425,32 @@ export default class SuDate {
     // methods for type conversion
 
     toString(): string {
-        return "#" +
-            ("0000" + this.year()).slice(-4) +
-            ("0" + this.month()).slice(-2) +
-            ("0" + this.day()).slice(-2) +
-            '.' +
-            ("0" + this.hour()).slice(-2) +
-            ("0" + this.minute()).slice(-2) +
-            ("0" + this.second()).slice(-2) +
-            ("000" + this.millisecond()).slice(-3);
+        let s = "#" +
+            ("0000" + this.Year()).slice(-4) +
+            ("0" + this.Month()).slice(-2) +
+            ("0" + this.Day()).slice(-2);
+        if (this.time !== 0) {
+            s += '.' +
+                ("0" + this.Hour()).slice(-2) +
+                ("0" + this.Minute()).slice(-2) +
+                ("0" + this.Second()).slice(-2) +
+                ("000" + this.Millisecond()).slice(-3);
+            if (s.endsWith("00000"))
+                return s.substring(0, 14);
+            if (s.endsWith("000"))
+                return s.substring(0, 16);
+        }
+        return s;
     }
 
     /** Convert to a JavaScript Date */
     toDate(): Date {
-        return new Date(this.year(), this.month() - 1, this.day(),
-            this.hour(), this.minute(), this.second(), this.millisecond());
+        return new Date(this.Year(), this.Month() - 1, this.Day(),
+            this.Hour(), this.Minute(), this.Second(), this.Millisecond());
     }
 
     static fromDate(d: Date): SuDate {
-        return SuDate.make(d.getFullYear(), d.getMonth(), d.getDate(),
+        return SuDate.make(d.getFullYear(), d.getMonth() + 1, d.getDate(),
             d.getHours(), d.getMinutes(), d.getSeconds(), d.getMilliseconds());
     }
 
@@ -559,16 +556,11 @@ function normalize(year: number, month: number, day: number,
     return SuDate.make(year, month, day, hour, minute, second, millisecond);
 }
 
-/** extract n chars from the position start of string s and translate into integer */
-function getNumber(s: string, start: number, n: number): number {
-    return parseInt(s.slice(start, start + n));
-}
-
 function ampmAhead(s: string, i: number): boolean {
     if (s[i] === ' ')
         i++;
     let str = s.slice(i, i + 2).toLowerCase();
-    return str == 'am' || str == 'pm';
+    return str === 'am' || str === 'pm';
 }
 
 function format(dt: SuDate, fmt: string): string {
@@ -581,7 +573,7 @@ function format(dt: SuDate, fmt: string): string {
         }
         switch (fmt[i]) {
             case 'y':
-                let yr = dt.year();
+                let yr = dt.Year();
                 if (n >= 4) {
                     dst += yr.toString();
                 } else if (n === 3) {
@@ -593,7 +585,7 @@ function format(dt: SuDate, fmt: string): string {
                 }
                 break;
             case 'M':
-                let mo = dt.month() - 1;
+                let mo = dt.Month() - 1;
                 if (n > 3) {
                     dst += month[mo];
                 } else if (n === 3) {
@@ -605,8 +597,8 @@ function format(dt: SuDate, fmt: string): string {
                 }
                 break;
             case 'd':
-                let wd = dt.weekday();
-                let d = dt.day();
+                let wd = dt.WeekDay();
+                let d = dt.Day();
                 if (n > 3) {
                     dst += weekday[wd];
                 } else if (n === 3) {
@@ -618,7 +610,7 @@ function format(dt: SuDate, fmt: string): string {
                 }
                 break;
             case 'h':
-                let hr = dt.hour() % 12;
+                let hr = dt.Hour() % 12;
                 if (hr === 0) {
                     hr = 12;
                 }
@@ -629,7 +621,7 @@ function format(dt: SuDate, fmt: string): string {
                 }
                 break;
             case 'H':
-                let h = dt.hour();
+                let h = dt.Hour();
                 if (n >= 2) {
                     dst += ('0' + h.toString()).slice(-2);
                 } else {
@@ -637,7 +629,7 @@ function format(dt: SuDate, fmt: string): string {
                 }
                 break;
             case 'm':
-                let mi = dt.minute();
+                let mi = dt.Minute();
                 if (n >= 2) {
                     dst += ('0' + mi.toString()).slice(-2);
                 } else {
@@ -645,7 +637,7 @@ function format(dt: SuDate, fmt: string): string {
                 }
                 break;
             case 's':
-                let s = dt.second();
+                let s = dt.Second();
                 if (n >= 2) {
                     dst += ('0' + s.toString()).slice(-2);
                 } else {
@@ -653,16 +645,16 @@ function format(dt: SuDate, fmt: string): string {
                 }
                 break;
             case 'a':
-                dst += dt.hour() < 12 ? 'a' : 'p';
+                dst += dt.Hour() < 12 ? 'a' : 'p';
                 if (n > 1) {
-                    dst += 'm'
+                    dst += 'm';
                 }
                 break;
             case 'A':
             case 't':
-                dst += dt.hour() < 12 ? 'A' : 'P';
+                dst += dt.Hour() < 12 ? 'A' : 'P';
                 if (n > 1) {
-                    dst += 'M'
+                    dst += 'M';
                 }
                 break;
             case '\'':
@@ -688,9 +680,9 @@ function format(dt: SuDate, fmt: string): string {
 }
 
 function adjustPatterns(date_patterns: Array<string>, order: string): string {
-    let i: number = 0,
-        prev: string = null,
-        syspatArray: Array<string> = [];
+    let i: number = 0;
+    let prev: string | null = null;
+    let syspatArray: Array<string> = [];
     for (let j = 0; order[j] && i < 3; prev = order[j], j++) {
         if (order[j] !== prev &&
             ((order[j] === 'y') || (order[j] === 'M') || (order[j] === 'd'))) {
@@ -698,7 +690,7 @@ function adjustPatterns(date_patterns: Array<string>, order: string): string {
             i++;
         }
     }
-    assert.that(i === 3, "invalid date format: '" + order + "'")
+    assert.that(i === 3, "invalid date format: '" + order + "'");
     date_patterns[0] = syspatArray.join('');
 
     // swap month-day patterns if system setting is day first
@@ -718,7 +710,7 @@ function nextWord(s: string, i: number): string {
     let j = i;
     for (; util.isAlpha(s[i]); i++) {
     }
-    return util.capitalizeFirstLetter(s.slice(j, i).toLowerCase());
+    return util.capitalize(s.slice(j, i).toLowerCase());
 }
 
 function nextNumber(s: string, i: number): string {
@@ -740,5 +732,5 @@ class Digits {
 function nsub(s: string, i: number, n: number): number {
     if (i + n > s.length)
         return 0;
-    return Number.parseInt(s.substr(i, n))
+    return Number.parseInt(s.substr(i, n));
 }

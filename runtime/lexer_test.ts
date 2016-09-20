@@ -1,25 +1,25 @@
-import Lexer from "./lexer"
-import { Token, keywords } from "./tokens"
-import * as tokens from "./tokens"
-import * as assert from "./assert"
+import { Lexer } from "./lexer";
+import { Token } from "./tokens";
+import * as tokens from "./tokens";
+import * as assert from "./assert";
 
 function check(src: string, ...expected: any[]): void {
     let lexer = new Lexer(src);
     let i = 0;
-    for (; ;) {
+    while (true) {
         let token = lexer.next();
         if (token === Token.EOF)
             break;
         if (token === Token.WHITESPACE)
             continue;
-        //console.log(Token[token], lexer.value());
+        // console.log(Token[token], lexer.value());
         let exp = expected[i];
-        if (typeof exp == 'number')
+        if (typeof exp === 'number')
             eqToken(token, exp);
-        else if (typeof exp == "string")
+        else if (typeof exp === "string")
             assert.equal(lexer.value(), exp);
         else if (exp instanceof Array)
-            check1(lexer, token, exp[0], exp[1], exp[2])
+            check1(lexer, token, exp[0], exp[1], exp[2]);
         else
             throw "oops";
         i++;
@@ -33,7 +33,7 @@ function check1(lexer: Lexer, token: Token,
     if (expval)
         assert.equal(lexer.value(), expval);
     if (expkw)
-        eqToken(lexer.keyword(), expkw);
+        eqToken(lexer.keyword()!, expkw);
 }
 
 function eqToken(t1: Token, t2: Token) {
@@ -98,7 +98,7 @@ checkValues(Token.IDENTIFIER,
 
 function checkKeywords(src: string) {
     let expected = src.split(' ').map(t =>
-        [Token.IDENTIFIER, t, (tokens as any).Token[t.toUpperCase()] || "BAD"])
+        [Token.IDENTIFIER, t, (tokens as any).Token[t.toUpperCase()] || "BAD"]);
     check(src, ...expected);
 }
 checkKeywords("break case catch continue class callback default " +
@@ -124,4 +124,4 @@ checkStrings(
     ["'\\t'", "\t"],
     ["'\\015'", "\r"],
     ["'\\x0a'", "\n"],
-    ["`\\`", "\\"])
+    ["`\\`", "\\"]);

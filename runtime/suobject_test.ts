@@ -1,16 +1,12 @@
-/**
- * Created by andrew on 2015-05-31.
- */
-
-import SuObject from "./suobject";
-import Dnum from "./dnum";
+import { SuObject } from "./suobject";
+import { SuNum } from "./sunum";
 import * as assert from "./assert";
 
-const dn = Dnum.fromNumber;
+const dn = SuNum.fromNumber;
 
-var ob = new SuObject();
+let ob = new SuObject();
 assert.equal(ob.size(), 0);
-ob.add(123);
+ob.Add(123);
 assert.equal(ob.size(), 1);
 ob.put('a', 'hi');
 assert.equal(ob.size(), 2);
@@ -18,7 +14,7 @@ assert.equal(ob.length, 2);
 assert.equal(ob.vecsize(), 1);
 assert.equal(ob.mapsize(), 1);
 assert.equal(ob.get(0), 123);
-assert.equal(ob.get(Dnum.ZERO), 123);
+assert.equal(ob.get(SuNum.ZERO), 123);
 assert.equal(ob.get(1), undefined);
 assert.equal(ob.get('a'), 'hi');
 assert.equal(ob.get('b'), undefined);
@@ -26,7 +22,7 @@ assert.equal(ob.get('b'), undefined);
 ob.put(2, 22);
 assert.equal(ob.vecsize(), 1);
 assert.equal(ob.mapsize(), 2);
-ob.add(11);
+ob.Add(11);
 assert.equal(ob.vecsize(), 3);
 assert.equal(ob.mapsize(), 1);
 ob.put(4, 44);
@@ -42,22 +38,23 @@ assert.equal(ob.get(dn(1.5)), 15);
 
 
 assert.equal(ob.get('x'), undefined);
-ob.setDefault(0);
+ob.Set_default(0);
 assert.equal(ob.get('x'), 0);
 
-ob.setReadonly();
-assert.throws(function() { ob.put('b', true); },
+ob.Set_readonly();
+assert.throws(() => ob.put('b', true),
     /can't modify readonly objects/);
 
+// equals
 ob = new SuObject();
 assert.that(ob.equals(ob));
 assert.that(!ob.equals(123));
-var ob2 = new SuObject();
+let ob2 = new SuObject();
 assert.that(ob.equals(ob2));
-ob.add(123);
+ob.Add(123);
 assert.that(!ob.equals(ob2));
 assert.that(!ob2.equals(ob));
-ob2.add(123);
+ob2.Add(123);
 assert.that(ob.equals(ob2));
 assert.that(ob2.equals(ob));
 ob.put('a', 'alpha');
@@ -68,10 +65,27 @@ ob2.put('a', 'alpha');
 assert.that(ob.equals(ob2));
 assert.that(ob2.equals(ob));
 
+// cmp
+function cmp(x: SuObject, y: SuObject, expected: number): void {
+    assert.equal(x.compareTo(y), expected);
+    assert.equal(y.compareTo(x), -expected);
+}
+ob = new SuObject();
+cmp(ob, ob, 0);
+ob2 = new SuObject();
+cmp(ob, ob2, 0);
+ob.Add(123);
+cmp(ob, ob2, +1);
+ob2.Add(SuNum.fromNumber(123));
+cmp(ob, ob2, 0);
+ob.Add(456);
+cmp(ob, ob2, +1);
+
+// toString
 ob = new SuObject();
 assert.equal(ob.toString(), '#()');
-ob.add(12);
-ob.add(34);
+ob.Add(12);
+ob.Add(34);
 assert.equal(ob.toString(), '#(12, 34)');
 ob.put('b', 'Bob');
 assert.equal(ob.toString(), '#(12, 34, b: "Bob")');
@@ -79,3 +93,7 @@ assert.equal(ob.toString(), '#(12, 34, b: "Bob")');
 ob = new SuObject();
 ob.put('a b', dn(1000));
 assert.equal(ob.toString(), '#("a b": 1000)');
+
+ob = new SuObject();
+ob.Add('a b');
+assert.equal(ob.toString(), '#("a b")');

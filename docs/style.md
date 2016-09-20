@@ -1,3 +1,10 @@
+---
+---
+Style Guide
+===========
+
+* code should pass tslint with no errors
+
 * use `let` or `const` instead of `var`
 
 * use one `let` or `const` per variable
@@ -14,7 +21,9 @@
 
 * declare function parameter types and return types, but not variables (unless there is a particular reason)
 
-* use ES6 style `import`
+* use ES6 style `import` and `export`
+
+* avoid default exports
 
 * write range comparisons like `lo <= x && x <= hi` or `x < lo || hi < x`
 
@@ -36,10 +45,14 @@
 
 * use == or != undefined to check for null or undefined
 
-* avoid default exports
+* use slice instead of substring
+
+* use [] instead of .charAt()
+
+* throw Error's (not strings or other values)
 
 * use `as` for type assertions, not `<type>`
 
 * minimize the use of type assertions
 
-https://basarat.gitbooks.io/typescript/content/docs/types/type-assertion.html
+(https://basarat.gitbooks.io/typescript/content/docs/types/type-assertion.html)

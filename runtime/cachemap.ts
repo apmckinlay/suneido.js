@@ -1,42 +1,35 @@
+// used by tr
+
 class Slot<Key, Data> {
-    constructor(
-        public lru: number = null,
-        public key: Key = null,
-        public data: Data = null) { }
+    constructor(public lru: number, public key: Key, public data: Data) {
+    }
 }
 
-export default class CacheMap<Key, Data> {
-    constructor(n: number) {
-        this.next = 0;
+export class CacheMap<Key, Data> {
+    private slots: Slot<Key, Data>[];
+    private clock: number;
+
+    constructor(private n: number, private func: (k: Key) => Data) {
         this.clock = 0;
-        this.n = n;
         this.slots = [];
     }
-    put(key: Key, data: Data): Data {
-        var lru: number = 0,
-            i: number;
 
-        if (this.next < this.n) {
-            this.slots[this.next++] = new Slot(this.clock++, key, data);
-            return data;
-        }
-        for (i = 0; i < this.next; i++)
-            if (this.slots[i].lru < this.slots[lru].lru)
-                lru = i;
-        this.slots[lru] = new Slot(this.clock++, key, data);
-        return data;
-    }
+    /** get or calculate data */
     get(key: Key): Data {
-        for (var i = 0; i < this.next; i++)
+        let lru = 0;
+        // single pass both searches and finds lru
+        for (let i = 0; i < this.slots.length; i++) {
             if (this.slots[i].key === key) {
                 this.slots[i].lru = this.clock++;
                 return this.slots[i].data;
             }
-        return null;
+            if (this.slots[i].lru < this.slots[lru].lru)
+                lru = i;
+        }
+        if (this.slots.length < this.n)
+            lru = this.slots.length;
+        let data = this.func(key);
+        this.slots[lru] = new Slot(this.clock++, key, data);
+        return data;
     }
-
-    private next: number;
-    private clock: number;
-    private n: number;
-    private slots: Slot<Key, Data>[];
 }

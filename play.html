@@ -5,56 +5,145 @@
     <meta charset="UTF-8">
     <title>suneido.js playground</title>
     <style type="text/css">
+        html,
+        body {
+            height: 98%;
+        }
+
         body {
             font-family: sans-serif;
+            display: flex;
+            flex-flow: column nowrap;
+            Xalign-items: flex-start;
         }
 
         textarea {
             font-family: monospace;
             font-size: large;
+            box-sizing: border-box;
+            width: 100%;
+            flex-grow: 3;
+            border: 0;
+            background-color: #dddddd;
+        }
+
+        textarea.result {
+            flex-grow: 1;
+        }
+
+        #topright {
+            float: right;
+        }
+
+        #run,
+        #clear {
+            font-size: large;
+            padding: 5px;
+            color: white;
+            font-weight: bold;
+            background-color: green;
+        }
+
+        #sample {
+            font-size: large;
+            margin-top: .5em;
+            margin-right: 1em;
         }
     </style>
-    <script data-main="play" src="http://requirejs.org/docs/release/2.1.18/comments/require.js"></script>
+    <script src="runtime/su_bundle.js"></script>
+    <script src="play_samples.js"></script>
+    <script type="text/javascript">
+        window.onload = function() {
+            function run() {
+                document.getElementById("su_result").value = ''
+                document.getElementById("js_source").value = ''
+                document.getElementById("js_result").value = ''
+                var src = document.getElementById("su_source").value;
+                var req = new XMLHttpRequest();
+                req.onload = results;
+                req.open("post", "/run", true);
+                req.send(src);
+            }
+
+            function results() {
+                if (this.status !== 200) {
+                    document.getElementById("su_result").value =
+                        this.status + ' ' + this.statusText;
+                    return
+                }
+                let result = JSON.parse(this.responseText);
+                document.getElementById("su_result").value = result.su_result;
+                let s = result.js_source
+                // strip function wrapper if present
+                try {
+                    if (s.startsWith('(function () {') && s.endsWith('})().call()')) {
+                        let [, cons] = s.match(/\n    (let \$const = \[[\s\S]*\n    \];\n)/) || ['', ''];
+                        cons = cons.replace(/^    /mg, '');
+                        let [, body] = s.match(/let \$f = function \(\) \{\r?\n([\s\S]*)\};\r?\n    \$f\.\$call = \$f;/);
+                        body = body.replace(/^        /mg, '');
+                        s = cons + body;
+                    }
+                } catch (e) {
+                    s = 'ERROR in strip ' + e + '\n' + s;
+                }
+                document.getElementById("js_source").value = s;
+                let js_result;
+                try {
+                    js_result = su.display(eval(result.js_source));
+                } catch (e) {
+                    js_result = e;
+                }
+                document.getElementById("js_result").value = js_result;
+            }
+
+            document.getElementById('run').onclick = run;
+
+            document.getElementById('clear').onclick = function() {
+                document.getElementById('sample').value = '';
+                document.getElementById("su_source").value = '';
+                document.getElementById("su_result").value = '';
+                document.getElementById("js_source").value = '';
+                document.getElementById("js_result").value = '';
+            };
+
+            document.getElementById('sample').onchange = function() {
+                var which = document.getElementById('sample').value;
+                if (which) {
+                    document.getElementById("su_source").value = play_samples[which];
+                    document.getElementById("su_result").value = '';
+                    document.getElementById("js_source").value = '';
+                    document.getElementById("js_result").value = '';
+                }
+            };
+
+            let sel = document.getElementById('sample');
+            for (name in play_samples)
+                sel.options[sel.options.length] = new Option(name, name);
+        };
+    </script>
 </head>
 
 <body>
-    <h1>suneido.js playground</h1>
-    <div style="float: left; margin-right: 1em;">
-        <label>
-            Suneido source code
-            <br/>
-            <textarea id="su_source" rows="9" cols="50"></textarea>
-        </label>
-        <br />
-        <br />
-        <label>
-            Suneido result
-            <br />
-            <textarea id="su_result" rows="5" cols="50" readonly="readonly"></textarea>
-        </label>
-        <br />
-        <br />
-    </div>
-    <div style="float: left; ">
-        <label>
-            JavaScript
-            <br/>
-            <textarea id="js_source" rows="9" cols="50" readonly="readonly"></textarea>
-        </label>
-        <br />
-        <br />
-        <label>
-            JavaScript result
-            <br />
-            <textarea id="js_result" rows="5" cols="50" readonly="readonly"></textarea>
-        </label>
-        <br />
-        <br />
-    </div>
-    <div style="clear: both;">
-        <span id="run" style="font-size: x-large; padding: 5px; color: white;
-            font-weight: bold; background-color: green">Run</span>
-    </div>
+    <h1>suneido.js playground
+        <div id="topright">
+            <span style="font-size: large;">Samples</span>
+            <select id="sample">
+                <option></option>
+            </select>
+            <span id="run">Run</span>
+            <span id="clear">Clear</span>
+        </div>
+        </h1> Suneido source code
+    <br/>
+    <textarea id="su_source" spellcheck="false"></textarea>
+    <br/> Suneido result
+    <br />
+    <textarea id="su_result" class="result" readonly="readonly"></textarea>
+    <br/> JavaScript
+    <textarea id="js_source" readonly="readonly"></textarea>
+    <br/> JavaScript result
+    <br />
+    <textarea id="js_result" class="result" readonly="readonly"></textarea>
 </body>
 
 </html>

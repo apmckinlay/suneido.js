@@ -1,0 +1,8 @@
+{
+  "name": "suneido.js",
+  "license": "GPL-2.0",
+  "repository": "github/apmckinlay/suneido.js",
+  "devDependencies": {
+    "equals": "^1.0.5"
+  }
+}

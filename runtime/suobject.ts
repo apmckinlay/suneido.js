@@ -1,29 +1,34 @@
 /**
  * Uses a JavaScript array and Map
  * Map does not handle object keys so these are disallowed for now.
- * Dnum keys are converted to JavaScript numbers, hopefully losslessly.
- * Iteration through the map must use forEach until TypeScript has for-of
- * Created by andrew on 2015-05-31.
+ * SuNum keys are converted to JavaScript numbers, hopefully losslessly.
  */
 
-import Dnum from "./dnum";
-import * as su from "./su";
+import { SuNum } from "./sunum";
+import { SuValue } from "./suvalue";
+import { display } from "./display";
+import { is } from "./is";
+import { mandatory, maxargs } from "./args";
+import { cmp } from "./cmp";
+import * as util from "./utility";
 
-declare var Map: {
-    new <K, V>(): Map<K, V>;
-    prototype: Map<any, any>;
-};
+import * as assert from "./assert";
 
-export default class SuObject {
+export class SuObject extends SuValue {
     private readonly: boolean;
     private defval: any;
-    private vec: Array<any>;
-    private map: Map<any, any>;
+    public vec: Array<any>;    // public only for readonly access
+    public map: Map<any, any>; // public only for readonly access
+    static EMPTY = new SuObject().Set_readonly();
 
-    constructor(readonly = false) {
-        this.readonly = readonly;
-        this.vec = [];
-        this.map = new Map();
+    /** WARNING: the object will take ownership of the array and map */
+    constructor(vec?: any[], map?: Map<any, any>) {
+        super();
+        this.vec = vec || [];
+        assert.that(Array.isArray(this.vec));
+        this.map = map || new Map();
+        assert.that(this.map instanceof Map);
+        this.readonly = false;
     }
 
     // length property is used by su.range... to be compatible with string
@@ -32,22 +37,15 @@ export default class SuObject {
     }
 
     static list(...args: any[]): SuObject {
-        var ob = new SuObject();
-        ob.vec = args;
-        return ob;
-    }
-
-    static isSuOb(x: any): boolean {
-        return typeof x === 'object' && x instanceof SuObject;
+        return new SuObject(args);
     }
 
     static toString2(x: SuObject, before: string, after: string) {
-        var s = "";
-        for (var i = 0; i < x.vec.length; ++i)
-            s += x.vec[i] + ', ';
-        x.map.forEach(function(v, k) {
-            s += keyString(k) + ': ' + su.display(v) + ', ';
-        }); //TODO use for-of once available
+        let s = "";
+        for (let i = 0; i < x.vec.length; ++i)
+            s += display(x.vec[i]) + ', ';
+        for (let [k, v] of x.map)
+            s += keyString(k) + ': ' + display(v) + ', ';
         return before + s.slice(0, -2) + after;
     }
 
@@ -63,8 +61,20 @@ export default class SuObject {
         return this.map.size;
     }
 
-    private checkReadonly(ob: SuObject): void {
-        if (ob.readonly)
+    Size(list = false, named = false): number {
+        maxargs(2, arguments.length);
+        if (list === named)
+            return this.size();
+        else if (list === true)
+            return this.vecsize();
+        else if (named === true)
+            return this.mapsize();
+        else
+            throw new Error("SuObject.Size bad args");
+    }
+
+    private checkReadonly(): void {
+        if (this.readonly)
             throw "can't modify readonly objects";
     }
 
@@ -73,62 +83,146 @@ export default class SuObject {
     }
 
     private migrate(): void {
-        var x: any;
-        while (undefined != (x = this.map.get(this.vec.length))) {
+        let x: any;
+        while (undefined !== (x = this.map.get(this.vec.length))) {
             this.map.delete(this.vec.length);
             this.vec.push(x);
         }
     }
 
-    add(x: any): void {
-        this.checkReadonly(this);
+    Add(x: any = mandatory()): SuObject {
+        maxargs(1, arguments.length);
+        this.checkReadonly();
         this.vec.push(x);
         this.migrate();
+        return this;
     }
 
-    put(key: any, value: any): void {
-        this.checkReadonly(this);
-        var i = index(key);
+    put(key: any, value: any): SuObject {
+        this.checkReadonly();
+        let i = index(key);
         if (0 <= i && i < this.vec.length)
             this.vec[i] = value;
         else if (i === this.vec.length)
-            this.add(value);
+            this.Add(value);
         else
             this.map.set(key, value);
+        return this;
     }
 
     get(key: any): any {
-        var value = this.getIfPresent(this, key);
-        if (value !== undefined)
-            return value;
-        //TODO handle SuObject defval
-        return this.defval;
+        return this.getDefault(key, this.defval);
     }
 
-    getIfPresent(ob: SuObject, key: any): any {
-        var i = index(key);
-        return (0 <= i && i < ob.vec.length) ? ob.vec[i] : this.mapget(key);
+    getDefault(key: any, def: any): any {
+        let value = this.getIfPresent(key);
+        if (value === undefined)
+            return def;
+        return value;
     }
 
-    setReadonly(): void {
+    GetDefault(key: any = mandatory(), def: any = mandatory()): any {
+        maxargs(2, arguments.length);
+        let val = this.getDefault(key, undefined);
+        if (val !== undefined)
+            return val;
+        if (typeof def === "function")
+            return def.$call();
+        return def;
+    }
+
+    getIfPresent(key: any): any {
+        let i = index(key);
+        return (0 <= i && i < this.vec.length) ? this.vec[i] : this.mapget(key);
+    }
+
+    Find(value: any = mandatory()): any {
+        maxargs(1, arguments.length);
+        for (let i = 0; i < this.vec.length; i++)
+            if (is(this.vec[i], value))
+                return i;
+        for (let [k, v] of this.map)
+            if (is(v, value))
+                return k;
+        return false;
+    }
+
+    ['Member?'](key: any = mandatory()): boolean {
+        maxargs(1, arguments.length);
+        let i = index(key);
+        return (0 <= i && i < this.vec.length) || this.map.has(key);
+    }
+
+    //NOTE: not lazy
+    Members(list = false, named = false): SuObject {
+        maxargs(2, arguments.length);
+        if (list === false && named === false)
+            list = named = true;
+        let ms: any[] = [];
+        if (list === true)
+            ms.push(...this.vec.keys());
+        if (named === true)
+            ms.push(...this.map.keys());
+        return new SuObject(ms);
+    }
+
+    Delete(args: SuObject): SuObject {
+        this.checkReadonly();
+        if (args.getDefault('all', false) === true)
+            this.clear();
+        else
+            for (let x of args.vec)
+                this.erase(x);
+        return this;
+    }
+
+    clear(): void {
+        this.vec = [];
+        this.map = new Map();
+    }
+
+    erase(key: any): void {
+        let i = index(key);
+        if (0 <= i && i < this.vec.length)
+            this.vec.splice(i, 1);
+        else
+            this.map.delete(key);
+    }
+
+    Set_readonly(): SuObject {
+        maxargs(0, arguments.length);
         if (this.readonly)
-            return;
+            return this;
         this.readonly = true;
         //TODO recursively set readonly
+        return this;
     }
 
-    setDefault(value: any): void {
+    Set_default(value: any = null): SuObject {
+        maxargs(1, arguments.length);
         this.defval = value;
+        return this;
     }
 
-    typeName(): string {
+    type(): string {
         return "Object";
     }
 
+    Copy(): SuObject {
+        maxargs(0, arguments.length);
+        let copy = new SuObject(this.vec.slice(), new Map(this.map));
+        copy.defval = this.defval;
+        return copy;
+    }
+
+    Slice(i: number = mandatory(), n: number = this.vecsize()): SuObject {
+        maxargs(2, arguments.length);
+        return this.slice(i, n < 0 ? n : i + n);
+    }
+
+    // used by su ranges, must match string.slice
     slice(i: number, j: number): SuObject {
-        var ob = new SuObject();
-        ob.vec = this.vec.slice(i, j);
-        return ob;
+        return new SuObject(this.vec.slice(i, j));
     }
 
     toString(): string {
@@ -139,76 +233,120 @@ export default class SuObject {
         return this.toString();
     }
 
+    ['Sort!'](lt?: Lt): SuObject {
+        this.checkReadonly();
+        let c = lt ? lt_to_cmp(lt) : cmp;
+        this.vec.sort(c);
+        return this;
+    }
+
     equals(that: any): boolean {
-        if (!SuObject.isSuOb(that))
+        if (!(that instanceof SuObject))
             return false;
         return SuObject.equals2(this, that, new PairStack());
     }
     private static equals2(x: SuObject, y: SuObject, stack: PairStack): boolean {
-        if (x.vec.length != y.vec.length || x.map.size != y.map.size)
+        if (x.vec.length !== y.vec.length || x.map.size !== y.map.size)
             return false;
         if (stack.contains(x, y))
             return true; // comparison is already in progress
         stack.push(x, y);
         try {
-            for (var i = 0; i < x.vec.length; ++i)
+            for (let i = 0; i < x.vec.length; ++i)
                 if (!SuObject.equals3(x.vec[i], y.vec[i], stack))
                     return false;
-            var eq = true;
-            x.map.forEach(function(v, k) {
+            for (let [k, v] of x.map)
                 if (!SuObject.equals3(v, y.map.get(k), stack))
-                    eq = false;
-            }); //TODO use for-of once available
-            return eq;
+                    return false;
+            return true;
         } finally {
             stack.pop();
         }
     }
-    private static equals3(x: any, y: any, stack?: PairStack): boolean {
+    private static equals3(x: any, y: any, stack: PairStack): boolean {
         if (x === y)
             return true;
-        if (!SuObject.isSuOb(x))
-            return su.is(x, y);
-        if (!SuObject.isSuOb(y))
+        if (!(x instanceof SuObject))
+            return is(x, y);
+        if (!(y instanceof SuObject))
             return false;
         return SuObject.equals2(x, y, stack);
     }
 
+    /** Only compares vector, ignores map */
+    compareTo(that: any): number {
+        if (this === that)
+            return 0;
+        return this.compare2(that, new PairStack());
+    }
+    private compare2(that: SuObject, stack: PairStack): number {
+        if (stack.contains(this, that))
+            return 0; // comparison is already in progress
+        stack.push(this, that);
+        let ord: number;
+        for (let i = 0; i < this.vec.length && i < that.vec.length; ++i)
+            if (0 !== (ord = SuObject.compare3(this.vec[i], that.vec[i], stack)))
+                return ord;
+        return util.cmp(this.vec.length, that.vec.length);
+    }
+    private static compare3(x: any, y: any, stack: PairStack): number {
+        if (x === y)
+            return 0;
+        else if (x instanceof SuObject && y instanceof SuObject)
+            return x.compare2(y, stack);
+        else
+            return cmp(x, y);
+    }
+
 } // end of SuObject class
 
+type Lt = (x: any, y: any) => boolean;
+type Cmp = (x: any, y: any) => -1|0|1;
+
+function lt_to_cmp(lt: Lt): Cmp {
+    return (x: any, y: any) => {
+        if (lt(x, y))
+            return -1;
+        else if (lt(y, x))
+            return 1;
+        else
+            return 0;
+    };
+}
+
 function canonical(key: any): any {
-    if (key instanceof Dnum)
-        return (<Dnum>key).toNumber();
+    if (key instanceof SuNum)
+        return key.toNumber();
     if (typeof key === 'object')
         throw "suneido.js objects do not support object keys";
     return key;
 }
 
 function index(key: any): number {
-    if (key instanceof Dnum && (<Dnum>key).isInt())
-        key = (<Dnum>key).toInt();
+    if (key instanceof SuNum && key.isInt())
+        key = key.toInt();
     return Number.isSafeInteger(key) ? key : -1;
 }
 
 function keyString(x: any): string {
     if (typeof x === 'string' &&
-        -1 !== x.search(/^[_a-zA-Z][_a-zA-Z0-9]*[?!]?$/))
+        /^[_a-zA-Z][_a-zA-Z0-9]*[?!]?$/.test(x))
         return x;
-    return su.display(x);
+    return display(x);
 }
 
 class PairStack {
     public stack: Array<any>;
     constructor() {
-        this.stack = []
+        this.stack = [];
     }
     public push(x: any, y: any): void {
         this.stack.push(x);
         this.stack.push(y);
     }
     public contains(x: any, y: any): boolean {
-        for (var i = 0; i < this.stack.length; i += 2)
-            if (this.stack[i] === x && this.stack[i + 1] == y)
+        for (let i = 0; i < this.stack.length; i += 2)
+            if (this.stack[i] === x && this.stack[i + 1] === y)
                 return true;
         return false;
     }
