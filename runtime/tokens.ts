@@ -2,10 +2,7 @@
  * Token values for Lexer
  */
 
-// I think const with --preserveConstEnums should work
-// it keeps mapping object but you can't use it??? (TS bug?)
-// get: a const enum member can only be accessed using a string literal
-export enum Token {
+export const enum Token {
     NIL = 0,
     EOF,
     ERROR,

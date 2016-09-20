@@ -13,3 +13,5 @@ runtime/node_modules/*
 runtime/.babelrc
 runtime/package.json
 .atomignore
+
+.alm/sessionsV2.json

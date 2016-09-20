@@ -1,7 +1,7 @@
 import { runFile } from "./porttests"
 
-runFile("ptest.test", {"ptest": ptest});
+runFile("ptest.test", { ptest });
 
-function ptest(x, y): boolean {
+function ptest(x: string, y: string): boolean {
     return x == y;
 }

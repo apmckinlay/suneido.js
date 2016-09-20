@@ -34,7 +34,7 @@
 
             function load() {
                 var name = document.getElementById("name").value;
-                history.pushState(null, null, '/libview/' + name);
+                history.pushState(null, null, '/libview?' + name);
                 load2(name);
             }
 
@@ -47,7 +47,7 @@
                 }
                 var req = new XMLHttpRequest();
                 req.onload = display;
-                req.open("get", "/libget/stdlib/" + name, true);
+                req.open("get", "/libget?stdlib/" + name, true);
                 req.send();
             };
 
@@ -100,12 +100,12 @@
             document.getElementsByClassName('CodeMirror')[0].onkeydown = goto;
 
             window.addEventListener("popstate", function(e) {
-                document.getElementById("name").value = location.pathname.substr(9);
+                document.getElementById("name").value = location.search.substr(1);
                 load2();
             });
             // handle non ajax (re)load
-            if (location.pathname.length > 9) {
-                document.getElementById("name").value = location.pathname.substr(9);
+            if (location.search.length > 1) {
+                document.getElementById("name").value = location.search.substr(1);
                 load2();
             }
         };

@@ -5,8 +5,6 @@ String
 -------
 Use JavaScript strings.
 
-sustring.ts is currently written as a wrapper, it needs to be rewritten as static functions.
-
 Number
 ------
 A Dnum is internally represented as a pair of JavaScript numbers, a coefficient and an exponent. See dnum.ts
@@ -17,4 +15,8 @@ An SuDate is internally represented as a pair of JavaScript numbers, a date and 
 
 Object
 ------
-Uses a JavaScript Array and Map.
+Uses a JavaScript Array and Map. See suobject.ts
+
+Regex
+-----
+Use our own implementation so we get identical behavior.

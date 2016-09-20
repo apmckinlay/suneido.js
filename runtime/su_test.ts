@@ -10,7 +10,7 @@ import * as assert from "./assert";
 
 var n = Dnum.make;
 
-function is(x, y): void {
+function is(x: any, y: any): void {
     assert.that(su.is(x, y), x + " is " + y + " should be true");
     assert.that(su.is(y, x), y + " is " + x + " should be true");
 }
@@ -20,7 +20,7 @@ is(123, 123);
 is(123, n(123));
 is(n(15, -1), 1.5);
 
-function isnt(x, y): void {
+function isnt(x: any, y: any): void {
     assert.that(su.isnt(x, y), x + " isnt " + y + " should be true");
     assert.that(su.isnt(y, x), y + " isnt " + x + " should be true");
 }
@@ -28,7 +28,7 @@ isnt(true, false);
 isnt(123, 'hello');
 isnt(n(1), true);
 
-function add(x, y, expected): void {
+function add(x: any, y: any, expected: any): void {
     var sum = su.add(x, y);
     assert.that(su.is(sum, expected), "add " + x + ", " + y +
         " expected " + expected + " got " + sum);
@@ -68,7 +68,7 @@ assert.equal(su.rangelen("abcde", 3, 0), "");
 assert.equal(su.rangelen("abcde", 3, -3), "");
 
 var list = SuObject.list;
-function eq(x, y) { assert.that(x.equals(y), x + " should be " + y) }
+function eq(x: any, y: any) { assert.that(x.equals(y), x + " should be " + y) }
 eq(su.rangeto(list(0, 1, 2, 3, 4), 2, 9), list(2, 3, 4));
 eq(su.rangeto(list(0, 1, 2, 3, 4), 1, 4), list(1, 2, 3));
 eq(su.rangeto(list(0, 1, 2, 3, 4), 1, -1), list(1, 2, 3));
@@ -81,7 +81,7 @@ eq(su.rangelen(list(0, 1, 2, 3, 4), -2, 1), list(3));
 eq(su.rangelen(list(0, 1, 2, 3, 4), 3, 0), list());
 eq(su.rangelen(list(0, 1, 2, 3, 4), 3, -3), list());
 
-function disp(x, expected) {
+function disp(x: any, expected: string) {
     assert.equal(su.display(x), expected);
 }
 disp(true, 'true');

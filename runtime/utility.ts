@@ -75,15 +75,8 @@ export function isUpper(char: string): boolean {
     return false;
 }
 
-// should be called with i pointing at backslash
-// may need to move to class scanner
-export interface indexOb {
-    i: number;
-}
-export function IndexOb(i: number = 0) {
-    this.i = i;
-}
-export function doesc(src: string, index: indexOb): string {
+/** should be called with i pointing at backslash */
+export function doesc(src: string, index: {i: number}): string {
     let dstCode: number;
     index.i++;
     switch (src.charAt(index.i)) {

@@ -5,15 +5,19 @@
 import * as fs from "fs";
 import Lexer from "./lexer"
 import { Token } from "./tokens"
+import * as tokens from "./tokens"
 
 const SKIP = true;
 
 const dir = testdir();
 
-export function runAll(fixtures) {
+type Fixture = (...args: string[]) => boolean;
+type Fixtures = { [key: string]: Fixture };
+
+export function runAll(fixtures: Fixtures) {
     for (let file of fs.readdirSync(dir))
         if (file.endsWith(".test"))
-            runFile(fixtures, file);
+            runFile(file, fixtures);
 }
 
 function testdir(): string {
@@ -29,7 +33,7 @@ function testdir(): string {
     }
 }
 
-export function runFile(file: string, fixtures): void {
+export function runFile(file: string, fixtures: Fixtures): void {
     let src = fs.readFileSync(dir + file, "utf8");
     let scan = new Scanner(src);
     while (scan.token !== Token.EOF)
@@ -40,7 +44,7 @@ function missing() {
     return true;
 }
 
-function run1(fixtures, file: string, scan: Scanner): void {
+function run1(fixtures: Fixtures, file: string, scan: Scanner): void {
     scan.match(Token.AT);
     let name = scan.value();
     scan.match(Token.IDENTIFIER, SKIP);
@@ -53,7 +57,7 @@ function run1(fixtures, file: string, scan: Scanner): void {
     }
     let ok = true;
     while (scan.token !== Token.EOF && scan.token !== Token.AT) {
-        let args = [];
+        let args: string[] = [];
         do {
             let text: string = "";
             if (scan.token === Token.SUB) {
@@ -77,7 +81,7 @@ function run1(fixtures, file: string, scan: Scanner): void {
         console.log("\t" + n + " passed");
 }
 
-function runCase(fixture, args) {
+function runCase(fixture: Fixture, args: string[]): boolean {
     try {
         return fixture(...args);
     } catch (e) {
@@ -111,7 +115,8 @@ class Scanner {
 
     match(expected: Token, skip: boolean = false): void {
         if (this.token !== expected)
-            throw new Error("expected " + Token[expected] + " got " + Token[this.token]);
+            throw new Error("expected " + (tokens as any).Token[expected] +
+                " got " + (tokens as any).Token[this.token]);
         this.next(skip);
     }
 }

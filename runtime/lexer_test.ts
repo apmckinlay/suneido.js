@@ -1,8 +1,9 @@
 import Lexer from "./lexer"
 import { Token, keywords } from "./tokens"
+import * as tokens from "./tokens"
 import * as assert from "./assert"
 
-function check(src: string, ...expected): void {
+function check(src: string, ...expected: any[]): void {
     let lexer = new Lexer(src);
     let i = 0;
     for (; ;) {
@@ -37,8 +38,8 @@ function check1(lexer: Lexer, token: Token,
 
 function eqToken(t1: Token, t2: Token) {
     if (t1 !== t2)
-        throw new Error("assert failed: " + Token[t1] + "(" + t1 + ")" +
-            " does not equal " + Token[t2] + "(" + t2 + ")");
+        throw new Error("assert failed: " + (tokens as any).Token[t1] + "(" + t1 + ")" +
+            " does not equal " + (tokens as any).Token[t2] + "(" + t2 + ")");
 }
 
 check("");
@@ -84,7 +85,7 @@ check("if 1<2\n/**/Print(12)",
 
 check("@// more\n@", Token.AT, Token.COMMENT, Token.NEWLINE, Token.AT);
 
-function checkValues(token, ...values): void {
+function checkValues(token: Token, ...values: string[]): void {
     let src = values.join(' ');
     let expected = values.map(v => [token, v]);
     check(src, ...expected);
@@ -97,14 +98,14 @@ checkValues(Token.IDENTIFIER,
 
 function checkKeywords(src: string) {
     let expected = src.split(' ').map(t =>
-        [Token.IDENTIFIER, t, Token[t.toUpperCase()] || "BAD"])
+        [Token.IDENTIFIER, t, (tokens as any).Token[t.toUpperCase()] || "BAD"])
     check(src, ...expected);
 }
 checkKeywords("break case catch continue class callback default " +
     "dll do else for forever function if new " +
     "switch struct super return throw try while true false");
 
-function checkStrings(...cases) {
+function checkStrings(...cases: string[][]) {
     let src = cases.map(c => c[0]).join(' ');
     let expected = cases.map(c => [Token.STRING, c[1]]);
     check(src, ...expected);

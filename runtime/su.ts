@@ -12,14 +12,14 @@ import * as suob from "./suobject";
 import SuObject from "./suobject";
 // export { empty_object } from "./suobject";
 
-export function put(ob, key, val): void {
+export function put(ob: any, key: any, val: any): void {
     if (SuObject.isSuOb(ob))
         <SuObject>ob.put(key, val);
     else
         throw typeName(ob) + " does not support put (" + key + ")";
 }
 
-export function get(x, key): any {
+export function get(x: any, key: any): any {
     if (typeof x === 'string')
         return <string>x.charAt(toInt(key));
     if (SuObject.isSuOb(x))
@@ -27,18 +27,18 @@ export function get(x, key): any {
     throw typeName(x) + " does not support get (" + key + ")";
 }
 
-export function rangeto(x, i, j) {
+export function rangeto(x: any, i: number, j: number) {
     var len = x.length;
     return x.slice(prepFrom(i, len), j);
 }
 
-export function rangelen(x, i, n) {
+export function rangelen(x: any, i: number, n: number) {
     var len = x.length;
     i = prepFrom(i, len);
     return x.slice(i, i + n);
 }
 
-function prepFrom(from, len) {
+function prepFrom(from: number, len: number) {
     if (from < 0) {
         from += len;
         if (from < 0)
@@ -47,31 +47,31 @@ function prepFrom(from, len) {
     return from;
 }
 
-export function inc(x) {
+export function inc(x: any) {
     return x + 1; // TODO
 }
 
-export function dec(x) {
+export function dec(x: any) {
     return x - 1; // TODO
 }
 
-export function uadd(x) {
+export function uadd(x: any) {
     return +x; // TODO
 }
 
-export function usub(x) {
+export function usub(x: any) {
     return -x; // TODO
 }
 
-export function not(x): boolean {
+export function not(x: any): boolean {
     return !toBool(x);
 }
 
-export function bitnot(x): number {
+export function bitnot(x: any): number {
     return ~x; // TODO
 }
 
-function toInt(x): number {
+function toInt(x: any): number {
     if (Number.isSafeInteger(x))
         return x;
     if (x instanceof Dnum && <Dnum>x.isInt())
@@ -99,7 +99,7 @@ function toDnum(x: number | Dnum): Dnum {
     return (typeof x === 'number') ? Dnum.make(x) : <Dnum>x;
 }
 
-export function add(x, y): any {
+export function add(x: any, y: any): any {
     x = toNum(x);
     y = toNum(y);
     if (typeof x === 'number' && typeof y === 'number')
@@ -108,51 +108,51 @@ export function add(x, y): any {
         return Dnum.add(toDnum(x), toDnum(y));
 }
 
-export function sub(x, y) {
+export function sub(x: any, y: any) {
     return x - y; //TODO
 }
 
-export function cat(x, y): string {
+export function cat(x: any, y: any): string {
     return "" + x + y; //TODO
 }
 
-export function mul(x, y) {
+export function mul(x: any, y: any) {
     return x * y; //TODO
 }
 
-export function div(x, y) {
+export function div(x: any, y: any) {
     return x / y; //TODO
 }
 
-export function mod(x, y) {
+export function mod(x: any, y: any) {
     return x % y; //TODO
 }
 
-export function lshift(x, y): number {
+export function lshift(x: any, y: any): number {
     return x << y; //TODO
 }
 
-export function rshift(x, y): number {
+export function rshift(x: any, y: any): number {
     return x >> y; //TODO
 }
 
-export function bitand(x, y): number {
+export function bitand(x: any, y: any): number {
     return x & y; //TODO
 }
 
-export function bitor(x, y): number {
+export function bitor(x: any, y: any): number {
     return x | y; //TODO
 }
 
-export function bitxor(x, y): number {
+export function bitxor(x: any, y: any): number {
     return x ^ y; //TODO
 }
 
-function isNum(x): boolean {
+function isNum(x: any): boolean {
     return typeof x === 'number' || x instanceof Dnum;
 }
 
-export function is(x, y): boolean {
+export function is(x: any, y: any): boolean {
     if (x === y)
         return true;
     if (typeof x === 'number' && typeof y === 'number')
@@ -165,35 +165,35 @@ export function is(x, y): boolean {
     return false;
 }
 
-export function isnt(x, y): boolean {
+export function isnt(x: any, y: any): boolean {
     return !is(x, y); //TODO
 }
 
-export function lt(x, y): boolean {
+export function lt(x: any, y: any): boolean {
     return x < y; //TODO
 }
 
-export function lte(x, y): boolean {
+export function lte(x: any, y: any     ): boolean {
     return x <= y; //TODO
 }
 
-export function gt(x, y): boolean {
+export function gt(x: any, y: any     ): boolean {
     return x > y; //TODO
 }
 
-export function gte(x, y): boolean {
+export function gte(x: any, y: any     ): boolean {
     return x >= y; //TODO
 }
 
-export function match(x, y): boolean {
+export function match(x: any, y: any     ): boolean {
     return -1 !== x.search(RegExp(y)); //TODO
 }
 
-export function matchnot(x, y): boolean {
+export function matchnot(x: any, y: any     ): boolean {
     return -1 === x.search(RegExp(y)); //TODO
 }
 
-export function toBool(x): boolean {
+export function toBool(x: any): boolean {
     if (x !== true && x !== false)
         throw "can't convert " + typeof x + " to boolean";
     return x;
@@ -207,16 +207,16 @@ export function catchMatch(e: string, pat: string): boolean { // TODO
 
 }
 
-export function noargs(args): void {
+export function noargs(args: any[]): void {
     if (args.length != 0)
         throw "too many arguments";
 }
 
-export function argsall(args) {
+export function argsall(args: any[]) {
     return args; //TODO
 }
 
-export function args(args, spec) {
+export function args(args: any[], spec: string) {
     return args; //TODO
 }
 

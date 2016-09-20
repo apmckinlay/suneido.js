@@ -90,15 +90,14 @@ export function entab(s: string): string {
     });
 }
 
-export function extract(s: string, pattern: string, part: number | boolean = false): string | boolean {
+export function extract(s: string, pattern: string, part?: number): string | boolean {
     assert.that(arguments.length === 2 || arguments.length === 3,
         "usage: string.Extract(pattern, part = 0/1)");
     var re = new RegExp(pattern),
-        found = s.match(re),
-        part_i;
+        found = s.match(re);
     if (found === null)
         return false;
-    part_i = (part === false)
+    let part_i = (part == undefined)
         ? (found.length === 1) ? 0 : 1
         : part;
     return found[part_i];
@@ -391,9 +390,8 @@ export function tr(s: string, from: string, to: string = ''): string {
 
 export function unescape(s: string): string {
     assert.that(arguments.length === 1, "usage: string.Unescape()");
-    var dst = '',
-        index: util.indexOb = new util.IndexOb();
-    for (index.i = 0; index.i < s.length; index.i++) {
+    var dst = '';
+    for (let index = { i: 0 }; index.i < s.length; index.i++) {
         if (s.charAt(index.i) === '\\')
             dst += util.doesc(s, index);
         else

@@ -1,4 +1,4 @@
-/**
+/** 
  * Implements Suneido date/times.
  * Represents them as two integers to allow fast pack/unpack.
  * The only export is the SuDate class.
