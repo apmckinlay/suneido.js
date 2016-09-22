@@ -16,6 +16,9 @@ export abstract class CharMatcher {
     static anyOf(s: string): CharMatcher {
         return new AnyOf(s);
     }
+    static noneOf(s: string): CharMatcher {
+        return new AnyOf(s).negate();
+    }
     static inRange(from: Char, to: Char): CharMatcher {
         return new InRange(from, to);
     }
@@ -34,14 +37,17 @@ export abstract class CharMatcher {
         }
         return n;
     }
-    indexIn(s: string): number {
+    indexIn(s: string, start: number = 0): number {
         let i = 0;
         for (let c of s) {
-            if (this.matches(c))
+            if (i >= start && this.matches(c))
                 return i;
             i++;
         }
         return -1;
+    }
+    toString(): string {
+        return "CharMatcher";
     }
 }
 
