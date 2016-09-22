@@ -4,6 +4,8 @@ import { tr } from "../tr";
 import { global } from "../global";
 import { SuObject } from "../suobject";
 import { mandatory, maxargs } from "../args";
+import { Result, ForEach, Regex } from "../regex";
+import { RegexReplace} from "../regexreplace";
 
 export function su_stringq(x: any): boolean {
     return typeof x === 'string';
@@ -107,14 +109,16 @@ export class Strings {
 
     Extract(this: string, pattern: string = mandatory(), part?: number): string | boolean {
         maxargs(2, arguments.length);
-        let re = new RegExp(pattern);
-        let found = this.match(re);
-        if (found === null)
+        let re = Regex.compile(pattern);
+        let res = re.firstMatch(this, 0);
+        if (res === null)
             return false;
-        let part_i = (part === undefined)
-            ? (found.length === 1) ? 0 : 1
-            : part;
-        return found[part_i];
+        else {
+            let part_i = (part === undefined)
+                ? (res.groupCount() === 0) ? 0 : 1
+                : part;
+            return res.group(this, part_i);
+        }
     }
 
     Find(this: string, str: string = mandatory(), pos: number = 0): number {
@@ -199,7 +203,21 @@ export class Strings {
         return dst;
     }
 
-    //match(pattern: string, pos: number | boolean = false, prev: boolean = false): suobject.SuObject {
+    Match(this: string, pattern: string = mandatory(), pos: number | boolean = false,
+        prev: boolean = false): SuObject | null {
+        let pat = Regex.compile(pattern);
+        let position = typeof pos === 'boolean' ? (prev ? this.length : 0) : pos;
+        let result = prev ? pat.lastMatch(this, position) : pat.firstMatch(this, position);
+        if (result === null)
+            return null;
+        let ob = new SuObject();
+        for (let i = 0; i <= result.groupCount(); i++) {
+            let start = result.pos[i];
+            ob.Add(new SuObject([start, result.end[i] - start]));
+        }
+        return ob;
+    }
+    // match(pattern: string, pos: number | boolean = false, prev: boolean = false): suobject.SuObject {
     //    let s: string = prev === false ? s.slice(pos, -1) : s.slice(0, pos),
     //        arrayMatch = s.match(new RegExp(pattern, 'g')),
     //        strMatch,
@@ -217,7 +235,7 @@ export class Strings {
     //        indexMatch += pos;
     //    for (i = 0; i < arrayMatch.length; i++)
     //        ob.add([indexMatch + strMatch.indexOf(), strMatch])
-    //}
+    // }
 
 
     ['Number?'](this: string): boolean {
@@ -278,87 +296,13 @@ export class Strings {
     Replace(this: string, pattern: string = mandatory(),
         replacement: any = '', count: number = Infinity): string {
         maxargs(3, arguments.length);
-        enum RepStatus { E, U, L, u, l };
-        // Calculate how many capture groups the regex pattern has
-        let nGroups = (new RegExp(pattern + '|')).exec('')!.length - 1;
-        let repCount = 0;
-        function repF(): string {
-            let dst: string = '';
-            let i: number = 0;
-            let c: string;
-            let n: number;
-            let repStatus: RepStatus = RepStatus.E;
-            function handleCase(s: string): string {
-                let res: string;
-                if (s && s.length === 0)
-                    return '';
-                switch (repStatus) {
-                    case RepStatus.E:
-                        res = s;
-                        break;
-                    case RepStatus.U:
-                        res = s.toUpperCase();
-                        break;
-                    case RepStatus.L:
-                        res = s.toLowerCase();
-                        break;
-                    case RepStatus.u:
-                        res = s[0].toUpperCase() + s.substr(1);
-                        repStatus = RepStatus.E;
-                        break;
-                    case RepStatus.l:
-                        res = s[0].toLowerCase() + s.substr(1);
-                        repStatus = RepStatus.E;
-                        break;
-                    default:
-                        throw new Error("unreachable");
-                }
-                return res;
-            }
-            if (repCount++ >= count)
-                return arguments[0];
-            if (typeof replacement === "string") {
-                if (replacement.indexOf("\\=") === 0)
-                    return replacement.substr(2);
-                while (i < replacement.length) {
-                    switch (replacement[i]) {
-                        case '&':
-                            dst += handleCase(arguments[0]);
-                            break;
-                        case '\\':
-                            if (i + 1 < replacement.length) {
-                                c = replacement[++i];
-                                if (util.isDigit(c)) {
-                                    n = parseInt(c);
-                                    if (n <= nGroups)
-                                        dst += handleCase(arguments[n]);
-                                } else if (c === 'u')
-                                    repStatus = RepStatus.u;
-                                else if (c === 'U')
-                                    repStatus = RepStatus.U;
-                                else if (c === 'l')
-                                    repStatus = RepStatus.l;
-                                else if (c === 'L')
-                                    repStatus = RepStatus.L;
-                                else if (c === 'E')
-                                    repStatus = RepStatus.E;
-                                else if (c === '\\')
-                                    dst += '\\';
-                                else
-                                    dst += c;
-                            } else
-                                dst += '\\';
-                            break;
-                        default:
-                            dst += handleCase(replacement[i]);
-                    }
-                    i++;
-                }
-            } else
-                dst = replacement.$call.call(undefined, arguments[0]);
-            return dst;
-        };
-        return this.replace(new RegExp(pattern, 'g'), repF);
+        let pat = Regex.compile(pattern);
+        let rep: string | null = null;
+        if (typeof replacement === 'string')
+            rep = replacement;
+        let foreach = new ClassForEach(this, rep, count, replacement);
+        pat.forEachMatch(this, foreach);
+        return foreach.result();
     }
 
     Size(this: string): number {
@@ -435,6 +379,31 @@ function doWithSplit(str: string, sep: string, f: (arg: string) => string) {
         a[index] = f(value);
     });
     return a.join(sep);
+}
+
+class ClassForEach implements ForEach {
+    private append: number = 0;
+    private strObj: {str: string} = {str: ""};
+    constructor(private s: string, private rep: string | null, private n: number,
+        private block: (s: string) => string) {
+    }
+    each(res: Result): number {
+        if (this.n <= 0)
+            return this.s.length + 1;
+        this.strObj.str += this.s.substring(this.append, res.pos[0]);
+        if (this.rep === null) {
+            let matched = res.group(this.s, 0);
+            let t = this.block(matched);
+            this.strObj.str += t === null ? matched : t;
+        } else
+            RegexReplace.append(this.s, res, this.rep, this.strObj);
+        this.append = res.end[0];
+        return --this.n > 0 ? Math.max(res.end[0], res.pos[0] + 1) : this.s.length + 1
+    }
+    result(): string {
+        this.strObj.str += this.s.substring(this.append);
+        return this.strObj.str;
+    }
 }
 
 //BUILTIN Strings.Alpha?()

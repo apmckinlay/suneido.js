@@ -1,11 +1,11 @@
 import * as assert from "./assert";
 import { CharMatcher } from "./charmatcher";
 
-interface ForEach {
+export interface ForEach {
     each: (result: Result) => number;
 }
 
-class Result {
+export class Result {
     private static readonly MAX_RESULTS = 10;
     public tmp: number[] = new Array(Result.MAX_RESULTS).fill(-1);
     public pos: number[] = new Array(Result.MAX_RESULTS).fill(-1);
