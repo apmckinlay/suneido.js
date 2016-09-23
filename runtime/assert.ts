@@ -30,12 +30,12 @@ function eq(x: any, y: any): boolean {
 }
 
 /** Asserts that the function throws an exception */
-export function throws(f: () => any, rx?: RegExp): void {
+export function throws(f: () => any, rx?: RegExp | string): void {
     try {
         f();
     } catch (e) {
         if (rx)
-            that(rx.test(e),
+            that(rx instanceof RegExp ? rx.test(e) : e.toString().indexOf(rx) !== -1,
                 "expected an exception matching " + rx + " but got " + e);
         return;
     }

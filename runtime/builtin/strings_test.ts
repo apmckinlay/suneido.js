@@ -147,6 +147,13 @@ assert.equal(sm.Replace.call(str1, "([hw])(\s?)(.)", "\\2"), "llo rld");
 assert.equal(sm.Replace.call(str1, "\\w+", "\\u&"), "Hello World");
 assert.equal(sm.Replace.call(str1, ".", capFirst), "HELLO WORLD");
 
+str1 = "hello world";
+assert.equal(sm.Match.call(str1, "$x"), null);
+assert.equal(sm.Match.call(str1, "w(..)ld").toString(), "#(#(6, 5), #(7, 2))");
+assert.equal(sm.Match.call(str1, "o", false, true).toString(), "#(#(7, 1))");
+assert.equal(sm.Match.call(str1, "o", 6).toString(), "#(#(7, 1))");
+assert.equal(sm.Match.call(str1, "o", 6, true).toString(), "#(#(4, 1))");
+
 str1 = "";
 assert.equal(sm.Size.call(""), 0);
 str1 = "hello world";
