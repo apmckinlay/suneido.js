@@ -35,7 +35,7 @@ export function throws(f: () => any, rx?: RegExp | string): void {
         f();
     } catch (e) {
         if (rx)
-            that(rx instanceof RegExp ? rx.test(e) : e.toString().indexOf(rx) !== -1,
+            that(rx instanceof RegExp ? rx.test(e) : e.toString().includes(rx),
                 "expected an exception matching " + rx + " but got " + e);
         return;
     }

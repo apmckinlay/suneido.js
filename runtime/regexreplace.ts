@@ -9,7 +9,7 @@ export class RegexReplace {
         }
         let tr = 'E';
         for (let ri = 0; ri < rep.length; ri++) {
-            let rc = rep.charAt(ri);
+            let rc = rep[ri];
             if (rc === '&')
                 tr = this.insert(obj, res.group(s, 0), tr);
             else if (rc === '\\' && ri + 1 < rep.length) {
@@ -25,8 +25,7 @@ export class RegexReplace {
                     obj.str += '\\';
                 else if (rc === '&')
                     obj.str += '&';
-                else if (rc === 'u' || rc === 'l' || rc === 'U' || rc === 'L'
-						|| rc === 'E')
+                else if (rc === 'u' || rc === 'l' || rc === 'U' || rc === 'L' || rc === 'E')
                     tr = rc;
                 else
                     obj.str += rc;
@@ -38,7 +37,7 @@ export class RegexReplace {
         }
     }
     private static get(s: string, i: number): string {
-        return i < s.length ? s.charAt(i) : String.fromCharCode(0);
+        return i < s.length ? s[i] : String.fromCharCode(0);
     }
     private static trcase(tr: string, rc: string): {c: string, tr: string} {
         switch (tr) {
@@ -60,7 +59,7 @@ export class RegexReplace {
     private static insert(obj: {str: string}, group: string | null, tr: string): string {
         if (group === null || group.length === 0)
             return tr;
-        switch(tr) {
+        switch (tr) {
             case 'E':
                 obj.str += group;
                 return 'E';
@@ -71,10 +70,10 @@ export class RegexReplace {
                 obj.str += group.toUpperCase();
                 return 'U';
             case 'l':
-                obj.str += group.charAt(0).toLowerCase() + group.slice(1);
+                obj.str += group[0].toLowerCase() + group.slice(1);
                 return 'E';
             case 'u':
-                obj.str += group.charAt(0).toUpperCase() + group.slice(1);
+                obj.str += group[0].toUpperCase() + group.slice(1);
                 return 'E';
             default:
                 assert.that(false, "Invalid replace type");

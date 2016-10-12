@@ -172,7 +172,7 @@ class Compiler {
         }
     }
     private sequence(): void {
-        while (this.si < this.sn && -1 === "|)".indexOf(this.src.charAt(this.si)))
+        while (this.si < this.sn && ! "|)".includes(this.src[this.si]))
             this.element();
     }
     private element(): void {
@@ -241,7 +241,7 @@ class Compiler {
         else if (this.match("\\S"))
             this.emit(new CharClass(Regex.notSpace));
         else if (this.matchBackref()) {
-            let i = parseInt(this.src.charAt(this.si - 1));
+            let i = parseInt(this.src[this.si - 1]);
             this.emit(new Backref(i, this.ignoringCase));
         } else if (this.match("[")) {
             this.charClass();
@@ -262,7 +262,7 @@ class Compiler {
     private emitChars(s: string): void {
         if (this.inChars && this.inCharsIgnoringCase === this.ignoringCase &&
             ! this.next1of("?*+")) {
-            (<Chars> this.pat[this.pat.length - 1]).add(s);
+            (this.pat[this.pat.length - 1] as Chars).add(s);
         } else {
             this.emit(this.ignoringCase ? new CharsIgnoreCase(s) : new Chars(s));
             this.inChars = true;
@@ -275,11 +275,11 @@ class Compiler {
         if (this.match("]"))
             chars += "]";
         let cm = CharMatcher.NONE;
-        while (this.si < this.sn && this.src.charAt(this.si) !== "]") {
+        while (this.si < this.sn && this.src[this.si] !== "]") {
             let elem: CharMatcher;
             if (this.matchRange()) {
-                let from = this.src.charAt(this.si - 3);
-                let to = this.src.charAt(this.si - 1);
+                let from = this.src[this.si - 3];
+                let to = this.src[this.si - 1];
                 elem = (from <= to)
                     ? CharMatcher.inRange(from, to)
                     : CharMatcher.NONE;
@@ -300,7 +300,7 @@ class Compiler {
             else {
                 if (this.si + 1 < this.sn)
                     this.match("\\");
-                chars += this.src.charAt(this.si++);
+                chars += this.src[this.si++];
                 continue;
             }
             cm = cm.or(elem);
@@ -318,14 +318,14 @@ class Compiler {
         this.emit(this.ignoringCase ? new CharClassIgnoreCase(cm) : new CharClass(cm));
     }
     private matchRange(): boolean {
-        if (this.src.charAt(this.si + 1) === '-' && this.si + 2 < this.sn &&
-            this.src.charAt(this.si + 2) !== ']') {
+        if (this.src[this.si + 1] === '-' && this.si + 2 < this.sn &&
+            this.src[this.si + 2] !== ']') {
             this.si += 3;
             return true;
         } else
             return false;
     }
-    private posixClass(): CharMatcher{
+    private posixClass(): CharMatcher {
         if (this.match("alpha:]"))
             return Regex.alpha;
         else if (this.match("alnum:]"))
@@ -355,7 +355,7 @@ class Compiler {
         return Regex.none;
     }
     private next1of(set: string): boolean {
-        return this.si < this.sn && set.indexOf(this.src.charAt(this.si)) !== -1;
+        return this.si < this.sn && set.includes(this.src[this.si]);
     }
     // helpers
     public match(s: string): boolean {
@@ -369,9 +369,9 @@ class Compiler {
         assert.that(this.match(s), `regex: missing '${s}'`);
     }
     public matchBackref(): boolean {
-        if (this.si + 2 > this.sn || this.src.charAt(this.si) !== '\\')
+        if (this.si + 2 > this.sn || this.src[this.si] !== '\\')
             return false;
-        let i = parseInt(this.src.charAt(this.si + 1))
+        let i = parseInt(this.src[this.si + 1]);
         if (isNaN(i) || i < 1 || i > 9)
             return false;
         this.si += 2;
@@ -402,8 +402,8 @@ abstract class Element {
 }
 class StartOfLine extends Element {
     public omatch(s: string, si: number): number {
-        return (si === 0 || s.charAt(si - 1) === '\r' ||
-            s.charAt(si - 1) == '\n') ? si : Regex.FAIL;
+        return (si === 0 || s[si - 1] === '\r' ||
+            s[si - 1] === '\n') ? si : Regex.FAIL;
     }
     public nextPossible(s: string, si: number, sn: number): number {
         if (si === sn)
@@ -417,8 +417,8 @@ class StartOfLine extends Element {
 }
 class EndOfLine extends Element {
     public omatch(s: string, si: number): number {
-        return (si >= s.length || s.charAt(si) === '\r' ||
-            s.charAt(si) == '\n') ? si : Regex.FAIL;
+        return (si >= s.length || s[si] === '\r' ||
+            s[si] === '\n') ? si : Regex.FAIL;
     }
     public toString(): string {
         return '$';
@@ -445,7 +445,7 @@ class EndOfString extends Element {
 }
 class StartOfWord extends Element {
     public omatch(s: string, si: number): number {
-        return (si === 0 || ! Regex.word.matches(s.charAt(si - 1))) ? si : Regex.FAIL;
+        return (si === 0 || ! Regex.word.matches(s[si - 1])) ? si : Regex.FAIL;
     }
     public toString(): string {
         return '\\<';
@@ -453,7 +453,7 @@ class StartOfWord extends Element {
 }
 class EndOfWord extends Element {
     public omatch(s: string, si: number): number {
-        return (si >= s.length || ! Regex.word.matches(s.charAt(si))) ? si : Regex.FAIL;
+        return (si >= s.length || ! Regex.word.matches(s[si])) ? si : Regex.FAIL;
     }
     public toString(): string {
         return '\\>';
@@ -538,13 +538,13 @@ class CharClass extends Element {
     public omatch(s: string, si: number): number {
         if (si >= s.length)
             return Regex.FAIL;
-        return this.cm.matches(s.charAt(si)) ? si + 1 : Regex.FAIL;
+        return this.cm.matches(s[si]) ? si + 1 : Regex.FAIL;
     }
     public nextPossible(s: string, si: number, sn: number): number {
         if (si >= sn)
             return sn + 1;
         let j = this.cm.indexIn(s, si + 1);
-        return j === -1 ? sn + 1: j;
+        return j === -1 ? sn + 1 : j;
     }
     public toString(): string {
         return this.cm.toString();
@@ -559,7 +559,7 @@ class CharClassIgnoreCase extends Element {
     public omatch(s: string, si: number): number {
         if (si >= s.length)
             return Regex.FAIL;
-        let c = s.charAt(si);
+        let c = s[si];
         return this.cm.matches(c.toLowerCase()) || this.cm.matches(c.toUpperCase()) ?
             si + 1 :
             Regex.FAIL;
@@ -570,7 +570,7 @@ class CharClassIgnoreCase extends Element {
         let sLowerCase = s.toLowerCase();
         let sUpperCase = s.toUpperCase();
         for (si++; si < sn; si++)
-            if (this.cm.matches(sLowerCase.charAt(si)) || this.cm.matches(sUpperCase.charAt(si)))
+            if (this.cm.matches(sLowerCase[si]) || this.cm.matches(sUpperCase[si]))
                 return si;
         return sn + 1;
     }
@@ -637,7 +637,7 @@ export class Regex {
     public static readonly space = CharMatcher.anyOf(" \t\r\n");
     public static readonly notSpace = Regex.space.negate();
     public static readonly cntrl = CharMatcher.inRange('\u0000', '\u001f')
-				.or(CharMatcher.inRange('\u007f', '\u009f'));
+                                       .or(CharMatcher.inRange('\u007f', '\u009f'));
     public static readonly word = Regex.alnum.or(CharMatcher.is('_'));
     public static readonly notWord = Regex.word.negate();
 

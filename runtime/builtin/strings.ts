@@ -398,7 +398,9 @@ class ClassForEach implements ForEach {
         } else
             RegexReplace.append(this.s, res, this.rep, this.strObj);
         this.append = res.end[0];
-        return --this.n > 0 ? Math.max(res.end[0], res.pos[0] + 1) : this.s.length + 1
+        return --this.n > 0
+            ? Math.max(res.end[0], res.pos[0] + 1)
+            : this.s.length + 1;
     }
     result(): string {
         this.strObj.str += this.s.substring(this.append);

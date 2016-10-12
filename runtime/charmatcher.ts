@@ -38,6 +38,7 @@ export abstract class CharMatcher {
         return n;
     }
     indexIn(s: string, start: number = 0): number {
+        //FIXME: slow if start is large
         let i = 0;
         for (let c of s) {
             if (i >= start && this.matches(c))

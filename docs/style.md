@@ -49,6 +49,8 @@ Style Guide
 
 * use [] instead of .charAt()
 
+* use .includes(x) instead of .indexOf(x) !== -1 (for arrays and strings)
+
 * throw Error's (not strings or other values)
 
 * use `as` for type assertions, not `<type>`

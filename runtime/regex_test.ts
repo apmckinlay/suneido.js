@@ -31,7 +31,7 @@ function matchResult(s: string, rx: string, ...exp: string[]) {
     let res = pat.firstMatch(s, 0);
     assert.that(res !== null, `${rx} => ${pat} failed to match ${s}`);
     if (res !== null)
-        for (let i = 0; i <exp.length; i++) {
+        for (let i = 0; i < exp.length; i++) {
             assert.that(s.substring(res.pos[i], res.end[i]) === exp[i]);
         }
 }
@@ -68,11 +68,11 @@ function testCompile(): void {
     test("abc+de", "'ab' 'c' Branch(-1, 1) 'de'");
     test("abc*de", "'ab' Branch(1, 3) 'c' Branch(-1, 1) 'de'");
     test("ab\\.?cd", "'ab' Branch(1, 2) '.' 'cd'");
-    test("(ab+c)+x", "Left1 'a' 'b' Branch(-1, 1) 'c' Right1 Branch(-6, 1) 'x'");
-    test("ab|cd",
-    		"Branch(1, 3) 'ab' Jump(2) 'cd'");
+    test("(ab+c)+x",
+        "Left1 'a' 'b' Branch(-1, 1) 'c' Right1 Branch(-6, 1) 'x'");
+    test("ab|cd", "Branch(1, 3) 'ab' Jump(2) 'cd'");
     test("ab|cd|ef",
-    		"Branch(1, 3) 'ab' Jump(3) Branch(1, 3) 'cd' Jump(2) 'ef'");
+        "Branch(1, 3) 'ab' Jump(3) Branch(1, 3) 'cd' Jump(2) 'ef'");
     test("abc\\Z", "'abc' \\Z");
     test("[a]", "'a'");
     test("[\\a]", "'a'");
@@ -96,7 +96,7 @@ function testCompile(): void {
     test("\\", "'\\'");
 
     except("(abc", "missing ')'");
-	except("abc)def", "closing ) without opening (");
+    except("abc)def", "closing ) without opening (");
 }
 function testAmatch(): void {
     amatch("", "");
