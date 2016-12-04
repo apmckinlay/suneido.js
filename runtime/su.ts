@@ -24,6 +24,8 @@ import { Functions } from "./builtin/functions";
 const fm: any = Functions.prototype;
 import { RootClass } from "./rootclass";
 import { mapToOb, obToMap } from "./utility";
+import { Regex, Pattern } from "./regex";
+import { CacheMap } from "./cachemap";
 
 type Num = number | SuNum;
 
@@ -223,23 +225,15 @@ export function gte(x: any, y: any): boolean {
     return cmp(x, y) >= 0;
 }
 
+export var regexCache =
+    new CacheMap<string, Pattern>(32, (s) => Regex.compile(s));
+
 export function match(x: any, y: any): boolean {
-    return regex(y).test(x); //TODO
+    return null != regexCache.get(toStr(y)).firstMatch(toStr(x), 0);
 }
 
 export function matchnot(x: any, y: any): boolean {
-    return !regex(y).test(x); //TODO
-}
-
-//TEMP until we implement Suneido regular expresssions
-function regex(pat: string): RegExp {
-    pat = pat
-        .replace('[:upper:]', 'A-Z')
-        .replace('[:lower:]', 'a-z')
-        .replace('[:alpha:]', 'a-zA-Z')
-        .replace(`\\A`, '^') // not quite correct
-        .replace('\\Z', '$');
-    return new RegExp(pat);
+    return null == regexCache.get(toStr(y)).firstMatch(toStr(x), 0);
 }
 
 export function toBool(x: any): boolean {

@@ -27,7 +27,7 @@ export class Result {
     }
 }
 
-class Pattern {
+export class Pattern {
     private pat: Element[];
 
     constructor(pat: Element[]) {
