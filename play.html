@@ -7,14 +7,22 @@
     <style type="text/css">
         html,
         body {
-            height: 98%;
+            height: 95%;
         }
 
         body {
             font-family: sans-serif;
             display: flex;
             flex-flow: column nowrap;
-            Xalign-items: flex-start;
+        }
+
+        #su_source .CodeMirror {
+            border: 1px solid gray;
+            height: 60vh;
+        }
+
+        #name {
+            font-size: large;
         }
 
         textarea {
@@ -22,13 +30,14 @@
             font-size: large;
             box-sizing: border-box;
             width: 100%;
+            height: 100%;
             flex-grow: 3;
             border: 0;
             background-color: #dddddd;
         }
 
         textarea.result {
-            flex-grow: 1;
+            flex: 1 0 10%;
         }
 
         #topright {
@@ -36,12 +45,18 @@
         }
 
         #run,
-        #clear {
+        #clear,
+        #load,
+        #update {
             font-size: large;
             padding: 5px;
             color: white;
             font-weight: bold;
             background-color: green;
+        }
+        
+        #su_source {
+            flex: 3 0 50%;
         }
 
         #sample {
@@ -54,11 +69,14 @@
     <script src="play_samples.js"></script>
     <script type="text/javascript">
         window.onload = function() {
+            var text = document.getElementById('su_source');
+            var editor = SuneidoEditor(text);
+
             function run() {
                 document.getElementById("su_result").value = ''
                 document.getElementById("js_source").value = ''
                 document.getElementById("js_result").value = ''
-                var src = document.getElementById("su_source").value;
+                var src = editor.getValue();
                 var req = new XMLHttpRequest();
                 req.onload = results;
                 req.open("post", "/run", true);
@@ -100,7 +118,7 @@
 
             document.getElementById('clear').onclick = function() {
                 document.getElementById('sample').value = '';
-                document.getElementById("su_source").value = '';
+                editor.setValue('');
                 document.getElementById("su_result").value = '';
                 document.getElementById("js_source").value = '';
                 document.getElementById("js_result").value = '';
@@ -109,7 +127,7 @@
             document.getElementById('sample').onchange = function() {
                 var which = document.getElementById('sample').value;
                 if (which) {
-                    document.getElementById("su_source").value = play_samples[which];
+                    editor.setValue(play_samples[which]);
                     document.getElementById("su_result").value = '';
                     document.getElementById("js_source").value = '';
                     document.getElementById("js_result").value = '';
@@ -119,8 +137,110 @@
             let sel = document.getElementById('sample');
             for (name in play_samples)
                 sel.options[sel.options.length] = new Option(name, name);
+
+            function load() {
+                var name = document.getElementById("name").value;
+                // history.pushState(null, null, '/libview?' + name);
+                load2(name);
+            }
+
+            function load2(name) {
+                if (name === undefined)
+                    name = document.getElementById("name").value;
+                if (!name) {
+                    editor.setValue("");
+                    return;
+                }
+                var req = new XMLHttpRequest();
+                req.onload = display;
+                req.open("get", "/libget?stdlib/" + name, true);
+                req.send();
+            };
+
+            function display() {
+                editor.setValue(this.responseText);
+            };
+
+            function keypress(event) {
+                if (event.which == 13 || event.keyCode == 13) {
+                    load();
+                    return false;
+                }
+                return true;
+            };
+            document.getElementById('load').onclick = load;
+            document.getElementById('name').onkeypress = keypress;
+
+            function update() {
+                editor.setValue("updating...")
+                var req = new XMLHttpRequest();
+                req.onload = display;
+                req.open("post", "/update", true);
+                req.send();
+            }
+            document.getElementById('update').onclick = update;
+
+            function goToDefinition(cm) {
+                // TODO be able to locate to the definitions of variables ands methods
+                var doc = cm.getDoc();
+                var sel;
+                var wordPos;
+                var name = document.getElementById('name');
+
+                sel = doc.getSelection();
+                if (!sel) {
+                    wordPos = cm.findWordAt(cm.getCursor());
+                    sel = cm.getRange(wordPos.anchor, wordPos.head)
+                }
+                name.value = sel;
+                load();
+            }
+
+            function goto(event) {
+                if (event.which == 123 || event.keyCode == 123) {
+                    goToDefinition(editor);
+                    return false;
+                }
+                return true;
+            }
+            document.getElementsByClassName('CodeMirror')[0].onkeydown = goto;
+
+            window.addEventListener("popstate", function(e) {
+                document.getElementById("name").value = location.search.substr(1);
+                load2();
+            });
+            // handle non ajax (re)load
+            if (location.search.length > 1) {
+                document.getElementById("name").value = location.search.substr(1);
+                load2();
+            }
         };
     </script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="http://codemirror.net/lib/codemirror.css">
+    <link rel="stylesheet" href="http://codemirror.net/addon/fold/foldgutter.css">
+    <link rel="stylesheet" href="http://codemirror.net/addon/hint/show-hint.css">
+    <link rel="stylesheet" href="/CodeMirror/Suneido.css">
+    <link rel="stylesheet" href="/CodeMirror/Dialog.css">
+    <script src="http://codemirror.net/lib/codemirror.js"></script>
+    <script src="http://codemirror.net/addon/fold/foldcode.js"></script>
+    <script src="http://codemirror.net/addon/fold/foldgutter.js"></script>
+    <script src="http://codemirror.net/addon/fold/brace-fold.js"></script>
+    <script src="http://codemirror.net/addon/edit/matchbrackets.js"></script>
+    <script src="http://codemirror.net/addon/edit/closebrackets.js"></script>
+    <script src="http://codemirror.net/addon/hint/show-hint.js"></script>
+    <script src="http://codemirror.net/addon/comment/comment.js"></script>
+    <script src="http://codemirror.net/addon/search/searchcursor.js"></script>
+    <script src="http://codemirror.net/addon/selection/active-line.js"></script>
+    <script src="http://codemirror.net/addon/display/panel.js"></script>
+    <script src="http://codemirror.net/addon/runmode/runmode.js"></script>
+    <script src="/CodeMirror/Suneido-editor.js"></script>
+    <script src="/CodeMirror/Suneido.js"></script>
+    <script src="/CodeMirror/Dialog.js"></script>
+    <script src="/CodeMirror/Suneido-search.js"></script>
+    <script src="/CodeMirror/HighlightWords.js"></script>
+    <script src="/CodeMirror/Suneido-hint.js"></script>
 </head>
 
 <body>
@@ -130,20 +250,28 @@
             <select id="sample">
                 <option></option>
             </select>
-            <span id="run">Run</span>
-            <span id="clear">Clear</span>
+            <input id="name" type="text"></input>
+            <button id="load">Load</button>
+            <button id="update">Update</button>
+            <button id="run">Run</button>
+            <button id="clear">Clear</button>
+        </div>     
+    </h1> 
+    <div style="display: flex; height: 100%;">
+        <div style="flex: 1 0 45%; display: flex; flex-flow: column; height: 100%; margin-right: 8px;">
+            Suneido source code<br/>
+            <div id="su_source"></div>
+            <!-- <textarea id="su_source" spellcheck="false"></textarea> -->
+            <br/> Suneido result<br/>
+            <textarea id="su_result" class="result" readonly="readonly"></textarea>
+            <br/> JavaScript result<br/>
+            <textarea id="js_result" class="result" readonly="readonly"></textarea>
         </div>
-        </h1> Suneido source code
-    <br/>
-    <textarea id="su_source" spellcheck="false"></textarea>
-    <br/> Suneido result
-    <br />
-    <textarea id="su_result" class="result" readonly="readonly"></textarea>
-    <br/> JavaScript
-    <textarea id="js_source" readonly="readonly"></textarea>
-    <br/> JavaScript result
-    <br />
-    <textarea id="js_result" class="result" readonly="readonly"></textarea>
+        <div style="flex: 1 0 45%; height: 100%;">
+            JavaScript<br/> 
+            <textarea id="js_source" readonly="readonly"></textarea>
+        </div>
+    </div>
 </body>
 
 </html>
