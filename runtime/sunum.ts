@@ -98,7 +98,7 @@ export class SuNum extends SuValue {
             return SuNum.ZERO;
         if (exp > maxExp)
             return coef < 0 ? SuNum.MINUS_INF : SuNum.INF;
-        return Object.freeze(new SuNum(coef, exp));
+        return new SuNum(coef, exp);
     }
 
     /**
@@ -363,9 +363,9 @@ export class SuNum extends SuValue {
         return Object.isFrozen(n) ? new SuNum(n.coef, n.exp) : n;
     }
 
-    static ZERO = Object.freeze(new SuNum(0, 0));
-    static INF = Object.freeze(new SuNum(Number.POSITIVE_INFINITY, expInf));
-    static MINUS_INF = Object.freeze(new SuNum(Number.NEGATIVE_INFINITY, expInf));
+    static ZERO = new SuNum(0, 0);
+    static INF = new SuNum(Number.POSITIVE_INFINITY, expInf);
+    static MINUS_INF = new SuNum(Number.NEGATIVE_INFINITY, expInf);
 
     private static same(x: SuNum, y: SuNum): boolean {
         // warning: 1e2 will not be the "same" as 100
