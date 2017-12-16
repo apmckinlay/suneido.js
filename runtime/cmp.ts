@@ -10,8 +10,8 @@ export function cmp(x: any, y: any): number {
     if (x === y)
         return 0;
 
-    let xType = typeof x;
-    let yType = typeof y;
+    let xType: string = typeof x;
+    let yType: string = typeof y;
 
     if (xType === yType &&
         (xType === 'boolean' || xType === 'number' || xType === 'string')) {

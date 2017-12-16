@@ -16,8 +16,8 @@ const expInf = 127;
 const MAX_COEF_STR = "" + Number.MAX_SAFE_INTEGER;
 
 export class SuNum extends SuValue {
-    private coef: number;
-    private exp: number;
+    public coef: number;
+    public exp: number;
 
     private constructor(coef: number, exp: number) {
         super();
@@ -27,7 +27,7 @@ export class SuNum extends SuValue {
 
     static fromNumber(n: number): SuNum {
         if (Number.isSafeInteger(n))
-            return new SuNum(n, 0);
+            return Object.freeze(new SuNum(n, 0));
         return SuNum.parse(n.toString())!; // is there a better way?
     }
 
@@ -372,6 +372,82 @@ export class SuNum extends SuValue {
         return x.coef === y.coef && x.exp === y.exp;
     }
 
+    format(mask: string): string {
+        let x = SuNum.mutable(this.abs());
+        let maskSize = mask.length;
+        let num = "";
+        let i = mask.indexOf('.');
+
+        if (this.isZero()) {
+            if (i !== -1) {
+                let zeros = 0;
+                for (++i; i < maskSize && mask[i] === '#'; ++i)
+                    zeros++;
+                num = '0'.repeat(zeros);
+            }
+        } else {
+            if (i !== -1) {
+                let overflow = false;
+                let origExp = x.exp;
+                for (++i; i < maskSize && mask[i] === '#' && !overflow; ++i)
+                    overflow = overflow || !SuNum.shiftLeft(x);
+                x.exp = origExp;
+                if (overflow)
+                    return '#';
+            }
+            let tmp = x.toInt();
+            num = tmp.toString();
+        }
+        let sign = this.sign();
+        let signOk = sign >= 0;
+        let p;
+        let q;
+        let dst = "";
+        let dstArray = [];
+        for (p = num.length - 1, q = maskSize - 1; q >= 0; --q) {
+            let c = mask[q];
+            switch (c) {
+            case '#':
+                dstArray.push(p >= 0 ? num[p--] : '0');
+                break;
+            case ',':
+                if (p >= 0)
+                    dstArray.push(c);
+                break;
+            case '-':
+            case '(':
+                signOk = true;
+                if (sign < 0)
+                    dstArray.push(c);
+                break;
+            case ')':
+                dstArray.push(sign < 0 ? c : ' ');
+                break;
+            case '.':
+            default:
+                dstArray.push(c);
+                break;
+            }
+        }
+        if (p >= 0)
+            return '#';
+        if (!signOk)
+            return '-';
+
+        dst = dstArray.reverse().join('');
+        let start = 0;
+        while (dst[start] === '-' || dst[start] === '(')
+            ++start;
+        let end = start;
+        while (dst[end] === '0' && end < dst.length - 1)
+            ++end;
+        if (end > start && dst[end] === '.' &&
+            (end >= dst.length - 1 || !isDigit(dst[end + 1])))
+            --end;
+        if (start < end)
+            dst = dst.substring(0, start) + dst.substring(end);
+        return dst;
+    }
 } // end of class
 
 function spanSignedDigits(s: string, start: number): string {

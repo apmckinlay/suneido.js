@@ -159,6 +159,23 @@ div(SuNum.INF, n(123), 'inf');
 div(n(1, 99), n(1, 99), 1);
 div(n(1), n(1234567890123456), 8.100000072900005e-16);
 
+// format -------------------------------------------------------------------------
+function format(x: number | SuNum, mask: string, expected: string) {
+    let n = x instanceof SuNum ? x : SuNum.fromNumber(x);
+    let result = n.format(mask);
+    assert.equal(result, expected);
+}
+format(0, "###", "0");
+format(0, "###.", "0.");
+format(0, "#.##", ".00");
+format(.08, "#.##", ".08");
+format(.08, "#.#", ".1");
+format(6.789, "#.##", "6.79");
+format(123, "##", "#");
+format(-1, "#.##", "-");
+format(-12, "-####", "-12");
+format(-12, "(####)", "(12)");
+
 assert.that(n(0).isZero());
 assert.that(n(0).isInt());
 assert.that(n(123).isInt());

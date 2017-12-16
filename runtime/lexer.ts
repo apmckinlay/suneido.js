@@ -9,7 +9,7 @@ import { Token, keywords } from "./tokens";
 export class Lexer {
     private src: string;
     private si: number;
-    private _prev: number | undefined;
+    private _prev: number;
     private _value: string | undefined;
     private _keyword: Token | undefined;
 

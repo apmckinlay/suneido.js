@@ -53,6 +53,13 @@ export class Numbers {
         return int(this).toString(16);
     }
 
+    Format(this: Num, mask: string): string {
+        let value = this;
+        let n = (value instanceof SuNum)
+            ? value
+            : SuNum.fromNumber(value);
+        return n.format(mask);
+    }
 }
 
 //BUILTIN Numbers.Chr()
@@ -89,4 +96,17 @@ export class Numbers {
     return (Numbers.prototype['Hex'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
 (Numbers.prototype['Hex'] as any).$params = '';
+//GENERATED end
+
+//BUILTIN Numbers.Format(mask)
+//GENERATED start
+(Numbers.prototype['Format'] as any).$call = Numbers.prototype['Format'];
+(Numbers.prototype['Format'] as any).$callNamed = function ($named: any, mask: any) {
+    ({ mask = mask } = $named);
+    return Numbers.prototype['Format'].call(this, mask);
+};
+(Numbers.prototype['Format'] as any).$callAt = function (args: SuObject) {
+    return (Numbers.prototype['Format'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(Numbers.prototype['Format'] as any).$params = 'mask';
 //GENERATED end
