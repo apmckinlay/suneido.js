@@ -54,11 +54,29 @@ export class Numbers {
     }
 
     Format(this: Num, mask: string): string {
+        maxargs(1, arguments.length);
         let value = this;
         let n = (value instanceof SuNum)
             ? value
             : SuNum.fromNumber(value);
         return n.format(mask);
+    }
+
+    Frac(this: Num): number {
+        maxargs(0, arguments.length);
+        // see: http://cwestblog.com/2014/02/26/javascript-fractional-part-of-a-number/
+        let frac = function(num: Num): number {
+            let regx = /(-?)(\d+(\.?)\d*)e(.+)/;
+            return +(num).toExponential().replace(regx, (m: string, neg, num, dot, offset) => {
+                let zeroes = Array(Math.abs(offset) + 2).join('0');
+                let nums = (zeroes + num + (dot ? '' : '.') + zeroes).split('.');
+                return neg + '.' + nums.join('').slice(+offset + nums[0].length);
+            });
+        };
+        let n = this;
+        if (n instanceof SuNum && n.isInt())
+            return 0;
+        return frac(n);
     }
 }
 
@@ -109,4 +127,16 @@ export class Numbers {
     return (Numbers.prototype['Format'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
 (Numbers.prototype['Format'] as any).$params = 'mask';
+//GENERATED end
+
+//BUILTIN Numbers.Frac()
+//GENERATED start
+(Numbers.prototype['Frac'] as any).$call = Numbers.prototype['Frac'];
+(Numbers.prototype['Frac'] as any).$callNamed = function (_named: any) {
+    return Numbers.prototype['Frac'].call(this);
+};
+(Numbers.prototype['Frac'] as any).$callAt = function (args: SuObject) {
+    return (Numbers.prototype['Frac'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(Numbers.prototype['Frac'] as any).$params = '';
 //GENERATED end

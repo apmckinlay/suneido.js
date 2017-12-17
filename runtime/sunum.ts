@@ -139,6 +139,25 @@ export class SuNum extends SuValue {
         return sign + digits + se;
     }
 
+     /**
+     * toExponential returns a string representing the number
+     * in exponential notation.
+     * @returns {string}
+     */
+    toExponential(): string {
+        let c = this.coef;
+        let e = this.exp;
+        let sign = c < 0 ? "-" : "";
+
+        if (this.isInf())
+            return sign + "inf";
+        if (c === 0)
+            return "0e+0";
+
+        c = Math.abs(c);
+        return sign + c + 'e' + (e > 0 ? '+' : '') + e;
+    }
+
     /**
      * @returns {boolean} whether or not the SuNum is an integer
      */
@@ -372,6 +391,13 @@ export class SuNum extends SuValue {
         return x.coef === y.coef && x.exp === y.exp;
     }
 
+    /**
+     * format converts a SuNum to a formatted string .
+     *  If the mask is not long enough to handle the number (i.e. not enough digits),
+     *  then "#" will be returned.
+     * @param mask
+     * @returns {string}
+     */
     format(mask: string): string {
         let x = SuNum.mutable(this.abs());
         let maskSize = mask.length;
