@@ -51,28 +51,19 @@ export class Numbers {
 
     Format(this: Num, mask: string): string {
         maxargs(1, arguments.length);
-        let value = this;
-        let n = (value instanceof SuNum)
-            ? value
-            : SuNum.fromNumber(value);
+        let n = this;
+        n = (n instanceof SuNum) ? n : SuNum.make(n);
         return n.format(mask);
     }
 
-    Frac(this: Num): number {
+    Frac(this: Num): SuNum {
         maxargs(0, arguments.length);
-        // see: http://cwestblog.com/2014/02/26/javascript-fractional-part-of-a-number/
-        let frac = function(num: Num): number {
-            let regx = /(-?)(\d+(\.?)\d*)e(.+)/;
-            return +(num).toExponential().replace(regx, (m: string, neg, num, dot, offset) => {
-                let zeroes = Array(Math.abs(offset) + 2).join('0');
-                let nums = (zeroes + num + (dot ? '' : '.') + zeroes).split('.');
-                return neg + '.' + nums.join('').slice(+offset + nums[0].length);
-            });
-        };
         let n = this;
-        if (n instanceof SuNum && n.isInt())
-            return 0;
-        return frac(n);
+        if (n instanceof SuNum)
+            return n.frac();
+        if (Number.isSafeInteger(n))
+            return SuNum.ZERO;
+        throw new Error("not safe integer: " + n);
     }
 
     Round(this: Num, num: Num): SuNum {
@@ -93,7 +84,7 @@ export class Numbers {
 
 function round(n: Num, num: Num, mode: RoundingMode): SuNum {
     num = int(num, true);
-    n = (n instanceof SuNum) ? n : SuNum.fromNumber(n);
+    n = (n instanceof SuNum) ? n : SuNum.make(n);
     return n.round(num, mode);
 }
 
@@ -196,3 +187,4 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 };
 (Numbers.prototype['RoundUp'] as any).$params = 'number';
 //GENERATED end
+

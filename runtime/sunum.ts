@@ -141,25 +141,6 @@ export class SuNum extends SuValue {
         return sign + digits + se;
     }
 
-     /**
-     * toExponential returns a string representing the number
-     * in exponential notation.
-     * @returns {string}
-     */
-    toExponential(): string {
-        let c = this.coef;
-        let e = this.exp;
-        let sign = c < 0 ? "-" : "";
-
-        if (this.isInf())
-            return sign + "inf";
-        if (c === 0)
-            return "0e+0";
-
-        c = Math.abs(c);
-        return sign + c + 'e' + (e > 0 ? '+' : '') + e;
-    }
-
     /**
      * @returns {boolean} whether or not the SuNum is an integer
      */
@@ -293,6 +274,38 @@ export class SuNum extends SuValue {
         let sign = this.sign();
         let newCoef = sign * Math.round(Number(c + 'e' + (e + d)) + roundingMode);
         return SuNum.make(newCoef, -d);
+    }
+
+    frac(): SuNum {
+        if (this.isInt())
+            return SuNum.ZERO;
+        // see: http://cwestblog.com/2014/02/26/javascript-fractional-part-of-a-number/
+        let regx = /(-?)(\d+(\.?)\d*)e(.+)/;
+        let match = SuNum.toExponential(this).match(regx);
+        if (match === null)
+            throw new Error("SuNum.frac invalid number " + this);
+        let sign = !match[1] ? 1 : -1;
+        let num = match[2];
+        let dot = match[3];
+        let offset = Number(match[4]);
+        let zeroes =  Array(Math.abs(offset) + 2).join('0');
+        let nums = (zeroes + num + (dot ? '' : '.') + zeroes).split('.');
+        let fracNumberStr = nums.join('').slice(+offset + nums[0].length);
+        return SuNum.make(sign * Number(fracNumberStr), -(fracNumberStr.length));
+    }
+
+    private static toExponential(x: SuNum): string {
+        let c = x.coef;
+        let e = x.exp;
+        let sign = c < 0 ? "-" : "";
+
+        if (x.isInf())
+            return sign + "inf";
+        if (c === 0)
+            return "0e+0";
+
+        c = Math.abs(c);
+        return sign + c + 'e' + (e > 0 ? '+' : '') + e;
     }
 
     // sub returns the difference of two SuNums

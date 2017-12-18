@@ -160,38 +160,47 @@ div(n(1, 99), n(1, 99), 1);
 div(n(1), n(1234567890123456), 8.100000072900005e-16);
 
 // format -------------------------------------------------------------------------
-function format(x: number | SuNum, mask: string, expected: string) {
-    let n = x instanceof SuNum ? x : SuNum.fromNumber(x);
-    let result = n.format(mask);
-    assert.equal(result, expected);
+function format(x: SuNum, mask: string, expected: string) {
+    assert.equal(x.format(mask), expected);
 }
-format(0, "###", "0");
-format(0, "###.", "0.");
-format(0, "#.##", ".00");
-format(.08, "#.##", ".08");
-format(.08, "#.#", ".1");
-format(6.789, "#.##", "6.79");
-format(123, "##", "#");
-format(-1, "#.##", "-");
-format(-12, "-####", "-12");
-format(-12, "(####)", "(12)");
+format(n(0), "###", "0");
+format(n(0), "###.", "0.");
+format(n(0), "#.##", ".00");
+format(n(8, -2), "#.##", ".08");
+format(n(8, -2), "#.#", ".1");
+format(n(6789, -3), "#.##", "6.79");
+format(n(123), "##", "#");
+format(n(-1), "#.##", "-");
+format(n(-12), "-####", "-12");
+format(n(-12), "(####)", "(12)");
+
+// frac  -------------------------------------------------------------------------
+function frac(x: SuNum, expected: number) {
+    eq(x.frac(), expected);
+}
+
+frac(n(0), 0);
+frac(n(123), 0);
+frac(n(1234, -2), .34);
+frac(n(1000000002, -5), .00002);
+frac(n(2, -5), .00002);
+frac(n(32134324, -4), .4324);
 
 // round -------------------------------------------------------------------------
-function round(x: number, num: number, expected: number, expectedRoundUp: number, expectedRoundDown: number) {
-    let n = SuNum.fromNumber(x);
-    eq(n.round(num, RoundingMode.HALF_UP), expected);
-    eq(n.round(num, RoundingMode.DOWN), expectedRoundDown);
-    eq(n.round(num, RoundingMode.UP), expectedRoundUp);
+function round(x: SuNum, num: number, expected: number, expectedRoundUp: number, expectedRoundDown: number) {
+    eq(x.round(num, RoundingMode.HALF_UP), expected);
+    eq(x.round(num, RoundingMode.DOWN), expectedRoundDown);
+    eq(x.round(num, RoundingMode.UP), expectedRoundUp);
 }
 
-round(0, 0, 0, 0, 0);
-round(123.456, 1, 123.5, 123.5, 123.4);
-round(123.499, 1, 123.5, 123.5, 123.4);
-round(123.446, 1, 123.4, 123.5, 123.4);
-round(123.40, 1, 123.4, 123.5, 123.4);
-round(-123.456, 1, -123.5, -123.5, -123.4);
-round(123.456, -1, 120, 130, 120);
-round(153.456, -2, 200, 200, 100);
+round(n(0), 0, 0, 0, 0);
+round(n(123456, -3), 1, 123.5, 123.5, 123.4);
+round(n(123499, -3), 1, 123.5, 123.5, 123.4);
+round(n(123446, -3), 1, 123.4, 123.5, 123.4);
+round(n(12340, -2), 1, 123.4, 123.5, 123.4);
+round(n(-123456, -3), 1, -123.5, -123.5, -123.4);
+round(n(123456, -3), -1, 120, 130, 120);
+round(n(153456, -3), -2, 200, 200, 100);
 
 assert.that(n(0).isZero());
 assert.that(n(0).isInt());
