@@ -1,4 +1,4 @@
-import { SuNum } from "../sunum";
+import { SuNum, RoundingMode } from "../sunum";
 import { SuObject } from "../suobject";
 import * as util from "../utility";
 import { maxargs } from "../args";
@@ -22,9 +22,9 @@ export function su_numberq(x: any): boolean {
 //GENERATED end
 
 // round to integer
-function int(n: Num): number {
+function int(n: Num, trunc: boolean = false): number {
     if (n instanceof SuNum)
-        return n.toInt();
+        return n.toInt(trunc);
     if (Number.isSafeInteger(n))
         return n;
     throw new Error("not safe integer: " + n);
@@ -41,11 +41,7 @@ export class Numbers {
     Int(this: Num): number {
         maxargs(0, arguments.length);
         let n = this; // need this to satisfy type checking with TypeScript 2.0.2
-        if (n instanceof SuNum)
-            return n.toInt(true); // truncate
-        if (Number.isSafeInteger(n))
-            return n;
-        throw new Error("not safe integer: " + n);
+        return int(n, true);
     }
 
     Hex(this: Num): string {
@@ -78,6 +74,27 @@ export class Numbers {
             return 0;
         return frac(n);
     }
+
+    Round(this: Num, num: Num): SuNum {
+        maxargs(1, arguments.length);
+        return round(this, num, RoundingMode.HALF_UP);
+    }
+
+    RoundDown(this: Num, num: Num): SuNum {
+        maxargs(1, arguments.length);
+        return round(this, num, RoundingMode.DOWN);
+    }
+
+    RoundUp(this: Num, num: Num): SuNum {
+        maxargs(1, arguments.length);
+        return round(this, num, RoundingMode.UP);
+    }
+}
+
+function round(n: Num, num: Num, mode: RoundingMode): SuNum {
+    num = int(num, true);
+    n = (n instanceof SuNum) ? n : SuNum.fromNumber(n);
+    return n.round(num, mode);
 }
 
 //BUILTIN Numbers.Chr()
@@ -139,4 +156,43 @@ export class Numbers {
     return (Numbers.prototype['Frac'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
 (Numbers.prototype['Frac'] as any).$params = '';
+//GENERATED end
+
+//BUILTIN Numbers.Round(number)
+//GENERATED start
+(Numbers.prototype['Round'] as any).$call = Numbers.prototype['Round'];
+(Numbers.prototype['Round'] as any).$callNamed = function ($named: any, number: any) {
+    ({ number = number } = $named);
+    return Numbers.prototype['Round'].call(this, number);
+};
+(Numbers.prototype['Round'] as any).$callAt = function (args: SuObject) {
+    return (Numbers.prototype['Round'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(Numbers.prototype['Round'] as any).$params = 'number';
+//GENERATED end
+
+//BUILTIN Numbers.RoundDown(number)
+//GENERATED start
+(Numbers.prototype['RoundDown'] as any).$call = Numbers.prototype['RoundDown'];
+(Numbers.prototype['RoundDown'] as any).$callNamed = function ($named: any, number: any) {
+    ({ number = number } = $named);
+    return Numbers.prototype['RoundDown'].call(this, number);
+};
+(Numbers.prototype['RoundDown'] as any).$callAt = function (args: SuObject) {
+    return (Numbers.prototype['RoundDown'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(Numbers.prototype['RoundDown'] as any).$params = 'number';
+//GENERATED end
+
+//BUILTIN Numbers.RoundUp(number)
+//GENERATED start
+(Numbers.prototype['RoundUp'] as any).$call = Numbers.prototype['RoundUp'];
+(Numbers.prototype['RoundUp'] as any).$callNamed = function ($named: any, number: any) {
+    ({ number = number } = $named);
+    return Numbers.prototype['RoundUp'].call(this, number);
+};
+(Numbers.prototype['RoundUp'] as any).$callAt = function (args: SuObject) {
+    return (Numbers.prototype['RoundUp'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(Numbers.prototype['RoundUp'] as any).$params = 'number';
 //GENERATED end

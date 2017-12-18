@@ -1,4 +1,4 @@
-import { SuNum } from "./sunum";
+import { SuNum, RoundingMode } from "./sunum";
 import * as assert from "./assert";
 
 const n = SuNum.make;
@@ -175,6 +175,23 @@ format(123, "##", "#");
 format(-1, "#.##", "-");
 format(-12, "-####", "-12");
 format(-12, "(####)", "(12)");
+
+// round -------------------------------------------------------------------------
+function round(x: number, num: number, expected: number, expectedRoundUp: number, expectedRoundDown: number) {
+    let n = SuNum.fromNumber(x);
+    eq(n.round(num, RoundingMode.HALF_UP), expected);
+    eq(n.round(num, RoundingMode.DOWN), expectedRoundDown);
+    eq(n.round(num, RoundingMode.UP), expectedRoundUp);
+}
+
+round(0, 0, 0, 0, 0);
+round(123.456, 1, 123.5, 123.5, 123.4);
+round(123.499, 1, 123.5, 123.5, 123.4);
+round(123.446, 1, 123.4, 123.5, 123.4);
+round(123.40, 1, 123.4, 123.5, 123.4);
+round(-123.456, 1, -123.5, -123.5, -123.4);
+round(123.456, -1, 120, 130, 120);
+round(153.456, -2, 200, 200, 100);
 
 assert.that(n(0).isZero());
 assert.that(n(0).isInt());

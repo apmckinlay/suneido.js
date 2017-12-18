@@ -15,6 +15,8 @@ const maxExp = +126;
 const expInf = 127;
 const MAX_COEF_STR = "" + Number.MAX_SAFE_INTEGER;
 
+export enum RoundingMode { HALF_UP = 0, DOWN = -0.5, UP = 0.5 }
+
 export class SuNum extends SuValue {
     public coef: number;
     public exp: number;
@@ -281,6 +283,16 @@ export class SuNum extends SuValue {
 
     display(): string {
         return this.toString();
+    }
+
+    round(d: number, roundingMode: RoundingMode): SuNum {
+        if (this.isZero())
+            return SuNum.ZERO;
+        let c = Math.abs(this.coef);
+        let e = this.exp;
+        let sign = this.sign();
+        let newCoef = sign * Math.round(Number(c + 'e' + (e + d)) + roundingMode);
+        return SuNum.make(newCoef, -d);
     }
 
     // sub returns the difference of two SuNums
