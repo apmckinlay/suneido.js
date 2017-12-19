@@ -15,6 +15,8 @@ const maxExp = +126;
 const expInf = 127;
 const MAX_COEF_STR = "" + Number.MAX_SAFE_INTEGER;
 
+export enum RoundingMode { HALF_UP = 0, DOWN = -0.5, UP = 0.5 }
+
 export class SuNum extends SuValue {
     public coef: number;
     public exp: number;
@@ -264,6 +266,27 @@ export class SuNum extends SuValue {
         return this.toString();
     }
 
+    round(d: number, roundingMode: RoundingMode): SuNum {
+        if (this.isZero())
+            return SuNum.ZERO;
+        let c = Math.abs(this.coef);
+        let e = this.exp;
+        let sign = this.sign();
+        let newCoef = sign * Math.round(Number(c + 'e' + (e + d)) + roundingMode);
+        return SuNum.make(newCoef, -d);
+    }
+
+    frac(): SuNum {
+        if (this.isInt())
+            return SuNum.ZERO;
+
+        let sign = this.sign();
+        let numStr = Math.abs(this.coef).toString();
+        let pos = Math.max(numStr.length + this.exp, 0);
+        let fracNumberStr = numStr.slice(pos);
+        return SuNum.make(sign * Number(fracNumberStr), this.exp);
+    }
+
     // sub returns the difference of two SuNums
     static sub(x: SuNum, y: SuNum): SuNum {
         // could avoid copy by duplicating add code
@@ -372,6 +395,13 @@ export class SuNum extends SuValue {
         return x.coef === y.coef && x.exp === y.exp;
     }
 
+    /**
+     * format converts a SuNum to a formatted string .
+     *  If the mask is not long enough to handle the number (i.e. not enough digits),
+     *  then "#" will be returned.
+     * @param mask
+     * @returns {string}
+     */
     format(mask: string): string {
         let x = SuNum.mutable(this.abs());
         let maskSize = mask.length;
