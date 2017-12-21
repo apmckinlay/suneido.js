@@ -375,6 +375,16 @@ export class SuNum extends SuValue {
         return convert(x.coef / y.coef, x.exp - y.exp);
     }
 
+    static log10(x: SuNum): SuNum {
+        if (x.sign() === -1)
+            return SuNum.ZERO; // Should be NaN. Make it consistent with cSuneido
+        if (x.isZero())
+            return SuNum.MINUS_INF;
+        if (x.isInf())
+            return SuNum.INF;
+        return SuNum.fromNumber(Math.log10(x.coef) + x.exp);
+    }
+
     // helpers ---------------------------------------------------------------------
 
     static inf(sign: number): SuNum {

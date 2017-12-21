@@ -80,6 +80,13 @@ export class Numbers {
         maxargs(1, arguments.length);
         return round(this, num, RoundingMode.UP);
     }
+
+    Log10(this: Num): SuNum {
+        maxargs(0, arguments.length);
+        let n = this;
+        n = (n instanceof SuNum) ? n : SuNum.make(n);
+        return SuNum.log10(n);
+    }
 }
 
 function round(n: Num, num: Num, mode: RoundingMode): SuNum {
@@ -188,3 +195,14 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 (Numbers.prototype['RoundUp'] as any).$params = 'number';
 //GENERATED end
 
+//BUILTIN Numbers.Log10()
+//GENERATED start
+(Numbers.prototype['Log10'] as any).$call = Numbers.prototype['Log10'];
+(Numbers.prototype['Log10'] as any).$callNamed = function (_named: any) {
+    return Numbers.prototype['Log10'].call(this);
+};
+(Numbers.prototype['Log10'] as any).$callAt = function (args: SuObject) {
+    return (Numbers.prototype['Log10'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(Numbers.prototype['Log10'] as any).$params = '';
+//GENERATED end
