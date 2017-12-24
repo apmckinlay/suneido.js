@@ -156,43 +156,43 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 (Numbers.prototype['Frac'] as any).$params = '';
 //GENERATED end
 
-//BUILTIN Numbers.Round(number)
+//BUILTIN Numbers.Round(digits)
 //GENERATED start
 (Numbers.prototype['Round'] as any).$call = Numbers.prototype['Round'];
-(Numbers.prototype['Round'] as any).$callNamed = function ($named: any, number: any) {
-    ({ number = number } = $named);
-    return Numbers.prototype['Round'].call(this, number);
+(Numbers.prototype['Round'] as any).$callNamed = function ($named: any, digits: any) {
+    ({ digits = digits } = $named);
+    return Numbers.prototype['Round'].call(this, digits);
 };
 (Numbers.prototype['Round'] as any).$callAt = function (args: SuObject) {
     return (Numbers.prototype['Round'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(Numbers.prototype['Round'] as any).$params = 'number';
+(Numbers.prototype['Round'] as any).$params = 'digits';
 //GENERATED end
 
-//BUILTIN Numbers.RoundDown(number)
+//BUILTIN Numbers.RoundDown(digits)
 //GENERATED start
 (Numbers.prototype['RoundDown'] as any).$call = Numbers.prototype['RoundDown'];
-(Numbers.prototype['RoundDown'] as any).$callNamed = function ($named: any, number: any) {
-    ({ number = number } = $named);
-    return Numbers.prototype['RoundDown'].call(this, number);
+(Numbers.prototype['RoundDown'] as any).$callNamed = function ($named: any, digits: any) {
+    ({ digits = digits } = $named);
+    return Numbers.prototype['RoundDown'].call(this, digits);
 };
 (Numbers.prototype['RoundDown'] as any).$callAt = function (args: SuObject) {
     return (Numbers.prototype['RoundDown'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(Numbers.prototype['RoundDown'] as any).$params = 'number';
+(Numbers.prototype['RoundDown'] as any).$params = 'digits';
 //GENERATED end
 
-//BUILTIN Numbers.RoundUp(number)
+//BUILTIN Numbers.RoundUp(digits)
 //GENERATED start
 (Numbers.prototype['RoundUp'] as any).$call = Numbers.prototype['RoundUp'];
-(Numbers.prototype['RoundUp'] as any).$callNamed = function ($named: any, number: any) {
-    ({ number = number } = $named);
-    return Numbers.prototype['RoundUp'].call(this, number);
+(Numbers.prototype['RoundUp'] as any).$callNamed = function ($named: any, digits: any) {
+    ({ digits = digits } = $named);
+    return Numbers.prototype['RoundUp'].call(this, digits);
 };
 (Numbers.prototype['RoundUp'] as any).$callAt = function (args: SuObject) {
     return (Numbers.prototype['RoundUp'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(Numbers.prototype['RoundUp'] as any).$params = 'number';
+(Numbers.prototype['RoundUp'] as any).$params = 'digits';
 //GENERATED end
 
 //BUILTIN Numbers.Log10()
