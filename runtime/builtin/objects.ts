@@ -1,10 +1,10 @@
-import { SuObject } from '../suobject';
+import { SuObject, ObjectIter } from '../suobject';
 import * as util from '../utility';
 import { mandatory, maxargs } from "../args";
 
 export function su_object(args: SuObject) {
     return args;
-};
+}
 //BUILTIN Object(@args)
 //GENERATED start
 (su_object as any).$callAt = su_object;
@@ -185,4 +185,50 @@ export function su_objectq(x: any = mandatory()): boolean {
     return (SuObject.prototype['Sort!'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
 (SuObject.prototype['Sort!'] as any).$params = 'lt';
+//GENERATED end
+
+//BUILTIN SuObject.Iter()
+//GENERATED start
+(SuObject.prototype['Iter'] as any).$call = SuObject.prototype['Iter'];
+(SuObject.prototype['Iter'] as any).$callNamed = function (_named: any) {
+    return SuObject.prototype['Iter'].call(this);
+};
+(SuObject.prototype['Iter'] as any).$callAt = function (args: SuObject) {
+    return (SuObject.prototype['Iter'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(SuObject.prototype['Iter'] as any).$params = '';
+//GENERATED end
+
+//BUILTIN ObjectIter.Next()
+//GENERATED start
+(ObjectIter.prototype['Next'] as any).$call = ObjectIter.prototype['Next'];
+(ObjectIter.prototype['Next'] as any).$callNamed = function (_named: any) {
+    return ObjectIter.prototype['Next'].call(this);
+};
+(ObjectIter.prototype['Next'] as any).$callAt = function (args: SuObject) {
+    return (ObjectIter.prototype['Next'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(ObjectIter.prototype['Next'] as any).$params = '';
+//GENERATED end
+//BUILTIN ObjectIter.Dup()
+//GENERATED start
+(ObjectIter.prototype['Dup'] as any).$call = ObjectIter.prototype['Dup'];
+(ObjectIter.prototype['Dup'] as any).$callNamed = function (_named: any) {
+    return ObjectIter.prototype['Dup'].call(this);
+};
+(ObjectIter.prototype['Dup'] as any).$callAt = function (args: SuObject) {
+    return (ObjectIter.prototype['Dup'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(ObjectIter.prototype['Dup'] as any).$params = '';
+//GENERATED end
+//BUILTIN ObjectIter.Infinite?()
+//GENERATED start
+(ObjectIter.prototype['Infinite?'] as any).$call = ObjectIter.prototype['Infinite?'];
+(ObjectIter.prototype['Infinite?'] as any).$callNamed = function (_named: any) {
+    return ObjectIter.prototype['Infinite?'].call(this);
+};
+(ObjectIter.prototype['Infinite?'] as any).$callAt = function (args: SuObject) {
+    return (ObjectIter.prototype['Infinite?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(ObjectIter.prototype['Infinite?'] as any).$params = '';
 //GENERATED end

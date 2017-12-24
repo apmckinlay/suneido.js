@@ -1,4 +1,4 @@
-import { SuObject } from "./suobject";
+import { SuObject, ObjectIter, Values } from "./suobject";
 import { SuNum } from "./sunum";
 import * as assert from "./assert";
 
@@ -97,3 +97,48 @@ assert.equal(ob.toString(), '#("a b": 1000)');
 ob = new SuObject();
 ob.Add('a b');
 assert.equal(ob.toString(), '#("a b")');
+
+// Iter & ObjectIter
+function iterTest(iter: ObjectIter, expected: any[]) {
+    let temp = iter.Next();
+    function find(value: string | number | any[]) {
+        if (temp instanceof SuObject)
+            return temp.get(0) === (value as any[])[0] &&
+                temp.get(1) === (value as any[])[1];
+        else
+            return value === temp;
+    }
+    while (temp !== iter) {
+        assert.that(expected.findIndex(find) !== -1, "match " + temp);
+        temp = iter.Next();
+    }
+}
+ob = new SuObject();
+iterTest(ob.Iter(), []);
+ob = new SuObject([1, 2, 3, 4]);
+ob.put('key_a', 'a');
+ob.put('key_b', 'b');
+let iter1 = ob.Iter();
+iterTest(iter1, [1, 2, 3, 4, 'a', 'b']);
+iterTest(iter1.Dup(), [1, 2, 3, 4, 'a', 'b']);
+
+function modifyDuringIteration(modifyOp: (ob: SuObject) => void) {
+    let fn = function() {
+        let ob1 = new SuObject([1, 2, 3, 4]);
+        let iter2 = ob1.Iter();
+        iter2.Next();
+        modifyOp(ob1);
+        iter2.Next();
+    };
+    return fn;
+}
+assert.throws(modifyDuringIteration((ob) => ob.Add('5')), "object modified during iteration");
+assert.throws(modifyDuringIteration((ob) => ob.put('a', '5')), "object modified during iteration");
+assert.throws(modifyDuringIteration((ob) => ob.erase(1)), "object modified during iteration");
+assert.throws(modifyDuringIteration((ob) => ob.clear()), "object modified during iteration");
+
+iterTest(new ObjectIter(ob, Values.ITER_KEYS), [0, 1, 2, 3, 'key_a', 'key_b']);
+iterTest(new ObjectIter(ob, Values.ITER_ASSOCS),
+    [[0, 1], [1, 2], [2, 3], [3, 4], ['key_a', 'a'], ['key_b', 'b']]);
+iterTest(new ObjectIter(ob, Values.ITER_KEYS, false, true), ['key_a', 'key_b']);
+iterTest(new ObjectIter(ob, Values.ITER_KEYS, true, false), [0, 1, 2, 3]);

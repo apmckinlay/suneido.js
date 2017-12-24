@@ -7,7 +7,7 @@
 //TODO record builder
 //TODO iter, next, blockreturn
 
-import { SuValue } from "./suvalue";
+import { SuValue, SuIterable } from "./suvalue";
 import { SuNum } from "./sunum";
 import { SuObject } from "./suobject";
 import { SuDate } from "./sudate";
@@ -225,7 +225,7 @@ export function gte(x: any, y: any): boolean {
     return cmp(x, y) >= 0;
 }
 
-export var regexCache =
+export let regexCache =
     new CacheMap<string, Pattern>(32, (s) => Regex.compile(s));
 
 export function match(x: any, y: any): boolean {
@@ -380,4 +380,12 @@ export function instantiateNamed(clas: any, ...args: any[]): any {
     let instance = Object.create(clas);
     invokeNamed(instance, 'New', ...args); // but spread is slow
     return instance;
+}
+
+export function iter(ob: any): SuIterable {
+    return invoke(ob, 'Iter');
+}
+
+export function next(iter: SuIterable): any {
+    return iter.Next();
 }

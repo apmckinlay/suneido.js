@@ -12,3 +12,13 @@ export abstract class SuValue {
         throw new Error(this.type + " does not support put");
     }
 }
+
+export abstract class SuIterable extends SuValue {
+    abstract Next(): any;
+    compareTo(that: any): number {
+        return -1;
+    }
+    equals(that: any): boolean {
+        return false;
+    }
+}

@@ -6,6 +6,7 @@ import { SuObject } from "../suobject";
 import { mandatory, maxargs } from "../args";
 import { Result, ForEach, Regex } from "../regex";
 import { RegexReplace} from "../regexreplace";
+import { SuIterable } from "../suvalue";
 
 export function su_stringq(x: any): boolean {
     return typeof x === 'string';
@@ -371,6 +372,39 @@ export class Strings {
         return result;
     }
 
+    Iter(this: string): StringIter {
+        maxargs(0, arguments.length);
+        return new StringIter(this);
+    }
+}
+
+export class StringIter extends SuIterable {
+    private iter: IterableIterator<string>;
+    constructor(private s: string) {
+        super();
+        this.iter = s[Symbol.iterator]();
+    }
+    type(): string {
+        return 'StringIter';
+    }
+    toString(): string {
+        return 'aStringtIter';
+    }
+    Next(): string | StringIter {
+        maxargs(0, arguments.length);
+        let next = this.iter.next();
+        if (next.done)
+            return this;
+        return next.value;
+    }
+    Dup(): StringIter {
+        maxargs(0, arguments.length);
+        return new StringIter(this.s);
+    }
+    ['Infinite?'](): boolean {
+        maxargs(0, arguments.length);
+        return false;
+    }
 }
 
 function doWithSplit(str: string, sep: string, f: (arg: string) => string) {
@@ -780,4 +814,52 @@ class ClassForEach implements ForEach {
     return (Strings.prototype['Upper?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
 (Strings.prototype['Upper?'] as any).$params = '';
+//GENERATED end
+
+//BUILTIN Strings.Iter()
+//GENERATED start
+(Strings.prototype['Iter'] as any).$call = Strings.prototype['Iter'];
+(Strings.prototype['Iter'] as any).$callNamed = function (_named: any) {
+    return Strings.prototype['Iter'].call(this);
+};
+(Strings.prototype['Iter'] as any).$callAt = function (args: SuObject) {
+    return (Strings.prototype['Iter'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(Strings.prototype['Iter'] as any).$params = '';
+//GENERATED end
+
+//BUILTIN StringIter.Next()
+//GENERATED start
+(StringIter.prototype['Next'] as any).$call = StringIter.prototype['Next'];
+(StringIter.prototype['Next'] as any).$callNamed = function (_named: any) {
+    return StringIter.prototype['Next'].call(this);
+};
+(StringIter.prototype['Next'] as any).$callAt = function (args: SuObject) {
+    return (StringIter.prototype['Next'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(StringIter.prototype['Next'] as any).$params = '';
+//GENERATED end
+
+//BUILTIN StringIter.Dup()
+//GENERATED start
+(StringIter.prototype['Dup'] as any).$call = StringIter.prototype['Dup'];
+(StringIter.prototype['Dup'] as any).$callNamed = function (_named: any) {
+    return StringIter.prototype['Dup'].call(this);
+};
+(StringIter.prototype['Dup'] as any).$callAt = function (args: SuObject) {
+    return (StringIter.prototype['Dup'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(StringIter.prototype['Dup'] as any).$params = '';
+//GENERATED end
+
+//BUILTIN StringIter.Infinite?()
+//GENERATED start
+(StringIter.prototype['Infinite?'] as any).$call = StringIter.prototype['Infinite?'];
+(StringIter.prototype['Infinite?'] as any).$callNamed = function (_named: any) {
+    return StringIter.prototype['Infinite?'].call(this);
+};
+(StringIter.prototype['Infinite?'] as any).$callAt = function (args: SuObject) {
+    return (StringIter.prototype['Infinite?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(StringIter.prototype['Infinite?'] as any).$params = '';
 //GENERATED end
