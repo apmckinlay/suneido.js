@@ -98,6 +98,25 @@ ob = new SuObject();
 ob.Add('a b');
 assert.equal(ob.toString(), '#("a b")');
 
+// Join
+function joinTest(expected: string, sep: string, ...args: any[]) {
+    let temp = new SuObject(args);
+    assert.equal(temp.Join(sep), expected);
+}
+joinTest('', '');
+joinTest("", "<>");
+joinTest("", "", "", "", "");
+joinTest("abc", "", "abc");
+joinTest("abc", "<>", "abc");
+joinTest("123", "", 1, 2, 3);
+joinTest("1.2.3", ".", 1, 2, 3);
+joinTest("1.two.3", ".", 1, "two", 3);
+joinTest("1<>2<>3", "<>", 1, 2, 3);
+let ob1 = new SuObject([1, 2]);
+let iter = ob1.Iter();
+let num = SuNum.make(123, -2);
+joinTest('#(1, 2), aObjectIter, 1.23', ', ', ob1, iter, num);
+
 // Iter & ObjectIter
 function iterTest(iter: ObjectIter, expected: any[]) {
     let temp = iter.Next();

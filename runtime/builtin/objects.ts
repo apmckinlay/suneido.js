@@ -199,6 +199,19 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Iter'] as any).$params = '';
 //GENERATED end
 
+//BUILTIN SuObject.Join(seperator="")
+//GENERATED start
+(SuObject.prototype['Join'] as any).$call = SuObject.prototype['Join'];
+(SuObject.prototype['Join'] as any).$callNamed = function ($named: any, seperator: any) {
+    ({ seperator = seperator } = $named);
+    return SuObject.prototype['Join'].call(this, seperator);
+};
+(SuObject.prototype['Join'] as any).$callAt = function (args: SuObject) {
+    return (SuObject.prototype['Join'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(SuObject.prototype['Join'] as any).$params = 'seperator=""';
+//GENERATED end
+
 //BUILTIN ObjectIter.Next()
 //GENERATED start
 (ObjectIter.prototype['Next'] as any).$call = ObjectIter.prototype['Next'];
@@ -210,6 +223,7 @@ export function su_objectq(x: any = mandatory()): boolean {
 };
 (ObjectIter.prototype['Next'] as any).$params = '';
 //GENERATED end
+
 //BUILTIN ObjectIter.Dup()
 //GENERATED start
 (ObjectIter.prototype['Dup'] as any).$call = ObjectIter.prototype['Dup'];
@@ -221,6 +235,7 @@ export function su_objectq(x: any = mandatory()): boolean {
 };
 (ObjectIter.prototype['Dup'] as any).$params = '';
 //GENERATED end
+
 //BUILTIN ObjectIter.Infinite?()
 //GENERATED start
 (ObjectIter.prototype['Infinite?'] as any).$call = ObjectIter.prototype['Infinite?'];

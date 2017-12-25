@@ -346,6 +346,11 @@ export class SuObject extends SuValue {
             this.version++;
         return res;
     }
+
+    Join(seperator: string = ''): string {
+        maxargs(1, arguments.length);
+        return this.vec.join(seperator);
+    }
 } // end of SuObject class
 
 export enum Values { ITER_KEYS, ITER_VALUES, ITER_ASSOCS } // export for testing
