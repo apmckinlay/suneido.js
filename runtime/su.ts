@@ -282,32 +282,39 @@ export function mkdate(s: string): SuDate {
     return SuDate.literal(s) !;
 }
 
+enum CallType {call, callNamed, callAt}
 // Note: only Suneido values and strings are callable
-
+export let call = callFnGenerator(CallType.call);
+export let callNamed = callFnGenerator(CallType.callNamed);
+export let callAt = callFnGenerator(CallType.callAt);
 // Note: using apply until better spread (...) performance in v8
-
-export function call(f: any, ...args: any[]): any {
-    let call = f.$call;
-    if (typeof call === 'function')
-        return call.apply(f, args);
-    //  TODO strings
-    cantCall(f);
+function callFnGenerator(type: CallType):
+    (f: any, ...args: any[]) => any {
+    let fn = function(f: any, ...args: any[]) {
+        if (typeof f === 'string')
+            return callString(type, f, ...args);
+        let call = f['$' + CallType[type]];
+        if (typeof call === 'function')
+            return call.apply(f, args);
+        cantCall(f);
+    };
+    return fn;
 }
 
-export function callNamed(f: any, ...args: any[]) {
-    let call = f.$callNamed;
-    if (typeof call === 'function')
-        return call.apply(f, args);
-    //  TODO strings
-    cantCall(f);
-}
-
-export function callAt(f: any, args: SuObject): any {
-    let call = f.$callAt;
-    if (typeof call === 'function')
-        return call(args);
-    //  TODO strings
-    cantCall(f);
+function callString(type: CallType, s: string, ...args: any[]): any {
+    if (args.length === 0)
+        throw new Error("string call requires 'this' argument");
+    switch (type) {
+    case CallType.call:
+        return invoke(args[0], s, ...args.slice(1));
+    case CallType.callNamed:
+        return invokeNamed(args[1], s, args[0], ...args.slice(2));
+    case CallType.callAt:
+        let argOb = args[0] as SuObject;
+        let ob = argOb.get(0);
+        argOb.erase(0);
+        return invokeAt(ob, s, argOb);
+    }
 }
 
 function cantCall(f: any): never {
