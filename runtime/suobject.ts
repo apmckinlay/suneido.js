@@ -5,7 +5,7 @@
  */
 
 import { SuNum } from "./sunum";
-import { SuValue } from "./suvalue";
+import { SuValue, SuIterable } from "./suvalue";
 import { display } from "./display";
 import { is } from "./is";
 import { mandatory, maxargs } from "./args";
@@ -20,6 +20,7 @@ export class SuObject extends SuValue {
     public vec: Array<any>;    // public only for readonly access
     public map: Map<any, any>; // public only for readonly access
     static EMPTY = new SuObject().Set_readonly();
+    private version = 0;
 
     /** WARNING: the object will take ownership of the array and map */
     constructor(vec?: any[], map?: Map<any, any>) {
@@ -93,21 +94,25 @@ export class SuObject extends SuValue {
     Add(x: any = mandatory()): SuObject {
         maxargs(1, arguments.length);
         this.checkReadonly();
-        this.vec.push(x);
-        this.migrate();
-        return this;
+        return this.runWithModificationCheck(() => {
+            this.vec.push(x);
+            this.migrate();
+            return this;
+        });
     }
 
     put(key: any, value: any): SuObject {
         this.checkReadonly();
-        let i = index(key);
-        if (0 <= i && i < this.vec.length)
-            this.vec[i] = value;
-        else if (i === this.vec.length)
-            this.Add(value);
-        else
-            this.map.set(key, value);
-        return this;
+        return this.runWithModificationCheck(() => {
+            let i = index(key);
+            if (0 <= i && i < this.vec.length)
+                this.vec[i] = value;
+            else if (i === this.vec.length)
+                this.Add(value);
+            else
+                this.map.set(key, value);
+            return this;
+        });
     }
 
     get(key: any): any {
@@ -177,16 +182,20 @@ export class SuObject extends SuValue {
     }
 
     clear(): void {
-        this.vec = [];
-        this.map = new Map();
+        return this.runWithModificationCheck(() => {
+            this.vec = [];
+            this.map = new Map();
+        });
     }
 
     erase(key: any): void {
-        let i = index(key);
-        if (0 <= i && i < this.vec.length)
-            this.vec.splice(i, 1);
-        else
-            this.map.delete(key);
+        return this.runWithModificationCheck(() => {
+            let i = index(key);
+            if (0 <= i && i < this.vec.length)
+                this.vec.splice(i, 1);
+            else
+                this.map.delete(key);
+        });
     }
 
     Set_readonly(): SuObject {
@@ -298,7 +307,81 @@ export class SuObject extends SuValue {
             return cmp(x, y);
     }
 
+    Iter(): ObjectIter {
+        maxargs(0, arguments.length);
+        return new ObjectIter(this, Values.ITER_VALUES);
+    }
+
+    *begin(includeVec: boolean, includeMap: boolean): IterableIterator<any[]> {
+        let oriVersion = this.version;
+        function checkForModification(curVersion: number) {
+            if (oriVersion !== curVersion)
+                throw "object modified during iteration";
+        }
+        if (includeVec)
+            for (let i = 0; i < this.vec.length; i++) {
+                yield [i, this.vec[i]];
+                checkForModification(this.version);
+            }
+        if (includeMap)
+            for (let pair of this.map.entries()) {
+                yield pair;
+                checkForModification(this.version);
+            }
+    }
+
+    private runWithModificationCheck<T>(fn: () => T): T {
+        let vecSize = this.vecsize();
+        let mapSize = this.mapsize();
+        let res = fn();
+        if (vecSize !== this.vecsize() || mapSize !== this.mapsize())
+            this.version++;
+        return res;
+    }
+
+    Join(separator: string = ''): string {
+        maxargs(1, arguments.length);
+        return this.vec.join(separator);
+    }
 } // end of SuObject class
+
+export enum Values { ITER_KEYS, ITER_VALUES, ITER_ASSOCS } // export for testing
+export class ObjectIter extends SuIterable {
+    private iter: IterableIterator<any[]>;
+    constructor(private ob: SuObject, private values: Values,
+        private iv: boolean = true, private im: boolean = true) {
+        super();
+        this.iter = this.ob.begin(iv, im);
+    }
+    type(): string {
+        return 'ObjectIter';
+    }
+    toString(): string {
+        return 'aObjectIter';
+    }
+    Next(): any {
+        maxargs(0, arguments.length);
+        let next = this.iter.next();
+        if (next.done)
+            return this;
+        switch (this.values) {
+        case Values.ITER_KEYS:
+            return next.value[0];
+        case Values.ITER_VALUES:
+            return next.value[1];
+        case Values.ITER_ASSOCS:
+            return SuObject.list(...next.value);
+        }
+    }
+    Dup(): ObjectIter {
+        maxargs(0, arguments.length);
+        return new ObjectIter(this.ob, this.values, this.iv, this.im);
+    }
+    ['Infinite?'](): boolean {
+        maxargs(0, arguments.length);
+        return false;
+    }
+}
 
 type Lt = (x: any, y: any) => boolean;
 type Cmp = (x: any, y: any) => -1|0|1;

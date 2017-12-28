@@ -7,7 +7,7 @@
 //TODO record builder
 //TODO iter, next, blockreturn
 
-import { SuValue } from "./suvalue";
+import { SuValue, SuIterable } from "./suvalue";
 import { SuNum } from "./sunum";
 import { SuObject } from "./suobject";
 import { SuDate } from "./sudate";
@@ -225,7 +225,7 @@ export function gte(x: any, y: any): boolean {
     return cmp(x, y) >= 0;
 }
 
-export var regexCache =
+export let regexCache =
     new CacheMap<string, Pattern>(32, (s) => Regex.compile(s));
 
 export function match(x: any, y: any): boolean {
@@ -283,30 +283,41 @@ export function mkdate(s: string): SuDate {
 }
 
 // Note: only Suneido values and strings are callable
-
-// Note: using apply until better spread (...) performance in v8
-
 export function call(f: any, ...args: any[]): any {
+    if (typeof f === 'string') {
+        if (args.length === 0)
+            throw new Error("string call requires 'this' argument");
+        return invoke(args[0], f, ...args.slice(1));
+    }
     let call = f.$call;
     if (typeof call === 'function')
-        return call.apply(f, args);
-    //  TODO strings
+        return call(...args);
     cantCall(f);
 }
 
-export function callNamed(f: any, ...args: any[]) {
+export function callNamed(f: any, ...args: any[]): any {
+    if (typeof f === 'string') {
+        if (args.length <= 1)
+            throw new Error("string call requires 'this' argument");
+        return invokeNamed(args[1], f, args[0], ...args.slice(2));
+    }
     let call = f.$callNamed;
     if (typeof call === 'function')
-        return call.apply(f, args);
-    //  TODO strings
+        return call(...args);
     cantCall(f);
 }
 
 export function callAt(f: any, args: SuObject): any {
+    if (typeof f === 'string') {
+        if (args.vecsize() === 0)
+            throw new Error("string call requires 'this' argument");
+        let ob = args.get(0);
+        args.erase(0);
+        return invokeAt(ob, f, args);
+    }
     let call = f.$callAt;
     if (typeof call === 'function')
         return call(args);
-    //  TODO strings
     cantCall(f);
 }
 
@@ -380,4 +391,12 @@ export function instantiateNamed(clas: any, ...args: any[]): any {
     let instance = Object.create(clas);
     invokeNamed(instance, 'New', ...args); // but spread is slow
     return instance;
+}
+
+export function iter(ob: any): SuIterable {
+    return invoke(ob, 'Iter');
+}
+
+export function next(iter: SuIterable): any {
+    return iter.Next();
 }

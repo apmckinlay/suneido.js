@@ -1,4 +1,4 @@
-import { Strings } from "./strings";
+import { Strings, StringIter } from "./strings";
 import * as util from "../utility";
 import * as assert from "../assert";
 
@@ -220,3 +220,16 @@ assert.that(!sm['Upper?'].call(str1), "check method upperq() with lowercase stri
 str1 = "123 %$^#%";
 assert.that(!sm['Upper?'].call(str1), "check method upperq() with no letter string");
 assert.that(!sm['Upper?'].call(""), "check method upperq() with empty string");
+
+// Iter & ObjectIter
+function iterTest(iter: StringIter, expected: string[]) {
+    let temp = iter.Next();
+    let i = 0;
+    while (temp !== iter) {
+        assert.equal(temp, expected[i]);
+        temp = iter.Next();
+        ++i;
+    }
+}
+iterTest(sm.Iter.call(''), []);
+iterTest(sm.Iter.call("abc 123a"), ['a', 'b', 'c', ' ', '1', '2', '3', 'a']);

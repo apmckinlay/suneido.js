@@ -64,6 +64,14 @@ assert.equal(su.callAt(f, ob), ['callAt', ob]);
 assert.equal(su.callNamed(f, { a: 3, b: 4 }, 1, 2), ['callNamed', { a: 3, b: 4 }, [1, 2]]);
 assert.throws(() => su.call(123), /can't call/);
 
+ob = new SuObject([1, 2, 3]);
+ob.put('ka', 'a');
+assert.equal(su.call('Size', ob), 4);
+assert.equal(su.callNamed('Size', {"list": true}, ob), 3);
+let args = new SuObject([ob]);
+args.put('named', true);
+assert.equal(su.callAt('Size', args), 1);
+
 // lang port test
 
 import { runFile } from "./porttests";
