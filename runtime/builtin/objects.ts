@@ -199,17 +199,17 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Iter'] as any).$params = '';
 //GENERATED end
 
-//BUILTIN SuObject.Join(seperator="")
+//BUILTIN SuObject.Join(separator="")
 //GENERATED start
 (SuObject.prototype['Join'] as any).$call = SuObject.prototype['Join'];
-(SuObject.prototype['Join'] as any).$callNamed = function ($named: any, seperator: any) {
-    ({ seperator = seperator } = $named);
-    return SuObject.prototype['Join'].call(this, seperator);
+(SuObject.prototype['Join'] as any).$callNamed = function ($named: any, separator: any) {
+    ({ separator = separator } = $named);
+    return SuObject.prototype['Join'].call(this, separator);
 };
 (SuObject.prototype['Join'] as any).$callAt = function (args: SuObject) {
     return (SuObject.prototype['Join'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(SuObject.prototype['Join'] as any).$params = 'seperator=""';
+(SuObject.prototype['Join'] as any).$params = 'separator=""';
 //GENERATED end
 
 //BUILTIN ObjectIter.Next()

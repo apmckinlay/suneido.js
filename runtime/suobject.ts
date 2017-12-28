@@ -347,9 +347,9 @@ export class SuObject extends SuValue {
         return res;
     }
 
-    Join(seperator: string = ''): string {
+    Join(separator: string = ''): string {
         maxargs(1, arguments.length);
-        return this.vec.join(seperator);
+        return this.vec.join(separator);
     }
 } // end of SuObject class
 
