@@ -282,39 +282,43 @@ export function mkdate(s: string): SuDate {
     return SuDate.literal(s) !;
 }
 
-enum CallType {call, callNamed, callAt}
 // Note: only Suneido values and strings are callable
-export let call = callFnGenerator(CallType.call);
-export let callNamed = callFnGenerator(CallType.callNamed);
-export let callAt = callFnGenerator(CallType.callAt);
-// Note: using apply until better spread (...) performance in v8
-function callFnGenerator(type: CallType):
-    (f: any, ...args: any[]) => any {
-    let fn = function(f: any, ...args: any[]) {
-        if (typeof f === 'string')
-            return callString(type, f, ...args);
-        let call = f['$' + CallType[type]];
-        if (typeof call === 'function')
-            return call.apply(f, args);
-        cantCall(f);
-    };
-    return fn;
+export function call(f: any, ...args: any[]): any {
+    if (typeof f === 'string') {
+        if (args.length === 0)
+            throw new Error("string call requires 'this' argument");
+        return invoke(args[0], f, ...args.slice(1));
+    }
+    let call = f.$call;
+    if (typeof call === 'function')
+        return call(...args);
+    cantCall(f);
 }
 
-function callString(type: CallType, s: string, ...args: any[]): any {
-    if (args.length === 0)
-        throw new Error("string call requires 'this' argument");
-    switch (type) {
-    case CallType.call:
-        return invoke(args[0], s, ...args.slice(1));
-    case CallType.callNamed:
-        return invokeNamed(args[1], s, args[0], ...args.slice(2));
-    case CallType.callAt:
-        let argOb = args[0] as SuObject;
-        let ob = argOb.get(0);
-        argOb.erase(0);
-        return invokeAt(ob, s, argOb);
+export function callNamed(f: any, ...args: any[]): any {
+    if (typeof f === 'string') {
+        if (args.length <= 1)
+            throw new Error("string call requires 'this' argument");
+        return invokeNamed(args[1], f, args[0], ...args.slice(2));
     }
+    let call = f.$callNamed;
+    if (typeof call === 'function')
+        return call(...args);
+    cantCall(f);
+}
+
+export function callAt(f: any, args: SuObject): any {
+    if (typeof f === 'string') {
+        if (args.vecsize() === 0)
+            throw new Error("string call requires 'this' argument");
+        let ob = args.get(0);
+        args.erase(0);
+        return invokeAt(ob, f, args);
+    }
+    let call = f.$callAt;
+    if (typeof call === 'function')
+        return call(args);
+    cantCall(f);
 }
 
 function cantCall(f: any): never {
