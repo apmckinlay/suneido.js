@@ -94,29 +94,25 @@ export class SuObject extends SuValue {
     Add(x: any = mandatory()): SuObject {
         maxargs(1, arguments.length);
         this.checkReadonly();
-        return this.runWithModificationCheck(this.addFn, x);
-    }
-
-    private addFn(x: any): SuObject {
-        this.vec.push(x);
-        this.migrate();
-        return this;
+        return this.runWithModificationCheck(() => {
+            this.vec.push(x);
+            this.migrate();
+            return this;
+        });
     }
 
     put(key: any, value: any): SuObject {
         this.checkReadonly();
-        return this.runWithModificationCheck(this.putFn, key, value);
-    }
-
-    private putFn(key: any, value: any): SuObject {
-        let i = index(key);
-        if (0 <= i && i < this.vec.length)
-            this.vec[i] = value;
-        else if (i === this.vec.length)
-            this.Add(value);
-        else
-            this.map.set(key, value);
-        return this;
+        return this.runWithModificationCheck(() => {
+            let i = index(key);
+            if (0 <= i && i < this.vec.length)
+                this.vec[i] = value;
+            else if (i === this.vec.length)
+                this.Add(value);
+            else
+                this.map.set(key, value);
+            return this;
+        });
     }
 
     get(key: any): any {
@@ -186,24 +182,20 @@ export class SuObject extends SuValue {
     }
 
     clear(): void {
-        return this.runWithModificationCheck(this.clearFn);
-    }
-
-    private clearFn(): void {
-        this.vec = [];
-        this.map = new Map();
+        return this.runWithModificationCheck(() => {
+            this.vec = [];
+            this.map = new Map();
+        });
     }
 
     erase(key: any): void {
-        return this.runWithModificationCheck(this.eraseFn, key);
-    }
-
-    private eraseFn(key: any): void {
-        let i = index(key);
-        if (0 <= i && i < this.vec.length)
-            this.vec.splice(i, 1);
-        else
-            this.map.delete(key);
+        return this.runWithModificationCheck(() => {
+            let i = index(key);
+            if (0 <= i && i < this.vec.length)
+                this.vec.splice(i, 1);
+            else
+                this.map.delete(key);
+        });
     }
 
     Set_readonly(): SuObject {
@@ -338,10 +330,10 @@ export class SuObject extends SuValue {
             }
     }
 
-    private runWithModificationCheck<T>(fn: (...args: any[]) => T, ...args: any[]): T {
+    private runWithModificationCheck<T>(fn: () => T): T {
         let vecSize = this.vecsize();
         let mapSize = this.mapsize();
-        let res = fn.apply(this, args);
+        let res = fn();
         if (vecSize !== this.vecsize() || mapSize !== this.mapsize())
             this.version++;
         return res;
