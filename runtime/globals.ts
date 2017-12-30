@@ -3,46 +3,47 @@
  * Suneido globals
  */
 
-export const suglobals: any = {};
+import { defGlobal } from "./global";
 
 import { SuObject } from "./suobject";
-suglobals.Suneido = new SuObject();
+let Suneido = new SuObject();
 
 // temp so BuiltDate works
 import { SuDate } from "./sudate";
-suglobals.Suneido.put('BuiltDate', SuDate.literal('20160913'));
+Suneido.put('BuiltDate', SuDate.literal('20160913'));
+defGlobal('Suneido', Suneido);
 
 import { su_display } from "./builtin/display";
-suglobals.Display = su_display;
+defGlobal('Display', su_display);
 
 import { su_print } from "./builtin/print";
-suglobals.Print = su_print;
+defGlobal('Print', su_print);
 
 import { su_type } from "./builtin/type";
-suglobals.Type = su_type;
+defGlobal('Type', su_type);
 
 import { su_object, su_objectq } from "./builtin/objects";
-suglobals.Object = su_object;
-suglobals['Object?'] = su_objectq;
+defGlobal('Object', su_object);
+defGlobal('Object?', su_objectq);
 
 import { su_date, su_dateq } from "./builtin/dates";
-suglobals.Date = su_date;
-suglobals['Date?'] = su_dateq;
+defGlobal('Date', su_date);
+defGlobal('Date?', su_dateq);
 
 import { su_built } from "./builtin/built";
-suglobals.Built = su_built;
+defGlobal('Built', su_built);
 
 import { su_stringq } from "./builtin/strings";
-suglobals['String?'] = su_stringq;
+defGlobal('String?', su_stringq);
 
 import { su_numberq } from "./builtin/numbers";
-suglobals['Number?'] = su_numberq;
+defGlobal('Number?', su_numberq);
 
 /** FOR TESTING PURPOSES ONLY! */
-suglobals.Def = su_def;
+defGlobal('Def', su_def);
 function su_def(global: string, value: any): any {
     Object.freeze(value);
-    suglobals[global] = value;
+    defGlobal(global, value);
     return value;
 }
 import * as util from "./utility";
