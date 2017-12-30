@@ -1,5 +1,10 @@
-import { suglobals } from "./globals";
 import { libload } from "./libload";
+
+const suglobals: any = {};
+
+export function defGlobal(name: string, value: any) {
+    suglobals[name] = value;
+}
 
 export function global(name: string) {
     let x = suglobals[name];

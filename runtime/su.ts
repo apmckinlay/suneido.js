@@ -26,6 +26,7 @@ import { RootClass } from "./rootclass";
 import { mapToOb, obToMap } from "./utility";
 import { Regex, Pattern } from "./regex";
 import { CacheMap } from "./cachemap";
+import "./globals";
 
 type Num = number | SuNum;
 
