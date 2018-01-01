@@ -294,7 +294,7 @@ export function call(f: any, ...args: any[]): any {
     }
     let call = f.$call;
     if (typeof call === 'function')
-        return call(...args);
+        return call.apply(f, args);
     cantCall(f);
 }
 
@@ -306,7 +306,7 @@ export function callNamed(f: any, ...args: any[]): any {
     }
     let call = f.$callNamed;
     if (typeof call === 'function')
-        return call(...args);
+        return call.apply(f, args);
     cantCall(f);
 }
 
@@ -320,7 +320,7 @@ export function callAt(f: any, args: SuObject): any {
     }
     let call = f.$callAt;
     if (typeof call === 'function')
-        return call(args);
+        return call.apply(f, [args]);
     cantCall(f);
 }
 
