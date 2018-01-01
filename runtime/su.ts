@@ -26,7 +26,9 @@ import { RootClass } from "./rootclass";
 import { mapToOb, obToMap } from "./utility";
 import { Regex, Pattern } from "./regex";
 import { CacheMap } from "./cachemap";
+import { Dynamic } from "./dynamic";
 import "./globals";
+import { mandatory } from "./args";
 
 type Num = number | SuNum;
 
@@ -400,4 +402,15 @@ export function iter(ob: any): SuIterable {
 
 export function next(iter: SuIterable): any {
     return iter.Next();
+}
+
+export let dynpush = Dynamic.push;
+export let dynpop = Dynamic.pop;
+export let dynget = Dynamic.get;
+export let dynset = Dynamic.put;
+export function dynparam (name: string, defValue?: any): any {
+    let value = Dynamic.getOrUndefined(name);
+    if (value !== undefined)
+        return value;
+    return defValue !== undefined ? defValue : mandatory();
 }
