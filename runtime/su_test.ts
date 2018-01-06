@@ -72,6 +72,13 @@ let args = new SuObject([ob]);
 args.put('named', true);
 assert.equal(su.callAt('Size', args), 1);
 
+// dynparam
+// name can not be duplicate with the one in dynamic_test.ts
+assert.throws(() => su.dynparam('su_test'), "missing argument");
+assert.equal(su.dynparam('su_test', 1), 1);
+su.dynset('su_test', 2);
+assert.equal(su.dynparam('su_test', 1), 2);
+
 // lang port test
 
 import { runFile } from "./porttests";
