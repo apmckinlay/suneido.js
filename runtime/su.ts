@@ -361,6 +361,46 @@ export function invokeAt(ob: any, method: string, args: SuObject): any {
     methodNotFound(ob, method);
 }
 
+/**
+ * for super calls
+ * @param base equals to false if the base class is RootClass, otherwise saves the base class name
+ * @param method method name
+ * @param self class or instance called on
+ * @param args
+ */
+export function invokeBySuper(base: string | false, method: string, self: any, ...args: any[]): any {
+    let ob = base === false ? root_class : global(base);
+    let f = getMethod(ob, method);
+    if (f) {
+        let call = f.$call;
+        if (typeof call === 'function')
+            return call.apply(self, args);
+    }
+    methodNotFound(ob, method);
+}
+
+export function invokeNamedBySuper(base: string | false, method: string, self: any, ...args: any[]): any {
+    let ob = base === false ? root_class : global(base);
+    let f = getMethod(ob, method);
+    if (f) {
+        let call = f.$callNamed;
+        if (typeof call === 'function')
+            return call.apply(self, args);
+    }
+    methodNotFound(ob, method);
+}
+
+export function invokeAtBySuper(base: string | false, method: string, self: any, args: SuObject): any {
+    let ob = base === false ? root_class : global(base);
+    let f = getMethod(ob, method);
+    if (f) {
+        let call = f.$callAt;
+        if (typeof call === 'function')
+            return call.call(self, args);
+    }
+    methodNotFound(ob, method);
+}
+
 function methodNotFound(ob: any, method: string): never {
     throw new Error("method not found: " + type(ob) + "." + method);
 }
