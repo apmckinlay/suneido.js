@@ -6,6 +6,7 @@
 
 import { SuValue } from "./suvalue";
 import { SuObject } from "./suobject";
+import { SuBoundMethod } from "./suBoundMethod";
 import { maxargs } from "./args";
 import { is } from "./is";
 import * as util from "./utility";
@@ -18,6 +19,8 @@ export class RootClass extends SuValue {
         let val = this[key];
         if (val === undefined)
             throw new Error("member not found " + key);
+        if (typeof val === 'function')
+            return new SuBoundMethod(this, val);
         return val;
     }
 

@@ -320,7 +320,7 @@ export function callAt(f: any, args: SuObject): any {
     }
     let call = f.$callAt;
     if (typeof call === 'function')
-        return call.apply(f, [args]);
+        return call.call(f, args);
     cantCall(f);
 }
 
