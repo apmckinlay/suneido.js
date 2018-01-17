@@ -1,17 +1,24 @@
 import { SuValue } from "./suvalue";
 
-interface SuCallable extends SuValue {
+export interface SuCallable extends SuValue {
     $params: string;
+    $callableType: string;
     $call: (...args: any[]) => any;
     $callAt: (...args: any[]) => any;
     $callNamed: (...args: any[]) => any;
 }
 
+export function isBlock(value: any): boolean {
+    return typeof value === 'function' && (value as SuCallable).$callableType === 'BLOCK';
+}
+
 export class SuBoundMethod extends SuValue implements SuCallable {
     $params: string;
+    $callableType: string;
     constructor(private instance: SuValue, private method: SuCallable) {
         super();
         this.$params = method.$params;
+        this.$callableType = method.$callableType;
     }
     $call() {
         return this.method.$call.apply(this.instance, arguments);

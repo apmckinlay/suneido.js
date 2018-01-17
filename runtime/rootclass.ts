@@ -6,8 +6,8 @@
 
 import { SuValue } from "./suvalue";
 import { SuObject } from "./suobject";
-import { SuBoundMethod } from "./suBoundMethod";
-import { maxargs } from "./args";
+import { SuBoundMethod, isBlock } from "./suBoundMethod";
+import { mandatory, maxargs } from "./args";
 import { is } from "./is";
 import * as util from "./utility";
 
@@ -17,11 +17,17 @@ export class RootClass extends SuValue {
 
     get(this: any, key: any): any {
         let val = this[key];
-        if (val === undefined)
-            throw new Error("member not found " + key);
-        if (typeof val === 'function')
-            return new SuBoundMethod(this, val);
-        return val;
+        if (val !== undefined)
+            return typeof val === 'function'
+                ? new SuBoundMethod(this, val)
+                : val;
+        val = this["Get_"];
+        if (val && typeof val === 'function')
+            return val.$call.call(this, key);
+        val = typeof key === 'string' && this["Get_" + key];
+        if (val && typeof val === 'function')
+            return val.$call.call(this);
+        throw new Error("member not found " + key);
     }
 
     put(this: any, key: any, val: any): void {
@@ -132,6 +138,17 @@ export class RootClass extends SuValue {
             x[k] = this[k];
         return x;
     }
+
+    GetDefault(this: any, key: any = mandatory(), defValue: any = mandatory()): any {
+        maxargs(2, arguments.length);
+        let val;
+        try { val = this.get(key); } catch (e) {}
+        if (val !== undefined)
+            return val;
+        return isBlock(defValue)
+            ? defValue.$call()
+            : defValue;
+    }
 } // end of RootClass
 
 function instanceEquals(x: any, y: any): boolean {
@@ -231,4 +248,17 @@ function instanceEquals(x: any, y: any): boolean {
     return (RootClass.prototype['Copy'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
 (RootClass.prototype['Copy'] as any).$params = '';
+//GENERATED end
+
+//BUILTIN RootClass.GetDefault(member, default_value)
+//GENERATED start
+(RootClass.prototype['GetDefault'] as any).$call = RootClass.prototype['GetDefault'];
+(RootClass.prototype['GetDefault'] as any).$callNamed = function ($named: any, member: any, default_value: any) {
+    ({ member = member, default_value = default_value } = $named);
+    return RootClass.prototype['GetDefault'].call(this, member, default_value);
+};
+(RootClass.prototype['GetDefault'] as any).$callAt = function (args: SuObject) {
+    return (RootClass.prototype['GetDefault'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(RootClass.prototype['GetDefault'] as any).$params = 'member, default_value';
 //GENERATED end

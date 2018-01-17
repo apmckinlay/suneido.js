@@ -33,6 +33,7 @@ function generateMethod(member: Member) {
         return member.value.apply(this, params);
     };
     let $f = member.value;
+    $f.$callableType = "METHOD";
     $f.$call = $f;
     $f.$callNamed = $callNamed;
     $f.$callAt = function (args: SuObject) {
