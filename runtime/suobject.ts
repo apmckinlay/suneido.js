@@ -6,6 +6,7 @@
 
 import { SuNum } from "./sunum";
 import { SuValue, SuIterable } from "./suvalue";
+import { isBlock } from "./suBoundMethod";
 import { display } from "./display";
 import { is } from "./is";
 import { mandatory, maxargs } from "./args";
@@ -131,7 +132,7 @@ export class SuObject extends SuValue {
         let val = this.getDefault(key, undefined);
         if (val !== undefined)
             return val;
-        if (typeof def === "function")
+        if (isBlock(def))
             return def.$call();
         return def;
     }

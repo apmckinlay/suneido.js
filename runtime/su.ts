@@ -33,6 +33,7 @@ import { mandatory } from "./args";
 type Num = number | SuNum;
 
 export { mandatory, maxargs } from "./args";
+export { blockreturn, blockReturnHandler } from "./blockreturn";
 export { display, is, global, mapToOb, obToMap };
 
 export const empty_object = new SuObject().Set_readonly();
