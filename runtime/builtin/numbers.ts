@@ -87,6 +87,77 @@ export class Numbers {
         n = (n instanceof SuNum) ? n : SuNum.make(n);
         return SuNum.log10(n);
     }
+
+    Log(this: Num): SuNum {
+        maxargs(0, arguments.length);
+        let n = this;
+        n = (n instanceof SuNum) ? n : SuNum.make(n);
+        return SuNum.log(n);
+    }
+
+    Pow(this: Num, num: Num): SuNum {
+        maxargs(1, arguments.length);
+        let n = this;
+        let base = n instanceof SuNum ? n.toNumber() : n;
+        let exponent = num instanceof SuNum ? num.toNumber() : num;
+        return SuNum.pow(base, exponent);
+    }
+
+    Sin(this: Num): SuNum {
+        maxargs(0, arguments.length);
+        let n = this;
+        n = (n instanceof SuNum) ? n.toNumber() : n;
+        return SuNum.sin(n);
+    }
+
+    ASin(this: Num): SuNum {
+        maxargs(0, arguments.length);
+        let n = this;
+        n = (n instanceof SuNum) ? n.toNumber() : n;
+        return SuNum.aSin(n);
+    }
+
+    Cos(this: Num): SuNum {
+        maxargs(0, arguments.length);
+        let n = this;
+        n = (n instanceof SuNum) ? n.toNumber() : n;
+        return SuNum.cos(n);
+    }
+
+    ACos(this: Num): SuNum {
+        maxargs(0, arguments.length);
+        let n = this;
+        n = (n instanceof SuNum) ? n.toNumber() : n;
+        return SuNum.aCos(n);
+    }
+
+    Tan(this: Num): SuNum {
+        maxargs(0, arguments.length);
+        let n = this;
+        n = (n instanceof SuNum) ? n.toNumber() : n;
+        return SuNum.tan(n);
+    }
+
+    ATan(this: Num): SuNum {
+        maxargs(0, arguments.length);
+        let n = this;
+        n = (n instanceof SuNum) ? n.toNumber() : n;
+        return SuNum.aTan(n);
+    }
+
+    Exp(this: Num): SuNum {
+        maxargs(0, arguments.length);
+        let n = this;
+        n = (n instanceof SuNum) ? n.toNumber() : n;
+        return SuNum.exp(n);
+    }
+
+    Sqrt(this: Num): SuNum {
+        maxargs(0, arguments.length);
+        let n = this;
+        n = (n instanceof SuNum) ? n.toNumber() : n;
+        return SuNum.sqrt(n);
+    }
 }
 
 function round(n: Num, num: Num, mode: RoundingMode): SuNum {
@@ -205,4 +276,125 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
     return (Numbers.prototype['Log10'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
 (Numbers.prototype['Log10'] as any).$params = '';
+//GENERATED end
+
+//BUILTIN Numbers.Log()
+//GENERATED start
+(Numbers.prototype['Log'] as any).$call = Numbers.prototype['Log'];
+(Numbers.prototype['Log'] as any).$callNamed = function (_named: any) {
+    return Numbers.prototype['Log'].call(this);
+};
+(Numbers.prototype['Log'] as any).$callAt = function (args: SuObject) {
+    return (Numbers.prototype['Log'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(Numbers.prototype['Log'] as any).$params = '';
+//GENERATED end
+
+//BUILTIN Numbers.Pow(exponent)
+//GENERATED start
+(Numbers.prototype['Pow'] as any).$call = Numbers.prototype['Pow'];
+(Numbers.prototype['Pow'] as any).$callNamed = function ($named: any, exponent: any) {
+    ({ exponent = exponent } = $named);
+    return Numbers.prototype['Pow'].call(this, exponent);
+};
+(Numbers.prototype['Pow'] as any).$callAt = function (args: SuObject) {
+    return (Numbers.prototype['Pow'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(Numbers.prototype['Pow'] as any).$params = 'exponent';
+//GENERATED end
+
+//BUILTIN Numbers.Sin()
+//GENERATED start
+(Numbers.prototype['Sin'] as any).$call = Numbers.prototype['Sin'];
+(Numbers.prototype['Sin'] as any).$callNamed = function (_named: any) {
+    return Numbers.prototype['Sin'].call(this);
+};
+(Numbers.prototype['Sin'] as any).$callAt = function (args: SuObject) {
+    return (Numbers.prototype['Sin'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(Numbers.prototype['Sin'] as any).$params = '';
+//GENERATED end
+
+//BUILTIN Numbers.ASin()
+//GENERATED start
+(Numbers.prototype['ASin'] as any).$call = Numbers.prototype['ASin'];
+(Numbers.prototype['ASin'] as any).$callNamed = function (_named: any) {
+    return Numbers.prototype['ASin'].call(this);
+};
+(Numbers.prototype['ASin'] as any).$callAt = function (args: SuObject) {
+    return (Numbers.prototype['ASin'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(Numbers.prototype['ASin'] as any).$params = '';
+//GENERATED end
+
+//BUILTIN Numbers.Cos()
+//GENERATED start
+(Numbers.prototype['Cos'] as any).$call = Numbers.prototype['Cos'];
+(Numbers.prototype['Cos'] as any).$callNamed = function (_named: any) {
+    return Numbers.prototype['Cos'].call(this);
+};
+(Numbers.prototype['Cos'] as any).$callAt = function (args: SuObject) {
+    return (Numbers.prototype['Cos'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(Numbers.prototype['Cos'] as any).$params = '';
+//GENERATED end
+
+//BUILTIN Numbers.ACos()
+//GENERATED start
+(Numbers.prototype['ACos'] as any).$call = Numbers.prototype['ACos'];
+(Numbers.prototype['ACos'] as any).$callNamed = function (_named: any) {
+    return Numbers.prototype['ACos'].call(this);
+};
+(Numbers.prototype['ACos'] as any).$callAt = function (args: SuObject) {
+    return (Numbers.prototype['ACos'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(Numbers.prototype['ACos'] as any).$params = '';
+//GENERATED end
+
+//BUILTIN Numbers.Tan()
+//GENERATED start
+(Numbers.prototype['Tan'] as any).$call = Numbers.prototype['Tan'];
+(Numbers.prototype['Tan'] as any).$callNamed = function (_named: any) {
+    return Numbers.prototype['Tan'].call(this);
+};
+(Numbers.prototype['Tan'] as any).$callAt = function (args: SuObject) {
+    return (Numbers.prototype['Tan'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(Numbers.prototype['Tan'] as any).$params = '';
+//GENERATED end
+
+//BUILTIN Numbers.ATan()
+//GENERATED start
+(Numbers.prototype['ATan'] as any).$call = Numbers.prototype['ATan'];
+(Numbers.prototype['ATan'] as any).$callNamed = function (_named: any) {
+    return Numbers.prototype['ATan'].call(this);
+};
+(Numbers.prototype['ATan'] as any).$callAt = function (args: SuObject) {
+    return (Numbers.prototype['ATan'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(Numbers.prototype['ATan'] as any).$params = '';
+//GENERATED end
+
+//BUILTIN Numbers.Exp()
+//GENERATED start
+(Numbers.prototype['Exp'] as any).$call = Numbers.prototype['Exp'];
+(Numbers.prototype['Exp'] as any).$callNamed = function (_named: any) {
+    return Numbers.prototype['Exp'].call(this);
+};
+(Numbers.prototype['Exp'] as any).$callAt = function (args: SuObject) {
+    return (Numbers.prototype['Exp'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(Numbers.prototype['Exp'] as any).$params = '';
+//GENERATED end
+
+//BUILTIN Numbers.Sqrt()
+//GENERATED start
+(Numbers.prototype['Sqrt'] as any).$call = Numbers.prototype['Sqrt'];
+(Numbers.prototype['Sqrt'] as any).$callNamed = function (_named: any) {
+    return Numbers.prototype['Sqrt'].call(this);
+};
+(Numbers.prototype['Sqrt'] as any).$callAt = function (args: SuObject) {
+    return (Numbers.prototype['Sqrt'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(Numbers.prototype['Sqrt'] as any).$params = '';
 //GENERATED end

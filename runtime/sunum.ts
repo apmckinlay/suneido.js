@@ -271,6 +271,8 @@ export class SuNum extends SuValue {
             return SuNum.ZERO;
         let c = Math.abs(this.coef);
         let e = this.exp;
+        if (e + d >= 0)
+            return this;
         let sign = this.sign();
         let newCoef = sign * Math.round(Number(c + 'e' + (e + d)) + roundingMode);
         return SuNum.make(newCoef, -d);
@@ -285,6 +287,44 @@ export class SuNum extends SuValue {
         let pos = Math.max(numStr.length + this.exp, 0);
         let fracNumberStr = numStr.slice(pos);
         return SuNum.make(sign * Number(fracNumberStr), this.exp);
+    }
+
+    static sin(x: number): SuNum {
+        return SuNum.fromNumber(Math.sin(x));
+    }
+
+    static aSin(x: number): SuNum {
+        if (x > 1 || x < -1)
+            return SuNum.ZERO;
+        return SuNum.fromNumber(Math.asin(x));
+    }
+
+    static cos(x: number): SuNum {
+        return SuNum.fromNumber(Math.cos(x));
+    }
+
+    static aCos(x: number): SuNum {
+        if (x > 1 || x < -1)
+            return SuNum.ZERO;
+        return SuNum.fromNumber(Math.acos(x));
+    }
+
+    static tan(x: number): SuNum {
+        return SuNum.fromNumber(Math.tan(x));
+    }
+
+    static aTan(x: number): SuNum {
+        return SuNum.fromNumber(Math.atan(x));
+    }
+
+    static exp(x: number): SuNum {
+        return SuNum.fromNumber(Math.exp(x));
+    }
+
+    static sqrt(x: number): SuNum {
+        if (x < 0)
+            return SuNum.ZERO;
+        return SuNum.fromNumber(Math.sqrt(x));
     }
 
     // sub returns the difference of two SuNums
@@ -383,6 +423,23 @@ export class SuNum extends SuValue {
         if (x.isInf())
             return SuNum.INF;
         return SuNum.fromNumber(Math.log10(x.coef) + x.exp);
+    }
+
+    static log(x: SuNum): SuNum {
+        if (x.sign() === -1)
+            return SuNum.ZERO;
+        if (x.isZero())
+            return SuNum.MINUS_INF;
+        if (x.isInf())
+            return SuNum.INF;
+        return SuNum.fromNumber(Math.log(x.coef) + x.exp * Math.LN10);
+    }
+
+    static pow(x: number, y: number): SuNum {
+        let res = Math.pow(x, y);
+        if (Number.isNaN(res))
+            return SuNum.ZERO;
+        return SuNum.fromNumber(res);
     }
 
     // helpers ---------------------------------------------------------------------
