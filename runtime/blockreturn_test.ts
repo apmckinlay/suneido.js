@@ -1,9 +1,13 @@
 import * as assert from "./assert";
-import { blockReturnHandler, blockreturn } from "./blockreturn";
+import { blockReturnHandler, blockreturn, rethrowBlockReturn } from "./blockreturn";
 
 function test(funcId: number) {
     try {
-        throw blockreturn(1, "test");
+        try {
+            throw blockreturn(1, "test");
+        } catch (e) {
+            rethrowBlockReturn(e);
+        }
     } catch (e) {
         return blockReturnHandler(e, funcId);
     }

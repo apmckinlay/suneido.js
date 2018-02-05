@@ -9,3 +9,7 @@ export function blockReturnHandler(err: any, id: number) {
         return err.value;
     throw err;
 }
+export function rethrowBlockReturn(err: any) {
+    if (err instanceof BlockReturn)
+        throw err;
+}
