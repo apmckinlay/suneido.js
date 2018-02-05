@@ -173,6 +173,17 @@ export class Strings {
         return false;
     }
 
+    CountChar(this: string, char: string = mandatory()): number {
+        maxargs(1, arguments.length);
+        let s = this;
+        if (char.length !== 1)
+            throw new Error("usage: string.CountChar(c)");
+        let n = 0;
+        for (let i = 0; (i = s.indexOf(char, i)) !== -1; ++i)
+            ++n;
+        return n;
+    }
+
     ['Has?'](this: string, str: string = mandatory()): boolean {
         maxargs(1, arguments.length);
         return this.indexOf(str) !== -1;
@@ -205,12 +216,13 @@ export class Strings {
     }
 
     Match(this: string, pattern: string = mandatory(), pos: number | boolean = false,
-        prev: boolean = false): SuObject | null {
+        prev: boolean = false): SuObject | false {
+        maxargs(3, arguments.length);
         let pat = Regex.compile(pattern);
         let position = typeof pos === 'boolean' ? (prev ? this.length : 0) : pos;
         let result = prev ? pat.lastMatch(this, position) : pat.firstMatch(this, position);
         if (result === null)
-            return null;
+            return false;
         let ob = new SuObject();
         for (let i = 0; i <= result.groupCount(); i++) {
             let start = result.pos[i];
@@ -218,26 +230,22 @@ export class Strings {
         }
         return ob;
     }
-    // match(pattern: string, pos: number | boolean = false, prev: boolean = false): suobject.SuObject {
-    //    let s: string = prev === false ? s.slice(pos, -1) : s.slice(0, pos),
-    //        arrayMatch = s.match(new RegExp(pattern, 'g')),
-    //        strMatch,
-    //        indexMatch,
-    //        rangeOb: suobject.SuObject = suobject.make(),
-    //        ob: suobject.SuObject = suobject.make(),
-    //        i;
-    //    if (arrayMatch === null)
-    //        return null;
-    //    strMatch = prev === false ? arrayMatch[0] : arrayMatch[-1];
-    //    indexMatch = prev === false ? s.indexOf(strMatch) : s.lastIndexOf(strMatch);
-    //    s = s.slice(indexMatch, strMatch.length);
-    //    arrayMatch = s.match(pattern);
-    //    if (prev === false)
-    //        indexMatch += pos;
-    //    for (i = 0; i < arrayMatch.length; i++)
-    //        ob.add([indexMatch + strMatch.indexOf(), strMatch])
-    // }
 
+    NthLine(this: string, n: number = mandatory()): string {
+        maxargs(1, arguments.length);
+        let s = this;
+        let sn = this.length;
+        let i = 0;
+        for (; i < sn && n > 0; ++i)
+            if (s.charAt(i) === '\n')
+                --n;
+        let end = i;
+        while (end < sn && s.charAt(end) !== '\n')
+            ++end;
+        while (end > i && s.charAt(end - 1) === '\r')
+            --end;
+        return s.substring(i, end);
+    }
 
     ['Number?'](this: string): boolean {
         maxargs(0, arguments.length);
@@ -652,6 +660,45 @@ class ClassForEach implements ForEach {
     return (Strings.prototype['MapN'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
 (Strings.prototype['MapN'] as any).$params = '';
+//GENERATED end
+
+//BUILTIN Strings.Match(pattern, pos=false, prev=false)
+//GENERATED start
+(Strings.prototype['Match'] as any).$call = Strings.prototype['Match'];
+(Strings.prototype['Match'] as any).$callNamed = function ($named: any, pattern: any, pos: any, prev: any) {
+    ({ pattern = pattern, pos = pos, prev = prev } = $named);
+    return Strings.prototype['Match'].call(this, pattern, pos, prev);
+};
+(Strings.prototype['Match'] as any).$callAt = function (args: SuObject) {
+    return (Strings.prototype['Match'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(Strings.prototype['Match'] as any).$params = 'pattern, pos=false, prev=false';
+//GENERATED end
+
+//BUILTIN Strings.NthLine(n)
+//GENERATED start
+(Strings.prototype['NthLine'] as any).$call = Strings.prototype['NthLine'];
+(Strings.prototype['NthLine'] as any).$callNamed = function ($named: any, n: any) {
+    ({ n = n } = $named);
+    return Strings.prototype['NthLine'].call(this, n);
+};
+(Strings.prototype['NthLine'] as any).$callAt = function (args: SuObject) {
+    return (Strings.prototype['NthLine'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(Strings.prototype['NthLine'] as any).$params = 'n';
+//GENERATED end
+
+//BUILTIN Strings.CountChar(c)
+//GENERATED start
+(Strings.prototype['CountChar'] as any).$call = Strings.prototype['CountChar'];
+(Strings.prototype['CountChar'] as any).$callNamed = function ($named: any, c: any) {
+    ({ c = c } = $named);
+    return Strings.prototype['CountChar'].call(this, c);
+};
+(Strings.prototype['CountChar'] as any).$callAt = function (args: SuObject) {
+    return (Strings.prototype['CountChar'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(Strings.prototype['CountChar'] as any).$params = 'c';
 //GENERATED end
 
 //BUILTIN Strings.Number?()
