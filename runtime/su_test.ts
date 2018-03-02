@@ -1,5 +1,7 @@
 import { SuNum } from "./sunum";
 import { SuObject } from "./suobject";
+import { Except } from "./builtin/except";
+import { type } from "./type";
 import * as su from "./su";
 import * as assert from "./assert";
 
@@ -78,6 +80,31 @@ assert.throws(() => su.dynparam('su_test'), "missing argument");
 assert.equal(su.dynparam('su_test', 1), 1);
 su.dynset('su_test', 2);
 assert.equal(su.dynparam('su_test', 1), 2);
+
+// catchMatch & except
+let except = su.catchMatch(su.exception("test"));
+assert.throws(() => su.catchMatch(su.exception("test"), "wrong"), "test");
+assert.that(except instanceof Except);
+assert.equal(type(except), "Except");
+assert.equal(su.get(except, 1), "e");
+assert.throws(() => su.put(except, 1, "x"), "Except does not support put (1)");
+assert.equal(su.rangelen(except, 1, 2), "es");
+
+let newExcept = su.invoke(except, "As", "abc");
+assert.that(newExcept instanceof Except);
+assert.equal(newExcept.toString(), "abc");
+assert.equal(except.getError(), newExcept.getError());
+
+assert.equal(su.invoke(except, "Upper"), "TEST");
+assert.equal(su.invoke(except, "Size"), 4);
+
+// cat
+let except_cat = su.cat(except, " string");
+assert.that(except_cat instanceof Except);
+assert.equal(except_cat.toString(), "test string");
+let str = su.cat("test", " string");
+assert.equal(typeof str, "string");
+assert.equal(str, "test string");
 
 // lang port test
 

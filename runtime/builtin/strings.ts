@@ -7,6 +7,13 @@ import { mandatory, maxargs } from "../args";
 import { Result, ForEach, Regex } from "../regex";
 import { RegexReplace} from "../regexreplace";
 import { SuIterable } from "../suvalue";
+import { type } from "../type";
+import { err } from "../suexception";
+import { SuValue } from "../suvalue";
+import { displayString } from "../display";
+import { SuNum } from "../sunum";
+
+type Str = string | String2;
 
 export function su_stringq(x: any): boolean {
     return typeof x === 'string';
@@ -24,35 +31,83 @@ export function su_stringq(x: any): boolean {
 (su_stringq as any).$params = 'value';
 //GENERATED end
 
+export abstract class String2 extends SuValue {
+    abstract toString(): string;
+    get length(){
+        return this.toString().length;
+    }
+
+    // INTERFACE: SuValue
+    type() {
+        return "String";
+    }
+    display(): string {
+        return displayString(this.toString());
+    }
+    compareTo(that: any): number {
+        return util.cmp(this.toString(), that.toString());
+    }
+    equals(that: any): boolean {
+        if (isString(that))
+            return this.toString() === that.toString();
+        return false;
+    }
+
+    slice(i: number, j: number): string {
+        return this.toString().slice(i, j);
+    }
+}
+
+export function toStr(x: any): string {
+    if (typeof x === 'string')
+        return x;
+    else if (x === true)
+        return "true";
+    else if (x === false)
+        return "false";
+    else if (typeof x === 'number' || x instanceof SuNum || x instanceof String2)
+        return x.toString();
+    else
+        return err("can't convert " + type(x) + " to String");
+}
+
+export function isString(x: any): boolean {
+    return typeof x === 'string' || x instanceof String2;
+}
+
 export class Strings {
 
-    ['Alpha?'](this: string): boolean {
+    ['Alpha?'](this: Str): boolean {
         maxargs(0, arguments.length);
-        if (this.length === 0)
+        let x = this.toString();
+        if (x.length === 0)
             return false;
-        for (let c of this)
+        for (let c of x)
             if (!util.isAlpha(c))
                 return false;
         return true;
     }
 
-    ['AlphaNum?'](this: string): boolean {
+    ['AlphaNum?'](this: Str): boolean {
         maxargs(0, arguments.length);
-        if (this.length === 0)
+        let x = this.toString();
+        if (x.length === 0)
             return false;
-        for (let c of this)
+        for (let c of x)
             if (!util.isAlphaNum(c))
                 return false;
         return true;
     }
 
-    Asc(this: string): number {
+    Asc(this: Str): number {
         maxargs(0, arguments.length);
-        return this.charCodeAt(0) || 0;
+        let x = this.toString();
+        return x.charCodeAt(0) || 0;
     }
 
-    Detab(this: string): string {
+    Detab(this: Str): string {
         maxargs(0, arguments.length);
+        let x = this.toString();
         const tabWidth: number = 4;
         const spaces: string = "    ";
         function replaceTabWithSpace(oneLineString: string) {
@@ -63,12 +118,13 @@ export class Strings {
             }
             return array.join('');
         }
-        return doWithSplit(this, '\r',
+        return doWithSplit(x, '\r',
             (s) => doWithSplit(s, '\n', replaceTabWithSpace));
     }
 
-    Entab(this: string): string {
+    Entab(this: Str): string {
         maxargs(0, arguments.length);
+        let x = this.toString();
         const tabWidth: number = 4;
         function isTab(col: number): boolean {
             return col > 0 && (col % tabWidth) === 0;
@@ -99,83 +155,92 @@ export class Strings {
                 strPre += ' ';
             return strPre + strTrim;
         }
-        return doWithSplit(this, '\r',
+        return doWithSplit(x, '\r',
             (s) => doWithSplit(s, '\n', replaceSpaceWithTab));
     }
 
-    Eval(this: string): any {
-        //NOTE only support global names, not constants or expressions
-        return global(this);
+    Eval(this: Str): any {
+        //NOTE only support global names, not constants or
+        let x = this.toString();
+        return global(x);
     }
 
-    Extract(this: string, pattern: string = mandatory(), part?: number): string | boolean {
+    Extract(this: Str, pattern: string = mandatory(), part?: number): string | boolean {
         maxargs(2, arguments.length);
+        let x = this.toString();
         let re = Regex.compile(pattern);
-        let res = re.firstMatch(this, 0);
+        let res = re.firstMatch(x, 0);
         if (res === null)
             return false;
         else {
             let part_i = (part === undefined)
                 ? (res.groupCount() === 0) ? 0 : 1
                 : part;
-            return res.group(this, part_i);
+            return res.group(x, part_i);
         }
     }
 
-    Find(this: string, str: string = mandatory(), pos: number = 0): number {
+    Find(this: Str, str: string = mandatory(), pos: number = 0): number {
         maxargs(2, arguments.length);
-        let i = this.indexOf(str, pos);
-        return i === -1 ? this.length : i;
+        let x = this.toString();
+        let i = x.indexOf(str, pos);
+        return i === -1 ? x.length : i;
     }
 
-    FindLast(this: string, str: string = mandatory(), pos: number = this.length):
+    FindLast(this: Str, str: string = mandatory(), pos: number = this.length):
         number | boolean {
         maxargs(2, arguments.length);
-        let i = this.lastIndexOf(str, pos);
+        let x = this.toString();
+        let i = x.lastIndexOf(str, pos);
         return i === -1 ? false : i;
     }
 
-    Find1of(this: string, chars: string = mandatory(), pos: number = 0): number {
+    Find1of(this: Str, chars: string = mandatory(), pos: number = 0): number {
         maxargs(2, arguments.length);
-        for (let i = Math.max(0, pos); i < this.length; i++) {
-            if (-1 !== chars.indexOf(this[i]))
+        let x = this.toString();
+        for (let i = Math.max(0, pos); i < x.length; i++) {
+            if (-1 !== chars.indexOf(x[i]))
                 return i;
         }
-        return this.length;
+        return x.length;
     }
 
-    FindLast1of(this: string, chars: string = mandatory(), pos: number = this.length - 1):
+    FindLast1of(this: Str, chars: string = mandatory(), pos: number = this.length - 1):
         number | boolean {
         maxargs(2, arguments.length);
-        for (let i = Math.min(this.length - 1, pos); i >= 0; i--) {
-            if (-1 !== chars.indexOf(this[i]))
+        let x = this.toString();
+        for (let i = Math.min(x.length - 1, pos); i >= 0; i--) {
+            if (-1 !== chars.indexOf(x[i]))
                 return i;
         }
         return false;
     }
 
-    Findnot1of(this: string, chars: string = mandatory(), pos: number = 0): number {
+    Findnot1of(this: Str, chars: string = mandatory(), pos: number = 0): number {
         maxargs(2, arguments.length);
-        for (let i = Math.max(0, pos); i < this.length; i++) {
-            if (-1 === chars.indexOf(this[i]))
+        let x = this.toString();
+        for (let i = Math.max(0, pos); i < x.length; i++) {
+            if (-1 === chars.indexOf(x[i]))
                 return i;
         }
-        return this.length;
+        return x.length;
     }
 
-    FindLastnot1of(this: string, chars: string = mandatory(), pos: number = this.length - 1):
+    FindLastnot1of(this: Str, chars: string = mandatory(), pos: number = this.length - 1):
         number | boolean {
         maxargs(2, arguments.length);
-        for (let i = Math.min(this.length - 1, pos); i >= 0; i--) {
-            if (-1 === chars.indexOf(this[i]))
+        let x = this.toString();
+        for (let i = Math.min(x.length - 1, pos); i >= 0; i--) {
+            if (-1 === chars.indexOf(x[i]))
                 return i;
         }
         return false;
     }
 
-    CountChar(this: string, char: string = mandatory()): number {
+    CountChar(this: Str, char: string = mandatory()): number {
         maxargs(1, arguments.length);
-        let s = this;
+        let x = this.toString();
+        let s = x;
         if (char.length !== 1)
             throw new Error("usage: string.CountChar(c)");
         let n = 0;
@@ -184,20 +249,23 @@ export class Strings {
         return n;
     }
 
-    ['Has?'](this: string, str: string = mandatory()): boolean {
+    ['Has?'](this: Str, str: string = mandatory()): boolean {
         maxargs(1, arguments.length);
-        return this.indexOf(str) !== -1;
+        let x = this.toString();
+        return x.indexOf(str) !== -1;
     }
 
-    Lower(this: string): string {
+    Lower(this: Str): string {
         maxargs(0, arguments.length);
-        return this.toLowerCase();
+        let x = this.toString();
+        return x.toLowerCase();
     }
 
-    ['Lower?'](this: string): boolean {
+    ['Lower?'](this: Str): boolean {
         maxargs(0, arguments.length);
+        let x = this.toString();
         let result = false;
-        for (let c of this) {
+        for (let c of x) {
             if (util.isUpper(c))
                 return false;
             else if (util.isLower(c))
@@ -206,21 +274,23 @@ export class Strings {
         return result;
     }
 
-    MapN(this: string, n: number = mandatory(), f: any = mandatory()): string {
+    MapN(this: Str, n: number = mandatory(), f: any = mandatory()): string {
         maxargs(2, arguments.length);
+        let x = this.toString();
         let dst = "";
-        for (let i = 0; i < this.length; i += n) {
-            dst += f.$call.call(undefined, this.substr(i, n));
+        for (let i = 0; i < x.length; i += n) {
+            dst += f.$call.call(undefined, x.substr(i, n));
         }
         return dst;
     }
 
-    Match(this: string, pattern: string = mandatory(), pos: number | boolean = false,
+    Match(this: Str, pattern: string = mandatory(), pos: number | boolean = false,
         prev: boolean = false): SuObject | false {
         maxargs(3, arguments.length);
+        let x = this.toString();
         let pat = Regex.compile(pattern);
-        let position = typeof pos === 'boolean' ? (prev ? this.length : 0) : pos;
-        let result = prev ? pat.lastMatch(this, position) : pat.firstMatch(this, position);
+        let position = typeof pos === 'boolean' ? (prev ? x.length : 0) : pos;
+        let result = prev ? pat.lastMatch(x, position) : pat.firstMatch(x, position);
         if (result === null)
             return false;
         let ob = new SuObject();
@@ -231,10 +301,10 @@ export class Strings {
         return ob;
     }
 
-    NthLine(this: string, n: number = mandatory()): string {
+    NthLine(this: Str, n: number = mandatory()): string {
         maxargs(1, arguments.length);
-        let s = this;
-        let sn = this.length;
+        let s = this.toString();
+        let sn = s.length;
         let i = 0;
         for (; i < sn && n > 0; ++i)
             if (s.charAt(i) === '\n')
@@ -247,131 +317,144 @@ export class Strings {
         return s.substring(i, end);
     }
 
-    ['Number?'](this: string): boolean {
+    ['Number?'](this: Str): boolean {
         maxargs(0, arguments.length);
+        let x = this.toString();
         let i: number = 0;
         let c: string;
         let intdigits: boolean;
         let fracdigits: boolean;
-        c = this[i];
+        c = x[i];
         if (c === '+' || c === '-')
-            c = this[++i];
+            c = x[++i];
         intdigits = util.isDigit(c);
         while (util.isDigit(c))
-            c = this[++i];
+            c = x[++i];
         if (c === '.')
-            c = this[++i];
+            c = x[++i];
         fracdigits = util.isDigit(c);
         while (util.isDigit(c))
-            c = this[++i];
+            c = x[++i];
         if (!intdigits && !fracdigits)
             return false;
         if (c === 'e' || c === 'E') {
-            c = this[++i];
+            c = x[++i];
             if (c === '-' || c === '+')
-                c = this[++i];
+                c = x[++i];
             let j = i;
             while (util.isDigit(c))
-                c = this[++i];
+                c = x[++i];
             if (j === i)
                 return false; // no digits after 'e'
         }
-        return i === this.length;
+        return i === x.length;
     }
 
-    ['Numeric?'](this: string): boolean {
+    ['Numeric?'](this: Str): boolean {
         maxargs(0, arguments.length);
-        if (this.length === 0)
+        let x = this.toString();
+        if (x.length === 0)
             return false;
-        for (let c of this)
+        for (let c of x)
             if (!util.isDigit(c))
                 return false;
         return true;
     }
 
-    ['Prefix?'](this: string, str: string = mandatory(), pos: number = 0): boolean {
+    ['Prefix?'](this: Str, str: string = mandatory(), pos: number = 0): boolean {
         maxargs(2, arguments.length);
+        let x = this.toString();
         if (pos < 0)
-            pos += this.length;
-        return this.startsWith(str, pos);
+            pos += x.length;
+        return x.startsWith(str, pos);
     }
 
-    Repeat(this: string, count: number = mandatory()): string {
+    Repeat(this: Str, count: number = mandatory()): string {
         maxargs(1, arguments.length);
-        return this.repeat(Math.max(0, count));
+        let x = this.toString();
+        return x.repeat(Math.max(0, count));
     }
 
     //TODO: to change after classes for block and callable functions are implemented
-    Replace(this: string, pattern: string = mandatory(),
+    Replace(this: Str, pattern: string = mandatory(),
         replacement: any = '', count: number = Infinity): string {
         maxargs(3, arguments.length);
+        let x = this.toString();
         let pat = Regex.compile(pattern);
         let rep: string | null = null;
         if (typeof replacement === 'string')
             rep = replacement;
-        let foreach = new ClassForEach(this, rep, count, replacement);
-        pat.forEachMatch(this, foreach);
+        let foreach = new ClassForEach(x, rep, count, replacement);
+        pat.forEachMatch(x, foreach);
         return foreach.result();
     }
 
-    Size(this: string): number {
+    Size(this: Str): number {
         assert.that(arguments.length === 0, "usage: string.Size()");
-        return this.length;
+        let x = this.toString();
+        return x.length;
     }
 
-    Split(this: string, separator: string = mandatory()): SuObject {
+    Split(this: Str, separator: string = mandatory()): SuObject {
         maxargs(1, arguments.length);
         assert.that(separator !== '', "string.Split separator must not be empty string");
-        let arraySplit = this.split(separator);
+        let x = this.toString();
+        let arraySplit = x.split(separator);
         if (arraySplit[arraySplit.length - 1] === '')
             arraySplit = arraySplit.slice(0, -1);
         return new SuObject(arraySplit);
     }
 
-    Substr(this: string, start: number = mandatory(), length: number = this.length): string {
+    Substr(this: Str, start: number = mandatory(), length: number = this.length): string {
         maxargs(2, arguments.length);
+        let x = this.toString();
         if (start < 0)
-            start += this.length;
+            start += x.length;
         if (start < 0)
             start = 0;
         if (length < 0)
-            length += this.length - start;
+            length += x.length - start;
         if (length < 0)
             length = 0;
-        return this.substr(start, length);
+        return x.substr(start, length);
     }
 
-    ['Suffix?'](this: string, str: string = mandatory()): boolean {
+    ['Suffix?'](this: Str, str: string = mandatory()): boolean {
         maxargs(1, arguments.length);
-        return this.endsWith(str);
+        let x = this.toString();
+        return x.endsWith(str);
     }
 
-    Tr(this: string, from: string = mandatory(), to: string = ''): string {
+    Tr(this: Str, from: string = mandatory(), to: string = ''): string {
         maxargs(2, arguments.length);
-        return tr(this, from, to);
+        let x = this.toString();
+        return tr(x, from, to);
     }
 
-    Unescape(this: string): string {
+    Unescape(this: Str): string {
         maxargs(0, arguments.length);
+        let x = this.toString();
         let dst = '';
-        for (let index = { i: 0 }; index.i < this.length; index.i++) {
-            if (this[index.i] === '\\')
-                dst += util.doesc(this, index);
+        for (let index = { i: 0 }; index.i < x.length; index.i++) {
+            if (x[index.i] === '\\')
+                dst += util.doesc(x, index);
             else
-                dst += this[index.i];
+                dst += x[index.i];
         }
         return dst;
     }
 
-    Upper(this: string): string {
+    Upper(this: Str): string {
         maxargs(0, arguments.length);
-        return this.toUpperCase();
+        let x = this.toString();
+        return x.toUpperCase();
     }
 
-    ['Upper?'](this: string): boolean {
+    ['Upper?'](this: Str): boolean {
         maxargs(0, arguments.length);
+        let x = this.toString();
         let result = false;
-        for (let c of this) {
+        for (let c of x) {
             if (util.isLower(c))
                 return false;
             else if (util.isUpper(c))
@@ -380,9 +463,10 @@ export class Strings {
         return result;
     }
 
-    Iter(this: string): StringIter {
+    Iter(this: Str): StringIter {
         maxargs(0, arguments.length);
-        return new StringIter(this);
+        let x = this.toString();
+        return new StringIter(x);
     }
 }
 

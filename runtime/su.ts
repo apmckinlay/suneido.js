@@ -16,7 +16,7 @@ import { display } from "./display";
 import { is } from "./is";
 import { cmp } from "./cmp";
 import { global } from "./global";
-import { Strings } from "./builtin/strings";
+import { Strings, String2, toStr, isString } from "./builtin/strings";
 const sm: any = Strings.prototype;
 import { Numbers } from "./builtin/numbers";
 const nm: any = Numbers.prototype;
@@ -29,9 +29,13 @@ import { CacheMap } from "./cachemap";
 import { Dynamic } from "./dynamic";
 import "./globals";
 import { mandatory } from "./args";
+import { SuException, err } from "./suexception";
+import { Except } from "./builtin/except";
 
 type Num = number | SuNum;
 
+export { toStr } from "./builtin/strings";
+export { mkObject, mkObject2} from "./suobject"
 export { mandatory, maxargs } from "./args";
 export { blockreturn, blockReturnHandler, rethrowBlockReturn } from "./blockreturn";
 export { display, is, global, mapToOb, obToMap };
@@ -44,12 +48,13 @@ export function put(ob: any, key: any, val: any): any {
     if (ob instanceof SuValue)
         ob.put(key, val);
     else
-        throw type(ob) + " does not support put (" + key + ")";
+        err(type(ob) + " does not support put (" + key + ")");
     return val;
 }
 
 export function get(x: any, key: any): any {
-    if (typeof x === 'string') {
+    if (isString(x)) {
+        x = x.toString();
         let i = toInt(key);
         let n = x.length;
         if (i < 0) {
@@ -61,7 +66,7 @@ export function get(x: any, key: any): any {
     }
     if (x instanceof SuValue)
         return x.get(key);
-    throw type(x) + " does not support get (" + key + ")";
+    err(type(x) + " does not support get (" + key + ")");
 }
 
 export function rangeto(x: any, i: number, j: number) {
@@ -77,8 +82,8 @@ export function rangelen(x: any, i: number, n: number) {
 }
 
 function sliceable(x: any): void {
-    if (typeof x !== 'string' && !(x instanceof SuObject))
-        throw type(x) + " does not support slice";
+    if (typeof x !== 'string' && !(x instanceof SuObject) && !(x instanceof String2))
+        err(type(x) + " does not support slice");
 }
 
 export function inc(x: any): Num {
@@ -99,7 +104,7 @@ export function usub(x: any): Num {
         return -x;
     else if (x instanceof SuNum)
         return x.neg();
-    throw new Error("unreachable");
+    return err("unreachable");
 }
 
 export function not(x: any): boolean {
@@ -115,7 +120,7 @@ function toInt(x: any): number {
         return x;
     if (x instanceof SuNum && x.isInt())
         return x.toInt();
-    throw "can't convert " + type(x) + " to integer";
+    return err("can't convert " + type(x) + " to integer");
 }
 
 function toNum(x: any): Num {
@@ -125,14 +130,15 @@ function toNum(x: any): Num {
         return 0;
     if (x === true)
         return 1;
-    if (typeof x === 'string') {
+    if (isString(x)) {
+        x = x.toString();
         if (!/[.eE]/.test(x) && x.length < 14)
             return parseInt(x);
         let n = SuNum.parse(x);
         if (n)
             return n;
     }
-    throw "can't convert " + type(x) + " to number";
+    return err("can't convert " + type(x) + " to number");
 }
 
 function toSuNum(x: number | SuNum): SuNum {
@@ -157,17 +163,13 @@ export function sub(x: any, y: any): Num {
         return SuNum.sub(toSuNum(x), toSuNum(y));
 }
 
-export function toStr(x: any): string {
-    if (typeof x === 'string')
-        return x;
-    else if (x === true)
-        return "true";
-    else if (x === false)
-        return "false";
-    else if (typeof x === 'number' || x instanceof SuNum || x instanceof Error)
-        return x.toString();
-    else
-        throw new Error("can't convert " + type(x) + " to String");
+export function cat(x: any, y: any): string | Except {
+    let result = toStr(x) + toStr(y);
+    if (x instanceof Except)
+        return x.As(result);
+    if (y instanceof Except)
+        return y.As(result);
+    return result;
 }
 
 export function mul(x: any, y: any): Num {
@@ -242,44 +244,37 @@ export function matchnot(x: any, y: any): boolean {
 
 export function toBool(x: any): boolean {
     if (x !== true && x !== false)
-        throw "can't convert " + type(x) + " to boolean";
+        err("can't convert " + type(x) + " to boolean");
     return x;
 }
 
-export function catchMatch(e: string, pat: string): boolean { // TODO
-    if (pat[0] === '*')
-        return -1 !== e.indexOf(pat.substring(1));
-    else
-        return -1 !== e.lastIndexOf(pat, 0);
+export function exception(e: any): SuException {
+    return e instanceof Except
+        ? new SuException(e.toString(), e.getError(), true)
+        : new SuException(toStr(e));
+}
 
+export function catchMatch(e: Error, pat?: string): Except {
+    if (isCatchMatch(e.toString(), pat))
+        return new Except(e);
+    throw e;
+}
+
+function isCatchMatch(es: string, patterns?: string): boolean {
+    if (!patterns)
+        return true;
+
+    let patlist = patterns.split('|')
+    for (let pat in patlist)
+        if (pat.startsWith('*')
+            ? es.includes(pat.substr(1)) : es.startsWith(pat))
+            return true;
+    return false;
 }
 
 export function mknum(s: string) {
     return SuNum.parse(s) ||
         err("can't convert " + display(s) + " to number");
-}
-
-function err(s: string): void {
-    throw new Error(s);
-}
-
-/**
- * constructor for object constants i.e. #(...)
- * named members passed as sequence of key,value
- */
-export function mkObject(...args: any[]): SuObject {
-    let i = args.indexOf(null);
-    if (i === -1)
-        return new SuObject(args).Set_readonly();
-    let vec = args.slice(0, i);
-    let map = new Map<any, any>();
-    for (i++; i < args.length; i += 2)
-        map.set(args[i], args[i + 1]);
-    return new SuObject(vec, map).Set_readonly();
-}
-
-export function mkObject2(vec: any[], map?: Map<any, any>): SuObject {
-    return new SuObject(vec, map);
 }
 
 export function mkdate(s: string): SuDate {
@@ -290,7 +285,7 @@ export function mkdate(s: string): SuDate {
 export function call(f: any, ...args: any[]): any {
     if (typeof f === 'string') {
         if (args.length === 0)
-            throw new Error("string call requires 'this' argument");
+            err("string call requires 'this' argument");
         return invoke(args[0], f, ...args.slice(1));
     }
     let call = f.$call;
@@ -302,7 +297,7 @@ export function call(f: any, ...args: any[]): any {
 export function callNamed(f: any, ...args: any[]): any {
     if (typeof f === 'string') {
         if (args.length <= 1)
-            throw new Error("string call requires 'this' argument");
+            err("string call requires 'this' argument");
         return invokeNamed(args[1], f, args[0], ...args.slice(2));
     }
     let call = f.$callNamed;
@@ -314,7 +309,7 @@ export function callNamed(f: any, ...args: any[]): any {
 export function callAt(f: any, args: SuObject): any {
     if (typeof f === 'string') {
         if (args.vecsize() === 0)
-            throw new Error("string call requires 'this' argument");
+            err("string call requires 'this' argument");
         let ob = args.get(0);
         args.erase(0);
         return invokeAt(ob, f, args);
@@ -326,7 +321,7 @@ export function callAt(f: any, args: SuObject): any {
 }
 
 function cantCall(f: any): never {
-    throw new Error("can't call " + type(f));
+    return err("can't call " + type(f));
 }
 
 /**
@@ -403,7 +398,7 @@ export function invokeAtBySuper(base: string | false, method: string, self: any,
 }
 
 function methodNotFound(ob: any, method: string): never {
-    throw new Error("method not found: " + type(ob) + "." + method);
+    return err("method not found: " + type(ob) + "." + method);
 }
 
 function getMethod(ob: any, method: string): any {
@@ -416,6 +411,8 @@ function getMethod(ob: any, method: string): any {
         return fm[method];
     // for instances, start lookup in class
     let start = Object.isFrozen(ob) ? ob : Object.getPrototypeOf(ob);
+    if (start instanceof String2)
+        return (start as any)[method] || sm[method] || global('Objects')[method];
     return start[method] || global('Objects')[method];
 }
 

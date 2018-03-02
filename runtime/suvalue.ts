@@ -1,3 +1,5 @@
+import { SuException } from './suexception';
+
 export abstract class SuValue {
     abstract equals(x: any): boolean;
     abstract compareTo(x: any): number;
@@ -6,10 +8,10 @@ export abstract class SuValue {
         return this.toString();
     }
     get(_key: any): any {
-        throw new Error(this.type + " does not support get");
+        throw new SuException(this.type() + " does not support get (" + _key + ")");
     }
     put(_key: any, _val: any): void {
-        throw new Error(this.type + " does not support put");
+        throw new SuException(this.type() + " does not support put (" + _key + ")");
     }
 }
 
