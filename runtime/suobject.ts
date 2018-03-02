@@ -15,6 +15,25 @@ import * as util from "./utility";
 
 import * as assert from "./assert";
 
+/**
+ * constructor for object constants i.e. #(...)
+ * named members passed as sequence of key,value
+ */
+export function mkObject(...args: any[]): SuObject {
+    let i = args.indexOf(null);
+    if (i === -1)
+        return new SuObject(args).Set_readonly();
+    let vec = args.slice(0, i);
+    let map = new Map<any, any>();
+    for (i++; i < args.length; i += 2)
+        map.set(args[i], args[i + 1]);
+    return new SuObject(vec, map).Set_readonly();
+}
+
+export function mkObject2(vec: any[], map?: Map<any, any>): SuObject {
+    return new SuObject(vec, map);
+}
+
 export class SuObject extends SuValue {
     private readonly: boolean;
     private defval: any;

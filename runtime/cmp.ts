@@ -29,6 +29,11 @@ export function cmp(x: any, y: any): number {
     if (xType === yType)
         return (x instanceof SuValue) ? x.compareTo(y) : util.cmp(x, y);
 
+    if (xType === "Except" && yType === "String")
+        return x.compareTo(y);
+    if (xType === "String" && yType === "Except")
+        return -y.compareTo(x);
+
     if (xType === "Boolean")
         return -1;
     if (yType === "Boolean")
@@ -39,9 +44,9 @@ export function cmp(x: any, y: any): number {
     if (yType === "Number")
         return +1;
 
-    if (xType === "String")
+    if (xType === "String" || xType === "Except")
         return -1;
-    if (yType === "String")
+    if (yType === "String" || yType === "Except")
         return +1;
 
     if (xType === "Date")

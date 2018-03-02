@@ -10,7 +10,7 @@ export function display(x: any): string {
 
 export let default_single_quotes = false;
 
-function displayString(s: string): string {
+export function displayString(s: string): string {
     if (-1 === s.indexOf('`') &&
         -1 !== s.indexOf('\\') &&
         -1 === s.search(/[^ -~]/))
