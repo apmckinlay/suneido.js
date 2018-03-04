@@ -10,8 +10,8 @@ export function cmp(x: any, y: any): number {
     if (x === y)
         return 0;
 
-    let xType: string = typeof x;
-    let yType: string = typeof y;
+    let xType: string = typeof x.valueOf();
+    let yType: string = typeof y.valueOf();
 
     if (xType === yType &&
         (xType === 'boolean' || xType === 'number' || xType === 'string')) {
@@ -39,9 +39,9 @@ export function cmp(x: any, y: any): number {
     if (yType === "Number")
         return +1;
 
-    if (xType === "String")
+    if (xType === "String" || xType === "Except")
         return -1;
-    if (yType === "String")
+    if (yType === "String" || yType === "Except")
         return +1;
 
     if (xType === "Date")

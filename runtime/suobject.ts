@@ -77,7 +77,7 @@ export class SuObject extends SuValue {
 
     private checkReadonly(): void {
         if (this.readonly)
-            throw "can't modify readonly objects";
+           throw new Error("can't modify readonly objects");
     }
 
     private mapget(key: any): any {
@@ -317,7 +317,7 @@ export class SuObject extends SuValue {
         let oriVersion = this.version;
         function checkForModification(curVersion: number) {
             if (oriVersion !== curVersion)
-                throw "object modified during iteration";
+               throw new Error("object modified during iteration");
         }
         if (includeVec)
             for (let i = 0; i < this.vec.length; i++) {
@@ -402,7 +402,7 @@ function canonical(key: any): any {
     if (key instanceof SuNum)
         return key.toNumber();
     if (typeof key === 'object')
-        throw "suneido.js objects do not support object keys";
+        throw new Error("suneido.js objects do not support object keys");
     return key;
 }
 

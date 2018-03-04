@@ -16,7 +16,7 @@ import { display } from "./display";
 import { is } from "./is";
 import { cmp } from "./cmp";
 import { global } from "./global";
-import { Strings } from "./builtin/strings";
+import { Strings, toStr, isString } from "./builtin/strings";
 const sm: any = Strings.prototype;
 import { Numbers } from "./builtin/numbers";
 const nm: any = Numbers.prototype;
@@ -29,9 +29,11 @@ import { CacheMap } from "./cachemap";
 import { Dynamic } from "./dynamic";
 import "./globals";
 import { mandatory } from "./args";
+import { Except } from "./builtin/except";
 
 type Num = number | SuNum;
 
+export { toStr } from "./builtin/strings";
 export { mandatory, maxargs } from "./args";
 export { blockreturn, blockReturnHandler, rethrowBlockReturn } from "./blockreturn";
 export { display, is, global, mapToOb, obToMap };
@@ -44,12 +46,12 @@ export function put(ob: any, key: any, val: any): any {
     if (ob instanceof SuValue)
         ob.put(key, val);
     else
-        throw type(ob) + " does not support put (" + key + ")";
+        throw new Error(type(ob) + " does not support put (" + key + ")");
     return val;
 }
 
 export function get(x: any, key: any): any {
-    if (typeof x === 'string') {
+    if (isString(x)) {
         let i = toInt(key);
         let n = x.length;
         if (i < 0) {
@@ -61,7 +63,7 @@ export function get(x: any, key: any): any {
     }
     if (x instanceof SuValue)
         return x.get(key);
-    throw type(x) + " does not support get (" + key + ")";
+    throw new Error(type(x) + " does not support get (" + key + ")");
 }
 
 export function rangeto(x: any, i: number, j: number) {
@@ -77,8 +79,8 @@ export function rangelen(x: any, i: number, n: number) {
 }
 
 function sliceable(x: any): void {
-    if (typeof x !== 'string' && !(x instanceof SuObject))
-        throw type(x) + " does not support slice";
+    if (!isString(x) && !(x instanceof SuObject))
+        throw new Error(type(x) + " does not support slice");
 }
 
 export function inc(x: any): Num {
@@ -115,7 +117,7 @@ function toInt(x: any): number {
         return x;
     if (x instanceof SuNum && x.isInt())
         return x.toInt();
-    throw "can't convert " + type(x) + " to integer";
+    throw new Error("can't convert " + type(x) + " to integer");
 }
 
 function toNum(x: any): Num {
@@ -125,14 +127,14 @@ function toNum(x: any): Num {
         return 0;
     if (x === true)
         return 1;
-    if (typeof x === 'string') {
+    if (isString(x)) {
         if (!/[.eE]/.test(x) && x.length < 14)
             return parseInt(x);
         let n = SuNum.parse(x);
         if (n)
             return n;
     }
-    throw "can't convert " + type(x) + " to number";
+    throw new Error("can't convert " + type(x) + " to number");
 }
 
 function toSuNum(x: number | SuNum): SuNum {
@@ -157,17 +159,13 @@ export function sub(x: any, y: any): Num {
         return SuNum.sub(toSuNum(x), toSuNum(y));
 }
 
-export function toStr(x: any): string {
-    if (typeof x === 'string')
-        return x;
-    else if (x === true)
-        return "true";
-    else if (x === false)
-        return "false";
-    else if (typeof x === 'number' || x instanceof SuNum || x instanceof Error)
-        return x.toString();
-    else
-        throw new Error("can't convert " + type(x) + " to String");
+export function cat(x: any, y: any): string | Except {
+    let result = toStr(x) + toStr(y);
+    if (x instanceof Except)
+        return x.As(result);
+    if (y instanceof Except)
+        return y.As(result);
+    return result;
 }
 
 export function mul(x: any, y: any): Num {
@@ -242,25 +240,42 @@ export function matchnot(x: any, y: any): boolean {
 
 export function toBool(x: any): boolean {
     if (x !== true && x !== false)
-        throw "can't convert " + type(x) + " to boolean";
+        throw new Error("can't convert " + type(x) + " to boolean");
     return x;
 }
 
-export function catchMatch(e: string, pat: string): boolean { // TODO
-    if (pat[0] === '*')
-        return -1 !== e.indexOf(pat.substring(1));
-    else
-        return -1 !== e.lastIndexOf(pat, 0);
+export function exception(e: any): Error {
+    if (!(e instanceof Except))
+        return new Error(toStr(e));
+    let err = e.getError();
+    err.message = e.valueOf()
+    return err;
+}
 
+export function catchMatch(e: Error, pat?: string): Except {
+    if (isCatchMatch(e.message, pat))
+        return new Except(e);
+    throw e;
+}
+
+function isCatchMatch(es: string, patterns?: string): boolean {
+    if (!patterns)
+        return true;
+
+    let patlist = patterns.split('|');
+    for (let pat of patlist)
+        if (pat.startsWith('*') ? es.includes(pat.substr(1)) : es.startsWith(pat))
+            return true;
+    return false;
 }
 
 export function mknum(s: string) {
-    return SuNum.parse(s) ||
-        err("can't convert " + display(s) + " to number");
-}
-
-function err(s: string): void {
-    throw new Error(s);
+    try {
+        return SuNum.parse(s)
+    }
+    catch (e) {
+        throw new Error("can't convert " + display(s) + " to number");
+    }
 }
 
 /**
@@ -414,6 +429,8 @@ function getMethod(ob: any, method: string): any {
         return nm[method] || global('Numbers')[method];
     if (t === 'function')
         return fm[method];
+    if (ob instanceof Except)
+        return (ob as any)[method] || sm[method] || global('Strings')[method];
     // for instances, start lookup in class
     let start = Object.isFrozen(ob) ? ob : Object.getPrototypeOf(ob);
     return start[method] || global('Objects')[method];

@@ -7,7 +7,7 @@ export function type(x: any): string {
         throw new Error("uninitialized");
     return x === null
         ? "null"
-        : x instanceof SuValue
+        : x instanceof SuValue || x.type
             ? x.type()
             : isBlock(x)
                 ? "Block"

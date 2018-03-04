@@ -3,7 +3,7 @@ import { SuValue } from "./suvalue";
 export function display(x: any): string {
     if (x instanceof SuValue)
         return x.display();
-    if (typeof x === 'string')
+    if (typeof x.valueOf() === 'string')
         return displayString(x);
     return String(x);
 }
