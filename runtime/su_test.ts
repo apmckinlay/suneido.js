@@ -1,5 +1,6 @@
 import { SuNum } from "./sunum";
 import { SuObject } from "./suobject";
+import { Except } from "./builtin/except";
 import * as su from "./su";
 import * as assert from "./assert";
 
@@ -78,6 +79,34 @@ assert.throws(() => su.dynparam('su_test'), "missing argument");
 assert.equal(su.dynparam('su_test', 1), 1);
 su.dynset('su_test', 2);
 assert.equal(su.dynparam('su_test', 1), 2);
+
+// exception
+let error = new Error("test")
+let except = new Except(error);
+let newExcept = except.As("new test");
+
+let rethrow = su.exception(newExcept);
+assert.equal(rethrow.message, "new test");
+assert.equal(rethrow.stack, error.stack);
+
+// cat
+let str = su.cat("test", " string");
+assert.equal(typeof str, "string");
+assert.equal(str, "test string");
+let except_cat = su.cat(except, " string");
+assert.that(except_cat instanceof Except);
+assert.equal(except_cat.toString(), "test string");
+except_cat = su.cat("string ", except);
+assert.that(except_cat instanceof Except);
+assert.equal(except_cat.toString(), "string test");
+
+// catchMatch
+assert.equal(su.catchMatch(su.exception("test")).valueOf(), "test");
+assert.equal(su.catchMatch(su.exception("test"), "test").valueOf(), "test");
+assert.equal(su.catchMatch(su.exception("test"), "te").valueOf(), "test");
+assert.equal(su.catchMatch(su.exception("test"), "*st").valueOf(), "test");
+assert.equal(su.catchMatch(su.exception("test"), "match|*st").valueOf(), "test");
+assert.throws(() => su.catchMatch(su.exception("test"), "wrong"), "test");
 
 // lang port test
 

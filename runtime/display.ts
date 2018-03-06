@@ -1,9 +1,10 @@
 import { SuValue } from "./suvalue";
+import { isString } from "./isString";
 
 export function display(x: any): string {
     if (x instanceof SuValue)
         return x.display();
-    if (typeof x === 'string')
+    if (isString(x))
         return displayString(x);
     return String(x);
 }

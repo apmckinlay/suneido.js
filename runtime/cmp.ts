@@ -1,6 +1,7 @@
 import { type } from "./type";
 import { SuValue } from "./suvalue";
 import { SuNum } from "./sunum";
+import { isString } from "./isString";
 import * as util from "./utility";
 
 /**
@@ -10,21 +11,20 @@ export function cmp(x: any, y: any): number {
     if (x === y)
         return 0;
 
-    let xType: string = typeof x;
-    let yType: string = typeof y;
+    let xTypeof: string = isString(x) ? 'string' : typeof x;
+    let yTypeof: string = isString(y) ? 'string' : typeof y;
 
-    if (xType === yType &&
-        (xType === 'boolean' || xType === 'number' || xType === 'string')) {
+    if (xTypeof === yTypeof &&
+        (xTypeof === 'boolean' || xTypeof === 'number' || xTypeof === 'string'))
         return util.cmp(x, y);
-    }
 
-    if (xType === 'number')
+    if (xTypeof === 'number')
         x = SuNum.fromNumber(x);
-    if (yType === 'number')
+    if (yTypeof === 'number')
         y = SuNum.fromNumber(y);
 
-    xType = type(x);
-    yType = type(y);
+    let xType = type(x);
+    let yType = type(y);
 
     if (xType === yType)
         return (x instanceof SuValue) ? x.compareTo(y) : util.cmp(x, y);
@@ -39,9 +39,9 @@ export function cmp(x: any, y: any): number {
     if (yType === "Number")
         return +1;
 
-    if (xType === "String")
+    if (xTypeof === "string")
         return -1;
-    if (yType === "String")
+    if (yTypeof === "string")
         return +1;
 
     if (xType === "Date")

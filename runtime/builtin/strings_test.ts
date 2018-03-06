@@ -1,4 +1,6 @@
 import { Strings, StringIter } from "./strings";
+import { isString } from "../isString";
+import { Except } from "./except";
 import * as util from "../utility";
 import * as assert from "../assert";
 
@@ -233,3 +235,10 @@ function iterTest(iter: StringIter, expected: string[]) {
 }
 iterTest(sm.Iter.call(''), []);
 iterTest(sm.Iter.call("abc 123a"), ['a', 'b', 'c', ' ', '1', '2', '3', 'a']);
+
+// isString
+assert.equal(isString(undefined), false);
+assert.equal(isString(1), false);
+assert.equal(isString(true), false);
+assert.equal(isString(""), true);
+assert.equal(isString(new Except(new Error(), 'test')), true);

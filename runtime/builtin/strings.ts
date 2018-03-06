@@ -7,6 +7,9 @@ import { mandatory, maxargs } from "../args";
 import { Result, ForEach, Regex } from "../regex";
 import { RegexReplace} from "../regexreplace";
 import { SuIterable } from "../suvalue";
+import { SuNum } from "../sunum";
+import { type } from "../type";
+import { isString } from "../isString";
 
 export function su_stringq(x: any): boolean {
     return typeof x === 'string';
@@ -23,6 +26,19 @@ export function su_stringq(x: any): boolean {
 };
 (su_stringq as any).$params = 'value';
 //GENERATED end
+
+export function toStr(x: any): string {
+    if (isString(x))
+        return x;
+    else if (x === true)
+        return "true";
+    else if (x === false)
+        return "false";
+    else if (typeof x === 'number' || x instanceof SuNum)
+        return x.toString();
+    else
+        throw new Error("can't convert " + type(x) + " to String");
+}
 
 export class Strings {
 
