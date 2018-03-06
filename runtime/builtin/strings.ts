@@ -9,6 +9,7 @@ import { RegexReplace} from "../regexreplace";
 import { SuIterable } from "../suvalue";
 import { SuNum } from "../sunum";
 import { type } from "../type";
+import { isString } from "../isString";
 
 export function su_stringq(x: any): boolean {
     return typeof x === 'string';
@@ -37,10 +38,6 @@ export function toStr(x: any): string {
         return x.toString();
     else
         throw new Error("can't convert " + type(x) + " to String");
-}
-
-export function isString(x: any): boolean {
-    return x != undefined && typeof x.valueOf() === 'string';
 }
 
 export class Strings {

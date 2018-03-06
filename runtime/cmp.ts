@@ -1,6 +1,7 @@
 import { type } from "./type";
 import { SuValue } from "./suvalue";
 import { SuNum } from "./sunum";
+import { isString } from "./isString";
 import * as util from "./utility";
 
 /**
@@ -10,8 +11,8 @@ export function cmp(x: any, y: any): number {
     if (x === y)
         return 0;
 
-    let xTypeof: string = x != undefined ? typeof x.valueOf() : typeof x;
-    let yTypeof: string = y != undefined ? typeof y.valueOf() : typeof y;
+    let xTypeof: string = isString(x) ? 'string' : typeof x;
+    let yTypeof: string = isString(y) ? 'string' : typeof y;
 
     if (xTypeof === yTypeof &&
         (xTypeof === 'boolean' || xTypeof === 'number' || xTypeof === 'string'))
