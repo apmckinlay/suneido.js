@@ -10,21 +10,20 @@ export function cmp(x: any, y: any): number {
     if (x === y)
         return 0;
 
-    let xType: string = typeof x.valueOf();
-    let yType: string = typeof y.valueOf();
+    let xTypeof: string = x != undefined ? typeof x.valueOf() : typeof x;
+    let yTypeof: string = y != undefined ? typeof y.valueOf() : typeof y;
 
-    if (xType === yType &&
-        (xType === 'boolean' || xType === 'number' || xType === 'string')) {
+    if (xTypeof === yTypeof &&
+        (xTypeof === 'boolean' || xTypeof === 'number' || xTypeof === 'string'))
         return util.cmp(x, y);
-    }
 
-    if (xType === 'number')
+    if (xTypeof === 'number')
         x = SuNum.fromNumber(x);
-    if (yType === 'number')
+    if (yTypeof === 'number')
         y = SuNum.fromNumber(y);
 
-    xType = type(x);
-    yType = type(y);
+    let xType = type(x);
+    let yType = type(y);
 
     if (xType === yType)
         return (x instanceof SuValue) ? x.compareTo(y) : util.cmp(x, y);
@@ -39,9 +38,9 @@ export function cmp(x: any, y: any): number {
     if (yType === "Number")
         return +1;
 
-    if (xType === "String" || xType === "Except")
+    if (xTypeof === "string")
         return -1;
-    if (yType === "String" || yType === "Except")
+    if (yTypeof === "string")
         return +1;
 
     if (xType === "Date")

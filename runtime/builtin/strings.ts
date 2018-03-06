@@ -40,7 +40,7 @@ export function toStr(x: any): string {
 }
 
 export function isString(x: any): boolean {
-    return typeof x.valueOf() === 'string';
+    return x != undefined && typeof x.valueOf() === 'string';
 }
 
 export class Strings {
