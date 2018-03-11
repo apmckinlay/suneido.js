@@ -136,6 +136,18 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Delete'] as any).$params = '@args';
 //GENERATED end
 
+//BUILTIN SuObject.Erase(@args)
+//GENERATED start
+(SuObject.prototype['Erase'] as any).$callAt = SuObject.prototype['Erase'];
+(SuObject.prototype['Erase'] as any).$call = function (...args: any[]) {
+    return SuObject.prototype['Erase'].call(this, new SuObject(args));
+};
+(SuObject.prototype['Erase'] as any).$callNamed = function (named: any, ...args: any[]) {
+    return SuObject.prototype['Erase'].call(this, new SuObject(args, util.obToMap(named)));
+};
+(SuObject.prototype['Erase'] as any).$params = '@args';
+//GENERATED end
+
 //BUILTIN SuObject.Set_readonly()
 //GENERATED start
 (SuObject.prototype['Set_readonly'] as any).$call = SuObject.prototype['Set_readonly'];

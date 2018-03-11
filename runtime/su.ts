@@ -332,7 +332,7 @@ export function callAt(f: any, args: SuObject): any {
         if (args.vecsize() === 0)
             throw new Error("string call requires 'this' argument");
         let ob = args.get(0);
-        args.erase(0);
+        args.delete(0);
         return invokeAt(ob, f, args);
     }
     let call = f.$callAt;

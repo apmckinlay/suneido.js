@@ -178,7 +178,7 @@ export class SuObject extends SuValue {
             this.clear();
         else
             for (let x of args.vec)
-                this.erase(x);
+                this.delete(x);
         return this;
     }
 
@@ -189,13 +189,34 @@ export class SuObject extends SuValue {
         });
     }
 
-    erase(key: any): void {
+    delete(key: any): boolean {
         return this.runWithModificationCheck(() => {
             let i = index(key);
-            if (0 <= i && i < this.vec.length)
+            if (0 <= i && i < this.vec.length) {
                 this.vec.splice(i, 1);
-            else
-                this.map.delete(key);
+                return true;
+            } else
+                return this.map.delete(key);
+        });
+    }
+
+    Erase(args: SuObject): SuObject {
+        this.checkReadonly();
+        for (let x of args.vec)
+            this.erase(x);
+        return this;
+    }
+
+    erase(key: any): boolean {
+        return this.runWithModificationCheck(() => {
+            let i = index(key);
+            if (0 <= i && i < this.vec.length) {
+                for (let j = this.vec.length - 1; j > i; j--)
+                    this.map.set(j, this.vec[j]);
+                this.vec.splice(i);
+                return true;
+            } else
+                return this.map.delete(key);
         });
     }
 
