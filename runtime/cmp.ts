@@ -1,7 +1,7 @@
 import { type } from "./type";
 import { SuValue } from "./suvalue";
 import { SuNum } from "./sunum";
-import { isString } from "./isString";
+import { isString } from "./ops";
 import * as util from "./utility";
 
 /**

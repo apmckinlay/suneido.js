@@ -17,7 +17,7 @@ import * as assert from "./assert";
 
 export class SuObject extends SuValue {
     private readonly: boolean;
-    private defval: any;
+    protected defval: any;
     public vec: Array<any>;    // public only for readonly access
     public map: Map<any, any>; // public only for readonly access
     static EMPTY = new SuObject().Set_readonly();
@@ -103,6 +103,10 @@ export class SuObject extends SuValue {
     }
 
     put(key: any, value: any): SuObject {
+        return this.preset(key, value);
+    }
+
+    preset(key: any, value: any): SuObject {
         this.checkReadonly();
         return this.runWithModificationCheck(() => {
             let i = index(key);
@@ -178,7 +182,7 @@ export class SuObject extends SuValue {
             this.clear();
         else
             for (let x of args.vec)
-                this.erase(x);
+                this.delete(x);
         return this;
     }
 
@@ -189,13 +193,34 @@ export class SuObject extends SuValue {
         });
     }
 
-    erase(key: any): void {
+    delete(key: any): boolean {
         return this.runWithModificationCheck(() => {
             let i = index(key);
-            if (0 <= i && i < this.vec.length)
+            if (0 <= i && i < this.vec.length) {
                 this.vec.splice(i, 1);
-            else
-                this.map.delete(key);
+                return true;
+            } else
+                return this.map.delete(key);
+        });
+    }
+
+    Erase(args: SuObject): SuObject {
+        this.checkReadonly();
+        for (let x of args.vec)
+            this.erase(x);
+        return this;
+    }
+
+    erase(key: any): boolean {
+        return this.runWithModificationCheck(() => {
+            let i = index(key);
+            if (0 <= i && i < this.vec.length) {
+                for (let j = this.vec.length - 1; j > i; j--)
+                    this.map.set(j, this.vec[j]);
+                this.vec.splice(i);
+                return true;
+            } else
+                return this.map.delete(key);
         });
     }
 
@@ -206,6 +231,10 @@ export class SuObject extends SuValue {
         this.readonly = true;
         //TODO recursively set readonly
         return this;
+    }
+
+    ['Readonly?'](): boolean {
+        return this.readonly;
     }
 
     Set_default(value: any = null): SuObject {

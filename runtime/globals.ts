@@ -26,6 +26,10 @@ import { su_object, su_objectq } from "./builtin/objects";
 defGlobal('Object', su_object);
 defGlobal('Object?', su_objectq);
 
+import { su_record, su_recordq } from "./builtin/records";
+defGlobal('Record', su_record);
+defGlobal('Record?', su_recordq);
+
 import { su_date, su_dateq } from "./builtin/dates";
 defGlobal('Date', su_date);
 defGlobal('Date?', su_dateq);

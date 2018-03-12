@@ -153,6 +153,7 @@ function modifyDuringIteration(modifyOp: (ob: SuObject) => void) {
 }
 assert.throws(modifyDuringIteration((ob) => ob.Add('5')), "object modified during iteration");
 assert.throws(modifyDuringIteration((ob) => ob.put('a', '5')), "object modified during iteration");
+assert.throws(modifyDuringIteration((ob) => ob.delete(1)), "object modified during iteration");
 assert.throws(modifyDuringIteration((ob) => ob.erase(1)), "object modified during iteration");
 assert.throws(modifyDuringIteration((ob) => ob.clear()), "object modified during iteration");
 
@@ -161,3 +162,23 @@ iterTest(new ObjectIter(ob, Values.ITER_ASSOCS),
     [[0, 1], [1, 2], [2, 3], [3, 4], ['key_a', 'a'], ['key_b', 'b']]);
 iterTest(new ObjectIter(ob, Values.ITER_KEYS, false, true), ['key_a', 'key_b']);
 iterTest(new ObjectIter(ob, Values.ITER_KEYS, true, false), [0, 1, 2, 3]);
+
+// delete & erase
+ob = new SuObject([1, 2, 3, 4]);
+ob.put('a', 'a');
+assert.equal(ob.get(1), 2);
+assert.equal(ob.get('a'), 'a');
+ob.delete(1);
+assert.equal(ob.get(1), 3);
+ob.delete('a');
+assert.that(!ob["Member?"]('a'));
+
+ob = new SuObject([1, 2, 3, 4]);
+ob.put('a', 'a');
+assert.equal(ob.get(1), 2);
+assert.equal(ob.get('a'), 'a');
+ob.erase(1);
+assert.that(!ob["Member?"](1));
+assert.equal(ob.get(2), 3);
+ob.erase('a');
+assert.that(!ob["Member?"]('a'));

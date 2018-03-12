@@ -9,7 +9,7 @@ import { RegexReplace} from "../regexreplace";
 import { SuIterable } from "../suvalue";
 import { SuNum } from "../sunum";
 import { type } from "../type";
-import { isString } from "../isString";
+import { isString } from "../ops";
 
 export function su_stringq(x: any): boolean {
     return typeof x === 'string';
