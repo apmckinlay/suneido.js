@@ -14,3 +14,11 @@ export function global(name: string) {
     suglobals[name] = x;
     return x;
 }
+
+export function tryGlobal(name: string) {
+    try {
+        return global(name);
+    } catch (e) {
+        return null;
+    }
+}

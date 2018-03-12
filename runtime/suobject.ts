@@ -17,7 +17,7 @@ import * as assert from "./assert";
 
 export class SuObject extends SuValue {
     private readonly: boolean;
-    private defval: any;
+    protected defval: any;
     public vec: Array<any>;    // public only for readonly access
     public map: Map<any, any>; // public only for readonly access
     static EMPTY = new SuObject().Set_readonly();
@@ -103,6 +103,10 @@ export class SuObject extends SuValue {
     }
 
     put(key: any, value: any): SuObject {
+        return this.preset(key, value);
+    }
+
+    preset(key: any, value: any): SuObject {
         this.checkReadonly();
         return this.runWithModificationCheck(() => {
             let i = index(key);

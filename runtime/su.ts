@@ -10,6 +10,7 @@
 import { SuValue, SuIterable } from "./suvalue";
 import { SuNum } from "./sunum";
 import { SuObject } from "./suobject";
+import { SuRecord } from "./surecord";
 import { SuDate } from "./sudate";
 import { type } from "./type";
 import { display } from "./display";
@@ -434,7 +435,9 @@ function getMethod(ob: any, method: string): any {
         return (ob as any)[method] || sm[method] || global('Strings')[method];
     // for instances, start lookup in class
     let start = Object.isFrozen(ob) ? ob : Object.getPrototypeOf(ob);
-    return start[method] || global('Objects')[method];
+    return start[method] ||
+        (ob instanceof SuRecord && global('Records')[method]) ||
+        global('Objects')[method];
 }
 
 export function instantiate(clas: any, ...args: any[]): any {

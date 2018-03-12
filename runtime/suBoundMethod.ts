@@ -20,11 +20,11 @@ export class SuBoundMethod extends SuValue implements SuCallable {
         this.$params = method.$params;
         this.$callableType = method.$callableType;
     }
-    $call() {
-        return this.method.$call.apply(this.instance, arguments);
+    $call(...args: any[]) {
+        return this.method.$call.apply(this.instance, args);
     }
-    $callNamed() {
-        return this.method.$callNamed.apply(this.instance, arguments);
+    $callNamed(...args: any[]) {
+        return this.method.$callNamed.apply(this.instance, args);
     }
     $callAt(args: any) {
         return this.method.$callAt.call(this.instance, args);
