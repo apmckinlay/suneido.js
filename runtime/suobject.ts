@@ -229,6 +229,10 @@ export class SuObject extends SuValue {
         return this;
     }
 
+    ['Readonly?'](): boolean {
+        return this.readonly;
+    }
+
     Set_default(value: any = null): SuObject {
         maxargs(1, arguments.length);
         this.defval = value;

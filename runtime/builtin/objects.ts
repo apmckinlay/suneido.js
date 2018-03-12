@@ -173,6 +173,18 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Set_default'] as any).$params = 'value=null';
 //GENERATED end
 
+//BUILTIN SuObject.Readonly?()
+//GENERATED start
+(SuObject.prototype['Readonly?'] as any).$call = SuObject.prototype['Readonly?'];
+(SuObject.prototype['Readonly?'] as any).$callNamed = function (_named: any) {
+    return SuObject.prototype['Readonly?'].call(this);
+};
+(SuObject.prototype['Readonly?'] as any).$callAt = function (args: SuObject) {
+    return (SuObject.prototype['Readonly?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(SuObject.prototype['Readonly?'] as any).$params = '';
+//GENERATED end
+
 //BUILTIN SuObject.Slice(i, n=99999)
 //GENERATED start
 (SuObject.prototype['Slice'] as any).$call = SuObject.prototype['Slice'];
