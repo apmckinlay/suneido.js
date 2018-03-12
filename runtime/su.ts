@@ -17,7 +17,7 @@ import { is } from "./is";
 import { cmp } from "./cmp";
 import { global } from "./global";
 import { Strings, toStr } from "./builtin/strings";
-import { isString } from "./isString";
+import { isString } from "./ops";
 const sm: any = Strings.prototype;
 import { Numbers } from "./builtin/numbers";
 const nm: any = Numbers.prototype;

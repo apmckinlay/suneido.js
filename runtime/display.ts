@@ -1,5 +1,5 @@
 import { SuValue } from "./suvalue";
-import { isString } from "./isString";
+import { isString } from "./ops";
 
 export function display(x: any): string {
     if (x instanceof SuValue)

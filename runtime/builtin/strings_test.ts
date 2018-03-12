@@ -1,5 +1,5 @@
 import { Strings, StringIter } from "./strings";
-import { isString } from "../isString";
+import { isString } from "../ops";
 import { Except } from "./except";
 import * as util from "../utility";
 import * as assert from "../assert";
