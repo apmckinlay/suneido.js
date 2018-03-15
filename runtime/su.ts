@@ -17,8 +17,8 @@ import { display } from "./display";
 import { is } from "./is";
 import { cmp } from "./cmp";
 import { global } from "./global";
-import { Strings, toStr } from "./builtin/strings";
-import { isString } from "./ops";
+import { Strings } from "./builtin/strings";
+import { isString, coerceStr, toStr } from "./ops";
 const sm: any = Strings.prototype;
 import { Numbers } from "./builtin/numbers";
 const nm: any = Numbers.prototype;
@@ -35,7 +35,7 @@ import { Except } from "./builtin/except";
 
 type Num = number | SuNum;
 
-export { toStr } from "./builtin/strings";
+export { toStr } from "./ops";
 export { mandatory, maxargs } from "./args";
 export { blockreturn, blockReturnHandler, rethrowBlockReturn } from "./blockreturn";
 export { display, is, global, mapToOb, obToMap };
@@ -162,7 +162,7 @@ export function sub(x: any, y: any): Num {
 }
 
 export function cat(x: any, y: any): string | Except {
-    let result = toStr(x) + toStr(y);
+    let result = coerceStr(x) + coerceStr(y);
     if (x instanceof Except)
         return x.As(result);
     if (y instanceof Except)
