@@ -4,7 +4,7 @@
  */
 
 const jreq = require('equals');
-import { is } from "./is";
+import { is } from "./Ops";
 import { SuValue } from "./suvalue";
 
 /** Asserts that the expr === true */

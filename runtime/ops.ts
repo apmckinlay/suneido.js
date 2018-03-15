@@ -1,5 +1,16 @@
 import { type } from "./type";
 import { SuNum } from "./sunum";
+import { SuValue } from "./suvalue";
+
+export function is(x: any, y: any): boolean {
+    if (x.valueOf() === y.valueOf())
+        return true;
+    if (x instanceof SuValue)
+        return x.equals(y);
+    if (y instanceof SuValue)
+        return y.equals(x);
+    return false;
+}
 
 export function isString(x: any): boolean {
     return x != undefined && typeof x.valueOf() === 'string';

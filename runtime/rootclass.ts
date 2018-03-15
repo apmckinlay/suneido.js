@@ -8,7 +8,7 @@ import { SuValue } from "./suvalue";
 import { SuObject } from "./suobject";
 import { SuBoundMethod, isBlock } from "./suBoundMethod";
 import { mandatory, maxargs } from "./args";
-import { is } from "./is";
+import { is } from "./ops";
 import * as util from "./utility";
 
 export class RootClass extends SuValue {
