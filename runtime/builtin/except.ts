@@ -1,4 +1,4 @@
-import { toStr } from "./strings";
+import { toStr } from "../ops";
 import { SuObject } from "../suobject";
 import * as util from "../utility";
 

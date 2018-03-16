@@ -8,7 +8,7 @@ import { SuNum } from "./sunum";
 import { SuValue, SuIterable } from "./suvalue";
 import { isBlock } from "./suBoundMethod";
 import { display } from "./display";
-import { is } from "./is";
+import { is } from "./ops";
 import { mandatory, maxargs } from "./args";
 import { cmp } from "./cmp";
 import * as util from "./utility";

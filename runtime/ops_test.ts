@@ -1,7 +1,9 @@
-import { is } from "./is";
+import { is } from "./ops";
 import { SuNum } from "./sunum";
 import { SuDate } from "./sudate";
 import { SuObject } from "./suobject";
+import { Except } from "./builtin/except";
+import { SuRecord } from "./surecord";
 import * as assert from "./assert";
 
 function eq(x: any, y: any): void {
@@ -37,5 +39,14 @@ neq(d, n);
 neq(d, SuDate.now());
 eq(d, SuDate.literal('20160906.1646'));
 neq(d, SuDate.literal('20160906.164600001'));
+let except = new Except(new Error, "abc");
+eq("abc", except);
+eq(except, "abc");
+neq("", except);
+neq(except, 1);
+let r = SuRecord.mkRecord1();
+neq(r, x);
+r.Add(123);
+eq(r, x);
 
 

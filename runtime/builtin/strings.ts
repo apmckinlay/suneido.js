@@ -7,9 +7,7 @@ import { mandatory, maxargs } from "../args";
 import { Result, ForEach, Regex } from "../regex";
 import { RegexReplace} from "../regexreplace";
 import { SuIterable } from "../suvalue";
-import { SuNum } from "../sunum";
-import { type } from "../type";
-import { isString } from "../ops";
+import { toInt, toStr, toBoolean } from "../ops";
 
 export function su_stringq(x: any): boolean {
     return typeof x === 'string';
@@ -26,19 +24,6 @@ export function su_stringq(x: any): boolean {
 };
 (su_stringq as any).$params = 'value';
 //GENERATED end
-
-export function toStr(x: any): string {
-    if (isString(x))
-        return x;
-    else if (x === true)
-        return "true";
-    else if (x === false)
-        return "false";
-    else if (typeof x === 'number' || x instanceof SuNum)
-        return x.toString();
-    else
-        throw new Error("can't convert " + type(x) + " to String");
-}
 
 export class Strings {
 
@@ -124,35 +109,42 @@ export class Strings {
         return global(this);
     }
 
-    Extract(this: string, pattern: string = mandatory(), part?: number): string | boolean {
+    Extract(this: string, patternArg: any = mandatory(), partArg?: any): string | boolean {
         maxargs(2, arguments.length);
+        let pattern = toStr(patternArg);
         let re = Regex.compile(pattern);
         let res = re.firstMatch(this, 0);
         if (res === null)
             return false;
         else {
-            let part_i = (part === undefined)
+            let part_i = (partArg === undefined)
                 ? (res.groupCount() === 0) ? 0 : 1
-                : part;
+                : toInt(partArg);
             return res.group(this, part_i);
         }
     }
 
-    Find(this: string, str: string = mandatory(), pos: number = 0): number {
+    Find(this: string, strArg: any = mandatory(), posArg: any = 0): number {
         maxargs(2, arguments.length);
+        let str = toStr(strArg);
+        let pos = toInt(posArg);
         let i = this.indexOf(str, pos);
         return i === -1 ? this.length : i;
     }
 
-    FindLast(this: string, str: string = mandatory(), pos: number = this.length):
+    FindLast(this: string, strArg: any = mandatory(), posArg: any = this.length):
         number | boolean {
         maxargs(2, arguments.length);
+        let str = toStr(strArg);
+        let pos = toInt(posArg);
         let i = this.lastIndexOf(str, pos);
         return i === -1 ? false : i;
     }
 
-    Find1of(this: string, chars: string = mandatory(), pos: number = 0): number {
+    Find1of(this: string, charsArg: any = mandatory(), posArg: any = 0): number {
         maxargs(2, arguments.length);
+        let chars = toStr(charsArg);
+        let pos = toInt(posArg);
         for (let i = Math.max(0, pos); i < this.length; i++) {
             if (-1 !== chars.indexOf(this[i]))
                 return i;
@@ -160,9 +152,11 @@ export class Strings {
         return this.length;
     }
 
-    FindLast1of(this: string, chars: string = mandatory(), pos: number = this.length - 1):
+    FindLast1of(this: string, charsArg: any = mandatory(), posArg: any = this.length - 1):
         number | boolean {
         maxargs(2, arguments.length);
+        let chars = toStr(charsArg);
+        let pos = toInt(posArg);
         for (let i = Math.min(this.length - 1, pos); i >= 0; i--) {
             if (-1 !== chars.indexOf(this[i]))
                 return i;
@@ -170,8 +164,10 @@ export class Strings {
         return false;
     }
 
-    Findnot1of(this: string, chars: string = mandatory(), pos: number = 0): number {
+    Findnot1of(this: string, charsArg: any = mandatory(), posArg: any = 0): number {
         maxargs(2, arguments.length);
+        let chars = toStr(charsArg);
+        let pos = toInt(posArg);
         for (let i = Math.max(0, pos); i < this.length; i++) {
             if (-1 === chars.indexOf(this[i]))
                 return i;
@@ -179,9 +175,11 @@ export class Strings {
         return this.length;
     }
 
-    FindLastnot1of(this: string, chars: string = mandatory(), pos: number = this.length - 1):
+    FindLastnot1of(this: string, charsArg: any = mandatory(), posArg: any = this.length - 1):
         number | boolean {
         maxargs(2, arguments.length);
+        let chars = toStr(charsArg);
+        let pos = toInt(posArg);
         for (let i = Math.min(this.length - 1, pos); i >= 0; i--) {
             if (-1 === chars.indexOf(this[i]))
                 return i;
@@ -189,8 +187,9 @@ export class Strings {
         return false;
     }
 
-    CountChar(this: string, char: string = mandatory()): number {
+    CountChar(this: string, charArg: any = mandatory()): number {
         maxargs(1, arguments.length);
+        let char = toStr(charArg);
         let s = this;
         if (char.length !== 1)
             throw new Error("usage: string.CountChar(c)");
@@ -200,8 +199,9 @@ export class Strings {
         return n;
     }
 
-    ['Has?'](this: string, str: string = mandatory()): boolean {
+    ['Has?'](this: string, strArg: any = mandatory()): boolean {
         maxargs(1, arguments.length);
+        let str = toStr(strArg);
         return this.indexOf(str) !== -1;
     }
 
@@ -222,8 +222,9 @@ export class Strings {
         return result;
     }
 
-    MapN(this: string, n: number = mandatory(), f: any = mandatory()): string {
+    MapN(this: string, nArg: any = mandatory(), f: any = mandatory()): string {
         maxargs(2, arguments.length);
+        let n = toInt(nArg);
         let dst = "";
         for (let i = 0; i < this.length; i += n) {
             dst += f.$call.call(undefined, this.substr(i, n));
@@ -231,11 +232,12 @@ export class Strings {
         return dst;
     }
 
-    Match(this: string, pattern: string = mandatory(), pos: number | boolean = false,
-        prev: boolean = false): SuObject | false {
+    Match(this: string, patternArg: any = mandatory(), posArg: any = false,
+        prevArg: any = false): SuObject | false {
         maxargs(3, arguments.length);
-        let pat = Regex.compile(pattern);
-        let position = typeof pos === 'boolean' ? (prev ? this.length : 0) : pos;
+        let prev = toBoolean(prevArg);
+        let pat = Regex.compile(toStr(patternArg));
+        let position = typeof posArg === 'boolean' ? (prev ? this.length : 0) : toInt(posArg);
         let result = prev ? pat.lastMatch(this, position) : pat.firstMatch(this, position);
         if (result === null)
             return false;
@@ -247,9 +249,10 @@ export class Strings {
         return ob;
     }
 
-    NthLine(this: string, n: number = mandatory()): string {
+    NthLine(this: string, nArg: any = mandatory()): string {
         maxargs(1, arguments.length);
         let s = this;
+        let n = toInt(nArg);
         let sn = this.length;
         let i = 0;
         for (; i < sn && n > 0; ++i)
@@ -305,27 +308,29 @@ export class Strings {
         return true;
     }
 
-    ['Prefix?'](this: string, str: string = mandatory(), pos: number = 0): boolean {
+    ['Prefix?'](this: string, strArg: any = mandatory(), posArg: any = 0): boolean {
         maxargs(2, arguments.length);
+        let str = toStr(strArg);
+        let pos = toInt(posArg);
         if (pos < 0)
             pos += this.length;
         return this.startsWith(str, pos);
     }
 
-    Repeat(this: string, count: number = mandatory()): string {
+    Repeat(this: string, countArg: any = mandatory()): string {
         maxargs(1, arguments.length);
-        return this.repeat(Math.max(0, count));
+        return this.repeat(Math.max(0, toInt(countArg)));
     }
 
     //TODO: to change after classes for block and callable functions are implemented
-    Replace(this: string, pattern: string = mandatory(),
-        replacement: any = '', count: number = Infinity): string {
+    Replace(this: string, patternArg: any = mandatory(),
+        replacement: any = '', countArg: any = Infinity): string {
         maxargs(3, arguments.length);
-        let pat = Regex.compile(pattern);
+        let pat = Regex.compile(toStr(patternArg));
         let rep: string | null = null;
         if (typeof replacement === 'string')
             rep = replacement;
-        let foreach = new ClassForEach(this, rep, count, replacement);
+        let foreach = new ClassForEach(this, rep, toInt(countArg), replacement);
         pat.forEachMatch(this, foreach);
         return foreach.result();
     }
@@ -335,8 +340,9 @@ export class Strings {
         return this.length;
     }
 
-    Split(this: string, separator: string = mandatory()): SuObject {
+    Split(this: string, separatorArg: any = mandatory()): SuObject {
         maxargs(1, arguments.length);
+        let separator = toStr(separatorArg);
         assert.that(separator !== '', "string.Split separator must not be empty string");
         let arraySplit = this.split(separator);
         if (arraySplit[arraySplit.length - 1] === '')
@@ -344,8 +350,10 @@ export class Strings {
         return new SuObject(arraySplit);
     }
 
-    Substr(this: string, start: number = mandatory(), length: number = this.length): string {
+    Substr(this: string, startArg: any = mandatory(), lengthArg: any = this.length): string {
         maxargs(2, arguments.length);
+        let start = toInt(startArg);
+        let length = toInt(lengthArg);
         if (start < 0)
             start += this.length;
         if (start < 0)
@@ -357,14 +365,14 @@ export class Strings {
         return this.substr(start, length);
     }
 
-    ['Suffix?'](this: string, str: string = mandatory()): boolean {
+    ['Suffix?'](this: string, strArg: any = mandatory()): boolean {
         maxargs(1, arguments.length);
-        return this.endsWith(str);
+        return this.endsWith(toStr(strArg));
     }
 
-    Tr(this: string, from: string = mandatory(), to: string = ''): string {
+    Tr(this: string, fromArg: any = mandatory(), toArg: any = ''): string {
         maxargs(2, arguments.length);
-        return tr(this, from, to);
+        return tr(this, toStr(fromArg), toStr(toArg));
     }
 
     Unescape(this: string): string {
