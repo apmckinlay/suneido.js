@@ -26,7 +26,7 @@ export class SuRecord extends SuObject {
         private dependencies: MultiMap,
         vec?: any[], map?: Map<any, any>) {
         super(vec, map);
-        this.defval = ""
+        this.defval = "";
 
         /* Added to avoid typescript "declared but its value is never read" errors */
         this.hdr;
@@ -171,7 +171,7 @@ export class SuRecord extends SuObject {
             if (result != null)
                 return ops.isString(result)
                     ? (result as string).toLowerCase()
-                    : result
+                    : result;
         }
         return null;
     }
@@ -285,7 +285,7 @@ export class SuRecord extends SuObject {
         for (let key of this.dependencies.keySet())
             if (this.dependencies.get(key).has(field))
                 deps.push(key);
-        return deps.join(',')
+        return deps.join(',');
     }
 
     public SetDeps(field: any = mandatory(), deps: any = mandatory()): void {
@@ -322,7 +322,7 @@ class MultiMap {
     }
 
     public keySet() {
-        return this.map.keys()
+        return this.map.keys();
     }
 }
 
@@ -339,8 +339,8 @@ class ActiveObserver {
 }
 
 interface Rule {
-    rec: SuRecord,
-    member: any
+    rec: SuRecord;
+    member: any;
 }
 
 class RuleContext {

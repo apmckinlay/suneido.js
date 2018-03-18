@@ -81,7 +81,7 @@ su.dynset('su_test', 2);
 assert.equal(su.dynparam('su_test', 1), 2);
 
 // exception
-let error = new Error("test")
+let error = new Error("test");
 let except = new Except(error);
 let newExcept = except.As("new test");
 

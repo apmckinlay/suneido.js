@@ -249,7 +249,7 @@ export function exception(e: any): Error {
     if (!(e instanceof Except))
         return new Error(toStr(e));
     let err = e.getError();
-    err.message = e.valueOf()
+    err.message = e.valueOf();
     return err;
 }
 
@@ -272,7 +272,7 @@ function isCatchMatch(es: string, patterns?: string): boolean {
 
 export function mknum(s: string) {
     try {
-        return SuNum.parse(s)
+        return SuNum.parse(s);
     }
     catch (e) {
         throw new Error("can't convert " + display(s) + " to number");

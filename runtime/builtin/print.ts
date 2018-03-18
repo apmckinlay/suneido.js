@@ -3,7 +3,7 @@ import * as util from '../utility';
 
 export function su_print(args: SuObject) {
     console.log(SuObject.toString2(args, '', ''));
-};
+}
 //BUILTIN Print(@args)
 //GENERATED start
 (su_print as any).$callAt = su_print;
