@@ -298,6 +298,12 @@ export function mkObject2(vec: any[], map?: Map<any, any>): SuObject {
     return new SuObject(vec, map);
 }
 
+export function mkRecord(...args: any[]): SuRecord {
+    let rec = SuRecord.mkRecord(mkObject(...args));
+    rec.Set_readonly();
+    return rec;
+}
+
 export function mkdate(s: string): SuDate {
     return SuDate.literal(s) !;
 }

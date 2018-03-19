@@ -26,6 +26,11 @@ export function cmp(x: any, y: any): number {
     let xType = type(x);
     let yType = type(y);
 
+    if (xType === 'Record')
+        xType = 'Object';
+    if (yType === 'Record')
+        yType = 'Object';
+
     if (xType === yType)
         return (x instanceof SuValue) ? x.compareTo(y) : util.cmp(x, y);
 
