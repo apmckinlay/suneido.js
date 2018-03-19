@@ -5,12 +5,13 @@
  */
 
 import { SuNum } from "./sunum";
-import { SuValue, SuIterable } from "./suvalue";
+import { SuValue, SuIterable, SuCallable } from "./suvalue";
 import { isBlock } from "./suBoundMethod";
 import { display } from "./display";
 import { is } from "./ops";
 import { mandatory, maxargs } from "./args";
 import { cmp } from "./cmp";
+import { global } from "./global";
 import * as util from "./utility";
 
 import * as assert from "./assert";
@@ -282,7 +283,9 @@ export class SuObject extends SuValue {
     equals(that: any): boolean {
         if (!(that instanceof SuObject))
             return false;
-        return SuObject.equals2(this, that, new PairStack());
+        if (this === that)
+            return true;
+        return SuObject.equals2(this, that.toObject(), new PairStack());
     }
     private static equals2(x: SuObject, y: SuObject, stack: PairStack): boolean {
         if (x.vec.length !== y.vec.length || x.map.size !== y.map.size)
@@ -309,14 +312,14 @@ export class SuObject extends SuValue {
             return is(x, y);
         if (!(y instanceof SuObject))
             return false;
-        return SuObject.equals2(x, y, stack);
+        return SuObject.equals2(x.toObject(), y.toObject(), stack);
     }
 
     /** Only compares vector, ignores map */
-    compareTo(that: any): number {
+    compareTo(that: SuObject): number {
         if (this === that)
             return 0;
-        return this.compare2(that, new PairStack());
+        return this.compare2(that.toObject(), new PairStack());
     }
     private compare2(that: SuObject, stack: PairStack): number {
         if (stack.contains(this, that))
@@ -332,12 +335,12 @@ export class SuObject extends SuValue {
         if (x === y)
             return 0;
         else if (x instanceof SuObject && y instanceof SuObject)
-            return x.compare2(y, stack);
+            return x.compare2(y.toObject(), stack);
         else
             return cmp(x, y);
     }
 
-    Iter(): ObjectIter {
+    Iter(): SuIterable {
         maxargs(0, arguments.length);
         return new ObjectIter(this, Values.ITER_VALUES);
     }
@@ -372,6 +375,14 @@ export class SuObject extends SuValue {
     Join(separator: string = ''): string {
         maxargs(1, arguments.length);
         return this.vec.join(separator);
+    }
+
+    lookup(this: any, method: string): SuCallable {
+        return this[method] || global('Objects')[method];
+    }
+
+    toObject(): SuObject {
+        return this;
     }
 } // end of SuObject class
 

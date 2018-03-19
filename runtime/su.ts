@@ -436,13 +436,11 @@ function getMethod(ob: any, method: string): any {
         return nm[method] || global('Numbers')[method];
     if (t === 'function')
         return fm[method];
-    if (ob instanceof Except)
-        return (ob as any)[method] || sm[method] || global('Strings')[method];
-    // for instances, start lookup in class
-    let start = Object.isFrozen(ob) ? ob : Object.getPrototypeOf(ob);
-    return start[method] ||
-        (ob instanceof SuRecord && global('Records')[method]) ||
-        global('Objects')[method];
+    return ob instanceof SuValue
+        ? ob.lookup(method)
+        : ob instanceof Except
+            ? ob.lookup(method)
+            : null;
 }
 
 export function instantiate(clas: any, ...args: any[]): any {

@@ -6,19 +6,35 @@ export abstract class SuValue {
         return this.toString();
     }
     get(_key: any): any {
-        throw new Error(this.type + " does not support get");
+        throw new Error(this.type() + " does not support get");
     }
     put(_key: any, _val: any): void {
-        throw new Error(this.type + " does not support put");
+        throw new Error(this.type() + " does not support put");
+    }
+    lookup(this: any, method: string): SuCallable {
+        throw new Error(`method not found: ${this.type()}.${method}(${this.display()})`);
     }
 }
 
 export abstract class SuIterable extends SuValue {
     abstract Next(): any;
+    abstract Dup(): SuIterable;
+    abstract ["Infinite?"]?(): boolean;
     compareTo(that: any): number {
         return -1;
     }
     equals(that: any): boolean {
         return false;
     }
+    lookup(this: any, method: string): SuCallable {
+        return this[method];
+    }
+}
+
+export interface SuCallable extends SuValue {
+    $params: string;
+    $callableType: string;
+    $call: (...args: any[]) => any;
+    $callAt: (...args: any[]) => any;
+    $callNamed: (...args: any[]) => any;
 }

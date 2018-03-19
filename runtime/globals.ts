@@ -43,6 +43,9 @@ defGlobal('String?', su_stringq);
 import { su_numberq } from "./builtin/numbers";
 defGlobal('Number?', su_numberq);
 
+import { su_sequence } from "./builtin/susequence";
+defGlobal('Sequence', su_sequence);
+
 /** FOR TESTING PURPOSES ONLY! */
 defGlobal('Def', su_def);
 function su_def(global: string, value: any): any {

@@ -1,9 +1,10 @@
 import { SuObject } from "./suobject";
-import { SuBoundMethod, SuCallable } from "./suBoundMethod";
+import { SuBoundMethod } from "./suBoundMethod";
+import { SuCallable } from "./suvalue";
 import { mandatory, maxargs } from "./args";
 import { cmp } from "./cmp";
 import * as ops from "./ops";
-import { tryGlobal } from "./global";
+import { tryGlobal, global } from "./global";
 import * as assert from "./assert";
 
 export enum Status {
@@ -219,6 +220,10 @@ export class SuRecord extends SuObject {
 
     public type(): string {
         return "Record";
+    }
+
+    public lookup(this: any, method: string): SuCallable {
+        return this[method] || global('Records')[method] || global('Objects')[method];
     }
 
     public ["New?"](): boolean {
