@@ -3,7 +3,7 @@ import { type } from "../type";
 import * as su from "../su";
 import * as assert from "../assert";
 
-let except = new Except(new Error(), "test")
+let except = new Except(new Error(), "test");
 assert.equal(type(except), "Except");
 assert.equal(su.display(except), '"test"');
 assert.equal(su.get(except, 1), "e");

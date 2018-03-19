@@ -195,7 +195,6 @@ class Compiler {
         else if (this.match("(?q)"))
             this.quoted();
         else if (this.match("(?-q)")) {
-            ;
         }
         else {
             let start = this.pat.length;
@@ -392,10 +391,10 @@ abstract class Element {
     public omatch(s: string, si: number): number {
         assert.that(false, "must be overridden");
         return Regex.FAIL;
-    };
+    }
     public nextPossible(s: string, si: number, sn: number): number {
         return si + 1;
-    };
+    }
     public omatch3(s: string, si: number, res: Result): number {
         return this.omatch(s, si);
     }
@@ -647,7 +646,7 @@ export class Regex {
     public static readonly endOfString = new EndOfString();
     public static readonly startOfWord = new StartOfWord();
     public static readonly endOfWord = new EndOfWord();
-    public static readonly any = (function(){
+    public static readonly any = (function() {
         let obj = new CharClass(CharMatcher.noneOf("\r\n"));
         obj.toString = () => { return "."; };
         return obj;

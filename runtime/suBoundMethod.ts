@@ -1,12 +1,4 @@
-import { SuValue } from "./suvalue";
-
-export interface SuCallable extends SuValue {
-    $params: string;
-    $callableType: string;
-    $call: (...args: any[]) => any;
-    $callAt: (...args: any[]) => any;
-    $callNamed: (...args: any[]) => any;
-}
+import { SuValue, SuCallable } from "./suvalue";
 
 export function isBlock(value: any): boolean {
     return typeof value === 'function' && (value as SuCallable).$callableType === 'BLOCK';

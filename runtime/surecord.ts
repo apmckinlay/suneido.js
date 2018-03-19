@@ -1,9 +1,10 @@
 import { SuObject } from "./suobject";
-import { SuBoundMethod, SuCallable } from "./suBoundMethod";
+import { SuBoundMethod } from "./suBoundMethod";
+import { SuCallable } from "./suvalue";
 import { mandatory, maxargs } from "./args";
 import { cmp } from "./cmp";
 import * as ops from "./ops";
-import { tryGlobal } from "./global";
+import { tryGlobal, global } from "./global";
 import * as assert from "./assert";
 
 export enum Status {
@@ -26,7 +27,7 @@ export class SuRecord extends SuObject {
         private dependencies: MultiMap,
         vec?: any[], map?: Map<any, any>) {
         super(vec, map);
-        this.defval = ""
+        this.defval = "";
 
         /* Added to avoid typescript "declared but its value is never read" errors */
         this.hdr;
@@ -171,7 +172,7 @@ export class SuRecord extends SuObject {
             if (result != null)
                 return ops.isString(result)
                     ? (result as string).toLowerCase()
-                    : result
+                    : result;
         }
         return null;
     }
@@ -219,6 +220,10 @@ export class SuRecord extends SuObject {
 
     public type(): string {
         return "Record";
+    }
+
+    public lookup(this: any, method: string): SuCallable {
+        return this[method] || global('Records')[method] || global('Objects')[method];
     }
 
     public ["New?"](): boolean {
@@ -285,7 +290,7 @@ export class SuRecord extends SuObject {
         for (let key of this.dependencies.keySet())
             if (this.dependencies.get(key).has(field))
                 deps.push(key);
-        return deps.join(',')
+        return deps.join(',');
     }
 
     public SetDeps(field: any = mandatory(), deps: any = mandatory()): void {
@@ -322,7 +327,7 @@ class MultiMap {
     }
 
     public keySet() {
-        return this.map.keys()
+        return this.map.keys();
     }
 }
 
@@ -339,8 +344,8 @@ class ActiveObserver {
 }
 
 interface Rule {
-    rec: SuRecord,
-    member: any
+    rec: SuRecord;
+    member: any;
 }
 
 class RuleContext {

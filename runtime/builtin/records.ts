@@ -124,17 +124,17 @@ export function su_recordq(x: any = mandatory()): boolean {
 (SuRecord.prototype['RemoveObserver'] as any).$params = 'observer';
 //GENERATED end
 
-//BUILTIN SuRecord.SetDeps(field, string)
+//BUILTIN SuRecord.SetDeps(field, s)
 //GENERATED start
 (SuRecord.prototype['SetDeps'] as any).$call = SuRecord.prototype['SetDeps'];
-(SuRecord.prototype['SetDeps'] as any).$callNamed = function ($named: any, field: any, string: any) {
-    ({ field = field, string = string } = $named);
-    return SuRecord.prototype['SetDeps'].call(this, field, string);
+(SuRecord.prototype['SetDeps'] as any).$callNamed = function ($named: any, field: any, s: any) {
+    ({ field = field, s = s } = $named);
+    return SuRecord.prototype['SetDeps'].call(this, field, s);
 };
 (SuRecord.prototype['SetDeps'] as any).$callAt = function (args: SuObject) {
     return (SuRecord.prototype['SetDeps'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(SuRecord.prototype['SetDeps'] as any).$params = 'field, string';
+(SuRecord.prototype['SetDeps'] as any).$params = 'field, s';
 //GENERATED end
 
 //BUILTIN SuRecord.AttachRule(field, rule)

@@ -249,7 +249,7 @@ export function exception(e: any): Error {
     if (!(e instanceof Except))
         return new Error(toStr(e));
     let err = e.getError();
-    err.message = e.valueOf()
+    err.message = e.valueOf();
     return err;
 }
 
@@ -272,7 +272,7 @@ function isCatchMatch(es: string, patterns?: string): boolean {
 
 export function mknum(s: string) {
     try {
-        return SuNum.parse(s)
+        return SuNum.parse(s);
     }
     catch (e) {
         throw new Error("can't convert " + display(s) + " to number");
@@ -296,6 +296,12 @@ export function mkObject(...args: any[]): SuObject {
 
 export function mkObject2(vec: any[], map?: Map<any, any>): SuObject {
     return new SuObject(vec, map);
+}
+
+export function mkRecord(...args: any[]): SuRecord {
+    let rec = SuRecord.mkRecord(mkObject(...args));
+    rec.Set_readonly();
+    return rec;
 }
 
 export function mkdate(s: string): SuDate {
@@ -430,13 +436,11 @@ function getMethod(ob: any, method: string): any {
         return nm[method] || global('Numbers')[method];
     if (t === 'function')
         return fm[method];
-    if (ob instanceof Except)
-        return (ob as any)[method] || sm[method] || global('Strings')[method];
-    // for instances, start lookup in class
-    let start = Object.isFrozen(ob) ? ob : Object.getPrototypeOf(ob);
-    return start[method] ||
-        (ob instanceof SuRecord && global('Records')[method]) ||
-        global('Objects')[method];
+    return ob instanceof SuValue
+        ? ob.lookup(method)
+        : ob instanceof Except
+            ? ob.lookup(method)
+            : null;
 }
 
 export function instantiate(clas: any, ...args: any[]): any {

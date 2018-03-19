@@ -13,13 +13,13 @@ export function is(x: any, y: any): boolean {
 }
 
 export function isString(x: any): boolean {
-    return x != undefined && typeof x.valueOf() === 'string';
+    return x != null && typeof x.valueOf() === 'string';
 }
 
 export function toStr(x: any): string {
     if (isString(x))
         return x.toString();
-    throw new Error("can't convert " + type(x) + " to String")
+    throw new Error("can't convert " + type(x) + " to String");
 }
 
 export function coerceStr(x: any): string {

@@ -1,6 +1,7 @@
 import { SuObject, ObjectIter, Values } from "./suobject";
 import { SuNum } from "./sunum";
 import * as assert from "./assert";
+import { SuIterable } from "./suvalue";
 
 const dn = SuNum.fromNumber;
 
@@ -118,7 +119,7 @@ let num = SuNum.make(123, -2);
 joinTest('#(1, 2), aObjectIter, 1.23', ', ', ob1, iter, num);
 
 // Iter & ObjectIter
-function iterTest(iter: ObjectIter, expected: any[]) {
+function iterTest(iter: SuIterable, expected: any[]) {
     let temp = iter.Next();
     function find(value: string | number | any[]) {
         if (temp instanceof SuObject)

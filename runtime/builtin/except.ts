@@ -1,6 +1,10 @@
 import { toStr } from "../ops";
 import { SuObject } from "../suobject";
+import { global } from "../global";
+import { Strings } from "./strings";
+const sm: any = Strings.prototype;
 import * as util from "../utility";
+import { SuCallable } from "../suvalue";
 
 export class Except extends String {
     constructor(private error: Error, message?: string) {
@@ -14,6 +18,10 @@ export class Except extends String {
 
     type() {
         return "Except";
+    }
+
+    lookup(this: any, method: string): SuCallable {
+        return this[method] || sm[method] || global('Strings')[method];
     }
 
     // BUILT-IN METHODS

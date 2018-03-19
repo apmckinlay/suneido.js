@@ -4,11 +4,12 @@
  * The base of base-less classes.
  */
 
-import { SuValue } from "./suvalue";
+import { SuValue, SuCallable } from "./suvalue";
 import { SuObject } from "./suobject";
 import { SuBoundMethod, isBlock } from "./suBoundMethod";
 import { mandatory, maxargs } from "./args";
 import { is } from "./ops";
+import { global } from "./global";
 import * as util from "./utility";
 
 export class RootClass extends SuValue {
@@ -67,6 +68,11 @@ export class RootClass extends SuValue {
 
     isClass(): boolean {
         return Object.isFrozen(this);
+    }
+
+    lookup(this: any, method: string): SuCallable {
+        let start = this.isClass() ? this : Object.getPrototypeOf(this);
+        return start[method] || global('Objects')[method];
     }
 
     // external methods
@@ -148,6 +154,14 @@ export class RootClass extends SuValue {
         return isBlock(defValue)
             ? defValue.$call()
             : defValue;
+    }
+
+    Base(): any {
+        maxargs(0, arguments.length);
+        let root = Object.getPrototypeOf(this);
+        return !this.isClass() || root instanceof RootClass
+            ? root
+            : false;
     }
 } // end of RootClass
 
@@ -261,4 +275,16 @@ function instanceEquals(x: any, y: any): boolean {
     return (RootClass.prototype['GetDefault'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
 (RootClass.prototype['GetDefault'] as any).$params = 'member, default_value';
+//GENERATED end
+
+//BUILTIN RootClass.Base()
+//GENERATED start
+(RootClass.prototype['Base'] as any).$call = RootClass.prototype['Base'];
+(RootClass.prototype['Base'] as any).$callNamed = function (_named: any) {
+    return RootClass.prototype['Base'].call(this);
+};
+(RootClass.prototype['Base'] as any).$callAt = function (args: SuObject) {
+    return (RootClass.prototype['Base'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(RootClass.prototype['Base'] as any).$params = '';
 //GENERATED end
