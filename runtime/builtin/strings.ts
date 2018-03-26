@@ -7,10 +7,11 @@ import { mandatory, maxargs } from "../args";
 import { Result, ForEach, Regex } from "../regex";
 import { RegexReplace} from "../regexreplace";
 import { SuIterable } from "../suvalue";
-import { toInt, toStr, toBoolean } from "../ops";
+import { toInt, toStr, toBoolean, isString } from "../ops";
 
 export function su_stringq(x: any): boolean {
-    return typeof x === 'string';
+    maxargs(1, arguments.length);
+    return isString(x);
 }
 //BUILTIN String?(value)
 //GENERATED start
