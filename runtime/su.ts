@@ -17,7 +17,10 @@ import { display } from "./display";
 import { cmp } from "./cmp";
 import { global } from "./global";
 import { Strings } from "./builtin/strings";
-import { isString, coerceStr, toStr, is } from "./ops";
+import { isString, coerceStr, toStr, is, isnt, toNum, Num,
+    add, sub, mul, div, mod,
+    lshift, rshift,
+    bitnot, bitand, bitor, bitxor } from "./ops";
 const sm: any = Strings.prototype;
 import { Numbers } from "./builtin/numbers";
 const nm: any = Numbers.prototype;
@@ -32,12 +35,13 @@ import "./globals";
 import { mandatory } from "./args";
 import { Except } from "./builtin/except";
 
-type Num = number | SuNum;
-
 export { toStr } from "./ops";
 export { mandatory, maxargs } from "./args";
 export { blockreturn, blockReturnHandler, rethrowBlockReturn } from "./blockreturn";
-export { display, is, global, mapToOb, obToMap };
+export { display, is, isnt, global, mapToOb, obToMap,
+    add, sub, mul, div, mod,
+    lshift, rshift,
+    bitnot, bitand, bitor, bitxor };
 
 export const empty_object = new SuObject().Set_readonly();
 
@@ -53,7 +57,7 @@ export function put(ob: any, key: any, val: any): any {
 
 export function get(x: any, key: any): any {
     if (isString(x)) {
-        let i = toInt(key);
+        let i = toIntegerNumber(key);
         let n = x.length;
         if (i < 0) {
             i += n;
@@ -109,55 +113,12 @@ export function not(x: any): boolean {
     return !toBool(x);
 }
 
-export function bitnot(x: any): number {
-    return ~toInt(x);
-}
-
-function toInt(x: any): number {
+function toIntegerNumber(x: any): number {
     if (Number.isSafeInteger(x))
         return x;
     if (x instanceof SuNum && x.isInt())
         return x.toInt();
     throw new Error("can't convert " + type(x) + " to integer");
-}
-
-function toNum(x: any): Num {
-    if (typeof x === 'number' || x instanceof SuNum)
-        return x;
-    if (x === false || x === "")
-        return 0;
-    if (x === true)
-        return 1;
-    if (isString(x)) {
-        if (!/[.eE]/.test(x) && x.length < 14)
-            return parseInt(x);
-        let n = SuNum.parse(x);
-        if (n)
-            return n;
-    }
-    throw new Error("can't convert " + type(x) + " to number");
-}
-
-function toSuNum(x: number | SuNum): SuNum {
-    return (typeof x === 'number') ? SuNum.make(x) : x;
-}
-
-export function add(x: any, y: any): Num {
-    x = toNum(x);
-    y = toNum(y);
-    if (typeof x === 'number' && typeof y === 'number')
-        return x + y;
-    else
-        return SuNum.add(toSuNum(x), toSuNum(y));
-}
-
-export function sub(x: any, y: any): Num {
-    x = toNum(x);
-    y = toNum(y);
-    if (typeof x === 'number' && typeof y === 'number')
-        return x - y;
-    else
-        return SuNum.sub(toSuNum(x), toSuNum(y));
 }
 
 export function cat(x: any, y: any): string | Except {
@@ -167,49 +128,6 @@ export function cat(x: any, y: any): string | Except {
     if (y instanceof Except)
         return y.As(result);
     return result;
-}
-
-export function mul(x: any, y: any): Num {
-    x = toNum(x);
-    y = toNum(y);
-    if (typeof x === 'number' && typeof y === 'number')
-        return x * y;
-    else
-        return SuNum.mul(toSuNum(x), toSuNum(y));
-}
-
-export function div(x: any, y: any): SuNum {
-    x = toNum(x);
-    y = toNum(y);
-    return SuNum.div(toSuNum(x), toSuNum(y));
-}
-
-export function mod(x: any, y: any): number {
-    return toInt(x) % toInt(y);
-}
-
-export function lshift(x: any, y: any): number {
-    return toInt(x) << toInt(y);
-}
-
-export function rshift(x: any, y: any): number {
-    return toInt(x) >>> toInt(y);
-}
-
-export function bitand(x: any, y: any): number {
-    return toInt(x) & toInt(y);
-}
-
-export function bitor(x: any, y: any): number {
-    return toInt(x) | toInt(y);
-}
-
-export function bitxor(x: any, y: any): number {
-    return toInt(x) ^ toInt(y);
-}
-
-export function isnt(x: any, y: any): boolean {
-    return !is(x, y);
 }
 
 export function lt(x: any, y: any): boolean {
