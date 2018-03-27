@@ -4,6 +4,7 @@ import { maxargs, mandatory } from "../args";
 import { display } from "../display";
 import { toStr, toBoolean, isString } from "../ops";
 import { type } from "../type";
+import { globalLookup } from "../global";
 import * as util from "../utility";
 
 export abstract class SequenceBase extends SuObject {
@@ -17,7 +18,9 @@ export abstract class SequenceBase extends SuObject {
 
     public lookup(method: string): SuCallable {
         let x;
-        if (this.override(method) && (x = (SequenceBase.SequenceMethods.prototype as any)[method]))
+        if (this.override(method) &&
+            (x = (SequenceBase.SequenceMethods.prototype as any)[method]
+                || globalLookup('Sequences', method)))
             return x;
         else {
             this.ck_instantiate();
@@ -54,8 +57,9 @@ export abstract class SequenceBase extends SuObject {
             maxargs(1, arguments.length);
             let sep = toStr(sepArg);
             let s = "";
-            let iter: SuIterable = this.Iter();
-            for (let next = iter.Next(); next !== iter; next = iter.Next) {
+            let iter: SuIterable = this.invoke(this, 'Iter');
+            let next;
+            while (iter !== (next = this.invoke(iter, "Next"))) {
                 if (isString(next))
                     s += next;
                 else
@@ -75,6 +79,16 @@ export abstract class SequenceBase extends SuObject {
             throw new Error("can't instantiate infinite sequence");
         this.instantiate();
         this.instantiated = true;
+    }
+
+    protected invoke(ob: SuValue, method: string) {
+        let f = ob.lookup(method);
+        if (f) {
+            let call = f.$call;
+            if (typeof call === 'function')
+                return call.apply(ob);
+        }
+        throw new Error("method not found: " + type(ob) + "." + method);
     }
 
     public equals(that: any): boolean {
@@ -133,8 +147,9 @@ export class SuSequence extends SequenceBase {
     }
 
     protected instantiate(): void {
+        let iter = this.iter();
         let x;
-        while (this.iterator !== (x = this.invoke(this.iterator, "Next")))
+        while (iter !== (x = this.invoke(iter, "Next")))
             this.Add(x);
     }
 
@@ -144,16 +159,6 @@ export class SuSequence extends SequenceBase {
         } catch (e) {
             return false;
         }
-    }
-
-    private invoke(ob: SuValue, method: string) {
-        let f = ob.lookup(method);
-        if (f) {
-            let call = f.$call;
-            if (typeof call === 'function')
-                return call.apply(ob);
-        }
-        throw new Error("method not found: " + type(ob) + "." + method);
     }
 
     public toString(): string {
