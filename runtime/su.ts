@@ -15,7 +15,7 @@ import { SuDate } from "./sudate";
 import { type } from "./type";
 import { display } from "./display";
 import { cmp } from "./cmp";
-import { global } from "./global";
+import { global, globalLookup } from "./global";
 import { Strings } from "./builtin/strings";
 import { isString, coerceStr, toStr, is, isnt, toNum, Num,
     add, sub, mul, div, mod,
@@ -45,7 +45,7 @@ export { display, is, isnt, global, mapToOb, obToMap,
 
 export const empty_object = new SuObject().Set_readonly();
 
-export const root_class = RootClass.prototype;
+export const root_class = Object.freeze(RootClass.prototype);
 
 export function put(ob: any, key: any, val: any): any {
     if (ob instanceof SuValue)
@@ -349,9 +349,9 @@ function methodNotFound(ob: any, method: string): never {
 function getMethod(ob: any, method: string): any {
     let t = typeof ob;
     if (t === 'string')
-        return sm[method] || global('Strings')[method];
+        return sm[method] || globalLookup('Strings', method);
     if (t === 'number' || ob instanceof SuNum)
-        return nm[method] || global('Numbers')[method];
+        return nm[method] || globalLookup('Numbers', method);
     if (t === 'function')
         return fm[method];
     return ob instanceof SuValue

@@ -9,7 +9,7 @@ import { SuObject } from "./suobject";
 import { SuBoundMethod, isBlock } from "./suBoundMethod";
 import { mandatory, maxargs } from "./args";
 import { is } from "./ops";
-import { global } from "./global";
+import { globalLookup } from "./global";
 import * as util from "./utility";
 
 export class RootClass extends SuValue {
@@ -72,7 +72,10 @@ export class RootClass extends SuValue {
 
     lookup(this: any, method: string): SuCallable {
         let start = this.isClass() ? this : Object.getPrototypeOf(this);
-        return start[method] || global('Objects')[method];
+        if (method === 'New')
+            return start.New;
+        return (RootClass.prototype as any)[method] ||
+            start[method] || globalLookup('Objects', method);
     }
 
     // external methods

@@ -4,7 +4,7 @@ import { SuCallable } from "./suvalue";
 import { mandatory, maxargs } from "./args";
 import { cmp } from "./cmp";
 import * as ops from "./ops";
-import { tryGlobal, global } from "./global";
+import { tryGlobal, globalLookup } from "./global";
 import * as assert from "./assert";
 
 export enum Status {
@@ -223,7 +223,7 @@ export class SuRecord extends SuObject {
     }
 
     public lookup(this: any, method: string): SuCallable {
-        return this[method] || global('Records')[method] || global('Objects')[method];
+        return this[method] || globalLookup('Records', method) || globalLookup('Objects', method);
     }
 
     public ["New?"](): boolean {

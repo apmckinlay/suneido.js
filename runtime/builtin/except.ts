@@ -1,6 +1,6 @@
 import { toStr } from "../ops";
 import { SuObject } from "../suobject";
-import { global } from "../global";
+import { globalLookup } from "../global";
 import { Strings } from "./strings";
 const sm: any = Strings.prototype;
 import * as util from "../utility";
@@ -21,7 +21,7 @@ export class Except extends String {
     }
 
     lookup(this: any, method: string): SuCallable {
-        return this[method] || sm[method] || global('Strings')[method];
+        return this[method] || sm[method] || globalLookup('Strings', method);
     }
 
     // BUILT-IN METHODS

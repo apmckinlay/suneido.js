@@ -15,6 +15,13 @@ export function global(name: string) {
     return x;
 }
 
+export function globalLookup(name: string, method: string) {
+    let cl = global(name);
+    if (cl.hasOwnProperty(method))
+        return cl[method];
+    return null;
+}
+
 export function tryGlobal(name: string) {
     try {
         return global(name);
