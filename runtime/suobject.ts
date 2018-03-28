@@ -11,7 +11,7 @@ import { display } from "./display";
 import { is } from "./ops";
 import { mandatory, maxargs } from "./args";
 import { cmp } from "./cmp";
-import { global } from "./global";
+import { globalLookup } from "./global";
 import * as util from "./utility";
 
 import * as assert from "./assert";
@@ -378,7 +378,7 @@ export class SuObject extends SuValue {
     }
 
     lookup(this: any, method: string): SuCallable {
-        return this[method] || global('Objects')[method];
+        return this[method] || globalLookup('Objects', method);
     }
 
     toObject(): SuObject {

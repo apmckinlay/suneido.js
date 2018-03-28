@@ -7,7 +7,7 @@
 import * as assert from "./assert";
 import * as util from "./utility";
 import { SuValue, SuCallable } from "./suvalue";
-import { global } from "./global";
+import { globalLookup } from "./global";
 import { maxargs, mandatory } from "./args";
 
 const month = ["January", "February", "March", "April", "May", "June", "July",
@@ -39,7 +39,7 @@ export class SuDate extends SuValue {
     }
 
     lookup(this: any, method: string): SuCallable {
-        return this[method] || global('Dates')[method];
+        return this[method] || globalLookup('Dates', method);
     }
 
     timePart(): number {

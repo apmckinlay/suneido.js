@@ -12,6 +12,10 @@ export function is(x: any, y: any): boolean {
     return false;
 }
 
+export function isnt(x: any, y: any): boolean {
+    return !is(x, y);
+}
+
 export function isString(x: any): boolean {
     return x != null && typeof x.valueOf() === 'string';
 }
@@ -54,8 +58,91 @@ export function toInt(x: any): number {
     return value;
 }
 
+export type Num = number | SuNum;
+export function toNum(x: any): Num {
+    if (typeof x === 'number' || x instanceof SuNum)
+        return x;
+    if (x === false || x === "")
+        return 0;
+    if (x === true)
+        return 1;
+    if (isString(x)) {
+        if (!/[.eE]/.test(x) && x.length < 14)
+            return parseInt(x);
+        let n = SuNum.parse(x);
+        if (n)
+            return n;
+    }
+    throw new Error("can't convert " + type(x) + " to number");
+}
+
+export function toSuNum(x: number | SuNum): SuNum {
+    return (typeof x === 'number') ? SuNum.make(x) : x;
+}
+
 export function toBoolean(x: any): boolean {
     if (typeof x === 'boolean')
         return x;
     throw new Error("expected boolean, got " + type(x));
+}
+
+export function add(x: any, y: any): Num {
+    x = toNum(x);
+    y = toNum(y);
+    if (typeof x === 'number' && typeof y === 'number')
+        return x + y;
+    else
+        return SuNum.add(toSuNum(x), toSuNum(y));
+}
+
+export function sub(x: any, y: any): Num {
+    x = toNum(x);
+    y = toNum(y);
+    if (typeof x === 'number' && typeof y === 'number')
+        return x - y;
+    else
+        return SuNum.sub(toSuNum(x), toSuNum(y));
+}
+
+export function mul(x: any, y: any): Num {
+    x = toNum(x);
+    y = toNum(y);
+    if (typeof x === 'number' && typeof y === 'number')
+        return x * y;
+    else
+        return SuNum.mul(toSuNum(x), toSuNum(y));
+}
+
+export function div(x: any, y: any): SuNum {
+    x = toNum(x);
+    y = toNum(y);
+    return SuNum.div(toSuNum(x), toSuNum(y));
+}
+
+export function bitnot(x: any): number {
+    return ~toInt(x);
+}
+
+export function mod(x: any, y: any): number {
+    return toInt(x) % toInt(y);
+}
+
+export function lshift(x: any, y: any): number {
+    return toInt(x) << toInt(y);
+}
+
+export function rshift(x: any, y: any): number {
+    return toInt(x) >>> toInt(y);
+}
+
+export function bitand(x: any, y: any): number {
+    return toInt(x) & toInt(y);
+}
+
+export function bitor(x: any, y: any): number {
+    return toInt(x) | toInt(y);
+}
+
+export function bitxor(x: any, y: any): number {
+    return toInt(x) ^ toInt(y);
 }
