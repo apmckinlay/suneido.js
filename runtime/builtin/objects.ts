@@ -1,6 +1,8 @@
 import { SuObject, ObjectIter } from '../suobject';
+import { RootClass } from '../rootclass';
 import * as util from '../utility';
 import { mandatory, maxargs } from "../args";
+import { SuValue } from '../suvalue';
 
 export function su_object(args: SuObject) {
     return args;
@@ -19,7 +21,8 @@ export function su_object(args: SuObject) {
 
 export function su_objectq(x: any = mandatory()): boolean {
     maxargs(1, arguments.length);
-    return x instanceof SuObject;
+    return (x instanceof SuValue && x.toObject() !== null) ||
+        (x instanceof RootClass && !x.isClass());
 }
 //BUILTIN Object?(x)
 //GENERATED start

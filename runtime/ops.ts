@@ -90,6 +90,10 @@ export function toBoolean(x: any): boolean {
     throw new Error("expected boolean, got " + type(x));
 }
 
+export function toObject(x: any): any {
+    return x instanceof SuValue ? x.toObject() : null;
+}
+
 export function add(x: any, y: any): Num {
     x = toNum(x);
     y = toNum(y);
