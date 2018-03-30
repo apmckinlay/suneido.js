@@ -236,6 +236,57 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Join'] as any).$params = 'separator=""';
 //GENERATED end
 
+//BUILTIN SuObject.Values(list=false, named=false)
+//GENERATED start
+(SuObject.prototype['Values'] as any).$call = SuObject.prototype['Values'];
+(SuObject.prototype['Values'] as any).$callNamed = function ($named: any, list: any, named: any) {
+    ({ list = list, named = named } = $named);
+    return SuObject.prototype['Values'].call(this, list, named);
+};
+(SuObject.prototype['Values'] as any).$callAt = function (args: SuObject) {
+    return (SuObject.prototype['Values'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(SuObject.prototype['Values'] as any).$params = 'list=false, named=false';
+//GENERATED end
+
+//BUILTIN SuObject.Assocs(list=false, named=false)
+//GENERATED start
+(SuObject.prototype['Assocs'] as any).$call = SuObject.prototype['Assocs'];
+(SuObject.prototype['Assocs'] as any).$callNamed = function ($named: any, list: any, named: any) {
+    ({ list = list, named = named } = $named);
+    return SuObject.prototype['Assocs'].call(this, list, named);
+};
+(SuObject.prototype['Assocs'] as any).$callAt = function (args: SuObject) {
+    return (SuObject.prototype['Assocs'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(SuObject.prototype['Assocs'] as any).$params = 'list=false, named=false';
+//GENERATED end
+
+//BUILTIN SuObject.Members(list=false, named=false)
+//GENERATED start
+(SuObject.prototype['Members'] as any).$call = SuObject.prototype['Members'];
+(SuObject.prototype['Members'] as any).$callNamed = function ($named: any, list: any, named: any) {
+    ({ list = list, named = named } = $named);
+    return SuObject.prototype['Members'].call(this, list, named);
+};
+(SuObject.prototype['Members'] as any).$callAt = function (args: SuObject) {
+    return (SuObject.prototype['Members'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(SuObject.prototype['Members'] as any).$params = 'list=false, named=false';
+//GENERATED end
+
+//BUILTIN SuObject.Unique!()
+//GENERATED start
+(SuObject.prototype['Unique!'] as any).$call = SuObject.prototype['Unique!'];
+(SuObject.prototype['Unique!'] as any).$callNamed = function (_named: any) {
+    return SuObject.prototype['Unique!'].call(this);
+};
+(SuObject.prototype['Unique!'] as any).$callAt = function (args: SuObject) {
+    return (SuObject.prototype['Unique!'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(SuObject.prototype['Unique!'] as any).$params = '';
+//GENERATED end
+
 //BUILTIN ObjectIter.Next()
 //GENERATED start
 (ObjectIter.prototype['Next'] as any).$call = ObjectIter.prototype['Next'];

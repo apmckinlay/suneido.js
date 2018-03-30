@@ -8,10 +8,10 @@ import { SuNum } from "./sunum";
 import { SuValue, SuIterable, SuCallable } from "./suvalue";
 import { isBlock } from "./suBoundMethod";
 import { display } from "./display";
-import { is } from "./ops";
+import { is, toBoolean } from "./ops";
 import { mandatory, maxargs } from "./args";
 import { cmp } from "./cmp";
-import { globalLookup } from "./global";
+import { globalLookup, global } from "./global";
 import * as util from "./utility";
 
 import * as assert from "./assert";
@@ -164,19 +164,6 @@ export class SuObject extends SuValue {
         return (0 <= i && i < this.vec.length) || this.map.has(key);
     }
 
-    //NOTE: not lazy
-    Members(list = false, named = false): SuObject {
-        maxargs(2, arguments.length);
-        if (list === false && named === false)
-            list = named = true;
-        let ms: any[] = [];
-        if (list === true)
-            ms.push(...this.vec.keys());
-        if (named === true)
-            ms.push(...this.map.keys());
-        return new SuObject(ms);
-    }
-
     Delete(args: SuObject): SuObject {
         this.checkReadonly();
         if (args.getDefault('all', false) === true)
@@ -258,6 +245,50 @@ export class SuObject extends SuValue {
     Slice(i: number = mandatory(), n: number = this.vecsize()): SuObject {
         maxargs(2, arguments.length);
         return this.slice(i, n < 0 ? n : i + n);
+    }
+
+    Values(_list: any = false, _named: any = false): SuObject {
+        maxargs(2, arguments.length);
+        let list = toBoolean(_list);
+        let named = toBoolean(_named);
+        if (list === false && named === false)
+            list = named = true;
+        return global("Sequence")(
+            new ObjectIter(this.toObject(), Values.ITER_VALUES, list, named));
+    }
+
+    Assocs(_list: any = false, _named: any = false): SuObject {
+        maxargs(2, arguments.length);
+        let list = toBoolean(_list);
+        let named = toBoolean(_named);
+        if (list === false && named === false)
+            list = named = true;
+        return global("Sequence")(
+            new ObjectIter(this.toObject(), Values.ITER_ASSOCS, list, named));
+    }
+
+    Members(_list: any = false, _named: any = false): SuObject {
+        maxargs(2, arguments.length);
+        let list = toBoolean(_list);
+        let named = toBoolean(_named);
+        if (list === false && named === false)
+            list = named = true;
+        return global("Sequence")(
+            new ObjectIter(this.toObject(), Values.ITER_KEYS, list, named));
+    }
+
+    ['Unique!'](): SuObject {
+        maxargs(0, arguments.length);
+        let dst = 1;
+        for (let src = 1; src < this.vec.length; ++src) {
+            if (is(this.vec[src], this.vec[src - 1]))
+                continue;
+            if (dst < src)
+                this.vec[dst] = this.vec[src];
+            ++dst;
+        }
+        this.vec.splice(dst);
+        return this;
     }
 
     // used by su ranges, must match string.slice
