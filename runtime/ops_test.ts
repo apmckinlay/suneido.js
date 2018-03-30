@@ -29,9 +29,9 @@ let x = new SuObject();
 neq(x, 123);
 let y = new SuObject();
 eq(x, y);
-x.Add(123);
+x.add(123);
 neq(x, y);
-y.Add(123);
+y.add(123);
 eq(x, y);
 let d = SuDate.literal('20160906.1646');
 eq(d, d);
@@ -46,7 +46,7 @@ neq("", except);
 neq(except, 1);
 let r = SuRecord.mkRecord1();
 neq(r, x);
-r.Add(123);
+r.add(123);
 eq(r, x);
 
 

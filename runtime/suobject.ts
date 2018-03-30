@@ -8,7 +8,7 @@ import { SuNum } from "./sunum";
 import { SuValue, SuIterable, SuCallable } from "./suvalue";
 import { isBlock } from "./suBoundMethod";
 import { display } from "./display";
-import { is, toBoolean } from "./ops";
+import { is, toBoolean, isNumber, toInt } from "./ops";
 import { mandatory, maxargs } from "./args";
 import { cmp } from "./cmp";
 import { globalLookup, global } from "./global";
@@ -93,14 +93,55 @@ export class SuObject extends SuValue {
         }
     }
 
-    Add(x: any = mandatory()): SuObject {
-        maxargs(1, arguments.length);
+    Add(args: SuObject): SuObject {
+        this.checkReadonly();
+        let numValuesToAdd = args.vecsize();
+        let atArg = args.getDefault('at', null);
+        let invalidUsage = atArg === null
+            ? args.mapsize() > 0
+            : args.mapsize() > 1;
+        if (invalidUsage === true)
+            throw new Error("usage: object.Add(value, ... [ at: position ])");
+
+        if (numValuesToAdd === 0)
+            return this;
+
+        if (atArg === null)
+            this.addAt(this.vec.length, args.vec);
+        else if (isNumber(atArg))
+            this.addAt(toInt(atArg), args.vec);
+        else if (numValuesToAdd === 1)
+            this.put(atArg, args.vec[0]);
+        else
+            throw new Error("can only Add multiple values to un-named "
+                + "or to numeric positions");
+        return this;
+    }
+
+    private addAt(at: number, values: any[]) {
+        for (let i = 0; i < values.length; i++)
+            this.insert(at + i, values[i]);
+    }
+
+    add(x: any): SuObject {
         this.checkReadonly();
         return this.runWithModificationCheck(() => {
             this.vec.push(x);
             this.migrate();
             return this;
         });
+    }
+
+    insert(at: number, value: any): SuObject {
+        this.checkReadonly();
+        if (0 <= at && at <= this.vec.length) {
+            this.runWithModificationCheck(() => {
+                this.vec.splice(at, 0, value);
+                this.migrate();
+            });
+        } else
+            this.preset(at, value);
+        return this;
     }
 
     put(key: any, value: any): SuObject {
@@ -114,7 +155,7 @@ export class SuObject extends SuValue {
             if (0 <= i && i < this.vec.length)
                 this.vec[i] = value;
             else if (i === this.vec.length)
-                this.Add(value);
+                this.add(value);
             else
                 this.map.set(key, value);
             return this;

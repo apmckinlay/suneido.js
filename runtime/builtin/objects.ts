@@ -59,17 +59,16 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Size'] as any).$params = 'list=false, named=false';
 //GENERATED end
 
-//BUILTIN SuObject.Add(x)
+//BUILTIN SuObject.Add(@args)
 //GENERATED start
-(SuObject.prototype['Add'] as any).$call = SuObject.prototype['Add'];
-(SuObject.prototype['Add'] as any).$callNamed = function ($named: any, x: any) {
-    ({ x = x } = $named);
-    return SuObject.prototype['Add'].call(this, x);
+(SuObject.prototype['Add'] as any).$callAt = SuObject.prototype['Add'];
+(SuObject.prototype['Add'] as any).$call = function (...args: any[]) {
+    return SuObject.prototype['Add'].call(this, new SuObject(args));
 };
-(SuObject.prototype['Add'] as any).$callAt = function (args: SuObject) {
-    return (SuObject.prototype['Add'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+(SuObject.prototype['Add'] as any).$callNamed = function (named: any, ...args: any[]) {
+    return SuObject.prototype['Add'].call(this, new SuObject(args, util.obToMap(named)));
 };
-(SuObject.prototype['Add'] as any).$params = 'x';
+(SuObject.prototype['Add'] as any).$params = '@args';
 //GENERATED end
 
 //BUILTIN SuObject.GetDefault(key, value)

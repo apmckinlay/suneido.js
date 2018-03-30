@@ -2,12 +2,13 @@ import { SuObject, ObjectIter, Values } from "./suobject";
 import { SuNum } from "./sunum";
 import * as assert from "./assert";
 import { SuIterable } from "./suvalue";
+import { makeObj } from "./testUtility";
 
 const dn = SuNum.fromNumber;
 
 let ob = new SuObject();
 assert.equal(ob.size(), 0);
-ob.Add(123);
+ob.add(123);
 assert.equal(ob.size(), 1);
 ob.put('a', 'hi');
 assert.equal(ob.size(), 2);
@@ -23,7 +24,7 @@ assert.equal(ob.get('b'), undefined);
 ob.put(2, 22);
 assert.equal(ob.vecsize(), 1);
 assert.equal(ob.mapsize(), 2);
-ob.Add(11);
+ob.add(11);
 assert.equal(ob.vecsize(), 3);
 assert.equal(ob.mapsize(), 1);
 ob.put(4, 44);
@@ -52,10 +53,10 @@ assert.that(ob.equals(ob));
 assert.that(!ob.equals(123));
 let ob2 = new SuObject();
 assert.that(ob.equals(ob2));
-ob.Add(123);
+ob.add(123);
 assert.that(!ob.equals(ob2));
 assert.that(!ob2.equals(ob));
-ob2.Add(123);
+ob2.add(123);
 assert.that(ob.equals(ob2));
 assert.that(ob2.equals(ob));
 ob.put('a', 'alpha');
@@ -75,18 +76,18 @@ ob = new SuObject();
 cmp(ob, ob, 0);
 ob2 = new SuObject();
 cmp(ob, ob2, 0);
-ob.Add(123);
+ob.add(123);
 cmp(ob, ob2, +1);
-ob2.Add(SuNum.fromNumber(123));
+ob2.add(SuNum.fromNumber(123));
 cmp(ob, ob2, 0);
-ob.Add(456);
+ob.add(456);
 cmp(ob, ob2, +1);
 
 // toString
 ob = new SuObject();
 assert.equal(ob.toString(), '#()');
-ob.Add(12);
-ob.Add(34);
+ob.add(12);
+ob.add(34);
 assert.equal(ob.toString(), '#(12, 34)');
 ob.put('b', 'Bob');
 assert.equal(ob.toString(), '#(12, 34, b: "Bob")');
@@ -96,7 +97,7 @@ ob.put('a b', dn(1000));
 assert.equal(ob.toString(), '#("a b": 1000)');
 
 ob = new SuObject();
-ob.Add('a b');
+ob.add('a b');
 assert.equal(ob.toString(), '#("a b")');
 
 // Join
@@ -152,7 +153,7 @@ function modifyDuringIteration(modifyOp: (ob: SuObject) => void) {
     };
     return fn;
 }
-assert.throws(modifyDuringIteration((ob) => ob.Add('5')), "object modified during iteration");
+assert.throws(modifyDuringIteration((ob) => ob.add('5')), "object modified during iteration");
 assert.throws(modifyDuringIteration((ob) => ob.put('a', '5')), "object modified during iteration");
 assert.throws(modifyDuringIteration((ob) => ob.delete(1)), "object modified during iteration");
 assert.throws(modifyDuringIteration((ob) => ob.erase(1)), "object modified during iteration");
@@ -188,3 +189,22 @@ assert.that(!ob["Member?"]('a'));
 cmp(new SuObject()["Unique!"](), new SuObject(), 0);
 cmp(new SuObject([1, 2, 3])["Unique!"](), new SuObject([1, 2, 3]), 0);
 cmp(new SuObject([1, 1, 2, 3, 1])["Unique!"](), new SuObject([1, 2, 3, 1]), 0);
+
+// Add
+ob = makeObj([0, 1, 2], [6, 6], ['a', 'a']);
+assert.throws(() => ob.Add(makeObj([], ['invalid', 1])),
+    "usage: object.Add(value, ... [ at: position ])");
+assert.throws(() => ob.Add(makeObj([], ['at', 1], ['invalid', 1])),
+    "usage: object.Add(value, ... [ at: position ])");
+assert.throws(() => ob.Add(makeObj([1, 2], ['at', 'a'])),
+    "can only Add multiple values to un-named or to numeric positions");
+// ob.Add()
+cmp(ob.Add(makeObj([])), ob, 0);
+// ob.Add(3)
+cmp(ob.Add(makeObj([3])), makeObj([0, 1, 2, 3], [6, 6], ['a', 'a']), 0);
+// ob.Add(4, 5, at: 4.9) -> migrate
+cmp(ob.Add(makeObj([4, 5], ['at', SuNum.fromNumber(4.9)])), makeObj([0, 1, 2, 3, 4, 5, 6], ['a', 'a']), 0);
+// ob.Add('b', at: 'b')
+cmp(ob.Add(makeObj(['b'], ['at', 'b'])), makeObj([0, 1, 2, 3, 4, 5, 6], ['a', 'a'], ['b', 'b']), 0);
+ob.Set_readonly();
+assert.throws(() => ob.Add(makeObj([1])), "can't modify readonly objects");

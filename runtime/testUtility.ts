@@ -42,3 +42,7 @@ function generateMethod(member: Member) {
     $f.$params = member.params;
     return $f;
 }
+
+export function makeObj(vec: any[], ...mapPairs: [any, any][]): SuObject {
+    return new SuObject(vec, new Map(mapPairs));
+}

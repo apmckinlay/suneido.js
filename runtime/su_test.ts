@@ -60,7 +60,7 @@ let f = {
 };
 
 assert.equal(su.call(f, 1, 2), ['call', [1, 2]]);
-ob = new SuObject().Add(1).put('a', 2);
+ob = new SuObject().add(1).put('a', 2);
 assert.equal(su.callAt(f, ob), ['callAt', ob]);
 assert.equal(su.callNamed(f, { a: 3, b: 4 }, 1, 2), ['callNamed', { a: 3, b: 4 }, [1, 2]]);
 assert.throws(() => su.call(123), /can't call/);
