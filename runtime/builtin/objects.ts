@@ -275,6 +275,18 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Members'] as any).$params = 'list=false, named=false';
 //GENERATED end
 
+//BUILTIN SuObject.Unique!()
+//GENERATED start
+(SuObject.prototype['Unique!'] as any).$call = SuObject.prototype['Unique!'];
+(SuObject.prototype['Unique!'] as any).$callNamed = function (_named: any) {
+    return SuObject.prototype['Unique!'].call(this);
+};
+(SuObject.prototype['Unique!'] as any).$callAt = function (args: SuObject) {
+    return (SuObject.prototype['Unique!'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(SuObject.prototype['Unique!'] as any).$params = '';
+//GENERATED end
+
 //BUILTIN ObjectIter.Next()
 //GENERATED start
 (ObjectIter.prototype['Next'] as any).$call = ObjectIter.prototype['Next'];

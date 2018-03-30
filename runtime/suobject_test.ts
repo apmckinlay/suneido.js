@@ -183,3 +183,8 @@ assert.that(!ob["Member?"](1));
 assert.equal(ob.get(2), 3);
 ob.erase('a');
 assert.that(!ob["Member?"]('a'));
+
+// Unique!
+cmp(new SuObject()["Unique!"](), new SuObject(), 0);
+cmp(new SuObject([1, 2, 3])["Unique!"](), new SuObject([1, 2, 3]), 0);
+cmp(new SuObject([1, 1, 2, 3, 1])["Unique!"](), new SuObject([1, 2, 3, 1]), 0);

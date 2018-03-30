@@ -277,6 +277,20 @@ export class SuObject extends SuValue {
             new ObjectIter(this.toObject(), Values.ITER_KEYS, list, named));
     }
 
+    ['Unique!'](): SuObject {
+        maxargs(0, arguments.length);
+        let dst = 1;
+        for (let src = 1; src < this.vec.length; ++src) {
+            if (is(this.vec[src], this.vec[src - 1]))
+                continue;
+            if (dst < src)
+                this.vec[dst] = this.vec[src];
+            ++dst;
+        }
+        this.vec.splice(dst);
+        return this;
+    }
+
     // used by su ranges, must match string.slice
     slice(i: number, j: number): SuObject {
         return new SuObject(this.vec.slice(i, j));

@@ -8,7 +8,7 @@ import { SuValue, SuCallable } from "./suvalue";
 import { SuObject } from "./suobject";
 import { SuBoundMethod, isBlock } from "./suBoundMethod";
 import { mandatory, maxargs } from "./args";
-import { is } from "./ops";
+import { is, toBoolean } from "./ops";
 import { globalLookup } from "./global";
 import * as util from "./utility";
 
@@ -114,9 +114,16 @@ export class RootClass extends SuValue {
         return Object.keys(this).length;
     }
 
-    Members(): SuObject { //TODO list:, named:, all:
-        maxargs(0, arguments.length);
-        return new SuObject(Object.keys(this));
+    Members(_all: any = false): SuObject {
+        maxargs(1, arguments.length);
+        let all = toBoolean(_all);
+        let c = Object.keys(this);
+        if (all !== true)
+            return new SuObject(c);
+        let cur = this;
+        while ((cur = Object.getPrototypeOf(cur)) !== RootClass.prototype)
+            c.push(...Object.keys(cur));
+        return (new SuObject(c))['Sort!']()["Unique!"]();
     }
 
     ['Member?'](key: string): boolean {
@@ -217,16 +224,17 @@ function instanceEquals(x: any, y: any): boolean {
 (RootClass.prototype['Size'] as any).$params = '';
 //GENERATED end
 
-//BUILTIN RootClass.Members()
+//BUILTIN RootClass.Members(all=false)
 //GENERATED start
 (RootClass.prototype['Members'] as any).$call = RootClass.prototype['Members'];
-(RootClass.prototype['Members'] as any).$callNamed = function (_named: any) {
-    return RootClass.prototype['Members'].call(this);
+(RootClass.prototype['Members'] as any).$callNamed = function ($named: any, all: any) {
+    ({ all = all } = $named);
+    return RootClass.prototype['Members'].call(this, all);
 };
 (RootClass.prototype['Members'] as any).$callAt = function (args: SuObject) {
     return (RootClass.prototype['Members'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(RootClass.prototype['Members'] as any).$params = '';
+(RootClass.prototype['Members'] as any).$params = 'all=false';
 //GENERATED end
 
 //BUILTIN RootClass.Member?(key)
