@@ -289,6 +289,18 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Unique!'] as any).$params = '';
 //GENERATED end
 
+//BUILTIN SuObject.Reverse!()
+//GENERATED start
+(SuObject.prototype['Reverse!'] as any).$call = SuObject.prototype['Reverse!'];
+(SuObject.prototype['Reverse!'] as any).$callNamed = function (_named: any) {
+    return SuObject.prototype['Reverse!'].call(this);
+};
+(SuObject.prototype['Reverse!'] as any).$callAt = function (args: SuObject) {
+    return (SuObject.prototype['Reverse!'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(SuObject.prototype['Reverse!'] as any).$params = '';
+//GENERATED end
+
 //BUILTIN ObjectIter.Next()
 //GENERATED start
 (ObjectIter.prototype['Next'] as any).$call = ObjectIter.prototype['Next'];

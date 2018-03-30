@@ -320,15 +320,27 @@ export class SuObject extends SuValue {
 
     ['Unique!'](): SuObject {
         maxargs(0, arguments.length);
-        let dst = 1;
-        for (let src = 1; src < this.vec.length; ++src) {
-            if (is(this.vec[src], this.vec[src - 1]))
-                continue;
-            if (dst < src)
-                this.vec[dst] = this.vec[src];
-            ++dst;
-        }
-        this.vec.splice(dst);
+        this.checkReadonly();
+        this.runWithModificationCheck(() => {
+            let dst = 1;
+            for (let src = 1; src < this.vec.length; ++src) {
+                if (is(this.vec[src], this.vec[src - 1]))
+                    continue;
+                if (dst < src)
+                    this.vec[dst] = this.vec[src];
+                ++dst;
+            }
+            this.vec.splice(dst);
+        });
+        return this;
+    }
+
+    ['Reverse!'](): SuObject {
+        maxargs(0, arguments.length);
+        this.checkReadonly();
+        this.runWithModificationCheck(() => {
+            this.vec.reverse();
+        });
         return this;
     }
 

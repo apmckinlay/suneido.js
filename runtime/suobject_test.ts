@@ -190,6 +190,11 @@ cmp(new SuObject()["Unique!"](), new SuObject(), 0);
 cmp(new SuObject([1, 2, 3])["Unique!"](), new SuObject([1, 2, 3]), 0);
 cmp(new SuObject([1, 1, 2, 3, 1])["Unique!"](), new SuObject([1, 2, 3, 1]), 0);
 
+// Reverse!
+cmp(makeObj([])["Reverse!"](), makeObj([]), 0);
+cmp(makeObj([1, 2, 3])["Reverse!"](), makeObj([3, 2, 1]), 0);
+cmp(makeObj([1, 2, 3], ['a', 'a'])["Reverse!"](), makeObj([3, 2, 1], ['a', 'a']), 0);
+
 // Add
 ob = makeObj([0, 1, 2], [6, 6], ['a', 'a']);
 assert.throws(() => ob.Add(makeObj([], ['invalid', 1])),
