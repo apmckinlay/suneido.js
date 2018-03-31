@@ -8,7 +8,7 @@ import { SuValue, SuCallable } from "./suvalue";
 import { SuObject } from "./suobject";
 import { SuBoundMethod, isBlock } from "./suBoundMethod";
 import { mandatory, maxargs } from "./args";
-import { is, toBoolean } from "./ops";
+import { is, toBoolean, toStr } from "./ops";
 import { globalLookup } from "./global";
 import * as util from "./utility";
 
@@ -71,7 +71,7 @@ export class RootClass extends SuValue {
     }
 
     lookup(this: any, method: string): SuCallable {
-        let start = this.isClass() ? this : Object.getPrototypeOf(this);
+        let start = this.toClass();
         if (method === 'New')
             return start.New;
         return (RootClass.prototype as any)[method] ||
@@ -128,7 +128,30 @@ export class RootClass extends SuValue {
 
     ['Member?'](key: string): boolean {
         maxargs(1, arguments.length);
-        return key in this;
+        return key in this && ! (key in RootClass.prototype);
+    }
+
+    MethodClass(_key: any) {
+        let key = toStr(_key);
+        let c = this.toClass();
+        while (c !== RootClass.prototype) {
+            if (c.hasOwnProperty(key))
+                return c;
+            c = Object.getPrototypeOf(c);
+        }
+        return false;
+    }
+
+    toClass(): RootClass {
+        return this.isClass() ? this : Object.getPrototypeOf(this);
+    }
+
+    Eval(args: SuObject): any {
+        return SuObject.prototype.Eval.call(this, args);
+    }
+
+    Eval2(args: SuObject): SuObject {
+        return SuObject.prototype.Eval2.call(this, args);
     }
 
     Delete(this: any, key: string = "", all: boolean = false): any {
@@ -248,6 +271,43 @@ function instanceEquals(x: any, y: any): boolean {
     return (RootClass.prototype['Member?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
 (RootClass.prototype['Member?'] as any).$params = 'key';
+//GENERATED end
+
+//BUILTIN RootClass.MethodClass(key)
+//GENERATED start
+(RootClass.prototype['MethodClass'] as any).$call = RootClass.prototype['MethodClass'];
+(RootClass.prototype['MethodClass'] as any).$callNamed = function ($named: any, key: any) {
+    ({ key = key } = $named);
+    return RootClass.prototype['MethodClass'].call(this, key);
+};
+(RootClass.prototype['MethodClass'] as any).$callAt = function (args: SuObject) {
+    return (RootClass.prototype['MethodClass'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(RootClass.prototype['MethodClass'] as any).$params = 'key';
+//GENERATED end
+
+//BUILTIN RootClass.Eval(@args)
+//GENERATED start
+(RootClass.prototype['Eval'] as any).$callAt = RootClass.prototype['Eval'];
+(RootClass.prototype['Eval'] as any).$call = function (...args: any[]) {
+    return RootClass.prototype['Eval'].call(this, new SuObject(args));
+};
+(RootClass.prototype['Eval'] as any).$callNamed = function (named: any, ...args: any[]) {
+    return RootClass.prototype['Eval'].call(this, new SuObject(args, util.obToMap(named)));
+};
+(RootClass.prototype['Eval'] as any).$params = '@args';
+//GENERATED end
+
+//BUILTIN RootClass.Eval2(@args)
+//GENERATED start
+(RootClass.prototype['Eval2'] as any).$callAt = RootClass.prototype['Eval2'];
+(RootClass.prototype['Eval2'] as any).$call = function (...args: any[]) {
+    return RootClass.prototype['Eval2'].call(this, new SuObject(args));
+};
+(RootClass.prototype['Eval2'] as any).$callNamed = function (named: any, ...args: any[]) {
+    return RootClass.prototype['Eval2'].call(this, new SuObject(args, util.obToMap(named)));
+};
+(RootClass.prototype['Eval2'] as any).$params = '@args';
 //GENERATED end
 
 //BUILTIN RootClass.Delete(key=false, all=false)

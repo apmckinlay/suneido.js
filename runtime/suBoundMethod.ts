@@ -7,7 +7,7 @@ export function isBlock(value: any): boolean {
 export class SuBoundMethod extends SuValue implements SuCallable {
     $params: string;
     $callableType: string;
-    constructor(private instance: SuValue, private method: SuCallable) {
+    constructor(private instance: SuValue, public method: SuCallable) {
         super();
         this.$params = method.$params;
         this.$callableType = method.$callableType;

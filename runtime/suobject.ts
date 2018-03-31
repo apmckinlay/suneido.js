@@ -6,7 +6,7 @@
 
 import { SuNum } from "./sunum";
 import { SuValue, SuIterable, SuCallable } from "./suvalue";
-import { isBlock } from "./suBoundMethod";
+import { isBlock, SuBoundMethod } from "./suBoundMethod";
 import { display } from "./display";
 import { is, toBoolean, isNumber, toInt } from "./ops";
 import { mandatory, maxargs } from "./args";
@@ -342,6 +342,31 @@ export class SuObject extends SuValue {
             this.vec.reverse();
         });
         return this;
+    }
+
+    Eval(args: SuObject): any {
+        return SuObject.evaluate(this, args);
+    }
+
+    Eval2(args: SuObject): SuObject {
+        let value = SuObject.evaluate(this, args);
+        let result = new SuObject();
+        if (value != null)
+            result.add(value);
+        return result;
+    }
+
+    private static evaluate(self: SuObject, args: SuObject) {
+        if (args.size() === 0)
+            throw new Error("usage: object.Eval(callable [, args...]");
+        if (! args.vec[0] || ! args.vec[0].$callAt ||
+            typeof args.vec[0].$callAt !== 'function')
+            throw new Error("usage: object.Eval requires callable");
+        let fn = args.vec[0] instanceof SuBoundMethod
+            ? args.vec[0].method.$callAt
+            : args.vec[0].$callAt;
+        args.delete(0);
+        return fn.call(self, args);
     }
 
     // used by su ranges, must match string.slice

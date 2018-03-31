@@ -301,6 +301,30 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Reverse!'] as any).$params = '';
 //GENERATED end
 
+//BUILTIN SuObject.Eval(@args)
+//GENERATED start
+(SuObject.prototype['Eval'] as any).$callAt = SuObject.prototype['Eval'];
+(SuObject.prototype['Eval'] as any).$call = function (...args: any[]) {
+    return SuObject.prototype['Eval'].call(this, new SuObject(args));
+};
+(SuObject.prototype['Eval'] as any).$callNamed = function (named: any, ...args: any[]) {
+    return SuObject.prototype['Eval'].call(this, new SuObject(args, util.obToMap(named)));
+};
+(SuObject.prototype['Eval'] as any).$params = '@args';
+//GENERATED end
+
+//BUILTIN SuObject.Eval2(@args)
+//GENERATED start
+(SuObject.prototype['Eval2'] as any).$callAt = SuObject.prototype['Eval2'];
+(SuObject.prototype['Eval2'] as any).$call = function (...args: any[]) {
+    return SuObject.prototype['Eval2'].call(this, new SuObject(args));
+};
+(SuObject.prototype['Eval2'] as any).$callNamed = function (named: any, ...args: any[]) {
+    return SuObject.prototype['Eval2'].call(this, new SuObject(args, util.obToMap(named)));
+};
+(SuObject.prototype['Eval2'] as any).$params = '@args';
+//GENERATED end
+
 //BUILTIN ObjectIter.Next()
 //GENERATED start
 (ObjectIter.prototype['Next'] as any).$call = ObjectIter.prototype['Next'];
