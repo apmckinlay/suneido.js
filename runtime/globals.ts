@@ -50,6 +50,9 @@ import { su_seq, su_seqq } from "./builtin/seq";
 defGlobal('Seq', su_seq);
 defGlobal('Seq?', su_seqq);
 
+import { su_random } from "./builtin/random";
+defGlobal('Random', su_random);
+
 /** FOR TESTING PURPOSES ONLY! */
 defGlobal('Def', su_def);
 function su_def(global: string, value: any): any {

@@ -245,7 +245,7 @@ export class Strings {
         let ob = new SuObject();
         for (let i = 0; i <= result.groupCount(); i++) {
             let start = result.pos[i];
-            ob.Add(new SuObject([start, result.end[i] - start]));
+            ob.add(new SuObject([start, result.end[i] - start]));
         }
         return ob;
     }

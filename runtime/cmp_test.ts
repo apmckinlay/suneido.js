@@ -15,9 +15,9 @@ let d3 = SuDate.literal('20160906.1347');
 let d4 = SuDate.literal('30000101');
 
 let o1 = new SuObject();
-let o2 = new SuObject().Add(123);
-let o3 = new SuObject().Add("foo");
-let o4 = new SuObject().Add("foo").Add("bar");
+let o2 = new SuObject().add(123);
+let o3 = new SuObject().add("foo");
+let o4 = new SuObject().add("foo").add("bar");
 
 let e1 = new Except(new Error(), "ac");
 let e2 = e1.As("c");

@@ -6,9 +6,9 @@
 
 import { SuNum } from "./sunum";
 import { SuValue, SuIterable, SuCallable } from "./suvalue";
-import { isBlock } from "./suBoundMethod";
+import { isBlock, SuBoundMethod } from "./suBoundMethod";
 import { display } from "./display";
-import { is, toBoolean } from "./ops";
+import { is, toBoolean, isNumber, toInt } from "./ops";
 import { mandatory, maxargs } from "./args";
 import { cmp } from "./cmp";
 import { globalLookup, global } from "./global";
@@ -93,14 +93,55 @@ export class SuObject extends SuValue {
         }
     }
 
-    Add(x: any = mandatory()): SuObject {
-        maxargs(1, arguments.length);
+    Add(args: SuObject): SuObject {
+        this.checkReadonly();
+        let numValuesToAdd = args.vecsize();
+        let atArg = args.getDefault('at', null);
+        let invalidUsage = atArg === null
+            ? args.mapsize() > 0
+            : args.mapsize() > 1;
+        if (invalidUsage === true)
+            throw new Error("usage: object.Add(value, ... [ at: position ])");
+
+        if (numValuesToAdd === 0)
+            return this;
+
+        if (atArg === null)
+            this.addAt(this.vec.length, args.vec);
+        else if (isNumber(atArg))
+            this.addAt(toInt(atArg), args.vec);
+        else if (numValuesToAdd === 1)
+            this.put(atArg, args.vec[0]);
+        else
+            throw new Error("can only Add multiple values to un-named "
+                + "or to numeric positions");
+        return this;
+    }
+
+    private addAt(at: number, values: any[]) {
+        for (let i = 0; i < values.length; i++)
+            this.insert(at + i, values[i]);
+    }
+
+    add(x: any): SuObject {
         this.checkReadonly();
         return this.runWithModificationCheck(() => {
             this.vec.push(x);
             this.migrate();
             return this;
         });
+    }
+
+    insert(at: number, value: any): SuObject {
+        this.checkReadonly();
+        if (0 <= at && at <= this.vec.length) {
+            this.runWithModificationCheck(() => {
+                this.vec.splice(at, 0, value);
+                this.migrate();
+            });
+        } else
+            this.preset(at, value);
+        return this;
     }
 
     put(key: any, value: any): SuObject {
@@ -114,7 +155,7 @@ export class SuObject extends SuValue {
             if (0 <= i && i < this.vec.length)
                 this.vec[i] = value;
             else if (i === this.vec.length)
-                this.Add(value);
+                this.add(value);
             else
                 this.map.set(key, value);
             return this;
@@ -279,16 +320,53 @@ export class SuObject extends SuValue {
 
     ['Unique!'](): SuObject {
         maxargs(0, arguments.length);
-        let dst = 1;
-        for (let src = 1; src < this.vec.length; ++src) {
-            if (is(this.vec[src], this.vec[src - 1]))
-                continue;
-            if (dst < src)
-                this.vec[dst] = this.vec[src];
-            ++dst;
-        }
-        this.vec.splice(dst);
+        this.checkReadonly();
+        this.runWithModificationCheck(() => {
+            let dst = 1;
+            for (let src = 1; src < this.vec.length; ++src) {
+                if (is(this.vec[src], this.vec[src - 1]))
+                    continue;
+                if (dst < src)
+                    this.vec[dst] = this.vec[src];
+                ++dst;
+            }
+            this.vec.splice(dst);
+        });
         return this;
+    }
+
+    ['Reverse!'](): SuObject {
+        maxargs(0, arguments.length);
+        this.checkReadonly();
+        this.runWithModificationCheck(() => {
+            this.vec.reverse();
+        });
+        return this;
+    }
+
+    Eval(args: SuObject): any {
+        return SuObject.evaluate(this, args);
+    }
+
+    Eval2(args: SuObject): SuObject {
+        let value = SuObject.evaluate(this, args);
+        let result = new SuObject();
+        if (value != null)
+            result.add(value);
+        return result;
+    }
+
+    private static evaluate(self: SuObject, args: SuObject) {
+        if (args.size() === 0)
+            throw new Error("usage: object.Eval(callable [, args...]");
+        if (! args.vec[0] || ! args.vec[0].$callAt ||
+            typeof args.vec[0].$callAt !== 'function')
+            throw new Error("usage: object.Eval requires callable");
+        let fn = args.vec[0] instanceof SuBoundMethod
+            ? args.vec[0].method.$callAt
+            : args.vec[0].$callAt;
+        args.delete(0);
+        return fn.call(self, args);
     }
 
     // used by su ranges, must match string.slice

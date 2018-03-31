@@ -1,6 +1,8 @@
 import { SuObject, ObjectIter } from '../suobject';
+import { RootClass } from '../rootclass';
 import * as util from '../utility';
 import { mandatory, maxargs } from "../args";
+import { SuValue } from '../suvalue';
 
 export function su_object(args: SuObject) {
     return args;
@@ -19,7 +21,8 @@ export function su_object(args: SuObject) {
 
 export function su_objectq(x: any = mandatory()): boolean {
     maxargs(1, arguments.length);
-    return x instanceof SuObject;
+    return (x instanceof SuValue && x.toObject() !== null) ||
+        (x instanceof RootClass && !x.isClass());
 }
 //BUILTIN Object?(x)
 //GENERATED start
@@ -59,17 +62,16 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Size'] as any).$params = 'list=false, named=false';
 //GENERATED end
 
-//BUILTIN SuObject.Add(x)
+//BUILTIN SuObject.Add(@args)
 //GENERATED start
-(SuObject.prototype['Add'] as any).$call = SuObject.prototype['Add'];
-(SuObject.prototype['Add'] as any).$callNamed = function ($named: any, x: any) {
-    ({ x = x } = $named);
-    return SuObject.prototype['Add'].call(this, x);
+(SuObject.prototype['Add'] as any).$callAt = SuObject.prototype['Add'];
+(SuObject.prototype['Add'] as any).$call = function (...args: any[]) {
+    return SuObject.prototype['Add'].call(this, new SuObject(args));
 };
-(SuObject.prototype['Add'] as any).$callAt = function (args: SuObject) {
-    return (SuObject.prototype['Add'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+(SuObject.prototype['Add'] as any).$callNamed = function (named: any, ...args: any[]) {
+    return SuObject.prototype['Add'].call(this, new SuObject(args, util.obToMap(named)));
 };
-(SuObject.prototype['Add'] as any).$params = 'x';
+(SuObject.prototype['Add'] as any).$params = '@args';
 //GENERATED end
 
 //BUILTIN SuObject.GetDefault(key, value)
@@ -285,6 +287,42 @@ export function su_objectq(x: any = mandatory()): boolean {
     return (SuObject.prototype['Unique!'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
 (SuObject.prototype['Unique!'] as any).$params = '';
+//GENERATED end
+
+//BUILTIN SuObject.Reverse!()
+//GENERATED start
+(SuObject.prototype['Reverse!'] as any).$call = SuObject.prototype['Reverse!'];
+(SuObject.prototype['Reverse!'] as any).$callNamed = function (_named: any) {
+    return SuObject.prototype['Reverse!'].call(this);
+};
+(SuObject.prototype['Reverse!'] as any).$callAt = function (args: SuObject) {
+    return (SuObject.prototype['Reverse!'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(SuObject.prototype['Reverse!'] as any).$params = '';
+//GENERATED end
+
+//BUILTIN SuObject.Eval(@args)
+//GENERATED start
+(SuObject.prototype['Eval'] as any).$callAt = SuObject.prototype['Eval'];
+(SuObject.prototype['Eval'] as any).$call = function (...args: any[]) {
+    return SuObject.prototype['Eval'].call(this, new SuObject(args));
+};
+(SuObject.prototype['Eval'] as any).$callNamed = function (named: any, ...args: any[]) {
+    return SuObject.prototype['Eval'].call(this, new SuObject(args, util.obToMap(named)));
+};
+(SuObject.prototype['Eval'] as any).$params = '@args';
+//GENERATED end
+
+//BUILTIN SuObject.Eval2(@args)
+//GENERATED start
+(SuObject.prototype['Eval2'] as any).$callAt = SuObject.prototype['Eval2'];
+(SuObject.prototype['Eval2'] as any).$call = function (...args: any[]) {
+    return SuObject.prototype['Eval2'].call(this, new SuObject(args));
+};
+(SuObject.prototype['Eval2'] as any).$callNamed = function (named: any, ...args: any[]) {
+    return SuObject.prototype['Eval2'].call(this, new SuObject(args, util.obToMap(named)));
+};
+(SuObject.prototype['Eval2'] as any).$params = '@args';
 //GENERATED end
 
 //BUILTIN ObjectIter.Next()

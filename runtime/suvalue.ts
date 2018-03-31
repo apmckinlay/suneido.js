@@ -14,6 +14,9 @@ export abstract class SuValue {
     lookup(this: any, method: string): SuCallable {
         throw new Error(`method not found: ${this.type()}.${method}(${this.display()})`);
     }
+    toObject(): any {
+        return null;
+    }
 }
 
 export abstract class SuIterable extends SuValue {

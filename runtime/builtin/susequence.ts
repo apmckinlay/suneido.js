@@ -142,7 +142,7 @@ export class SuSequence extends SequenceBase {
         let ob = new SuObject();
         let x;
         while (iter !== (x = this.invoke(iter, "Next")))
-            ob.Add(x);
+            ob.add(x);
         return ob;
     }
 
@@ -150,7 +150,7 @@ export class SuSequence extends SequenceBase {
         let iter = this.iter();
         let x;
         while (iter !== (x = this.invoke(iter, "Next")))
-            this.Add(x);
+            this.add(x);
     }
 
     protected infinite(): boolean {

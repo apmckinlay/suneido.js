@@ -20,6 +20,10 @@ export function isString(x: any): boolean {
     return x != null && typeof x.valueOf() === 'string';
 }
 
+export function isNumber(x: any): boolean {
+    return typeof x === 'number' || x instanceof SuNum;
+}
+
 export function toStr(x: any): string {
     if (isString(x))
         return x.toString();
@@ -84,6 +88,10 @@ export function toBoolean(x: any): boolean {
     if (typeof x === 'boolean')
         return x;
     throw new Error("expected boolean, got " + type(x));
+}
+
+export function toObject(x: any): any {
+    return x instanceof SuValue ? x.toObject() : null;
 }
 
 export function add(x: any, y: any): Num {
