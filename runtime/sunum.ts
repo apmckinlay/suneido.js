@@ -9,6 +9,7 @@
 
 import * as assert from "./assert";
 import { SuValue } from "./suvalue";
+import { Cmp } from "./utility";
 
 const minExp = -126;
 const maxExp = +126;
@@ -173,7 +174,7 @@ export class SuNum extends SuValue {
     /**
      * @returns {number} 0, +1, or -1
      */
-    sign(): number {
+    sign(): Cmp {
         return this.coef === 0 ? 0 : this.coef > 0 ? +1 : -1;
     }
 
@@ -238,7 +239,7 @@ export class SuNum extends SuValue {
         return false;
     }
 
-    compareTo(that: any): number {
+    compareTo(that: any): Cmp {
         if (typeof that === 'number')
             that = SuNum.fromNumber(that);
         else if (! (that instanceof SuNum))
@@ -247,7 +248,7 @@ export class SuNum extends SuValue {
     }
 
     // cmp compares two SuNums, returning 0, -1, or +1
-    static cmp(x: SuNum, y: SuNum): number {
+    static cmp(x: SuNum, y: SuNum): Cmp {
         if (x.sign() < y.sign())
             return -1;
         else if (x.sign() > y.sign())

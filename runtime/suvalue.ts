@@ -1,6 +1,8 @@
+import { Cmp } from "./utility";
+
 export abstract class SuValue {
     abstract equals(x: any): boolean;
-    abstract compareTo(x: any): number;
+    abstract compareTo(x: any): Cmp;
     abstract type(): string;
     display(): string {
         return this.toString();
@@ -23,7 +25,7 @@ export abstract class SuIterable extends SuValue {
     abstract Next(): any;
     abstract Dup(): SuIterable;
     abstract ["Infinite?"]?(): boolean;
-    compareTo(that: any): number {
+    compareTo(that: any): Cmp {
         return -1;
     }
     equals(that: any): boolean {

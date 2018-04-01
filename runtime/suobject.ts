@@ -402,6 +402,24 @@ export class SuObject extends SuValue {
         return this;
     }
 
+    LowerBound(value: any = mandatory(), lt?: Lt): number {
+        maxargs(2, arguments.length);
+        let c = lt ? lt_to_cmp(lt) : cmp;
+        return util.lowerBound(this.vec, value, c);
+    }
+
+    UpperBound(value: any = mandatory(), lt?: Lt): number {
+        maxargs(2, arguments.length);
+        let c = lt ? lt_to_cmp(lt) : cmp;
+        return util.upperBound(this.vec, value, c);
+    }
+
+    EqualRange(value: any = mandatory(), lt?: Lt): SuObject {
+        maxargs(2, arguments.length);
+        let c = lt ? lt_to_cmp(lt) : cmp;
+        return new SuObject(util.equalRange(this.vec, value, c));
+    }
+
     equals(that: any): boolean {
         if (!(that instanceof SuObject))
             return false;
@@ -438,22 +456,22 @@ export class SuObject extends SuValue {
     }
 
     /** Only compares vector, ignores map */
-    compareTo(that: SuObject): number {
+    compareTo(that: SuObject): util.Cmp {
         if (this === that)
             return 0;
         return this.compare2(that.toObject(), new PairStack());
     }
-    private compare2(that: SuObject, stack: PairStack): number {
+    private compare2(that: SuObject, stack: PairStack): util.Cmp {
         if (stack.contains(this, that))
             return 0; // comparison is already in progress
         stack.push(this, that);
-        let ord: number;
+        let ord: util.Cmp;
         for (let i = 0; i < this.vec.length && i < that.vec.length; ++i)
             if (0 !== (ord = SuObject.compare3(this.vec[i], that.vec[i], stack)))
                 return ord;
         return util.cmp(this.vec.length, that.vec.length);
     }
-    private static compare3(x: any, y: any, stack: PairStack): number {
+    private static compare3(x: any, y: any, stack: PairStack): util.Cmp {
         if (x === y)
             return 0;
         else if (x instanceof SuObject && y instanceof SuObject)
@@ -547,14 +565,14 @@ export class ObjectIter extends SuIterable {
     }
 }
 
-type Lt = (x: any, y: any) => boolean;
-type Cmp = (x: any, y: any) => -1|0|1;
+type Lt = {$call: (x: any, y: any) => boolean};
+type Cmp = (x: any, y: any) => util.Cmp;
 
 function lt_to_cmp(lt: Lt): Cmp {
     return (x: any, y: any) => {
-        if (lt(x, y))
+        if (lt.$call(x, y))
             return -1;
-        else if (lt(y, x))
+        else if (lt.$call(y, x))
             return 1;
         else
             return 0;

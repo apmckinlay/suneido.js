@@ -1,4 +1,5 @@
 import { SuValue, SuCallable } from "./suvalue";
+import * as util from "./utility";
 
 export function isBlock(value: any): boolean {
     return typeof value === 'function' && (value as SuCallable).$callableType === 'BLOCK';
@@ -26,7 +27,7 @@ export class SuBoundMethod extends SuValue implements SuCallable {
             return false;
         return this.instance.equals(that.instance) && this.method  === that.method;
     }
-    compareTo(that: any): number {
+    compareTo(that: any): util.Cmp {
         return -1;
     }
     type() {
