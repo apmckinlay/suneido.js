@@ -8,7 +8,8 @@ import { SuNum } from "./sunum";
 import { SuValue, SuIterable, SuCallable } from "./suvalue";
 import { isBlock, SuBoundMethod } from "./suBoundMethod";
 import { display } from "./display";
-import { is, toBoolean, isNumber, toInt } from "./ops";
+import { is, toBoolean, isNumber, toInt,
+    canonical, getKeyFromCanonical } from "./ops";
 import { mandatory, maxargs } from "./args";
 import { cmp } from "./cmp";
 import { globalLookup, global } from "./global";
@@ -81,8 +82,20 @@ export class SuObject extends SuValue {
            throw new Error("can't modify readonly objects");
     }
 
+    private mapset(key: any, value: any): void {
+        this.map.set(canonical(key), value);
+    }
+
     private mapget(key: any): any {
         return this.map.get(canonical(key));
+    }
+
+    private maphas(key: any): boolean {
+        return this.map.has(canonical(key));
+    }
+
+    private mapdelete(key: any): boolean {
+        return this.map.delete(canonical(key));
     }
 
     private migrate(): void {
@@ -157,7 +170,7 @@ export class SuObject extends SuValue {
             else if (i === this.vec.length)
                 this.add(value);
             else
-                this.map.set(key, value);
+                this.mapset(key, value);
             return this;
         });
     }
@@ -195,14 +208,14 @@ export class SuObject extends SuValue {
                 return i;
         for (let [k, v] of this.map)
             if (is(v, value))
-                return k;
+                return getKeyFromCanonical(k);
         return false;
     }
 
     ['Member?'](key: any = mandatory()): boolean {
         maxargs(1, arguments.length);
         let i = index(key);
-        return (0 <= i && i < this.vec.length) || this.map.has(key);
+        return (0 <= i && i < this.vec.length) || this.maphas(key);
     }
 
     Delete(args: SuObject): SuObject {
@@ -229,7 +242,7 @@ export class SuObject extends SuValue {
                 this.vec.splice(i, 1);
                 return true;
             } else
-                return this.map.delete(key);
+                return this.mapdelete(key);
         });
     }
 
@@ -249,7 +262,7 @@ export class SuObject extends SuValue {
                 this.vec.splice(i);
                 return true;
             } else
-                return this.map.delete(key);
+                return this.mapdelete(key);
         });
     }
 
@@ -467,6 +480,7 @@ export class SuObject extends SuValue {
             }
         if (includeMap)
             for (let pair of this.map.entries()) {
+                pair[0] = getKeyFromCanonical(pair[0]);
                 yield pair;
                 checkForModification(this.version);
             }
@@ -545,14 +559,6 @@ function lt_to_cmp(lt: Lt): Cmp {
         else
             return 0;
     };
-}
-
-function canonical(key: any): any {
-    if (key instanceof SuNum)
-        return key.toNumber();
-    if (typeof key === 'object')
-        throw new Error("suneido.js objects do not support object keys");
-    return key;
 }
 
 function index(key: any): number {

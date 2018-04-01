@@ -213,3 +213,14 @@ cmp(ob.Add(makeObj([4, 5], ['at', SuNum.fromNumber(4.9)])), makeObj([0, 1, 2, 3,
 cmp(ob.Add(makeObj(['b'], ['at', 'b'])), makeObj([0, 1, 2, 3, 4, 5, 6], ['a', 'a'], ['b', 'b']), 0);
 ob.Set_readonly();
 assert.throws(() => ob.Add(makeObj([1])), "can't modify readonly objects");
+
+// Test handle map & canonical
+ob = makeObj([]);
+ob.put(SuNum.fromNumber(1.1), 1);
+ob.put(SuNum.fromNumber(-1.2), 2);
+assert.equal(ob.get(SuNum.fromNumber(1.1)), 1);
+assert.equal(ob.Find(2), SuNum.fromNumber(-1.2));
+assert.that(ob["Member?"](SuNum.fromNumber(-1.2)));
+ob.delete(SuNum.fromNumber(1.1));
+cmp(ob, makeObj([], [SuNum.fromNumber(-1.2), 2]), 0);
+cmp(ob.Members(), makeObj([SuNum.fromNumber(-1.2)]), 0);

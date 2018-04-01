@@ -20,7 +20,8 @@ import { Strings } from "./builtin/strings";
 import { isString, coerceStr, toStr, is, isnt, toNum, Num,
     add, sub, mul, div, mod,
     lshift, rshift,
-    bitnot, bitand, bitor, bitxor } from "./ops";
+    bitnot, bitand, bitor, bitxor,
+    canonical } from "./ops";
 const sm: any = Strings.prototype;
 import { Numbers } from "./builtin/numbers";
 const nm: any = Numbers.prototype;
@@ -208,7 +209,7 @@ export function mkObject(...args: any[]): SuObject {
     let vec = args.slice(0, i);
     let map = new Map<any, any>();
     for (i++; i < args.length; i += 2)
-        map.set(args[i], args[i + 1]);
+        map.set(canonical(args[i]), args[i + 1]);
     return new SuObject(vec, map).Set_readonly();
 }
 
