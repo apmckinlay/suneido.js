@@ -39,8 +39,12 @@ export function coerceStr(x: any): string {
         return "false";
     else if (typeof x === 'number' || x instanceof SuNum)
         return x.toString();
-    else
-        throw new Error("can't convert " + type(x) + " to String");
+    else if (x instanceof SuValue && (x as any).userDefToString) { // x is an Instance
+        let s = (x as any).userDefToString();
+        if (s !== null)
+            return s;
+    }
+    throw new Error("can't convert " + type(x) + " to String");
 }
 
 export function toInt(x: any): number {
@@ -153,4 +157,18 @@ export function bitor(x: any, y: any): number {
 
 export function bitxor(x: any, y: any): number {
     return toInt(x) ^ toInt(y);
+}
+
+export function canonical(key: any): any {
+    if (key instanceof SuNum)
+        return key.toNumber();
+    if (typeof key === 'object')
+        throw new Error("suneido.js objects do not support object keys");
+    return key;
+}
+
+export function getKeyFromCanonical(key: any): any {
+    if (typeof key === 'number' && ! Number.isInteger(key))
+        return SuNum.fromNumber(key);
+    return key;
 }
