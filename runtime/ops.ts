@@ -39,8 +39,12 @@ export function coerceStr(x: any): string {
         return "false";
     else if (typeof x === 'number' || x instanceof SuNum)
         return x.toString();
-    else
-        throw new Error("can't convert " + type(x) + " to String");
+    else if (x instanceof SuValue && (x as any).userDefToString) { // x is an Instance
+        let s = (x as any).userDefToString();
+        if (s !== null)
+            return s;
+    }
+    throw new Error("can't convert " + type(x) + " to String");
 }
 
 export function toInt(x: any): number {

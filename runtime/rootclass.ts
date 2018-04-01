@@ -8,12 +8,18 @@ import { SuValue, SuCallable } from "./suvalue";
 import { SuObject } from "./suobject";
 import { SuBoundMethod, isBlock } from "./suBoundMethod";
 import { mandatory, maxargs } from "./args";
-import { is, toBoolean, toStr } from "./ops";
+import { is, toBoolean, toStr, isString } from "./ops";
 import { globalLookup } from "./global";
 import * as util from "./utility";
 
 export class RootClass extends SuValue {
-
+    private library: string;
+    private className: string;
+    // Generated code should call this when generating Class
+    $setClassInfo(library: string, className: string) {
+        Object.defineProperty(this, 'library',  { value: library });
+        Object.defineProperty(this, 'className',  { value: className });
+    }
     // SuValue methods
 
     get(this: any, key: any): any {
@@ -50,8 +56,35 @@ export class RootClass extends SuValue {
         return this.isClass() ? "Class" : "Object";
     }
 
-    display(): string { //TODO
-        return this.isClass() ? "class" : "instance";
+    display(): string {
+        return this.isClass() ? this.displayClass() : this.displayInstance();
+    }
+
+    private displayInstance(): string {
+        let s = this.userDefToString();
+        return s !== null ? s : `${this.toClass().className}()`;
+    }
+
+    // Instance method
+    userDefToString(): string | null {
+        if (this.isClass())
+            return null;
+        let toString = this.lookup("ToString");
+        if (toString && toString.$call) {
+            let x = toString.$call.call(this);
+            if (isString(x))
+                return x.toString();
+            throw new Error("ToString should return a string");
+        }
+        return null;
+    }
+
+    private displayClass(): string {
+        if (this.className.endsWith("$c"))
+            return "/* class */";
+        if (this.library)
+            return `${this.className}/* ${this.library} class */`;
+        return this.className;
     }
 
     equals(that: any): boolean {
@@ -195,6 +228,17 @@ export class RootClass extends SuValue {
         return !this.isClass() || root instanceof RootClass
             ? root
             : false;
+    }
+
+    ['Base?'](value: any = mandatory()): boolean {
+        maxargs(1, arguments.length);
+        let c = this.toClass();
+        while (c !== RootClass.prototype) {
+            if (c === value)
+                return true;
+            c = Object.getPrototypeOf(c);
+        }
+        return false;
     }
 } // end of RootClass
 
@@ -358,4 +402,17 @@ function instanceEquals(x: any, y: any): boolean {
     return (RootClass.prototype['Base'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
 (RootClass.prototype['Base'] as any).$params = '';
+//GENERATED end
+
+//BUILTIN RootClass.Base?(value)
+//GENERATED start
+(RootClass.prototype['Base?'] as any).$call = RootClass.prototype['Base?'];
+(RootClass.prototype['Base?'] as any).$callNamed = function ($named: any, value: any) {
+    ({ value = value } = $named);
+    return RootClass.prototype['Base?'].call(this, value);
+};
+(RootClass.prototype['Base?'] as any).$callAt = function (args: SuObject) {
+    return (RootClass.prototype['Base?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(RootClass.prototype['Base?'] as any).$params = 'value';
 //GENERATED end

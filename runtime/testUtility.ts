@@ -7,9 +7,11 @@ export interface Member {
     params?: string;
     paramNames?: string[];
 }
-export function makeClass(baseName: string | false, members: Member[]) {
+export function makeClass(baseName: string | false, members: Member[],
+    library: string = '', className: string = '') {
     let $super = baseName;
     let $c = Object.create($super === false ? su.root_class : su.global($super));
+    $c.$setClassInfo(library, className);
     for (let member of members) {
         if (typeof member.value === 'function')
             $c.put(member.key, generateMethod(member));

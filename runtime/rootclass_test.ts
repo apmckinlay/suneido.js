@@ -1,6 +1,10 @@
 import { makeClass } from "./testUtility";
+import { defGlobal } from "./global";
 import * as su from "./su";
 import * as assert from "./assert";
+
+// Setup
+defGlobal('Objects', makeClass(false, []));
 
 // Test Get_ Method
 /* class
@@ -105,3 +109,28 @@ let f = (function () {
     return $f;
     })();
 testGetDefault(c, "NewKey", f, f);
+
+// Test display
+let cl3 = makeClass(false, [], 'stdlib', 'TestClass$c');
+assert.equal(cl3.display(), "/* class */");
+cl3 = makeClass(false, [], 'stdlib', 'TestClass');
+assert.equal(cl3.display(), "TestClass/* stdlib class */");
+cl3 = makeClass(false, [], '', 'TestClass');
+assert.equal(cl3.display(), "TestClass");
+
+c = su.instantiate(cl3);
+assert.equal(c.display(), "TestClass()");
+
+let toStringReturn: any = "ToString Method return";
+let fn4 = function () {
+    su.maxargs(0, arguments.length);
+    return toStringReturn;
+};
+cl3 = makeClass(false, [
+    {key: 'ToString', value: fn4, params: '', paramNames: []},
+]);
+c = su.instantiate(cl3);
+assert.equal(c.display(), toStringReturn);
+
+toStringReturn = 1;
+assert.throws(() => c.display(), "ToString should return a string");
