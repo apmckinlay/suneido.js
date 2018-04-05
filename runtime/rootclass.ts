@@ -95,7 +95,7 @@ export class RootClass extends SuValue {
         }
     }
 
-    compareTo(_that: any): number {
+    compareTo(_that: any): util.Cmp {
         throw new Error("class/instance compare not implemented");
     }
 

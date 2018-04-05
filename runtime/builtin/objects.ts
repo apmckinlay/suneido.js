@@ -213,6 +213,45 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Sort!'] as any).$params = 'lt';
 //GENERATED end
 
+//BUILTIN SuObject.LowerBound(value, block=false)
+//GENERATED start
+(SuObject.prototype['LowerBound'] as any).$call = SuObject.prototype['LowerBound'];
+(SuObject.prototype['LowerBound'] as any).$callNamed = function ($named: any, value: any, block: any) {
+    ({ value = value, block = block } = $named);
+    return SuObject.prototype['LowerBound'].call(this, value, block);
+};
+(SuObject.prototype['LowerBound'] as any).$callAt = function (args: SuObject) {
+    return (SuObject.prototype['LowerBound'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(SuObject.prototype['LowerBound'] as any).$params = 'value, block=false';
+//GENERATED end
+
+//BUILTIN SuObject.UpperBound(value, block=false)
+//GENERATED start
+(SuObject.prototype['UpperBound'] as any).$call = SuObject.prototype['UpperBound'];
+(SuObject.prototype['UpperBound'] as any).$callNamed = function ($named: any, value: any, block: any) {
+    ({ value = value, block = block } = $named);
+    return SuObject.prototype['UpperBound'].call(this, value, block);
+};
+(SuObject.prototype['UpperBound'] as any).$callAt = function (args: SuObject) {
+    return (SuObject.prototype['UpperBound'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(SuObject.prototype['UpperBound'] as any).$params = 'value, block=false';
+//GENERATED end
+
+//BUILTIN SuObject.EqualRange(value, block=false)
+//GENERATED start
+(SuObject.prototype['EqualRange'] as any).$call = SuObject.prototype['EqualRange'];
+(SuObject.prototype['EqualRange'] as any).$callNamed = function ($named: any, value: any, block: any) {
+    ({ value = value, block = block } = $named);
+    return SuObject.prototype['EqualRange'].call(this, value, block);
+};
+(SuObject.prototype['EqualRange'] as any).$callAt = function (args: SuObject) {
+    return (SuObject.prototype['EqualRange'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(SuObject.prototype['EqualRange'] as any).$params = 'value, block=false';
+//GENERATED end
+
 //BUILTIN SuObject.Iter()
 //GENERATED start
 (SuObject.prototype['Iter'] as any).$call = SuObject.prototype['Iter'];

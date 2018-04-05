@@ -7,7 +7,7 @@ import * as util from "./utility";
 /**
  * type ordering: boolean, number, string, date, object, other
  */
-export function cmp(x: any, y: any): number {
+export function cmp(x: any, y: any): util.Cmp {
     if (x === y)
         return 0;
 
