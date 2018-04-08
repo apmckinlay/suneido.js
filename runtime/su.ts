@@ -35,7 +35,7 @@ import { Dynamic } from "./dynamic";
 import "./globals";
 import { mandatory } from "./args";
 import { Except } from "./builtin/except";
-import { isBlock } from "./suBoundMethod";
+import { isBlock, SuBoundMethod } from "./suBoundMethod";
 
 export { toStr } from "./ops";
 export { mandatory, maxargs } from "./args";
@@ -358,7 +358,7 @@ function getMethod(ob: any, method: string): any {
         return sm[method] || globalLookup('Strings', method);
     if (t === 'number' || ob instanceof SuNum)
         return nm[method] || globalLookup('Numbers', method);
-    if (t === 'function')
+    if (t === 'function' || ob instanceof SuBoundMethod)
         return fm[method];
     return ob instanceof SuValue
         ? ob.lookup(method)
