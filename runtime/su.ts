@@ -7,7 +7,7 @@
 //TODO record builder
 //TODO iter, next, blockreturn
 
-import { SuValue, SuIterable } from "./suvalue";
+import { SuValue, SuIterable, SuCallable } from "./suvalue";
 import { SuNum } from "./sunum";
 import { SuObject } from "./suobject";
 import { SuRecord } from "./surecord";
@@ -35,6 +35,7 @@ import { Dynamic } from "./dynamic";
 import "./globals";
 import { mandatory } from "./args";
 import { Except } from "./builtin/except";
+import { isBlock, SuBoundMethod } from "./suBoundMethod";
 
 export { toStr } from "./ops";
 export { mandatory, maxargs } from "./args";
@@ -67,8 +68,12 @@ export function get(x: any, key: any): any {
         }
         return i < n ? x[i] : "";
     }
-    if (x instanceof SuValue)
-        return x.get(key);
+    if (x instanceof SuValue) {
+        let result = x.get(key);
+        if (result == null)
+            throw new Error("uninitialized member: " + display(key));
+        return result;
+    }
     throw new Error(type(x) + " does not support get (" + key + ")");
 }
 
@@ -353,7 +358,7 @@ function getMethod(ob: any, method: string): any {
         return sm[method] || globalLookup('Strings', method);
     if (t === 'number' || ob instanceof SuNum)
         return nm[method] || globalLookup('Numbers', method);
-    if (t === 'function')
+    if (t === 'function' || ob instanceof SuBoundMethod)
         return fm[method];
     return ob instanceof SuValue
         ? ob.lookup(method)
@@ -397,4 +402,10 @@ export function dynparam (name: string, defValue?: any): any {
     if (value !== undefined)
         return value;
     return defValue !== undefined ? defValue : mandatory();
+}
+
+export function getBlockThis(target: any): any {
+    if (isBlock(target)) // handle Blocks with SELFREF
+        return (target as SuCallable).$blockThis;
+    return target;
 }
