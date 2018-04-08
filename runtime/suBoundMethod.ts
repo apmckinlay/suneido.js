@@ -34,3 +34,8 @@ export class SuBoundMethod extends SuValue implements SuCallable {
         return "BoundMethod";
     }
 }
+
+export function isFunction(value: any): boolean {
+    return typeof value === 'function' && (value as SuCallable).$callableType != null ||
+        value instanceof SuBoundMethod;
+}
