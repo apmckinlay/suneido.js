@@ -7,7 +7,7 @@
 //TODO record builder
 //TODO iter, next, blockreturn
 
-import { SuValue, SuIterable } from "./suvalue";
+import { SuValue, SuIterable, SuCallable } from "./suvalue";
 import { SuNum } from "./sunum";
 import { SuObject } from "./suobject";
 import { SuRecord } from "./surecord";
@@ -35,6 +35,7 @@ import { Dynamic } from "./dynamic";
 import "./globals";
 import { mandatory } from "./args";
 import { Except } from "./builtin/except";
+import { isBlock } from "./suBoundMethod";
 
 export { toStr } from "./ops";
 export { mandatory, maxargs } from "./args";
@@ -397,4 +398,10 @@ export function dynparam (name: string, defValue?: any): any {
     if (value !== undefined)
         return value;
     return defValue !== undefined ? defValue : mandatory();
+}
+
+export function getBlockThis(target: any): any {
+    if (isBlock(target)) // handle Blocks with SELFREF
+        return (target as SuCallable).$blockThis;
+    return target;
 }

@@ -39,6 +39,7 @@ export abstract class SuIterable extends SuValue {
 export interface SuCallable extends SuValue {
     $params: string;
     $callableType: string;
+    $blockThis?: any;
     $call: (...args: any[]) => any;
     $callAt: (...args: any[]) => any;
     $callNamed: (...args: any[]) => any;
