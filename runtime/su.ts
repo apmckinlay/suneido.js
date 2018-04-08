@@ -68,8 +68,12 @@ export function get(x: any, key: any): any {
         }
         return i < n ? x[i] : "";
     }
-    if (x instanceof SuValue)
-        return x.get(key);
+    if (x instanceof SuValue) {
+        let result = x.get(key);
+        if (result == null)
+            throw new Error("uninitialized member: " + display(key));
+        return result;
+    }
     throw new Error(type(x) + " does not support get (" + key + ")");
 }
 
