@@ -36,6 +36,7 @@ import "./globals";
 import { mandatory } from "./args";
 import { Except } from "./builtin/except";
 import { isBlock, SuBoundMethod } from "./suBoundMethod";
+import { SuBuiltinClass } from "./subuiltinclass";
 
 export { toStr } from "./ops";
 export { mandatory, maxargs } from "./args";
@@ -368,18 +369,24 @@ function getMethod(ob: any, method: string): any {
 }
 
 export function instantiate(clas: any, ...args: any[]): any {
+    if (clas instanceof SuBuiltinClass)
+        return invoke(clas, 'New', ...args);
     let instance = Object.create(clas);
     invoke(instance, 'New', ...args); // but spread is slow
     return instance;
 }
 
 export function instantiateAt(clas: any, args: SuObject): any {
+    if (clas instanceof SuBuiltinClass)
+        return invokeAt(clas, 'New', args);
     let instance = Object.create(clas);
     invokeAt(instance, 'New', args);
     return instance;
 }
 
 export function instantiateNamed(clas: any, ...args: any[]): any {
+    if (clas instanceof SuBuiltinClass)
+        return invokeNamed(clas, 'New', ...args);
     let instance = Object.create(clas);
     invokeNamed(instance, 'New', ...args); // but spread is slow
     return instance;
