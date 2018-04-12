@@ -42,6 +42,12 @@ class DateClass extends SuBuiltinClass {
         else
             return SuDate.now();
     }
+    protected instantiate(this: any, args: SuObject): void {
+        let date = (DateClass.prototype.newInstance as any).$callAt(args);
+        let x = this;
+        Object.setPrototypeOf(x, SuDate.prototype);
+        Object.assign(x, date);
+    }
     Begin(): SuDate {
         maxargs(0, arguments.length);
         return BEGIN;
@@ -65,6 +71,18 @@ export const DATE_CLASS = new DateClass();
     return (DateClass.prototype['newInstance'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
 (DateClass.prototype['newInstance'] as any).$params = 's="", order="yMd", year=false, month=false, day=false, hour=false, minute=false, second=false, millisecond=false';
+//GENERATED end
+
+//BUILTIN DateClass.instantiate(@args)
+//GENERATED start
+(DateClass.prototype['instantiate'] as any).$callAt = DateClass.prototype['instantiate'];
+(DateClass.prototype['instantiate'] as any).$call = function (...args: any[]) {
+    return DateClass.prototype['instantiate'].call(this, new SuObject(args));
+};
+(DateClass.prototype['instantiate'] as any).$callNamed = function (named: any, ...args: any[]) {
+    return DateClass.prototype['instantiate'].call(this, new SuObject(args, util.obToMap(named)));
+};
+(DateClass.prototype['instantiate'] as any).$params = '@args';
 //GENERATED end
 
 //BUILTIN DateClass.Begin()

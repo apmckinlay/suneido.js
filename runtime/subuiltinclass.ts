@@ -3,6 +3,7 @@ import { Cmp } from "./utility";
 
 export abstract class SuBuiltinClass extends SuValue {
     protected abstract newInstance(): any;
+    protected abstract instantiate(arg: any): void;
     protected abstract className: string;
     $call(this: any, ...args: any[]) {
         return this.newInstance.$call(...args);
@@ -21,7 +22,7 @@ export abstract class SuBuiltinClass extends SuValue {
     }
     lookup(this: any, method: string): SuCallable {
         if (method === 'New')
-            return this.newInstance;
+            return this.instantiate;
         return this[method];
     }
     display(): string {
