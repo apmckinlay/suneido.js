@@ -29,24 +29,11 @@ class DateClass extends SuBuiltinClass {
     protected newInstance(s?: string, order?: string,
         year?: number, month?: number, day?: number,
         hour?: number, minute?: number, second?: number, millisecond?: number) {
-        if (year || month || day || hour || minute || second || millisecond) {
-            if (s)
-                throw new Error("bad arguments to Date");
-            let t = SuDate.now();
-            ({ year = t.Year(), month = t.Month(), day = t.Day(), hour = t.Hour(),
-                minute = t.Minute(), second = t.Second(), millisecond = t.Millisecond()
-                } = { year, month, day, hour, minute, second, millisecond });
-            return SuDate.make(year, month, day, hour, minute, second, millisecond);
-        } else if (s)
-            return SuDate.parse(s, order);
-        else
-            return SuDate.now();
+        let d = SuDate.makeInstance(s, order, year, month, day, hour, minute, second, millisecond);
+        return d == null ? false : d;
     }
-    protected instantiate(this: any, args: SuObject): void {
-        let date = (DateClass.prototype.newInstance as any).$callAt(args);
-        let x = this;
-        Object.setPrototypeOf(x, SuDate.prototype);
-        Object.assign(x, date);
+    instantiate(): SuDate {
+       return Object.create(SuDate.prototype);
     }
     Begin(): SuDate {
         maxargs(0, arguments.length);
@@ -109,6 +96,18 @@ export const DATE_CLASS = new DateClass();
 (DateClass.prototype['End'] as any).$params = '';
 //GENERATED end
 
+//BUILTIN SuDate.New(s="", order="yMd", year=false, month=false, day=false, hour=false, minute=false, second=false, millisecond=false)
+//GENERATED start
+(SuDate.prototype['New'] as any).$call = SuDate.prototype['New'];
+(SuDate.prototype['New'] as any).$callNamed = function ($named: any, s: any, order: any, year: any, month: any, day: any, hour: any, minute: any, second: any, millisecond: any) {
+    ({ s = s, order = order, year = year, month = month, day = day, hour = hour, minute = minute, second = second, millisecond = millisecond } = $named);
+    return SuDate.prototype['New'].call(this, s, order, year, month, day, hour, minute, second, millisecond);
+};
+(SuDate.prototype['New'] as any).$callAt = function (args: SuObject) {
+    return (SuDate.prototype['New'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(SuDate.prototype['New'] as any).$params = 's="", order="yMd", year=false, month=false, day=false, hour=false, minute=false, second=false, millisecond=false';
+//GENERATED end
 
 //BUILTIN SuDate.Year()
 //GENERATED start

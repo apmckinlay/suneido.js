@@ -34,6 +34,33 @@ export class SuDate extends SuValue {
         return new SuDate(date, time);
     }
 
+    New(s?: string, order?: string,
+        year?: number, month?: number, day?: number,
+        hour?: number, minute?: number, second?: number, millisecond?: number) {
+        let d = SuDate.makeInstance(s, order, year, month, day, hour, minute, second, millisecond);
+        if (d != null) { // FIX ME: how to return false when parse Date failed
+            this.date = d.date;
+            this.time = d.time;
+        }
+    }
+
+    static makeInstance(s?: string, order?: string,
+        year?: number, month?: number, day?: number,
+        hour?: number, minute?: number, second?: number, millisecond?: number) {
+        if (year || month || day || hour || minute || second || millisecond) {
+            if (s)
+                throw new Error("bad arguments to Date");
+            let t = SuDate.now();
+            ({ year = t.Year(), month = t.Month(), day = t.Day(), hour = t.Hour(),
+                minute = t.Minute(), second = t.Second(), millisecond = t.Millisecond()
+                } = { year, month, day, hour, minute, second, millisecond });
+            return SuDate.make(year, month, day, hour, minute, second, millisecond);
+        } else if (s)
+            return  SuDate.parse(s, order);
+        else
+            return SuDate.now();
+    }
+
     type(): string {
         return "Date";
     }
