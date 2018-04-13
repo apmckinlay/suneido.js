@@ -368,20 +368,20 @@ function getMethod(ob: any, method: string): any {
 }
 
 export function instantiate(clas: any, ...args: any[]): any {
-    let instance = Object.create(clas);
-    invoke(instance, 'New', ...args); // but spread is slow
+    let instance = clas.instantiate();
+    invoke(instance, 'New', ...args);
     return instance;
 }
 
 export function instantiateAt(clas: any, args: SuObject): any {
-    let instance = Object.create(clas);
+    let instance = clas.instantiate();
     invokeAt(instance, 'New', args);
     return instance;
 }
 
 export function instantiateNamed(clas: any, ...args: any[]): any {
-    let instance = Object.create(clas);
-    invokeNamed(instance, 'New', ...args); // but spread is slow
+    let instance = clas.instantiate();
+    invokeNamed(instance, 'New', ...args);
     return instance;
 }
 

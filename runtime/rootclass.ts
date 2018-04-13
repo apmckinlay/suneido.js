@@ -66,6 +66,10 @@ export class RootClass extends SuValue {
     }
 
     // Instance method
+    instantiate(): RootClass {
+        return Object.create(this);
+    }
+
     userDefToString(): string | null {
         if (this.isClass())
             return null;
