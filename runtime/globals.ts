@@ -30,8 +30,8 @@ import { su_record, su_recordq } from "./builtin/records";
 defGlobal('Record', su_record);
 defGlobal('Record?', su_recordq);
 
-import { su_date, su_dateq } from "./builtin/dates";
-defGlobal('Date', su_date);
+import { DATE_CLASS, su_dateq } from "./builtin/dates";
+defGlobal('Date', DATE_CLASS);
 defGlobal('Date?', su_dateq);
 
 import { su_built } from "./builtin/built";
