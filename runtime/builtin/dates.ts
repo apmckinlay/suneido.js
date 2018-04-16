@@ -1,31 +1,42 @@
-import { SuDate } from "../sudate";
+import { SuDate, normalize } from "../sudate";
 import * as util from "../utility";
 import { SuObject } from "../suobject";
 import { mandatory, maxargs } from "../args";
 import { SuBuiltinClass } from "./subuiltinclass";
+import { toInt, toStr, coerceStr } from "../ops";
 
 const BEGIN = SuDate.literal('17000101')!;
 const END = SuDate.literal('30000101')!;
 
 class DateClass extends SuBuiltinClass {
     protected className = "Date";
-    protected newInstance(s?: string, order?: string,
-        year?: number, month?: number, day?: number,
-        hour?: number, minute?: number, second?: number, millisecond?: number) {
-        let d;
-        if (year || month || day || hour || minute || second || millisecond) {
-            if (s)
+    protected newInstance(_s?: any, _order?: any,
+        _year?: any, _month?: any, _day?: any,
+        _hour?: any, _minute?: any, _second?: any, _millisecond?: any) {
+        if (_year || _month || _day || _hour || _minute || _second || _millisecond) {
+            if (_s)
                 throw new Error("bad arguments to Date");
             let t = SuDate.now();
-            ({ year = t.Year(), month = t.Month(), day = t.Day(), hour = t.Hour(),
-                minute = t.Minute(), second = t.Second(), millisecond = t.Millisecond()
-                } = { year, month, day, hour, minute, second, millisecond });
-            d = SuDate.make(year, month, day, hour, minute, second, millisecond);
-        } else if (s)
-            d =  SuDate.parse(s, order);
-        else
-            d = SuDate.now();
-        return d == null ? false : d;
+            ({ _year = t.Year(), _month = t.Month(), _day = t.Day(), _hour = t.Hour(),
+                _minute = t.Minute(), _second = t.Second(), _millisecond = t.Millisecond()
+                } = { _year, _month, _day, _hour, _minute, _second, _millisecond });
+            return normalize(toInt(_year), toInt(_month), toInt(_day), toInt(_hour),
+                toInt(_minute), toInt(_second), toInt(_millisecond));
+        } else if (_s) {
+            if (_s instanceof SuDate)
+                return _s;
+            let s = coerceStr(_s);
+            let d;
+            if (_order === undefined) {
+                if (s.startsWith("#"))
+                    d = SuDate.literal(s);
+                else
+                    d = SuDate.parse(s);
+            } else
+                d =  SuDate.parse(s, toStr(_order));
+            return d == null ? false : d;
+        } else
+            return SuDate.now();
     }
     Begin(): SuDate {
         maxargs(0, arguments.length);

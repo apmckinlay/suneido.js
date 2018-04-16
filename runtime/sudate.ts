@@ -9,6 +9,8 @@ import * as util from "./utility";
 import { SuValue, SuCallable } from "./suvalue";
 import { globalLookup } from "./global";
 import { maxargs, mandatory } from "./args";
+import { toStr, toInt } from "./ops";
+import { type } from "./type";
 
 const month = ["January", "February", "March", "April", "May", "June", "July",
     "August", "September", "October", "November", "December"];
@@ -28,7 +30,8 @@ export class SuDate extends SuValue {
 
     static make(year: number, month: number, day: number,
         hour: number, minute: number, second: number, millisecond: number): SuDate {
-        //TODO validation
+        if (!valid(year, month, day, hour, minute, second, millisecond))
+            throw new Error("bad date");
         let date = (year << 9) | (month << 5) | day;
         let time = (hour << 22) | (minute << 16) | (second << 10) | millisecond;
         return new SuDate(date, time);
@@ -113,7 +116,7 @@ export class SuDate extends SuValue {
                 let word = nextWord(s, i);
                 i += word.length;
                 let j = month.findIndex((x) => x.startsWith(word));
-                if (j) {
+                if (j !== -1) {
                     types[ntokens] = TokenType.MONTH;
                     tokens[ntokens] = j + 1;
                     ntokens++;
@@ -303,8 +306,9 @@ export class SuDate extends SuValue {
      * @param {string} fmt
      * @returns {string} a date and time string in given format
      */
-    FormatEn(fmt: string = mandatory()): string {
+    FormatEn(_fmt: any = mandatory()): string {
         maxargs(1, arguments.length);
+        let fmt = toStr(_fmt);
         return format(this, fmt);
     }
 
@@ -313,16 +317,16 @@ export class SuDate extends SuValue {
      * @param args {Object} a group of unit and offset pairs
      * @returns {object} a copy of sudate
      */
-    Plus(years = 0, months = 0, days = 0,
-        hours = 0, minutes = 0, seconds = 0, milliseconds = 0): SuDate {
+    Plus(_years = 0, _months = 0, _days = 0,
+        _hours = 0, _minutes = 0, _seconds = 0, _milliseconds = 0): SuDate {
         maxargs(7, arguments.length);
-        years += this.Year();
-        months += this.Month();
-        days += this.Day();
-        hours += this.Hour();
-        minutes += this.Minute();
-        seconds += this.Second();
-        milliseconds += this.Millisecond();
+        let years = toInt(_years) + this.Year();
+        let months = toInt(_months) + this.Month();
+        let days = toInt(_days) + this.Day();
+        let hours = toInt(_hours) + this.Hour();
+        let minutes = toInt(_minutes) + this.Minute();
+        let seconds = toInt(_seconds) + this.Second();
+        let milliseconds = toInt(_milliseconds) + this.Millisecond();
         return normalize(years, months, days, hours, minutes, seconds, milliseconds);
     }
 
@@ -331,8 +335,9 @@ export class SuDate extends SuValue {
      * @param sud2 {Object}  another sudate
      * @returns {number}
      */
-    MinusDays(sud2: SuDate = mandatory()): number {
+    MinusDays(_sud2: any = mandatory()): number {
         maxargs(1, arguments.length);
+        let sud2 = toSuDate(_sud2, "MinusDays");
         let timeDiff = this.toDate().getTime() - sud2.toDate().getTime();
         return Math.ceil(timeDiff / (1000 * 3600 * 24));
     }
@@ -342,8 +347,9 @@ export class SuDate extends SuValue {
      * @param sud2 {Object}  another sudate
      * @returns {number}
      */
-    MinusSeconds(sud2: SuDate = mandatory()): number {
+    MinusSeconds(_sud2: any = mandatory()): number {
         maxargs(1, arguments.length);
+        let sud2 = toSuDate(_sud2, "MinusSeconds");
         let timeDiff = this.toDate().getTime() - sud2.toDate().getTime();
         return timeDiff / 1000;
     }
@@ -502,7 +508,7 @@ function days_in_month(year: number, month: number): number {
     return days_in_month[leap_year(year) ? 1 : 0][month];
 }
 
-function normalize(year: number, month: number, day: number,
+export function normalize(year: number, month: number, day: number,
     hour: number, minute: number, second: number, millisecond: number): SuDate {
     // adjust to bring back into range
     while (millisecond < 0) {
@@ -738,4 +744,10 @@ function nsub(s: string, i: number, n: number): number {
     if (i + n > s.length)
         return 0;
     return Number.parseInt(s.substr(i, n));
+}
+
+function toSuDate(x: any, funcName: string): SuDate {
+    if (x instanceof SuDate)
+        return x;
+    throw new Error(`date.${funcName} requires date, got ${type(x)}`);
 }
