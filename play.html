@@ -30,7 +30,7 @@
             font-size: large;
             box-sizing: border-box;
             width: 100%;
-            height: 100%;
+            height: 45%;
             flex-grow: 3;
             border: 0;
             background-color: #dddddd;
@@ -76,6 +76,7 @@
                 document.getElementById("su_result").value = ''
                 document.getElementById("js_source").value = ''
                 document.getElementById("js_result").value = ''
+                document.getElementById("show").innerHTML = ''
                 var src = editor.getValue();
                 var req = new XMLHttpRequest();
                 req.onload = results;
@@ -109,7 +110,7 @@
                 try {
                     js_result = su.display(eval(result.js_source));
                 } catch (e) {
-                    js_result = e;
+                    js_result = e.message + "\r\n" + e.stack;
                 }
                 document.getElementById("js_result").value = js_result;
             }
@@ -270,6 +271,8 @@
         <div style="flex: 1 0 45%; height: 100%;">
             JavaScript<br/> 
             <textarea id="js_source" readonly="readonly"></textarea>
+            Show<br/>
+            <div id="show" style="height: 45%; background-color: wheat"></div>
         </div>
     </div>
 </body>

@@ -43,4 +43,14 @@ b(1)`,
 `x = Object(8, 4, 6, 3, 9, 6, 7)
 x.Sort!({|x,y| x > y })`,
 
+'ui':
+`window = GetCurrentWindow()
+document = window.document
+show = document.querySelector("#show")
+b = document.CreateElement('button')
+t = document.CreateTextNode("test")
+b.AppendChild(t)
+b.SetStyle("width", "50%")
+show.AppendChild(b)
+b.AddEventListener("click", function(@args) { Print(:args) })`
 }
