@@ -17,7 +17,7 @@ node_modules/*
 
 devtools/*.js
 runtime/builtin/*.js
-
+runtime/builtin/UI/*.js
 
 
 .eslintrc.js

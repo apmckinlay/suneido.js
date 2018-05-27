@@ -56,6 +56,10 @@ defGlobal('Random', su_random);
 import { su_functionq } from "./builtin/functions";
 defGlobal('Function?', su_functionq);
 
+import { su_getCurrentDocument, su_getCurrentWindow } from "./builtin/UI/suNode";
+defGlobal('GetCurrentDocument', su_getCurrentDocument);
+defGlobal('GetCurrentWindow', su_getCurrentWindow);
+
 /** FOR TESTING PURPOSES ONLY! */
 defGlobal('Def', su_def);
 function su_def(global: string, value: any): any {
