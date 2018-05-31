@@ -1,7 +1,8 @@
-import { makeClass } from "./testUtility";
+import { makeClass, makeObj } from "./testUtility";
 import { defGlobal } from "./global";
 import * as su from "./su";
 import * as assert from "./assert";
+import { SuObject } from "./suobject";
 
 // Setup
 defGlobal('Objects', makeClass(false, []));
@@ -134,3 +135,44 @@ assert.equal(c.display(), toStringReturn);
 
 toStringReturn = 1;
 assert.throws(() => c.display(), "ToString should return a string");
+
+// Test Default calls
+/* class
+	{
+	Test()
+		{
+		return 'Test'
+		}
+    Default(@args)
+        {
+        return args
+        }
+	} */
+let fn5 = function () {
+    su.maxargs(0, arguments.length);
+    return "Test";
+};
+let fn6 = function (args: SuObject = su.mandatory()) {
+    su.maxargs(1, arguments.length);
+    return args;
+};
+let cl4 = makeClass(false, [
+    {key: 'Test', value: fn5, params: '', paramNames: []},
+    {key: 'Default', value: fn6, params: '@args', paramNames: ['args']},
+]);
+assert.equal(su.invoke(cl4, "Test"), "Test");
+assert.equal(su.invoke(cl4, "Test1"), makeObj(["Test1"]));
+assert.equal(su.invoke(cl4, "Test1", 1, 2), makeObj(["Test1", 1, 2]));
+assert.equal(su.invokeNamed(cl4, "Test1", {a: 'aa', b: 'bb'}, 1, 2),
+    makeObj(["Test1", 1, 2], ['a', 'aa'], ['b', 'bb']));
+assert.equal(su.invokeAt(cl4, "Test1", makeObj([1], ['a', 'aa'])),
+    makeObj(["Test1", 1], ['a', 'aa']));
+
+c = su.instantiate(cl4);
+assert.equal(su.invoke(cl4, "Test"), "Test");
+assert.equal(su.invoke(cl4, "Test1"), makeObj(["Test1"]));
+assert.equal(su.invoke(cl4, "Test1", 1, 2), makeObj(["Test1", 1, 2]));
+assert.equal(su.invokeNamed(cl4, "Test1", {a: 'aa', b: 'bb'}, 1, 2),
+    makeObj(["Test1", 1, 2], ['a', 'aa'], ['b', 'bb']));
+assert.equal(su.invokeAt(cl4, "Test1", makeObj([1], ['a', 'aa'])),
+    makeObj(["Test1", 1], ['a', 'aa']));

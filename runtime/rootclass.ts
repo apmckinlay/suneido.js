@@ -6,10 +6,11 @@
 
 import { SuValue, SuCallable } from "./suvalue";
 import { SuObject } from "./suobject";
-import { SuBoundMethod, isBlock } from "./suBoundMethod";
+import { SuBoundMethod, isBlock, isFunction } from "./suBoundMethod";
 import { mandatory, maxargs } from "./args";
 import { is, toBoolean, toStr, isString } from "./ops";
 import { globalLookup } from "./global";
+import { type } from "./type";
 import * as util from "./utility";
 
 export class RootClass extends SuValue {
@@ -69,8 +70,8 @@ export class RootClass extends SuValue {
     userDefToString(): string | null {
         if (this.isClass())
             return null;
-        let toString = this.lookup("ToString");
-        if (toString && toString.$call) {
+        let toString = this.getMethod("ToString");
+        if (isFunction(toString)) {
             let x = toString.$call.call(this);
             if (isString(x))
                 return x.toString();
@@ -108,7 +109,12 @@ export class RootClass extends SuValue {
         if (method === 'New')
             return start.New;
         return (RootClass.prototype as any)[method] ||
-            start[method] || globalLookup('Objects', method);
+            start[method] || globalLookup('Objects', method) || notFound(method);
+    }
+
+    getMethod(this: any, method: string) {
+        let start = this.toClass();
+        return start[method];
     }
 
     // external methods
@@ -241,6 +247,38 @@ export class RootClass extends SuValue {
         return false;
     }
 } // end of RootClass
+
+function notFound(method: string): SuCallable {
+    let f: any = function () {};
+    f.$params = "@args";
+    f.$callableType = "METHOD";
+    f['$blockThis?'] = null;
+    f.$call = function(this: RootClass) {
+        if ("Default" !== method) {
+            let fn = this.getMethod('Default');
+            if (isFunction(fn))
+                return fn.$call.call(this, method, ...arguments);
+        }
+        throw new Error(`method not found: ${type(this)}.${method}`);
+    };
+    f.$callAt = function(this: RootClass, arg: SuObject) {
+        if ("Default" !== method) {
+            let fn = this.getMethod('Default');
+            if (isFunction(fn))
+                return fn.$callAt.call(this, arg.insert(0, method));
+        }
+        throw new Error(`method not found: ${type(this)}.${method}`);
+    };
+    f.$callNamed = function(this: RootClass, ...args: any[]) {
+        if ("Default" !== method) {
+            let fn = this.getMethod('Default');
+            if (isFunction(fn))
+                return fn.$callNamed.call(this, args[0], method, ...args.slice(1));
+        }
+        throw new Error(`method not found: ${type(this)}.${method}`);
+    };
+    return f;
+}
 
 function instanceEquals(x: any, y: any): boolean {
     if (Object.getPrototypeOf(x) !== Object.getPrototypeOf(y))

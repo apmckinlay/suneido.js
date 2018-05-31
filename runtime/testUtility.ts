@@ -14,7 +14,9 @@ export function makeClass(baseName: string | false, members: Member[],
     $c.$setClassInfo(library, className);
     for (let member of members) {
         if (typeof member.value === 'function')
-            $c.put(member.key, generateMethod(member));
+            $c.put(member.key, member.params && member.params.startsWith('@')
+                ? generateAtMethod(member)
+                : generateMethod(member));
         else
             $c.put(member.key, member.value);
     }
@@ -40,6 +42,20 @@ function generateMethod(member: Member) {
     $f.$callNamed = $callNamed;
     $f.$callAt = function (args: SuObject) {
         return $callNamed.call(this, su.mapToOb(args.map), ...args.vec);
+    };
+    $f.$params = member.params;
+    return $f;
+}
+
+function generateAtMethod(member: Member) {
+    let $f = member.value;
+    $f.$callableType = "METHOD";
+    $f.$callAt = $f;
+    $f.$call = function (...args: any[]) {
+        return $f.call(this, su.mkObject2(args));
+    };
+    $f.$callNamed = function (named: any, ...args: any[]) {
+        return $f.call(this, su.mkObject2(args, su.obToMap(named)));
     };
     $f.$params = member.params;
     return $f;
