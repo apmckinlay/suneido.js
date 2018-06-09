@@ -22,6 +22,9 @@ defGlobal('Print', su_print);
 import { su_type } from "./builtin/type";
 defGlobal('Type', su_type);
 
+import { su_construct } from "./builtin/construct";
+defGlobal('Construct', su_construct);
+
 import { su_object, su_objectq } from "./builtin/objects";
 defGlobal('Object', su_object);
 defGlobal('Object?', su_objectq);
