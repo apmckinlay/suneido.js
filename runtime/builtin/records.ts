@@ -28,6 +28,7 @@ export function su_recordq(x: any = mandatory()): boolean {
 //GENERATED start
 (su_recordq as any).$call = su_recordq;
 (su_recordq as any).$callNamed = function ($named: any, x: any) {
+    maxargs(2, arguments.length);
     ({ x = x } = $named);
     return su_recordq(x);
 };
@@ -41,6 +42,7 @@ export function su_recordq(x: any = mandatory()): boolean {
 //GENERATED start
 (SuRecord.prototype['Clear'] as any).$call = SuRecord.prototype['Clear'];
 (SuRecord.prototype['Clear'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return SuRecord.prototype['Clear'].call(this);
 };
 (SuRecord.prototype['Clear'] as any).$callAt = function (args: SuObject) {
@@ -53,6 +55,7 @@ export function su_recordq(x: any = mandatory()): boolean {
 //GENERATED start
 (SuRecord.prototype['Copy'] as any).$call = SuRecord.prototype['Copy'];
 (SuRecord.prototype['Copy'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return SuRecord.prototype['Copy'].call(this);
 };
 (SuRecord.prototype['Copy'] as any).$callAt = function (args: SuObject) {
@@ -77,6 +80,7 @@ export function su_recordq(x: any = mandatory()): boolean {
 //GENERATED start
 (SuRecord.prototype['New?'] as any).$call = SuRecord.prototype['New?'];
 (SuRecord.prototype['New?'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return SuRecord.prototype['New?'].call(this);
 };
 (SuRecord.prototype['New?'] as any).$callAt = function (args: SuObject) {
@@ -89,6 +93,7 @@ export function su_recordq(x: any = mandatory()): boolean {
 //GENERATED start
 (SuRecord.prototype['Observer'] as any).$call = SuRecord.prototype['Observer'];
 (SuRecord.prototype['Observer'] as any).$callNamed = function ($named: any, observer: any) {
+    maxargs(2, arguments.length);
     ({ observer = observer } = $named);
     return SuRecord.prototype['Observer'].call(this, observer);
 };
@@ -102,6 +107,7 @@ export function su_recordq(x: any = mandatory()): boolean {
 //GENERATED start
 (SuRecord.prototype['PreSet'] as any).$call = SuRecord.prototype['PreSet'];
 (SuRecord.prototype['PreSet'] as any).$callNamed = function ($named: any, field: any, value: any) {
+    maxargs(3, arguments.length);
     ({ field = field, value = value } = $named);
     return SuRecord.prototype['PreSet'].call(this, field, value);
 };
@@ -115,6 +121,7 @@ export function su_recordq(x: any = mandatory()): boolean {
 //GENERATED start
 (SuRecord.prototype['RemoveObserver'] as any).$call = SuRecord.prototype['RemoveObserver'];
 (SuRecord.prototype['RemoveObserver'] as any).$callNamed = function ($named: any, observer: any) {
+    maxargs(2, arguments.length);
     ({ observer = observer } = $named);
     return SuRecord.prototype['RemoveObserver'].call(this, observer);
 };
@@ -128,6 +135,7 @@ export function su_recordq(x: any = mandatory()): boolean {
 //GENERATED start
 (SuRecord.prototype['SetDeps'] as any).$call = SuRecord.prototype['SetDeps'];
 (SuRecord.prototype['SetDeps'] as any).$callNamed = function ($named: any, field: any, s: any) {
+    maxargs(3, arguments.length);
     ({ field = field, s = s } = $named);
     return SuRecord.prototype['SetDeps'].call(this, field, s);
 };
@@ -141,6 +149,7 @@ export function su_recordq(x: any = mandatory()): boolean {
 //GENERATED start
 (SuRecord.prototype['AttachRule'] as any).$call = SuRecord.prototype['AttachRule'];
 (SuRecord.prototype['AttachRule'] as any).$callNamed = function ($named: any, field: any, rule: any) {
+    maxargs(3, arguments.length);
     ({ field = field, rule = rule } = $named);
     return SuRecord.prototype['AttachRule'].call(this, field, rule);
 };

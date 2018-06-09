@@ -12,6 +12,7 @@ export function su_numberq(x: any): boolean {
 //GENERATED start
 (su_numberq as any).$call = su_numberq;
 (su_numberq as any).$callNamed = function ($named: any, value: any) {
+    maxargs(2, arguments.length);
     ({ value = value } = $named);
     return su_numberq(value);
 };
@@ -170,6 +171,7 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 //GENERATED start
 (Numbers.prototype['Chr'] as any).$call = Numbers.prototype['Chr'];
 (Numbers.prototype['Chr'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return Numbers.prototype['Chr'].call(this);
 };
 (Numbers.prototype['Chr'] as any).$callAt = function (args: SuObject) {
@@ -182,6 +184,7 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 //GENERATED start
 (Numbers.prototype['Int'] as any).$call = Numbers.prototype['Int'];
 (Numbers.prototype['Int'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return Numbers.prototype['Int'].call(this);
 };
 (Numbers.prototype['Int'] as any).$callAt = function (args: SuObject) {
@@ -194,6 +197,7 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 //GENERATED start
 (Numbers.prototype['Hex'] as any).$call = Numbers.prototype['Hex'];
 (Numbers.prototype['Hex'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return Numbers.prototype['Hex'].call(this);
 };
 (Numbers.prototype['Hex'] as any).$callAt = function (args: SuObject) {
@@ -206,6 +210,7 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 //GENERATED start
 (Numbers.prototype['Format'] as any).$call = Numbers.prototype['Format'];
 (Numbers.prototype['Format'] as any).$callNamed = function ($named: any, mask: any) {
+    maxargs(2, arguments.length);
     ({ mask = mask } = $named);
     return Numbers.prototype['Format'].call(this, mask);
 };
@@ -219,6 +224,7 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 //GENERATED start
 (Numbers.prototype['Frac'] as any).$call = Numbers.prototype['Frac'];
 (Numbers.prototype['Frac'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return Numbers.prototype['Frac'].call(this);
 };
 (Numbers.prototype['Frac'] as any).$callAt = function (args: SuObject) {
@@ -231,6 +237,7 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 //GENERATED start
 (Numbers.prototype['Round'] as any).$call = Numbers.prototype['Round'];
 (Numbers.prototype['Round'] as any).$callNamed = function ($named: any, digits: any) {
+    maxargs(2, arguments.length);
     ({ digits = digits } = $named);
     return Numbers.prototype['Round'].call(this, digits);
 };
@@ -244,6 +251,7 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 //GENERATED start
 (Numbers.prototype['RoundDown'] as any).$call = Numbers.prototype['RoundDown'];
 (Numbers.prototype['RoundDown'] as any).$callNamed = function ($named: any, digits: any) {
+    maxargs(2, arguments.length);
     ({ digits = digits } = $named);
     return Numbers.prototype['RoundDown'].call(this, digits);
 };
@@ -257,6 +265,7 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 //GENERATED start
 (Numbers.prototype['RoundUp'] as any).$call = Numbers.prototype['RoundUp'];
 (Numbers.prototype['RoundUp'] as any).$callNamed = function ($named: any, digits: any) {
+    maxargs(2, arguments.length);
     ({ digits = digits } = $named);
     return Numbers.prototype['RoundUp'].call(this, digits);
 };
@@ -270,6 +279,7 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 //GENERATED start
 (Numbers.prototype['Log10'] as any).$call = Numbers.prototype['Log10'];
 (Numbers.prototype['Log10'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return Numbers.prototype['Log10'].call(this);
 };
 (Numbers.prototype['Log10'] as any).$callAt = function (args: SuObject) {
@@ -282,6 +292,7 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 //GENERATED start
 (Numbers.prototype['Log'] as any).$call = Numbers.prototype['Log'];
 (Numbers.prototype['Log'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return Numbers.prototype['Log'].call(this);
 };
 (Numbers.prototype['Log'] as any).$callAt = function (args: SuObject) {
@@ -294,6 +305,7 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 //GENERATED start
 (Numbers.prototype['Pow'] as any).$call = Numbers.prototype['Pow'];
 (Numbers.prototype['Pow'] as any).$callNamed = function ($named: any, exponent: any) {
+    maxargs(2, arguments.length);
     ({ exponent = exponent } = $named);
     return Numbers.prototype['Pow'].call(this, exponent);
 };
@@ -307,6 +319,7 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 //GENERATED start
 (Numbers.prototype['Sin'] as any).$call = Numbers.prototype['Sin'];
 (Numbers.prototype['Sin'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return Numbers.prototype['Sin'].call(this);
 };
 (Numbers.prototype['Sin'] as any).$callAt = function (args: SuObject) {
@@ -319,6 +332,7 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 //GENERATED start
 (Numbers.prototype['ASin'] as any).$call = Numbers.prototype['ASin'];
 (Numbers.prototype['ASin'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return Numbers.prototype['ASin'].call(this);
 };
 (Numbers.prototype['ASin'] as any).$callAt = function (args: SuObject) {
@@ -331,6 +345,7 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 //GENERATED start
 (Numbers.prototype['Cos'] as any).$call = Numbers.prototype['Cos'];
 (Numbers.prototype['Cos'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return Numbers.prototype['Cos'].call(this);
 };
 (Numbers.prototype['Cos'] as any).$callAt = function (args: SuObject) {
@@ -343,6 +358,7 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 //GENERATED start
 (Numbers.prototype['ACos'] as any).$call = Numbers.prototype['ACos'];
 (Numbers.prototype['ACos'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return Numbers.prototype['ACos'].call(this);
 };
 (Numbers.prototype['ACos'] as any).$callAt = function (args: SuObject) {
@@ -355,6 +371,7 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 //GENERATED start
 (Numbers.prototype['Tan'] as any).$call = Numbers.prototype['Tan'];
 (Numbers.prototype['Tan'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return Numbers.prototype['Tan'].call(this);
 };
 (Numbers.prototype['Tan'] as any).$callAt = function (args: SuObject) {
@@ -367,6 +384,7 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 //GENERATED start
 (Numbers.prototype['ATan'] as any).$call = Numbers.prototype['ATan'];
 (Numbers.prototype['ATan'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return Numbers.prototype['ATan'].call(this);
 };
 (Numbers.prototype['ATan'] as any).$callAt = function (args: SuObject) {
@@ -379,6 +397,7 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 //GENERATED start
 (Numbers.prototype['Exp'] as any).$call = Numbers.prototype['Exp'];
 (Numbers.prototype['Exp'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return Numbers.prototype['Exp'].call(this);
 };
 (Numbers.prototype['Exp'] as any).$callAt = function (args: SuObject) {
@@ -391,6 +410,7 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 //GENERATED start
 (Numbers.prototype['Sqrt'] as any).$call = Numbers.prototype['Sqrt'];
 (Numbers.prototype['Sqrt'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return Numbers.prototype['Sqrt'].call(this);
 };
 (Numbers.prototype['Sqrt'] as any).$callAt = function (args: SuObject) {

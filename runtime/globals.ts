@@ -22,6 +22,9 @@ defGlobal('Print', su_print);
 import { su_type } from "./builtin/type";
 defGlobal('Type', su_type);
 
+import { su_construct } from "./builtin/construct";
+defGlobal('Construct', su_construct);
+
 import { su_object, su_objectq } from "./builtin/objects";
 defGlobal('Object', su_object);
 defGlobal('Object?', su_objectq);
@@ -68,10 +71,12 @@ function su_def(global: string, value: any): any {
     return value;
 }
 import * as util from "./utility";
+import { maxargs } from "./args";
 //BUILTIN Def(name, value)
 //GENERATED start
 (su_def as any).$call = su_def;
 (su_def as any).$callNamed = function ($named: any, name: any, value: any) {
+    maxargs(3, arguments.length);
     ({ name = name, value = value } = $named);
     return su_def(name, value);
 };

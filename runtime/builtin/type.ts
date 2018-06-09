@@ -12,6 +12,7 @@ export function su_type(x: any = mandatory()): string {
 //GENERATED start
 (su_type as any).$call = su_type;
 (su_type as any).$callNamed = function ($named: any, x: any) {
+    maxargs(2, arguments.length);
     ({ x = x } = $named);
     return su_type(x);
 };

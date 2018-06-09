@@ -11,6 +11,7 @@ export function su_built(): string {
 //GENERATED start
 (su_built as any).$call = su_built;
 (su_built as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return su_built();
 };
 (su_built as any).$callAt = function (args: SuObject) {

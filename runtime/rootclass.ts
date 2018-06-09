@@ -309,6 +309,7 @@ function instanceEquals(x: any, y: any): boolean {
 //GENERATED start
 (RootClass.prototype['New'] as any).$call = RootClass.prototype['New'];
 (RootClass.prototype['New'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return RootClass.prototype['New'].call(this);
 };
 (RootClass.prototype['New'] as any).$callAt = function (args: SuObject) {
@@ -321,6 +322,7 @@ function instanceEquals(x: any, y: any): boolean {
 //GENERATED start
 (RootClass.prototype['Size'] as any).$call = RootClass.prototype['Size'];
 (RootClass.prototype['Size'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return RootClass.prototype['Size'].call(this);
 };
 (RootClass.prototype['Size'] as any).$callAt = function (args: SuObject) {
@@ -333,6 +335,7 @@ function instanceEquals(x: any, y: any): boolean {
 //GENERATED start
 (RootClass.prototype['Members'] as any).$call = RootClass.prototype['Members'];
 (RootClass.prototype['Members'] as any).$callNamed = function ($named: any, all: any) {
+    maxargs(2, arguments.length);
     ({ all = all } = $named);
     return RootClass.prototype['Members'].call(this, all);
 };
@@ -346,6 +349,7 @@ function instanceEquals(x: any, y: any): boolean {
 //GENERATED start
 (RootClass.prototype['Member?'] as any).$call = RootClass.prototype['Member?'];
 (RootClass.prototype['Member?'] as any).$callNamed = function ($named: any, key: any) {
+    maxargs(2, arguments.length);
     ({ key = key } = $named);
     return RootClass.prototype['Member?'].call(this, key);
 };
@@ -359,6 +363,7 @@ function instanceEquals(x: any, y: any): boolean {
 //GENERATED start
 (RootClass.prototype['MethodClass'] as any).$call = RootClass.prototype['MethodClass'];
 (RootClass.prototype['MethodClass'] as any).$callNamed = function ($named: any, key: any) {
+    maxargs(2, arguments.length);
     ({ key = key } = $named);
     return RootClass.prototype['MethodClass'].call(this, key);
 };
@@ -396,6 +401,7 @@ function instanceEquals(x: any, y: any): boolean {
 //GENERATED start
 (RootClass.prototype['Delete'] as any).$call = RootClass.prototype['Delete'];
 (RootClass.prototype['Delete'] as any).$callNamed = function ($named: any, key: any, all: any) {
+    maxargs(3, arguments.length);
     ({ key = key, all = all } = $named);
     return RootClass.prototype['Delete'].call(this, key, all);
 };
@@ -409,6 +415,7 @@ function instanceEquals(x: any, y: any): boolean {
 //GENERATED start
 (RootClass.prototype['Copy'] as any).$call = RootClass.prototype['Copy'];
 (RootClass.prototype['Copy'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return RootClass.prototype['Copy'].call(this);
 };
 (RootClass.prototype['Copy'] as any).$callAt = function (args: SuObject) {
@@ -421,6 +428,7 @@ function instanceEquals(x: any, y: any): boolean {
 //GENERATED start
 (RootClass.prototype['GetDefault'] as any).$call = RootClass.prototype['GetDefault'];
 (RootClass.prototype['GetDefault'] as any).$callNamed = function ($named: any, member: any, default_value: any) {
+    maxargs(3, arguments.length);
     ({ member = member, default_value = default_value } = $named);
     return RootClass.prototype['GetDefault'].call(this, member, default_value);
 };
@@ -434,6 +442,7 @@ function instanceEquals(x: any, y: any): boolean {
 //GENERATED start
 (RootClass.prototype['Base'] as any).$call = RootClass.prototype['Base'];
 (RootClass.prototype['Base'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return RootClass.prototype['Base'].call(this);
 };
 (RootClass.prototype['Base'] as any).$callAt = function (args: SuObject) {
@@ -446,6 +455,7 @@ function instanceEquals(x: any, y: any): boolean {
 //GENERATED start
 (RootClass.prototype['Base?'] as any).$call = RootClass.prototype['Base?'];
 (RootClass.prototype['Base?'] as any).$callNamed = function ($named: any, value: any) {
+    maxargs(2, arguments.length);
     ({ value = value } = $named);
     return RootClass.prototype['Base?'].call(this, value);
 };

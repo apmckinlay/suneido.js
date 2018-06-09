@@ -21,6 +21,7 @@ export function su_functionq(value: any = mandatory()): boolean {
 //GENERATED start
 (Functions.prototype['Params'] as any).$call = Functions.prototype['Params'];
 (Functions.prototype['Params'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return Functions.prototype['Params'].call(this);
 };
 (Functions.prototype['Params'] as any).$callAt = function (args: SuObject) {
@@ -33,6 +34,7 @@ export function su_functionq(value: any = mandatory()): boolean {
 //GENERATED start
 (su_functionq as any).$call = su_functionq;
 (su_functionq as any).$callNamed = function ($named: any, value: any) {
+    maxargs(2, arguments.length);
     ({ value = value } = $named);
     return su_functionq(value);
 };

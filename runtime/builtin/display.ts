@@ -12,6 +12,7 @@ export function su_display(x: any = mandatory()) {
 //GENERATED start
 (su_display as any).$call = su_display;
 (su_display as any).$callNamed = function ($named: any, x: any) {
+    maxargs(2, arguments.length);
     ({ x = x } = $named);
     return su_display(x);
 };
