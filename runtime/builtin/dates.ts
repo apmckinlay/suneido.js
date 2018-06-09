@@ -58,6 +58,7 @@ export function su_dateq(x: any = mandatory()): boolean {
 //GENERATED start
 (su_dateq as any).$call = su_dateq;
 (su_dateq as any).$callNamed = function ($named: any, x: any) {
+    maxargs(2, arguments.length);
     ({ x = x } = $named);
     return su_dateq(x);
 };
@@ -71,6 +72,7 @@ export function su_dateq(x: any = mandatory()): boolean {
 //GENERATED start
 (DateClass.prototype['newInstance'] as any).$call = DateClass.prototype['newInstance'];
 (DateClass.prototype['newInstance'] as any).$callNamed = function ($named: any, s: any, order: any, year: any, month: any, day: any, hour: any, minute: any, second: any, millisecond: any) {
+    maxargs(10, arguments.length);
     ({ s = s, order = order, year = year, month = month, day = day, hour = hour, minute = minute, second = second, millisecond = millisecond } = $named);
     return DateClass.prototype['newInstance'].call(this, s, order, year, month, day, hour, minute, second, millisecond);
 };
@@ -84,6 +86,7 @@ export function su_dateq(x: any = mandatory()): boolean {
 //GENERATED start
 (DateClass.prototype['Begin'] as any).$call = DateClass.prototype['Begin'];
 (DateClass.prototype['Begin'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return DateClass.prototype['Begin'].call(this);
 };
 (DateClass.prototype['Begin'] as any).$callAt = function (args: SuObject) {
@@ -96,6 +99,7 @@ export function su_dateq(x: any = mandatory()): boolean {
 //GENERATED start
 (DateClass.prototype['End'] as any).$call = DateClass.prototype['End'];
 (DateClass.prototype['End'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return DateClass.prototype['End'].call(this);
 };
 (DateClass.prototype['End'] as any).$callAt = function (args: SuObject) {
@@ -108,6 +112,7 @@ export function su_dateq(x: any = mandatory()): boolean {
 //GENERATED start
 (SuDate.prototype['Year'] as any).$call = SuDate.prototype['Year'];
 (SuDate.prototype['Year'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return SuDate.prototype['Year'].call(this);
 };
 (SuDate.prototype['Year'] as any).$callAt = function (args: SuObject) {
@@ -120,6 +125,7 @@ export function su_dateq(x: any = mandatory()): boolean {
 //GENERATED start
 (SuDate.prototype['Month'] as any).$call = SuDate.prototype['Month'];
 (SuDate.prototype['Month'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return SuDate.prototype['Month'].call(this);
 };
 (SuDate.prototype['Month'] as any).$callAt = function (args: SuObject) {
@@ -132,6 +138,7 @@ export function su_dateq(x: any = mandatory()): boolean {
 //GENERATED start
 (SuDate.prototype['Day'] as any).$call = SuDate.prototype['Day'];
 (SuDate.prototype['Day'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return SuDate.prototype['Day'].call(this);
 };
 (SuDate.prototype['Day'] as any).$callAt = function (args: SuObject) {
@@ -144,6 +151,7 @@ export function su_dateq(x: any = mandatory()): boolean {
 //GENERATED start
 (SuDate.prototype['Hour'] as any).$call = SuDate.prototype['Hour'];
 (SuDate.prototype['Hour'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return SuDate.prototype['Hour'].call(this);
 };
 (SuDate.prototype['Hour'] as any).$callAt = function (args: SuObject) {
@@ -156,6 +164,7 @@ export function su_dateq(x: any = mandatory()): boolean {
 //GENERATED start
 (SuDate.prototype['Minute'] as any).$call = SuDate.prototype['Minute'];
 (SuDate.prototype['Minute'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return SuDate.prototype['Minute'].call(this);
 };
 (SuDate.prototype['Minute'] as any).$callAt = function (args: SuObject) {
@@ -168,6 +177,7 @@ export function su_dateq(x: any = mandatory()): boolean {
 //GENERATED start
 (SuDate.prototype['Second'] as any).$call = SuDate.prototype['Second'];
 (SuDate.prototype['Second'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return SuDate.prototype['Second'].call(this);
 };
 (SuDate.prototype['Second'] as any).$callAt = function (args: SuObject) {
@@ -180,6 +190,7 @@ export function su_dateq(x: any = mandatory()): boolean {
 //GENERATED start
 (SuDate.prototype['Millisecond'] as any).$call = SuDate.prototype['Millisecond'];
 (SuDate.prototype['Millisecond'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return SuDate.prototype['Millisecond'].call(this);
 };
 (SuDate.prototype['Millisecond'] as any).$callAt = function (args: SuObject) {
@@ -192,6 +203,7 @@ export function su_dateq(x: any = mandatory()): boolean {
 //GENERATED start
 (SuDate.prototype['FormatEn'] as any).$call = SuDate.prototype['FormatEn'];
 (SuDate.prototype['FormatEn'] as any).$callNamed = function ($named: any, format: any) {
+    maxargs(2, arguments.length);
     ({ format = format } = $named);
     return SuDate.prototype['FormatEn'].call(this, format);
 };
@@ -205,6 +217,7 @@ export function su_dateq(x: any = mandatory()): boolean {
 //GENERATED start
 (SuDate.prototype['MinusDays'] as any).$call = SuDate.prototype['MinusDays'];
 (SuDate.prototype['MinusDays'] as any).$callNamed = function ($named: any, date: any) {
+    maxargs(2, arguments.length);
     ({ date = date } = $named);
     return SuDate.prototype['MinusDays'].call(this, date);
 };
@@ -218,6 +231,7 @@ export function su_dateq(x: any = mandatory()): boolean {
 //GENERATED start
 (SuDate.prototype['MinusSeconds'] as any).$call = SuDate.prototype['MinusSeconds'];
 (SuDate.prototype['MinusSeconds'] as any).$callNamed = function ($named: any, date: any) {
+    maxargs(2, arguments.length);
     ({ date = date } = $named);
     return SuDate.prototype['MinusSeconds'].call(this, date);
 };
@@ -231,6 +245,7 @@ export function su_dateq(x: any = mandatory()): boolean {
 //GENERATED start
 (SuDate.prototype['Plus'] as any).$call = SuDate.prototype['Plus'];
 (SuDate.prototype['Plus'] as any).$callNamed = function ($named: any, years: any, months: any, days: any, hours: any, minutes: any, seconds: any, milliseconds: any) {
+    maxargs(8, arguments.length);
     ({ years = years, months = months, days = days, hours = hours, minutes = minutes, seconds = seconds, milliseconds = milliseconds } = $named);
     return SuDate.prototype['Plus'].call(this, years, months, days, hours, minutes, seconds, milliseconds);
 };
@@ -244,6 +259,7 @@ export function su_dateq(x: any = mandatory()): boolean {
 //GENERATED start
 (SuDate.prototype['WeekDay'] as any).$call = SuDate.prototype['WeekDay'];
 (SuDate.prototype['WeekDay'] as any).$callNamed = function ($named: any, firstday: any) {
+    maxargs(2, arguments.length);
     ({ firstday = firstday } = $named);
     return SuDate.prototype['WeekDay'].call(this, firstday);
 };

@@ -172,6 +172,7 @@ export class SuSequence extends SequenceBase {
 //GENERATED start
 (SequenceMethods.prototype['Iter'] as any).$call = SequenceMethods.prototype['Iter'];
 (SequenceMethods.prototype['Iter'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return SequenceMethods.prototype['Iter'].call(this);
 };
 (SequenceMethods.prototype['Iter'] as any).$callAt = function (args: SuObject) {
@@ -184,6 +185,7 @@ export class SuSequence extends SequenceBase {
 //GENERATED start
 (SequenceMethods.prototype['Instantiated?'] as any).$call = SequenceMethods.prototype['Instantiated?'];
 (SequenceMethods.prototype['Instantiated?'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return SequenceMethods.prototype['Instantiated?'].call(this);
 };
 (SequenceMethods.prototype['Instantiated?'] as any).$callAt = function (args: SuObject) {
@@ -196,6 +198,7 @@ export class SuSequence extends SequenceBase {
 //GENERATED start
 (SequenceMethods.prototype['Copy'] as any).$call = SequenceMethods.prototype['Copy'];
 (SequenceMethods.prototype['Copy'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return SequenceMethods.prototype['Copy'].call(this);
 };
 (SequenceMethods.prototype['Copy'] as any).$callAt = function (args: SuObject) {
@@ -208,6 +211,7 @@ export class SuSequence extends SequenceBase {
 //GENERATED start
 (SequenceMethods.prototype['Join'] as any).$call = SequenceMethods.prototype['Join'];
 (SequenceMethods.prototype['Join'] as any).$callNamed = function ($named: any, sep: any) {
+    maxargs(2, arguments.length);
     ({ sep = sep } = $named);
     return SequenceMethods.prototype['Join'].call(this, sep);
 };
@@ -221,6 +225,7 @@ export class SuSequence extends SequenceBase {
 //GENERATED start
 (su_sequence as any).$call = su_sequence;
 (su_sequence as any).$callNamed = function ($named: any, iterator: any) {
+    maxargs(2, arguments.length);
     ({ iterator = iterator } = $named);
     return su_sequence(iterator);
 };

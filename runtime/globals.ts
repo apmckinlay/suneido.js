@@ -68,10 +68,12 @@ function su_def(global: string, value: any): any {
     return value;
 }
 import * as util from "./utility";
+import { maxargs } from "./args";
 //BUILTIN Def(name, value)
 //GENERATED start
 (su_def as any).$call = su_def;
 (su_def as any).$callNamed = function ($named: any, name: any, value: any) {
+    maxargs(3, arguments.length);
     ({ name = name, value = value } = $named);
     return su_def(name, value);
 };

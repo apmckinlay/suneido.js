@@ -121,6 +121,7 @@ if (typeof window !== 'undefined') {
 //GENERATED start
 (su_getCurrentWindow as any).$call = su_getCurrentWindow;
 (su_getCurrentWindow as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return su_getCurrentWindow();
 };
 (su_getCurrentWindow as any).$callAt = function (args: SuObject) {
@@ -133,6 +134,7 @@ if (typeof window !== 'undefined') {
 //GENERATED start
 (su_getCurrentDocument as any).$call = su_getCurrentDocument;
 (su_getCurrentDocument as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return su_getCurrentDocument();
 };
 (su_getCurrentDocument as any).$callAt = function (args: SuObject) {
@@ -145,6 +147,7 @@ if (typeof window !== 'undefined') {
 //GENERATED start
 (SuNode.prototype['AddEventListener'] as any).$call = SuNode.prototype['AddEventListener'];
 (SuNode.prototype['AddEventListener'] as any).$callNamed = function ($named: any, event: any, fn: any) {
+    maxargs(3, arguments.length);
     ({ event = event, fn = fn } = $named);
     return SuNode.prototype['AddEventListener'].call(this, event, fn);
 };
@@ -158,6 +161,7 @@ if (typeof window !== 'undefined') {
 //GENERATED start
 (SuHtmlElement.prototype['SetStyle'] as any).$call = SuHtmlElement.prototype['SetStyle'];
 (SuHtmlElement.prototype['SetStyle'] as any).$callNamed = function ($named: any, property: any, value: any) {
+    maxargs(3, arguments.length);
     ({ property = property, value = value } = $named);
     return SuHtmlElement.prototype['SetStyle'].call(this, property, value);
 };
@@ -171,6 +175,7 @@ if (typeof window !== 'undefined') {
 //GENERATED start
 (SuHtmlElement.prototype['SetStyle'] as any).$call = SuHtmlElement.prototype['SetStyle'];
 (SuHtmlElement.prototype['SetStyle'] as any).$callNamed = function ($named: any, property: any) {
+    maxargs(2, arguments.length);
     ({ property = property } = $named);
     return SuHtmlElement.prototype['SetStyle'].call(this, property);
 };

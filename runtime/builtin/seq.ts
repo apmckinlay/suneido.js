@@ -68,6 +68,7 @@ export function su_seqq(x: any): boolean {
 //GENERATED start
 (su_seq as any).$call = su_seq;
 (su_seq as any).$callNamed = function ($named: any, from: any, to: any, by: any) {
+    maxargs(4, arguments.length);
     ({ from = from, to = to, by = by } = $named);
     return su_seq(from, to, by);
 };
@@ -81,6 +82,7 @@ export function su_seqq(x: any): boolean {
 //GENERATED start
 (su_seqq as any).$call = su_seqq;
 (su_seqq as any).$callNamed = function ($named: any, value: any) {
+    maxargs(2, arguments.length);
     ({ value = value } = $named);
     return su_seqq(value);
 };
@@ -94,6 +96,7 @@ export function su_seqq(x: any): boolean {
 //GENERATED start
 (SuSeq.prototype['Next'] as any).$call = SuSeq.prototype['Next'];
 (SuSeq.prototype['Next'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return SuSeq.prototype['Next'].call(this);
 };
 (SuSeq.prototype['Next'] as any).$callAt = function (args: SuObject) {
@@ -106,6 +109,7 @@ export function su_seqq(x: any): boolean {
 //GENERATED start
 (SuSeq.prototype['Dup'] as any).$call = SuSeq.prototype['Dup'];
 (SuSeq.prototype['Dup'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return SuSeq.prototype['Dup'].call(this);
 };
 (SuSeq.prototype['Dup'] as any).$callAt = function (args: SuObject) {
@@ -118,6 +122,7 @@ export function su_seqq(x: any): boolean {
 //GENERATED start
 (SuSeq.prototype['Infinite?'] as any).$call = SuSeq.prototype['Infinite?'];
 (SuSeq.prototype['Infinite?'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return SuSeq.prototype['Infinite?'].call(this);
 };
 (SuSeq.prototype['Infinite?'] as any).$callAt = function (args: SuObject) {

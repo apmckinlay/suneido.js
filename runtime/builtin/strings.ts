@@ -17,6 +17,7 @@ export function su_stringq(x: any): boolean {
 //GENERATED start
 (su_stringq as any).$call = su_stringq;
 (su_stringq as any).$callNamed = function ($named: any, value: any) {
+    maxargs(2, arguments.length);
     ({ value = value } = $named);
     return su_stringq(value);
 };
@@ -479,6 +480,7 @@ class ClassForEach implements ForEach {
 //GENERATED start
 (Strings.prototype['Alpha?'] as any).$call = Strings.prototype['Alpha?'];
 (Strings.prototype['Alpha?'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return Strings.prototype['Alpha?'].call(this);
 };
 (Strings.prototype['Alpha?'] as any).$callAt = function (args: SuObject) {
@@ -491,6 +493,7 @@ class ClassForEach implements ForEach {
 //GENERATED start
 (Strings.prototype['AlphaNum?'] as any).$call = Strings.prototype['AlphaNum?'];
 (Strings.prototype['AlphaNum?'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return Strings.prototype['AlphaNum?'].call(this);
 };
 (Strings.prototype['AlphaNum?'] as any).$callAt = function (args: SuObject) {
@@ -503,6 +506,7 @@ class ClassForEach implements ForEach {
 //GENERATED start
 (Strings.prototype['Asc'] as any).$call = Strings.prototype['Asc'];
 (Strings.prototype['Asc'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return Strings.prototype['Asc'].call(this);
 };
 (Strings.prototype['Asc'] as any).$callAt = function (args: SuObject) {
@@ -515,6 +519,7 @@ class ClassForEach implements ForEach {
 //GENERATED start
 (Strings.prototype['Detab'] as any).$call = Strings.prototype['Detab'];
 (Strings.prototype['Detab'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return Strings.prototype['Detab'].call(this);
 };
 (Strings.prototype['Detab'] as any).$callAt = function (args: SuObject) {
@@ -527,6 +532,7 @@ class ClassForEach implements ForEach {
 //GENERATED start
 (Strings.prototype['Entab'] as any).$call = Strings.prototype['Entab'];
 (Strings.prototype['Entab'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return Strings.prototype['Entab'].call(this);
 };
 (Strings.prototype['Entab'] as any).$callAt = function (args: SuObject) {
@@ -539,6 +545,7 @@ class ClassForEach implements ForEach {
 //GENERATED start
 (Strings.prototype['Eval'] as any).$call = Strings.prototype['Eval'];
 (Strings.prototype['Eval'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return Strings.prototype['Eval'].call(this);
 };
 (Strings.prototype['Eval'] as any).$callAt = function (args: SuObject) {
@@ -551,6 +558,7 @@ class ClassForEach implements ForEach {
 //GENERATED start
 (Strings.prototype['Extract'] as any).$call = Strings.prototype['Extract'];
 (Strings.prototype['Extract'] as any).$callNamed = function ($named: any, pattern: any, part: any) {
+    maxargs(3, arguments.length);
     ({ pattern = pattern, part = part } = $named);
     return Strings.prototype['Extract'].call(this, pattern, part);
 };
@@ -564,6 +572,7 @@ class ClassForEach implements ForEach {
 //GENERATED start
 (Strings.prototype['Find'] as any).$call = Strings.prototype['Find'];
 (Strings.prototype['Find'] as any).$callNamed = function ($named: any, s: any, pos: any) {
+    maxargs(3, arguments.length);
     ({ s = s, pos = pos } = $named);
     return Strings.prototype['Find'].call(this, s, pos);
 };
@@ -577,6 +586,7 @@ class ClassForEach implements ForEach {
 //GENERATED start
 (Strings.prototype['FindLast'] as any).$call = Strings.prototype['FindLast'];
 (Strings.prototype['FindLast'] as any).$callNamed = function ($named: any, s: any, pos: any) {
+    maxargs(3, arguments.length);
     ({ s = s, pos = pos } = $named);
     return Strings.prototype['FindLast'].call(this, s, pos);
 };
@@ -586,62 +596,67 @@ class ClassForEach implements ForEach {
 (Strings.prototype['FindLast'] as any).$params = 's, pos=99999';
 //GENERATED end
 
-//BUILTIN Strings.Find1of(s, chars, pos=0)
+//BUILTIN Strings.Find1of(chars, pos=0)
 //GENERATED start
 (Strings.prototype['Find1of'] as any).$call = Strings.prototype['Find1of'];
-(Strings.prototype['Find1of'] as any).$callNamed = function ($named: any, s: any, chars: any, pos: any) {
-    ({ s = s, chars = chars, pos = pos } = $named);
-    return Strings.prototype['Find1of'].call(this, s, chars, pos);
+(Strings.prototype['Find1of'] as any).$callNamed = function ($named: any, chars: any, pos: any) {
+    maxargs(3, arguments.length);
+    ({ chars = chars, pos = pos } = $named);
+    return Strings.prototype['Find1of'].call(this, chars, pos);
 };
 (Strings.prototype['Find1of'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['Find1of'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(Strings.prototype['Find1of'] as any).$params = 's, chars, pos=0';
+(Strings.prototype['Find1of'] as any).$params = 'chars, pos=0';
 //GENERATED end
 
-//BUILTIN Strings.FindLast1of(s, chars, pos=99999)
+//BUILTIN Strings.FindLast1of(chars, pos=99999)
 //GENERATED start
 (Strings.prototype['FindLast1of'] as any).$call = Strings.prototype['FindLast1of'];
-(Strings.prototype['FindLast1of'] as any).$callNamed = function ($named: any, s: any, chars: any, pos: any) {
-    ({ s = s, chars = chars, pos = pos } = $named);
-    return Strings.prototype['FindLast1of'].call(this, s, chars, pos);
+(Strings.prototype['FindLast1of'] as any).$callNamed = function ($named: any, chars: any, pos: any) {
+    maxargs(3, arguments.length);
+    ({ chars = chars, pos = pos } = $named);
+    return Strings.prototype['FindLast1of'].call(this, chars, pos);
 };
 (Strings.prototype['FindLast1of'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['FindLast1of'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(Strings.prototype['FindLast1of'] as any).$params = 's, chars, pos=99999';
+(Strings.prototype['FindLast1of'] as any).$params = 'chars, pos=99999';
 //GENERATED end
 
-//BUILTIN Strings.Findnot1of(s, chars, pos=0)
+//BUILTIN Strings.Findnot1of(chars, pos=0)
 //GENERATED start
 (Strings.prototype['Findnot1of'] as any).$call = Strings.prototype['Findnot1of'];
-(Strings.prototype['Findnot1of'] as any).$callNamed = function ($named: any, s: any, chars: any, pos: any) {
-    ({ s = s, chars = chars, pos = pos } = $named);
-    return Strings.prototype['Findnot1of'].call(this, s, chars, pos);
+(Strings.prototype['Findnot1of'] as any).$callNamed = function ($named: any, chars: any, pos: any) {
+    maxargs(3, arguments.length);
+    ({ chars = chars, pos = pos } = $named);
+    return Strings.prototype['Findnot1of'].call(this, chars, pos);
 };
 (Strings.prototype['Findnot1of'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['Findnot1of'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(Strings.prototype['Findnot1of'] as any).$params = 's, chars, pos=0';
+(Strings.prototype['Findnot1of'] as any).$params = 'chars, pos=0';
 //GENERATED end
 
-//BUILTIN Strings.FindLastnot1of(s, chars, pos=99999)
+//BUILTIN Strings.FindLastnot1of(chars, pos=99999)
 //GENERATED start
 (Strings.prototype['FindLastnot1of'] as any).$call = Strings.prototype['FindLastnot1of'];
-(Strings.prototype['FindLastnot1of'] as any).$callNamed = function ($named: any, s: any, chars: any, pos: any) {
-    ({ s = s, chars = chars, pos = pos } = $named);
-    return Strings.prototype['FindLastnot1of'].call(this, s, chars, pos);
+(Strings.prototype['FindLastnot1of'] as any).$callNamed = function ($named: any, chars: any, pos: any) {
+    maxargs(3, arguments.length);
+    ({ chars = chars, pos = pos } = $named);
+    return Strings.prototype['FindLastnot1of'].call(this, chars, pos);
 };
 (Strings.prototype['FindLastnot1of'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['FindLastnot1of'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(Strings.prototype['FindLastnot1of'] as any).$params = 's, chars, pos=99999';
+(Strings.prototype['FindLastnot1of'] as any).$params = 'chars, pos=99999';
 //GENERATED end
 
 //BUILTIN Strings.Has?(s)
 //GENERATED start
 (Strings.prototype['Has?'] as any).$call = Strings.prototype['Has?'];
 (Strings.prototype['Has?'] as any).$callNamed = function ($named: any, s: any) {
+    maxargs(2, arguments.length);
     ({ s = s } = $named);
     return Strings.prototype['Has?'].call(this, s);
 };
@@ -655,6 +670,7 @@ class ClassForEach implements ForEach {
 //GENERATED start
 (Strings.prototype['Lower'] as any).$call = Strings.prototype['Lower'];
 (Strings.prototype['Lower'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return Strings.prototype['Lower'].call(this);
 };
 (Strings.prototype['Lower'] as any).$callAt = function (args: SuObject) {
@@ -667,6 +683,7 @@ class ClassForEach implements ForEach {
 //GENERATED start
 (Strings.prototype['Lower?'] as any).$call = Strings.prototype['Lower?'];
 (Strings.prototype['Lower?'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return Strings.prototype['Lower?'].call(this);
 };
 (Strings.prototype['Lower?'] as any).$callAt = function (args: SuObject) {
@@ -679,6 +696,7 @@ class ClassForEach implements ForEach {
 //GENERATED start
 (Strings.prototype['MapN'] as any).$call = Strings.prototype['MapN'];
 (Strings.prototype['MapN'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return Strings.prototype['MapN'].call(this);
 };
 (Strings.prototype['MapN'] as any).$callAt = function (args: SuObject) {
@@ -691,6 +709,7 @@ class ClassForEach implements ForEach {
 //GENERATED start
 (Strings.prototype['Match'] as any).$call = Strings.prototype['Match'];
 (Strings.prototype['Match'] as any).$callNamed = function ($named: any, pattern: any, pos: any, prev: any) {
+    maxargs(4, arguments.length);
     ({ pattern = pattern, pos = pos, prev = prev } = $named);
     return Strings.prototype['Match'].call(this, pattern, pos, prev);
 };
@@ -704,6 +723,7 @@ class ClassForEach implements ForEach {
 //GENERATED start
 (Strings.prototype['NthLine'] as any).$call = Strings.prototype['NthLine'];
 (Strings.prototype['NthLine'] as any).$callNamed = function ($named: any, n: any) {
+    maxargs(2, arguments.length);
     ({ n = n } = $named);
     return Strings.prototype['NthLine'].call(this, n);
 };
@@ -717,6 +737,7 @@ class ClassForEach implements ForEach {
 //GENERATED start
 (Strings.prototype['CountChar'] as any).$call = Strings.prototype['CountChar'];
 (Strings.prototype['CountChar'] as any).$callNamed = function ($named: any, c: any) {
+    maxargs(2, arguments.length);
     ({ c = c } = $named);
     return Strings.prototype['CountChar'].call(this, c);
 };
@@ -730,6 +751,7 @@ class ClassForEach implements ForEach {
 //GENERATED start
 (Strings.prototype['Number?'] as any).$call = Strings.prototype['Number?'];
 (Strings.prototype['Number?'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return Strings.prototype['Number?'].call(this);
 };
 (Strings.prototype['Number?'] as any).$callAt = function (args: SuObject) {
@@ -742,6 +764,7 @@ class ClassForEach implements ForEach {
 //GENERATED start
 (Strings.prototype['Numeric?'] as any).$call = Strings.prototype['Numeric?'];
 (Strings.prototype['Numeric?'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return Strings.prototype['Numeric?'].call(this);
 };
 (Strings.prototype['Numeric?'] as any).$callAt = function (args: SuObject) {
@@ -754,6 +777,7 @@ class ClassForEach implements ForEach {
 //GENERATED start
 (Strings.prototype['Prefix?'] as any).$call = Strings.prototype['Prefix?'];
 (Strings.prototype['Prefix?'] as any).$callNamed = function ($named: any, s: any, pos: any) {
+    maxargs(3, arguments.length);
     ({ s = s, pos = pos } = $named);
     return Strings.prototype['Prefix?'].call(this, s, pos);
 };
@@ -767,6 +791,7 @@ class ClassForEach implements ForEach {
 //GENERATED start
 (Strings.prototype['Repeat'] as any).$call = Strings.prototype['Repeat'];
 (Strings.prototype['Repeat'] as any).$callNamed = function ($named: any, n: any) {
+    maxargs(2, arguments.length);
     ({ n = n } = $named);
     return Strings.prototype['Repeat'].call(this, n);
 };
@@ -780,6 +805,7 @@ class ClassForEach implements ForEach {
 //GENERATED start
 (Strings.prototype['Replace'] as any).$call = Strings.prototype['Replace'];
 (Strings.prototype['Replace'] as any).$callNamed = function ($named: any, pat: any, rep: any, count: any) {
+    maxargs(4, arguments.length);
     ({ pat = pat, rep = rep, count = count } = $named);
     return Strings.prototype['Replace'].call(this, pat, rep, count);
 };
@@ -793,6 +819,7 @@ class ClassForEach implements ForEach {
 //GENERATED start
 (Strings.prototype['Size'] as any).$call = Strings.prototype['Size'];
 (Strings.prototype['Size'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return Strings.prototype['Size'].call(this);
 };
 (Strings.prototype['Size'] as any).$callAt = function (args: SuObject) {
@@ -805,6 +832,7 @@ class ClassForEach implements ForEach {
 //GENERATED start
 (Strings.prototype['Split'] as any).$call = Strings.prototype['Split'];
 (Strings.prototype['Split'] as any).$callNamed = function ($named: any, sep: any) {
+    maxargs(2, arguments.length);
     ({ sep = sep } = $named);
     return Strings.prototype['Split'].call(this, sep);
 };
@@ -818,6 +846,7 @@ class ClassForEach implements ForEach {
 //GENERATED start
 (Strings.prototype['Substr'] as any).$call = Strings.prototype['Substr'];
 (Strings.prototype['Substr'] as any).$callNamed = function ($named: any, i: any, n: any) {
+    maxargs(3, arguments.length);
     ({ i = i, n = n } = $named);
     return Strings.prototype['Substr'].call(this, i, n);
 };
@@ -831,6 +860,7 @@ class ClassForEach implements ForEach {
 //GENERATED start
 (Strings.prototype['Suffix?'] as any).$call = Strings.prototype['Suffix?'];
 (Strings.prototype['Suffix?'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return Strings.prototype['Suffix?'].call(this);
 };
 (Strings.prototype['Suffix?'] as any).$callAt = function (args: SuObject) {
@@ -843,6 +873,7 @@ class ClassForEach implements ForEach {
 //GENERATED start
 (Strings.prototype['Tr'] as any).$call = Strings.prototype['Tr'];
 (Strings.prototype['Tr'] as any).$callNamed = function ($named: any, from: any, to: any) {
+    maxargs(3, arguments.length);
     ({ from = from, to = to } = $named);
     return Strings.prototype['Tr'].call(this, from, to);
 };
@@ -856,6 +887,7 @@ class ClassForEach implements ForEach {
 //GENERATED start
 (Strings.prototype['Unescape'] as any).$call = Strings.prototype['Unescape'];
 (Strings.prototype['Unescape'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return Strings.prototype['Unescape'].call(this);
 };
 (Strings.prototype['Unescape'] as any).$callAt = function (args: SuObject) {
@@ -868,6 +900,7 @@ class ClassForEach implements ForEach {
 //GENERATED start
 (Strings.prototype['Upper'] as any).$call = Strings.prototype['Upper'];
 (Strings.prototype['Upper'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return Strings.prototype['Upper'].call(this);
 };
 (Strings.prototype['Upper'] as any).$callAt = function (args: SuObject) {
@@ -880,6 +913,7 @@ class ClassForEach implements ForEach {
 //GENERATED start
 (Strings.prototype['Upper?'] as any).$call = Strings.prototype['Upper?'];
 (Strings.prototype['Upper?'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return Strings.prototype['Upper?'].call(this);
 };
 (Strings.prototype['Upper?'] as any).$callAt = function (args: SuObject) {
@@ -892,6 +926,7 @@ class ClassForEach implements ForEach {
 //GENERATED start
 (Strings.prototype['Iter'] as any).$call = Strings.prototype['Iter'];
 (Strings.prototype['Iter'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return Strings.prototype['Iter'].call(this);
 };
 (Strings.prototype['Iter'] as any).$callAt = function (args: SuObject) {
@@ -904,6 +939,7 @@ class ClassForEach implements ForEach {
 //GENERATED start
 (StringIter.prototype['Next'] as any).$call = StringIter.prototype['Next'];
 (StringIter.prototype['Next'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return StringIter.prototype['Next'].call(this);
 };
 (StringIter.prototype['Next'] as any).$callAt = function (args: SuObject) {
@@ -916,6 +952,7 @@ class ClassForEach implements ForEach {
 //GENERATED start
 (StringIter.prototype['Dup'] as any).$call = StringIter.prototype['Dup'];
 (StringIter.prototype['Dup'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return StringIter.prototype['Dup'].call(this);
 };
 (StringIter.prototype['Dup'] as any).$callAt = function (args: SuObject) {
@@ -928,6 +965,7 @@ class ClassForEach implements ForEach {
 //GENERATED start
 (StringIter.prototype['Infinite?'] as any).$call = StringIter.prototype['Infinite?'];
 (StringIter.prototype['Infinite?'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
     return StringIter.prototype['Infinite?'].call(this);
 };
 (StringIter.prototype['Infinite?'] as any).$callAt = function (args: SuObject) {

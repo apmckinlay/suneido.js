@@ -13,6 +13,7 @@ export function su_random(a: any = mandatory()): number {
 //GENERATED start
 (su_random as any).$call = su_random;
 (su_random as any).$callNamed = function ($named: any, n: any) {
+    maxargs(2, arguments.length);
     ({ n = n } = $named);
     return su_random(n);
 };

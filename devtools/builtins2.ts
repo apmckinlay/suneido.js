@@ -72,6 +72,7 @@ function genMethod(name: string, params: string) {
     return [
         `${f}.$call = ${clas}.prototype['${meth}'];`,
         `${f}.$callNamed = function (${decls(params)}) {`,
+        `    maxargs(${paramsSize(params) + 1}, arguments.length);`,
         `${assigns(params) }`,
         `    return ${clas}.prototype['${meth}'].call(this${
                 params ? ', ' + paramsMap(params, s => s) : ''});`,
@@ -104,6 +105,7 @@ function genFunction(name: string, params: string) {
     return [
         `${f}.$call = ${su_name};`,
         `${f}.$callNamed = function (${decls(params)}) {`,
+        `    maxargs(${paramsSize(params) + 1}, arguments.length);`,
         `${assigns(params) }`,
         `    return ${su_name}(${paramsMap(params, s => s)});`,
         `};`,
@@ -134,4 +136,10 @@ function paramsMap(params: string, f: (s: string) => string) {
 function woDef(s: string) {
     let i = s.indexOf('=');
     return i === -1 ? s : s.slice(0, i);
+}
+
+function paramsSize(params: string) {
+    return params.replace(/\s/g, "").length !== 0
+        ? params.split(/, ?/).length
+        : 0;
 }
