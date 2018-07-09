@@ -107,7 +107,7 @@ export function makeSuValue(value: any) {
 
 function makeSuObject(value: any[] | {[key: string]: any}): SuObject {
     let ob = new SuObject();
-    if (Array.isArray(value)) {
+    if (Array.isArray(value) || (typeof window !== 'undefined' && value instanceof NodeList)) {
         for (let i = 0; i < value.length; i++)
             ob.add(makeSuValue(value[i]));
     } else {
