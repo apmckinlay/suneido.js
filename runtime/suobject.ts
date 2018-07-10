@@ -77,6 +77,10 @@ export class SuObject extends SuValue {
             throw new Error("SuObject.Size bad args");
     }
 
+    argSlice(i: number): SuObject {
+        return new SuObject(this.vec.slice(i), new Map(this.map));
+    }
+
     private checkReadonly(): void {
         if (this.readonly)
            throw new Error("can't modify readonly objects");

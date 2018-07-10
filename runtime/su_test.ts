@@ -3,6 +3,7 @@ import { SuObject } from "./suobject";
 import { Except } from "./builtin/except";
 import * as su from "./su";
 import * as assert from "./assert";
+import { makeObj } from "./testUtility";
 
 let n = SuNum.make;
 
@@ -61,7 +62,12 @@ let f = {
 
 assert.equal(su.call(f, 1, 2), ['call', [1, 2]]);
 ob = new SuObject().add(1).put('a', 2);
-assert.equal(su.callAt(f, ob), ['callAt', ob]);
+let res = su.callAt(f, ob);
+assert.equal(res[0], 'callAt');
+assert.equal(res[1], ob);
+res = su.callAt(f, ob, 1);
+assert.equal(res[0], 'callAt');
+assert.equal(res[1], makeObj([], ['a', 2]));
 assert.equal(su.callNamed(f, { a: 3, b: 4 }, 1, 2), ['callNamed', { a: 3, b: 4 }, [1, 2]]);
 assert.throws(() => su.call(123), /can't call/);
 
