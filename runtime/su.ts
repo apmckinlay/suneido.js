@@ -257,17 +257,17 @@ export function callNamed(f: any, ...args: any[]): any {
     cantCall(f);
 }
 
-export function callAt(f: any, args: SuObject): any {
+export function callAt(f: any, args: SuObject, i: number = 0): any {
     if (typeof f === 'string') {
         if (args.vecsize() === 0)
             throw new Error("string call requires 'this' argument");
         let ob = args.get(0);
         args.delete(0);
-        return invokeAt(ob, f, args);
+        return invokeAt(ob, f, args, i);
     }
     let call = f.$callAt;
     if (typeof call === 'function')
-        return call.call(f, args);
+        return call.call(f, args.argSlice(i));
     cantCall(f);
 }
 
@@ -298,12 +298,12 @@ export function invokeNamed(ob: any, method: string, ...args: any[]): any {
     methodNotFound(ob, method);
 }
 
-export function invokeAt(ob: any, method: string, args: SuObject): any {
+export function invokeAt(ob: any, method: string, args: SuObject, i: number = 0): any {
     let f = getMethod(ob, method);
     if (f) {
         let call = f.$callAt;
         if (typeof call === 'function')
-            return call.call(ob, args);
+            return call.call(ob, args.argSlice(i));
     }
     methodNotFound(ob, method);
 }
@@ -337,13 +337,13 @@ export function invokeNamedBySuper(base: string | false, method: string, self: a
     methodNotFound(ob, method);
 }
 
-export function invokeAtBySuper(base: string | false, method: string, self: any, args: SuObject): any {
+export function invokeAtBySuper(base: string | false, method: string, self: any, args: SuObject, i: number = 0): any {
     let ob = base === false ? root_class : global(base);
     let f = getMethod(ob, method);
     if (f) {
         let call = f.$callAt;
         if (typeof call === 'function')
-            return call.call(self, args);
+            return call.call(self, args.argSlice(i));
     }
     methodNotFound(ob, method);
 }
@@ -373,9 +373,9 @@ export function instantiate(clas: any, ...args: any[]): any {
     return instance;
 }
 
-export function instantiateAt(clas: any, args: SuObject): any {
+export function instantiateAt(clas: any, args: SuObject, i: number = 0): any {
     let instance = Object.create(clas);
-    invokeAt(instance, 'New', args);
+    invokeAt(instance, 'New', args.argSlice(i));
     return instance;
 }
 

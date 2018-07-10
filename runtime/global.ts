@@ -2,8 +2,13 @@ import { libload } from "./libload";
 
 const suglobals: any = {};
 
+// for builtin
 export function defGlobal(name: string, value: any) {
-    suglobals[name] = value;
+    Object.defineProperty(suglobals, name, {
+        value: value,
+        enumerable: false,
+        writable: false,
+        configurable: false });
 }
 
 export function global(name: string) {
@@ -28,4 +33,14 @@ export function tryGlobal(name: string) {
     } catch (e) {
         return null;
     }
+}
+
+export function clear(name: string) {
+    delete suglobals[name];
+}
+
+export function clearAll() {
+    for (let name in suglobals)
+        if (suglobals.hasOwnProperty(name))
+            delete suglobals[name];
 }

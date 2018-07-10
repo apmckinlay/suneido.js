@@ -181,6 +181,11 @@ export class RootClass extends SuValue {
         return false;
     }
 
+    ['Method?'](_method: any) {
+        let method = toStr(_method);
+        return isFunction(this.getMethod(method));
+    }
+
     toClass(): RootClass {
         return this.isClass() ? this : Object.getPrototypeOf(this);
     }
@@ -357,6 +362,20 @@ function instanceEquals(x: any, y: any): boolean {
     return (RootClass.prototype['Member?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
 (RootClass.prototype['Member?'] as any).$params = 'key';
+//GENERATED end
+
+//BUILTIN RootClass.Method?(method)
+//GENERATED start
+(RootClass.prototype['Method?'] as any).$call = RootClass.prototype['Method?'];
+(RootClass.prototype['Method?'] as any).$callNamed = function ($named: any, method: any) {
+    maxargs(2, arguments.length);
+    ({ method = method } = $named);
+    return RootClass.prototype['Method?'].call(this, method);
+};
+(RootClass.prototype['Method?'] as any).$callAt = function (args: SuObject) {
+    return (RootClass.prototype['Method?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(RootClass.prototype['Method?'] as any).$params = 'method';
 //GENERATED end
 
 //BUILTIN RootClass.MethodClass(key)
