@@ -176,3 +176,13 @@ assert.equal(su.invokeNamed(cl4, "Test1", {a: 'aa', b: 'bb'}, 1, 2),
     makeObj(["Test1", 1, 2], ['a', 'aa'], ['b', 'bb']));
 assert.equal(su.invokeAt(cl4, "Test1", makeObj([1], ['a', 'aa'])),
     makeObj(["Test1", 1], ['a', 'aa']));
+
+assert.equal(cl4['Method?']('Test'), true);
+assert.equal(cl4['Method?']('Default'), true);
+assert.equal(cl4['Method?']('Test1'), false);
+assert.equal(c['Method?']('Test'), true);
+assert.equal(c['Method?']('Default'), true);
+assert.equal(c['Method?']('Test1'), false);
+assert.equal(cl2['Method?']('Get_Test'), true);
+assert.equal(cl2['Method?']('Get_'), true);
+assert.equal(cl2['Method?']('get_test'), false);
