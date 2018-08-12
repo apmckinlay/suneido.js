@@ -6,8 +6,9 @@ import { SuObject } from "../suobject";
 import { mandatory, maxargs } from "../args";
 import { Result, ForEach, Regex } from "../regex";
 import { RegexReplace} from "../regexreplace";
-import { SuIterable } from "../suvalue";
+import { SuIterable, SuCallable } from "../suvalue";
 import { toInt, toStr, toBoolean, isString } from "../ops";
+import { Pack } from "../pack";
 
 export function su_stringq(x: any): boolean {
     maxargs(1, arguments.length);
@@ -106,9 +107,22 @@ export class Strings {
             (s) => doWithSplit(s, '\n', replaceSpaceWithTab));
     }
 
-    Eval(this: string): any {
-        //NOTE only support global names, not constants or expressions
-        return global(this);
+    Eval(this: any): any {
+        maxargs(0, arguments.length);
+        let s = toStr(this);
+        return seval(s);
+    }
+
+    ServerEval(this: any): any {
+        maxargs(0, arguments.length);
+        let s = toStr(this);
+        let req = new XMLHttpRequest();
+        req.open("POST", "/eval", false); // synchronous
+        req.overrideMimeType('text/plain; charset=Windows-1252');
+        req.send(s);
+        if (req.status !== 200)
+            throw new Error("connection error: " + req.status);
+        return Pack.unpack(Pack.convertStringToBuffer(req.responseText));
     }
 
     Extract(this: string, patternArg: any = mandatory(), partArg?: any): string | boolean {
@@ -449,6 +463,25 @@ function doWithSplit(str: string, sep: string, f: (arg: string) => string) {
     return a.join(sep);
 }
 
+let globalRx = /^[A-Z][_a-zA-Z0-9]*[!?]?$/;
+function seval(s: string) {
+    if (globalRx.test(s))
+        return global(s);
+    let src = "function () { " + s + "\n}";
+    let req = new XMLHttpRequest();
+    req.open("POST", "/compile", false); // synchronous
+    req.send(src);
+    if (req.status !== 200)
+        throw new Error("can't find " + name);
+    let fn: SuCallable;
+    try {
+        fn = eval(req.responseText);
+    } catch (e) {
+        throw new Error("error compiling " + name);
+    }
+    return fn.$call.apply(null);
+}
+
 class ClassForEach implements ForEach {
     private append: number = 0;
     private strObj: {str: string} = {str: ""};
@@ -552,6 +585,19 @@ class ClassForEach implements ForEach {
     return (Strings.prototype['Eval'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
 (Strings.prototype['Eval'] as any).$params = '';
+//GENERATED end
+
+//BUILTIN Strings.ServerEval()
+//GENERATED start
+(Strings.prototype['ServerEval'] as any).$call = Strings.prototype['ServerEval'];
+(Strings.prototype['ServerEval'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
+    return Strings.prototype['ServerEval'].call(this);
+};
+(Strings.prototype['ServerEval'] as any).$callAt = function (args: SuObject) {
+    return (Strings.prototype['ServerEval'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(Strings.prototype['ServerEval'] as any).$params = '';
 //GENERATED end
 
 //BUILTIN Strings.Extract(pattern, part=false)
