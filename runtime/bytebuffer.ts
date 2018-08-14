@@ -28,13 +28,15 @@ export class ByteBuffer {
         return new ByteBuffer(this.buffer.slice(this.i));
     }
     public limit(limit: number) {
+        if (limit > this.buffer.byteLength)
+            throw new Error("ERROR: New limit is larger than buffer's capacity");
         this.end = limit;
         if (this.i > limit)
             this.i = limit;
     }
     get buf() {
         if (this.i >= this.end)
-            throw "ERROR: ByteBuffer access exceeds limit";
+            throw new Error("ERROR: ByteBuffer access exceeds limit");
         return this.buffer;
     }
 }

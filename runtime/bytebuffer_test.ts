@@ -27,3 +27,6 @@ assert.equal(buf2.get(), 1);
 assert.throws(() => buf2.get(), "ByteBuffer access exceeds limit");
 assert.throws(() => buf2.getInt(), "ByteBuffer access exceeds limit");
 assert.equal(buf1.remaining(), 9);
+
+assert.throws(() => buf1.limit(20), "New limit is larger than buffer's capacity");
+assert.throws(() => buf2.limit(20), "New limit is larger than buffer's capacity");
