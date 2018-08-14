@@ -21,7 +21,7 @@ export class SuDate extends SuValue {
     private date: number;
     private time: number;
 
-    private constructor(date: number, time: number) {
+    constructor(date: number, time: number) {
         super();
         this.date = date;
         this.time = time;

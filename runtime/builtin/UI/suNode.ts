@@ -3,7 +3,7 @@ import { SuObject } from '../../suobject';
 import { mandatory, maxargs } from "../../args";
 import { SuCallable } from "../../suvalue";
 import { globalLookup } from '../../global';
-import { toStr, coerceStr } from '../../ops';
+import { toStr, coerceStr, toBoolean } from '../../ops';
 import { SuEl, defMap } from './suEl';
 
 export interface SuEventTarget {
@@ -24,8 +24,10 @@ export class SuNode extends SuEl implements SuEventTarget {
     protected lookupGlobal(method: string) {
         return globalLookup("Nodes", method) || super.lookupGlobal(method);
     }
-    AddEventListener(event: string = mandatory(), fn: SuCallable = mandatory()) {
-        maxargs(2, arguments.length);
+    AddEventListener(_event: any = mandatory(), fn: SuCallable = mandatory(), _preventDefault: any = false) {
+        maxargs(3, arguments.length);
+        let event: string = toStr(_event);
+        let preventDefault: boolean = toBoolean(_preventDefault);
         let listener = (e: Event) => {
             let ob;
             if (e instanceof MouseEvent)
@@ -33,7 +35,8 @@ export class SuNode extends SuEl implements SuEventTarget {
             else
                 ob = {};
             fn.$callNamed(ob);
-            e.preventDefault();
+            if (preventDefault)
+                e.preventDefault();
         };
         this.el.addEventListener(event, listener);
     }
@@ -143,18 +146,18 @@ if (typeof window !== 'undefined') {
 (su_getCurrentDocument as any).$params = '';
 //GENERATED end
 
-//BUILTIN SuNode.AddEventListener(event, fn)
+//BUILTIN SuNode.AddEventListener(event, fn, preventDefault=false)
 //GENERATED start
 (SuNode.prototype['AddEventListener'] as any).$call = SuNode.prototype['AddEventListener'];
-(SuNode.prototype['AddEventListener'] as any).$callNamed = function ($named: any, event: any, fn: any) {
-    maxargs(3, arguments.length);
-    ({ event = event, fn = fn } = $named);
-    return SuNode.prototype['AddEventListener'].call(this, event, fn);
+(SuNode.prototype['AddEventListener'] as any).$callNamed = function ($named: any, event: any, fn: any, preventDefault: any) {
+    maxargs(4, arguments.length);
+    ({ event = event, fn = fn, preventDefault = preventDefault } = $named);
+    return SuNode.prototype['AddEventListener'].call(this, event, fn, preventDefault);
 };
 (SuNode.prototype['AddEventListener'] as any).$callAt = function (args: SuObject) {
     return (SuNode.prototype['AddEventListener'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(SuNode.prototype['AddEventListener'] as any).$params = 'event, fn';
+(SuNode.prototype['AddEventListener'] as any).$params = 'event, fn, preventDefault=false';
 //GENERATED end
 
 //BUILTIN SuHtmlElement.SetStyle(property, value)
@@ -171,16 +174,16 @@ if (typeof window !== 'undefined') {
 (SuHtmlElement.prototype['SetStyle'] as any).$params = 'property, value';
 //GENERATED end
 
-//BUILTIN SuHtmlElement.SetStyle(property)
+//BUILTIN SuHtmlElement.GetStyle(property)
 //GENERATED start
-(SuHtmlElement.prototype['SetStyle'] as any).$call = SuHtmlElement.prototype['SetStyle'];
-(SuHtmlElement.prototype['SetStyle'] as any).$callNamed = function ($named: any, property: any) {
+(SuHtmlElement.prototype['GetStyle'] as any).$call = SuHtmlElement.prototype['GetStyle'];
+(SuHtmlElement.prototype['GetStyle'] as any).$callNamed = function ($named: any, property: any) {
     maxargs(2, arguments.length);
     ({ property = property } = $named);
-    return SuHtmlElement.prototype['SetStyle'].call(this, property);
+    return SuHtmlElement.prototype['GetStyle'].call(this, property);
 };
-(SuHtmlElement.prototype['SetStyle'] as any).$callAt = function (args: SuObject) {
-    return (SuHtmlElement.prototype['SetStyle'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+(SuHtmlElement.prototype['GetStyle'] as any).$callAt = function (args: SuObject) {
+    return (SuHtmlElement.prototype['GetStyle'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(SuHtmlElement.prototype['SetStyle'] as any).$params = 'property';
+(SuHtmlElement.prototype['GetStyle'] as any).$params = 'property';
 //GENERATED end
