@@ -49,6 +49,17 @@ export class SuElement extends SuNode {
     type(): string {
         return 'Element';
     }
+    GetBoundingClientRect() {
+        let rect = this.el.getBoundingClientRect();
+        let map = new Map();
+        map.set('left', Math.round(rect.left));
+        map.set('right', Math.round(rect.right));
+        map.set('top', Math.round(rect.top));
+        map.set('bottom', Math.round(rect.bottom));
+        map.set('width', Math.round(rect.width));
+        map.set('height', Math.round(rect.height));
+        return new SuObject([], map);
+    }
     protected lookupGlobal(method: string) {
         return globalLookup("Elements", method) || super.lookupGlobal(method);
     }
@@ -158,6 +169,19 @@ if (typeof window !== 'undefined') {
     return (SuNode.prototype['AddEventListener'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
 (SuNode.prototype['AddEventListener'] as any).$params = 'event, fn, preventDefault=false';
+//GENERATED end
+
+//BUILTIN SuElement.GetBoundingClientRect()
+//GENERATED start
+(SuElement.prototype['GetBoundingClientRect'] as any).$call = SuElement.prototype['GetBoundingClientRect'];
+(SuElement.prototype['GetBoundingClientRect'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
+    return SuElement.prototype['GetBoundingClientRect'].call(this);
+};
+(SuElement.prototype['GetBoundingClientRect'] as any).$callAt = function (args: SuObject) {
+    return (SuElement.prototype['GetBoundingClientRect'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(SuElement.prototype['GetBoundingClientRect'] as any).$params = '';
 //GENERATED end
 
 //BUILTIN SuHtmlElement.SetStyle(property, value)
