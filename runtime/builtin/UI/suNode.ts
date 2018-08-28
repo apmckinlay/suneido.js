@@ -29,12 +29,25 @@ export class SuNode extends SuEl implements SuEventTarget {
         let event: string = toStr(_event);
         let preventDefault: boolean = toBoolean(_preventDefault);
         let listener = (e: Event) => {
-            let ob;
+            let event: SuObject;
             if (e instanceof MouseEvent)
-                ob = {x: e.x, y: e.y, ctrlKey: e.ctrlKey, altKey: e.altKey, shiftKey: e.shiftKey};
+                event = new SuObject([], new Map<string, any>([
+                    ['x', e.x],
+                    ['y', e.y],
+                    ['ctrlKey', e.ctrlKey],
+                    ['altKey', e.altKey],
+                    ['shiftKey', e.shiftKey]]));
+            else if (e instanceof KeyboardEvent)
+                event = new SuObject([], new Map<string, any>([
+                    ['altKey', e.altKey],
+                    ['ctrlKey', e.ctrlKey],
+                    ['metaKey', e.metaKey],
+                    ['shiftKey', e.shiftKey],
+                    ['key', e.key],
+                    ['code', e.code]]));
             else
-                ob = {};
-            fn.$callNamed(ob);
+                event = new SuObject();
+            fn.$callNamed({ event: event });
             if (preventDefault)
                 e.preventDefault();
         };
