@@ -64,14 +64,13 @@ export class SuElement extends SuNode {
     }
     GetBoundingClientRect() {
         let rect = this.el.getBoundingClientRect();
-        let map = new Map();
-        map.set('left', Math.round(rect.left));
-        map.set('right', Math.round(rect.right));
-        map.set('top', Math.round(rect.top));
-        map.set('bottom', Math.round(rect.bottom));
-        map.set('width', Math.round(rect.width));
-        map.set('height', Math.round(rect.height));
-        return new SuObject([], map);
+        return new SuObject([], new Map<string, any>([
+            ['left', Math.round(rect.left)],
+            ['right', Math.round(rect.right)],
+            ['top', Math.round(rect.top)],
+            ['bottom', Math.round(rect.bottom)],
+            ['width', Math.round(rect.width)],
+            ['height', Math.round(rect.height)]]));
     }
     protected lookupGlobal(method: string) {
         return globalLookup("Elements", method) || super.lookupGlobal(method);
