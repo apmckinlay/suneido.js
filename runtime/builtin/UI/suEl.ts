@@ -4,6 +4,7 @@ import { SuNum } from "../../sunum";
 import { SuObject } from "../../suobject";
 import { display } from "../../su";
 import { SuValue, SuCallable } from "../../suvalue";
+import { isFunction } from '../../suBoundMethod';
 
 const convertMap: [any, any][] = [];
 
@@ -70,6 +71,8 @@ export function convertSuValue(value: any) {
         return convertSuObject(value);
     if (value instanceof SuEl)
         return value.el;
+    if (isFunction(value))
+        return convertSuCallable(value);
     throw new Error(`Cannot convert value: ${display(value)}`);
 }
 
@@ -85,6 +88,13 @@ function convertSuObject(ob: SuObject) {
     } else {
         throw new Error(`Cannot convert Object with both named and un-named elements`);
     }
+}
+
+function convertSuCallable(callable: SuCallable) {
+    return function(...args: any[]) {
+        let convertedArgs = args.map(value => makeSuValue(value));
+        return callable.$call(...convertedArgs);
+    };
 }
 
 // export for testing

@@ -63,6 +63,9 @@ import { su_getCurrentDocument, su_getCurrentWindow } from "./builtin/UI/suNode"
 defGlobal('GetCurrentDocument', su_getCurrentDocument);
 defGlobal('GetCurrentWindow', su_getCurrentWindow);
 
+import { su_getCodeMirror } from "./builtin/UI/suCodeMirror";
+defGlobal('GetCodeMirror', su_getCodeMirror);
+
 import { su_unload } from "./builtin/unload";
 defGlobal('Unload', su_unload);
 

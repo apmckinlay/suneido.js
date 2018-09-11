@@ -29,12 +29,25 @@ export class SuNode extends SuEl implements SuEventTarget {
         let event: string = toStr(_event);
         let preventDefault: boolean = toBoolean(_preventDefault);
         let listener = (e: Event) => {
-            let ob;
+            let event: SuObject;
             if (e instanceof MouseEvent)
-                ob = {x: e.x, y: e.y, ctrlKey: e.ctrlKey, altKey: e.altKey, shiftKey: e.shiftKey};
+                event = new SuObject([], new Map<string, any>([
+                    ['x', e.x],
+                    ['y', e.y],
+                    ['ctrlKey', e.ctrlKey],
+                    ['altKey', e.altKey],
+                    ['shiftKey', e.shiftKey]]));
+            else if (e instanceof KeyboardEvent)
+                event = new SuObject([], new Map<string, any>([
+                    ['altKey', e.altKey],
+                    ['ctrlKey', e.ctrlKey],
+                    ['metaKey', e.metaKey],
+                    ['shiftKey', e.shiftKey],
+                    ['key', e.key],
+                    ['code', e.code]]));
             else
-                ob = {};
-            fn.$callNamed(ob);
+                event = new SuObject();
+            fn.$callNamed({ event: event });
             if (preventDefault)
                 e.preventDefault();
         };
@@ -48,6 +61,16 @@ export class SuElement extends SuNode {
     }
     type(): string {
         return 'Element';
+    }
+    GetBoundingClientRect() {
+        let rect = this.el.getBoundingClientRect();
+        return new SuObject([], new Map<string, any>([
+            ['left', Math.round(rect.left)],
+            ['right', Math.round(rect.right)],
+            ['top', Math.round(rect.top)],
+            ['bottom', Math.round(rect.bottom)],
+            ['width', Math.round(rect.width)],
+            ['height', Math.round(rect.height)]]));
     }
     protected lookupGlobal(method: string) {
         return globalLookup("Elements", method) || super.lookupGlobal(method);
@@ -158,6 +181,19 @@ if (typeof window !== 'undefined') {
     return (SuNode.prototype['AddEventListener'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
 (SuNode.prototype['AddEventListener'] as any).$params = 'event, fn, preventDefault=false';
+//GENERATED end
+
+//BUILTIN SuElement.GetBoundingClientRect()
+//GENERATED start
+(SuElement.prototype['GetBoundingClientRect'] as any).$call = SuElement.prototype['GetBoundingClientRect'];
+(SuElement.prototype['GetBoundingClientRect'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
+    return SuElement.prototype['GetBoundingClientRect'].call(this);
+};
+(SuElement.prototype['GetBoundingClientRect'] as any).$callAt = function (args: SuObject) {
+    return (SuElement.prototype['GetBoundingClientRect'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(SuElement.prototype['GetBoundingClientRect'] as any).$params = '';
 //GENERATED end
 
 //BUILTIN SuHtmlElement.SetStyle(property, value)
