@@ -69,6 +69,9 @@ defGlobal('GetCodeMirror', su_getCodeMirror);
 import { su_unload } from "./builtin/unload";
 defGlobal('Unload', su_unload);
 
+import { su_classq } from "./builtin/classq";
+defGlobal("Class?", su_classq);
+
 /** FOR TESTING PURPOSES ONLY! */
 defGlobal('Def', su_def);
 function su_def(global: string, value: any): any {
