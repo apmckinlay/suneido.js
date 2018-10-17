@@ -42,6 +42,13 @@ assert.equal(ob.get(dn(1.5)), 15);
 assert.equal(ob.get('x'), undefined);
 ob.Set_default(0);
 assert.equal(ob.get('x'), 0);
+ob.Set_default(makeObj([1, 2]));
+let def: SuObject = ob.get('x');
+assert.equal(def, makeObj([1, 2]));
+def.add(3);
+assert.equal(def, makeObj([1, 2, 3]));
+assert.equal(ob.get('x'), makeObj([1, 2, 3]));
+assert.equal(ob.get('y'), makeObj([1, 2]));
 
 ob.Set_readonly();
 assert.throws(() => ob.put('b', true),

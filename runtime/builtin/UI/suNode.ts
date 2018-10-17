@@ -1,5 +1,6 @@
 import * as util from '../../utility';
 import { SuObject } from '../../suobject';
+import { SuValue } from '../../suvalue';
 import { mandatory, maxargs } from "../../args";
 import { SuCallable } from "../../suvalue";
 import { globalLookup } from '../../global';
@@ -52,6 +53,20 @@ export class SuNode extends SuEl implements SuEventTarget {
                 e.preventDefault();
         };
         this.el.addEventListener(event, listener);
+    }
+
+    static DEFAULT = {};
+    Control(ctrl: any = SuNode.DEFAULT): any {
+        maxargs(1, arguments.length);
+        if (ctrl === SuNode.DEFAULT)
+            return (this.el as any).su_control;
+        return (this.el as any).su_control = ctrl;
+    }
+    Window(win: any = SuNode.DEFAULT): any {
+        maxargs(1, arguments.length);
+        if (win === SuNode.DEFAULT)
+            return (this.el as any).su_window;
+        return (this.el as any).su_window = win;
     }
 }
 
@@ -124,6 +139,52 @@ export class SuWindow extends SuEl {
     }
 }
 
+export class SuHtmlElMap extends SuValue {
+    constructor(public suWin: any) {
+        super();
+    }
+    type(): string {
+        return 'HtmlElMap';
+    }
+    display(): string {
+        return this.type();
+    }
+    compareTo(x: any): util.Cmp {
+        return -1;
+    }
+    equals(that: any): boolean {
+        if (!(that instanceof SuHtmlElMap))
+            return false;
+        return this.suWin === that.suWin;
+    }
+    lookup(this: any, method: string): SuCallable {
+        return this[method];
+    }
+    get(key: any): any {
+        if (key instanceof SuNode)
+            return (key.el as any).su_control;
+        return undefined;
+    }
+    ['Member?'](key: any = mandatory()): boolean {
+        maxargs(1, arguments.length);
+        if (!(key instanceof SuNode))
+            return false;
+        return (key.el as any).su_window === this.suWin;
+    }
+    GetDefault(key: any = mandatory(), def: any = mandatory()): any {
+        maxargs(2, arguments.length);
+        let val = this.get(key);
+        if (val !== undefined)
+            return val;
+        return def;
+    }
+}
+
+export function su_htmlElMap(_suWin: any): SuHtmlElMap {
+    maxargs(1, arguments.length);
+    return new SuHtmlElMap(_suWin);
+}
+
 export function su_getCurrentWindow(): SuWindow | false {
     maxargs(0, arguments.length);
     return window ? new SuWindow(window) : false;
@@ -142,6 +203,47 @@ if (typeof window !== 'undefined') {
     defMap(Window, SuWindow);
 }
 
+//BUILTIN HtmlElMap(Window)
+//GENERATED start
+(su_htmlElMap as any).$call = su_htmlElMap;
+(su_htmlElMap as any).$callNamed = function ($named: any, Window: any) {
+    maxargs(2, arguments.length);
+    ({ Window = Window } = $named);
+    return su_htmlElMap(Window);
+};
+(su_htmlElMap as any).$callAt = function (args: SuObject) {
+    return (su_htmlElMap as any).$callNamed(util.mapToOb(args.map), ...args.vec);
+};
+(su_htmlElMap as any).$params = 'Window';
+//GENERATED end
+
+//BUILTIN SuHtmlElMap.Member?(key)
+//GENERATED start
+(SuHtmlElMap.prototype['Member?'] as any).$call = SuHtmlElMap.prototype['Member?'];
+(SuHtmlElMap.prototype['Member?'] as any).$callNamed = function ($named: any, key: any) {
+    maxargs(2, arguments.length);
+    ({ key = key } = $named);
+    return SuHtmlElMap.prototype['Member?'].call(this, key);
+};
+(SuHtmlElMap.prototype['Member?'] as any).$callAt = function (args: SuObject) {
+    return (SuHtmlElMap.prototype['Member?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(SuHtmlElMap.prototype['Member?'] as any).$params = 'key';
+//GENERATED end
+
+//BUILTIN SuHtmlElMap.GetDefault(key, value)
+//GENERATED start
+(SuHtmlElMap.prototype['GetDefault'] as any).$call = SuHtmlElMap.prototype['GetDefault'];
+(SuHtmlElMap.prototype['GetDefault'] as any).$callNamed = function ($named: any, key: any, value: any) {
+    maxargs(3, arguments.length);
+    ({ key = key, value = value } = $named);
+    return SuHtmlElMap.prototype['GetDefault'].call(this, key, value);
+};
+(SuHtmlElMap.prototype['GetDefault'] as any).$callAt = function (args: SuObject) {
+    return (SuHtmlElMap.prototype['GetDefault'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(SuHtmlElMap.prototype['GetDefault'] as any).$params = 'key, value';
+//GENERATED end
 
 //BUILTIN GetCurrentWindow()
 //GENERATED start
@@ -181,6 +283,34 @@ if (typeof window !== 'undefined') {
     return (SuNode.prototype['AddEventListener'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
 (SuNode.prototype['AddEventListener'] as any).$params = 'event, fn, preventDefault=false';
+//GENERATED end
+
+//BUILTIN SuNode.Control(control)
+//GENERATED start
+(SuNode.prototype['Control'] as any).$call = SuNode.prototype['Control'];
+(SuNode.prototype['Control'] as any).$callNamed = function ($named: any, control: any) {
+    maxargs(2, arguments.length);
+    ({ control = control } = $named);
+    return SuNode.prototype['Control'].call(this, control);
+};
+(SuNode.prototype['Control'] as any).$callAt = function (args: SuObject) {
+    return (SuNode.prototype['Control'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(SuNode.prototype['Control'] as any).$params = 'control';
+//GENERATED end
+
+//BUILTIN SuNode.Window(window)
+//GENERATED start
+(SuNode.prototype['Window'] as any).$call = SuNode.prototype['Window'];
+(SuNode.prototype['Window'] as any).$callNamed = function ($named: any, window: any) {
+    maxargs(2, arguments.length);
+    ({ window = window } = $named);
+    return SuNode.prototype['Window'].call(this, window);
+};
+(SuNode.prototype['Window'] as any).$callAt = function (args: SuObject) {
+    return (SuNode.prototype['Window'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(SuNode.prototype['Window'] as any).$params = 'window';
 //GENERATED end
 
 //BUILTIN SuElement.GetBoundingClientRect()

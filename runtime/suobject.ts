@@ -185,9 +185,15 @@ export class SuObject extends SuValue {
 
     getDefault(key: any, def: any): any {
         let value = this.getIfPresent(key);
-        if (value === undefined)
-            return def;
-        return value;
+        if (value !== undefined)
+            return value;
+        if (def instanceof SuObject) {
+            value = SuObject.copy(def);
+            if (!this.readonly)
+                this.put(key, value);
+            return value;
+        }
+        return def;
     }
 
     GetDefault(key: any = mandatory(), def: any = mandatory()): any {
@@ -295,8 +301,12 @@ export class SuObject extends SuValue {
 
     Copy(): SuObject {
         maxargs(0, arguments.length);
-        let copy = new SuObject(this.vec.slice(), new Map(this.map));
-        copy.defval = this.defval;
+        return SuObject.copy(this);
+    }
+
+    private static copy(ob: SuObject): SuObject {
+        let copy = new SuObject(ob.vec.slice(), new Map(ob.map));
+        copy.defval = ob.defval;
         return copy;
     }
 
