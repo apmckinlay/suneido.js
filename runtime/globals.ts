@@ -59,9 +59,10 @@ defGlobal('Random', su_random);
 import { su_functionq } from "./builtin/functions";
 defGlobal('Function?', su_functionq);
 
-import { su_getCurrentDocument, su_getCurrentWindow } from "./builtin/UI/suNode";
+import { su_getCurrentDocument, su_getCurrentWindow, su_htmlElMap } from "./builtin/UI/suNode";
 defGlobal('GetCurrentDocument', su_getCurrentDocument);
 defGlobal('GetCurrentWindow', su_getCurrentWindow);
+defGlobal('HtmlElMap', su_htmlElMap);
 
 import { su_getCodeMirror } from "./builtin/UI/suCodeMirror";
 defGlobal('GetCodeMirror', su_getCodeMirror);
