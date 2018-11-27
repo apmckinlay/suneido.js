@@ -73,6 +73,9 @@ defGlobal('Unload', su_unload);
 import { su_classq } from "./builtin/classq";
 defGlobal("Class?", su_classq);
 
+import { su_booleanq } from "./builtin/booleanq";
+defGlobal("Boolean?", su_booleanq);
+
 /** FOR TESTING PURPOSES ONLY! */
 defGlobal('Def', su_def);
 function su_def(global: string, value: any): any {
