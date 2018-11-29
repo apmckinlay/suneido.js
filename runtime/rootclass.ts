@@ -29,10 +29,10 @@ export class RootClass extends SuValue {
             return typeof val === 'function'
                 ? new SuBoundMethod(this, val)
                 : val;
-        val = this["Get_"];
+        val = this["Getter_"] || this["Get_"];
         if (val && typeof val === 'function')
             return val.$call.call(this, key);
-        val = typeof key === 'string' && this["Get_" + key];
+        val = typeof key === 'string' && (this["Getter_" + key] || this["Get_" + key]);
         if (val && typeof val === 'function')
             return val.$call.call(this);
         throw new Error("member not found " + key);

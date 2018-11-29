@@ -7,7 +7,7 @@ import { SuObject } from "./suobject";
 // Setup
 defGlobal('Objects', makeClass(false, []));
 
-// Test Get_ Method
+// Test Get_ & Getter_ Method
 /* class
 	{
     X: 123
@@ -37,6 +37,16 @@ let cl1 = makeClass(false, [
 assert.equal(su.get(cl1, "X"), 123);
 assert.equal(su.get(cl1, "Test"), "Test - test");
 assert.throws(() => su.get(cl1, "Test1"), /member not found/);
+
+let cl11 = makeClass(false, [
+    {key: 'X', value: 123},
+    {key: 'Getter_Test', value: fn1, params: '', paramNames: []},
+    {key: 'Getter_eval$c_test', value: fn2, params: '', paramNames: []},
+]);
+
+assert.equal(su.get(cl11, "X"), 123);
+assert.equal(su.get(cl11, "Test"), "Test - test");
+assert.throws(() => su.get(cl11, "Test1"), /member not found/);
 
 /* class
 	{
