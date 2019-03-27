@@ -327,3 +327,29 @@ function testLastMatch(): void {
     lastMatch("hello world", "o", 7);
     lastMatch("hello world", "\\<\\w+", 6);
 }
+
+// porttests -------------------------------------------------------------------
+
+import { runFile } from "./porttests";
+
+runFile("regex.test", { regex_match });
+
+function regex_match(...args: string[]): boolean {
+    let s = args[0];
+    let rx = args[1];
+    function tryTest(block: any): boolean {
+        try {
+            block();
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+    if (arguments.length === 2) {
+        return tryTest(() => match(s, rx));
+    } else if (arguments.length === 3 && args[2] === "false") {
+        return tryTest(() => nomatch(s, rx));
+    } else {
+        return tryTest(() => matchResult(s, rx, ...args.slice(2)));
+    }
+}

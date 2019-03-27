@@ -40,6 +40,10 @@ export function runFile(file: string, fixtures: Fixtures): void {
         run1(fixtures, file, scan);
 }
 
+export function skip() {
+    return true;
+}
+
 function missing() {
     return true;
 }
@@ -76,7 +80,7 @@ function run1(fixtures: Fixtures, file: string, scan: Scanner): void {
             ++n;
         scan.next(SKIP);
     }
-    if (fixture !== missing)
+    if (fixture !== missing || fixture !== skip)
         console.log("\t" + n + " passed");
 }
 

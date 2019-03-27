@@ -116,20 +116,22 @@ assert.throws(() => su.catchMatch(su.exception("test"), "wrong"), "test");
 
 // lang port test
 
-import { runFile } from "./porttests";
+import { runFile, skip } from "./porttests";
 
-runFile("lang.test", { lang_range, lang_sub });
+runFile("lang.test", { lang_rangeto, lang_rangelen, compare: skip, compare_packed: skip });
 
-function lang_range(s: string, i: string|number, j: string|number, expected: string): boolean {
-    i = Number(i);
-    j = Number(j);
+function lang_rangeto(...args: string[]): boolean {
+    const expected = args.pop()!;
+    const s = args[0];
+    const start = Number(args[1]);
+    const limit = arguments.length === 3 ? s.length : Number(args[2]);
     let ob = new SuObject(s.split(''));
     let expected_ob = new SuObject(expected.split(''));
-    return su.rangeto(s, i, j) === expected &&
-        su.is(su.rangeto(ob, i, j), expected_ob);
+    return su.rangeto(s, start, limit) === expected &&
+        su.is(su.rangeto(ob, start, limit), expected_ob);
 }
 
-function lang_sub(...args: string[]): boolean {
+function lang_rangelen(...args: string[]): boolean {
     let expected = args.pop()!;
     let s = args[0];
     let i = Number(args[1]);
