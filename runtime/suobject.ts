@@ -416,22 +416,14 @@ export class SuObject extends SuValue {
         return this;
     }
 
-    LowerBound(value: any = mandatory(), lt?: Lt): number {
+    BinarySearch(value: any = mandatory(), lt?: Lt): number {
         maxargs(2, arguments.length);
         let c = lt ? lt_to_cmp(lt) : cmp;
         return util.lowerBound(this.vec, value, c);
     }
 
-    UpperBound(value: any = mandatory(), lt?: Lt): number {
-        maxargs(2, arguments.length);
-        let c = lt ? lt_to_cmp(lt) : cmp;
-        return util.upperBound(this.vec, value, c);
-    }
-
-    EqualRange(value: any = mandatory(), lt?: Lt): SuObject {
-        maxargs(2, arguments.length);
-        let c = lt ? lt_to_cmp(lt) : cmp;
-        return new SuObject(util.equalRange(this.vec, value, c));
+    LowerBound(value: any, lt?: Lt): number {
+        return this.BinarySearch(value, lt);
     }
 
     equals(that: any): boolean {

@@ -30,7 +30,7 @@ export class Pack {
         [147, 8220], [148, 8221], [149, 8226], [150, 8211], [151, 8212],
         [152, 732], [153, 8482], [154, 353], [155, 8250], [156, 339],
         [158, 382], [159, 376]]);
-    private static MAX_SHIFTABLE = Number.MAX_SAFE_INTEGER / 10000;
+
     public static convertStringToBuffer(s: string): ByteBuffer {
         let bufView = new Uint8Array(new ArrayBuffer(s.length));
         let code;
@@ -67,33 +67,63 @@ export class Pack {
         }
     }
     private static unpackNum(buf: ByteBuffer) {
+        function convert(n: number, xor: number) {
+            return ((n ^ xor) << 24) >> 24; // convert Uint8 to int
+        }
+
         if (buf.remaining() === 0)
             return 0;
-        let minus = buf.get(buf.position() - 1) === Tag.MINUS;
-        let e = buf.get() & 0xff;
-        if (e === 0)
-            return SuNum.MINUS_INF;
-        if (e === 255)
-            return SuNum.INF;
-        if (minus)
-            e = (~e) & 0xff;
-        e = e ^ 0x80;
-        e = (e << 24) >> 24; // convert Uint8 to int
-        e = e - buf.remaining() / 2;
-        let n = Pack.unpackLongPart(buf, minus);
-        for (; 1 <= e && e <= 2 && n <= Pack.MAX_SHIFTABLE; --e)
-            n *= 10000;
-        if (e === 0 && Number.isSafeInteger(n))
-            return minus ? -n : n;
-        return SuNum.make((minus ? -1 : 1) * n, 4 * e);
+
+        let sign = buf.get(buf.position() - 1) === Tag.MINUS ? -1 : 1;
+        let xor = (sign < 0)  ? -1 : 0;
+
+        // exponent
+        let exp = convert(buf.get() ^ 0x80, xor);
+
+        let pos = buf.position();
+        let b = convert(buf.get(pos), xor);
+        if (b === -1) {
+            return sign < 0 ? SuNum.MINUS_INF : SuNum.INF;
+        }
+
+        let coef = 0;
+        let lo = 0;
+        let hi = 0;
+        switch (buf.remaining()) {
+            // @ts-ignore allow falls through
+            case 8:
+                lo += convert(buf.get(pos + 7), xor);
+            // @ts-ignore allow falls through
+            case 7:
+                lo += convert(buf.get(pos + 6), xor) * 100;
+            // @ts-ignore allow falls through
+            case 6:
+                lo += convert(buf.get(pos + 5), xor) * 10000;
+            // @ts-ignore allow falls through
+            case 5:
+                lo += convert(buf.get(pos + 4), xor) * 1000000;
+            // @ts-ignore allow falls through
+            case 4:
+                hi += convert(buf.get(pos + 3), xor);
+            // @ts-ignore allow falls through
+            case 3:
+                hi += convert(buf.get(pos + 2), xor) * 100;
+            // @ts-ignore allow falls through
+            case 2:
+                hi += convert(buf.get(pos + 1), xor) * 10000;
+            case 1:
+                hi += convert(buf.get(pos + 0), xor) * 1000000;
+        }
+        if (hi > 90000000) {
+            lo = (lo - (lo % 10)) / 10;
+            coef = hi * 10000000 + lo;
+            exp++;
+        } else {
+            coef = hi * 100000000 + lo;
+        }
+        return SuNum.make(sign * coef, exp - 16);
     }
-    private static unpackLongPart(buf: ByteBuffer, minus: boolean) {
-        let flip = minus ? 0xffff : 0;
-        let n = 0;
-        while (buf.remaining() > 0)
-            n = n * 10000 + (buf.getShort() ^ flip);
-        return n;
-    }
+
     private static unpackString(buf: ByteBuffer, pos: number, len: number) {
         if (len === 0)
             return "";
@@ -109,11 +139,11 @@ export class Pack {
         let vec: any[] = [];
         let map: Map<any, any> = new Map();
         if (buf.remaining() !== 0) {
-            let n = buf.getInt() ^ 0x80000000;
+            let n = Pack.uvarint(buf);
             let i;
             for (i = 0; i < n; i++)
                 vec.push(Pack.unpackvalue(buf));
-            n = buf.getInt() ^ 0x80000000;
+            n = Pack.uvarint(buf);
             for (i = 0; i < n; i++) {
                 let key = Pack.unpackvalue(buf);
                 let val = Pack.unpackvalue(buf);
@@ -124,8 +154,19 @@ export class Pack {
         }
         return new SuObject(vec, map);
     }
+    private static uvarint(buf: ByteBuffer): number {
+        let shift = 0;
+        let n = 0;
+        let b;
+        do {
+            b = buf.get();
+            n |= (b & 0x7f) << shift;
+            shift += 7;
+        } while (b & 0x80);
+        return n;
+    }
     private static unpackvalue(buf: ByteBuffer) {
-        let n = buf.getInt() ^ 0x80000000;
+        let n = Pack.uvarint(buf);
         let buf2 = buf.slice();
         buf2.limit(n);
         buf.position(buf.position() + n);

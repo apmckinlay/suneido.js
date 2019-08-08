@@ -1,5 +1,4 @@
 import { SuObject, ObjectIter } from '../suobject';
-import { RootClass } from '../rootclass';
 import * as util from '../utility';
 import { mandatory, maxargs } from "../args";
 import { SuValue } from '../suvalue';
@@ -21,8 +20,7 @@ export function su_object(args: SuObject) {
 
 export function su_objectq(x: any = mandatory()): boolean {
     maxargs(1, arguments.length);
-    return (x instanceof SuValue && x.toObject() !== null) ||
-        (x instanceof RootClass && !x.isClass());
+    return x instanceof SuValue && x.toObject() !== null;
 }
 //BUILTIN Object?(x)
 //GENERATED start
@@ -239,32 +237,18 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['LowerBound'] as any).$params = 'value, block=false';
 //GENERATED end
 
-//BUILTIN SuObject.UpperBound(value, block=false)
+//BUILTIN SuObject.BinarySearch(value, block=false)
 //GENERATED start
-(SuObject.prototype['UpperBound'] as any).$call = SuObject.prototype['UpperBound'];
-(SuObject.prototype['UpperBound'] as any).$callNamed = function ($named: any, value: any, block: any) {
+(SuObject.prototype['BinarySearch'] as any).$call = SuObject.prototype['BinarySearch'];
+(SuObject.prototype['BinarySearch'] as any).$callNamed = function ($named: any, value: any, block: any) {
     maxargs(3, arguments.length);
     ({ value = value, block = block } = $named);
-    return SuObject.prototype['UpperBound'].call(this, value, block);
+    return SuObject.prototype['BinarySearch'].call(this, value, block);
 };
-(SuObject.prototype['UpperBound'] as any).$callAt = function (args: SuObject) {
-    return (SuObject.prototype['UpperBound'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+(SuObject.prototype['BinarySearch'] as any).$callAt = function (args: SuObject) {
+    return (SuObject.prototype['BinarySearch'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(SuObject.prototype['UpperBound'] as any).$params = 'value, block=false';
-//GENERATED end
-
-//BUILTIN SuObject.EqualRange(value, block=false)
-//GENERATED start
-(SuObject.prototype['EqualRange'] as any).$call = SuObject.prototype['EqualRange'];
-(SuObject.prototype['EqualRange'] as any).$callNamed = function ($named: any, value: any, block: any) {
-    maxargs(3, arguments.length);
-    ({ value = value, block = block } = $named);
-    return SuObject.prototype['EqualRange'].call(this, value, block);
-};
-(SuObject.prototype['EqualRange'] as any).$callAt = function (args: SuObject) {
-    return (SuObject.prototype['EqualRange'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
-};
-(SuObject.prototype['EqualRange'] as any).$params = 'value, block=false';
+(SuObject.prototype['BinarySearch'] as any).$params = 'value, block=false';
 //GENERATED end
 
 //BUILTIN SuObject.Iter()

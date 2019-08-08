@@ -70,8 +70,9 @@ defGlobal('GetCodeMirror', su_getCodeMirror);
 import { su_unload } from "./builtin/unload";
 defGlobal('Unload', su_unload);
 
-import { su_classq } from "./builtin/classq";
+import { su_classq, su_instanceq } from "./builtin/classq";
 defGlobal("Class?", su_classq);
+defGlobal('Instance?', su_instanceq);
 
 import { su_booleanq } from "./builtin/booleanq";
 defGlobal("Boolean?", su_booleanq);
