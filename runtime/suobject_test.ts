@@ -234,21 +234,18 @@ cmp(ob.Members(), makeObj([SuNum.fromNumber(-1.2)]), 0);
 
 // Test LowerBound, UpperBound & EqualRange
 function testFn(ob: SuObject, value: any,
-    expected_lower: number, expected_upper: number,
-    expected_equal: [number, number], block?: any) {
+    expected_lower: number, block?: any) {
     assert.equal(ob.LowerBound(value, block), expected_lower);
-    assert.equal(ob.UpperBound(value, block), expected_upper);
-    cmp(ob.EqualRange(value, block), makeObj(expected_equal), 0);
 }
 ob = makeObj([]);
-testFn(ob, 1, 0, 0, [0, 0]);
+testFn(ob, 1, 0);
 ob = makeObj([1, 1, 2, 2, 3, 3, 4, 4]);
-testFn(ob, 0, 0, 0, [0, 0]);
-testFn(ob, 5, 8, 8, [8, 8]);
-testFn(ob, 2, 2, 4, [2, 4]);
-testFn(ob, SuNum.fromNumber(2.5), 4, 4, [4, 4]);
+testFn(ob, 0, 0);
+testFn(ob, 5, 8);
+testFn(ob, 2, 2);
+testFn(ob, SuNum.fromNumber(2.5), 4);
 
 ob = makeObj([4, 4, 3, 3, 2, 2, 1, 1]);
 let $f: any = {};
 $f.$call = (x: number, y: number) => x > y;
-testFn(ob, 2, 4, 6, [4, 6], $f);
+testFn(ob, 2, 4, $f);
