@@ -90,18 +90,25 @@ export class Pack {
         let lo = 0;
         let hi = 0;
         switch (buf.remaining()) {
+            // @ts-ignore allow falls through
             case 8:
                 lo += convert(buf.get(pos + 7), xor);
+            // @ts-ignore allow falls through
             case 7:
                 lo += convert(buf.get(pos + 6), xor) * 100;
+            // @ts-ignore allow falls through
             case 6:
                 lo += convert(buf.get(pos + 5), xor) * 10000;
+            // @ts-ignore allow falls through
             case 5:
                 lo += convert(buf.get(pos + 4), xor) * 1000000;
+            // @ts-ignore allow falls through
             case 4:
                 hi += convert(buf.get(pos + 3), xor);
+            // @ts-ignore allow falls through
             case 3:
                 hi += convert(buf.get(pos + 2), xor) * 100;
+            // @ts-ignore allow falls through
             case 2:
                 hi += convert(buf.get(pos + 1), xor) * 10000;
             case 1:
