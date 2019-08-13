@@ -77,6 +77,9 @@ defGlobal('Instance?', su_instanceq);
 import { su_booleanq } from "./builtin/booleanq";
 defGlobal("Boolean?", su_booleanq);
 
+import { su_webSocketClient } from "./builtin/suwebsocketclient";
+defGlobal("WebSocketClient", su_webSocketClient);
+
 /** FOR TESTING PURPOSES ONLY! */
 defGlobal('Def', su_def);
 function su_def(global: string, value: any): any {
