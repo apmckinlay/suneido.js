@@ -139,6 +139,18 @@ export class SuWindow extends SuEl {
     }
 }
 
+export class SuLocation extends SuEl {
+    constructor(public el: Location) {
+        super();
+    }
+    type(): string {
+        return 'Location';
+    }
+    display(): string {
+        return `Location(<${this.el.href}>)`;
+    }
+}
+
 export class SuHtmlElMap extends SuValue {
     constructor(public suWin: any) {
         super();
@@ -201,6 +213,7 @@ if (typeof window !== 'undefined') {
     defMap(Document, SuDocument);
     defMap(Node, SuNode);
     defMap(Window, SuWindow);
+    defMap(Location, SuLocation);
 }
 
 //BUILTIN HtmlElMap(Window)
