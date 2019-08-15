@@ -16,12 +16,12 @@ function displayString(s: string): string {
         -1 !== s.indexOf('\\') &&
         -1 === s.search(/[^ -~]/))
         return '`' + s + '`';
-    s = s.replace('\\', '\\\\');
+    s = s.replace(/\\/g, '\\\\');
     let single_quotes = default_single_quotes
         ? -1 === s.indexOf("'")
         : (-1 !== s.indexOf('"') && -1 === s.indexOf("'"));
     if (single_quotes)
         return "'" + s + "'";
     else
-        return '"' + s.replace('"', '\\"') + '"';
+        return '"' + s.replace(/"/g, '\\"') + '"';
 }
