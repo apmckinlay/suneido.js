@@ -18,6 +18,6 @@ node_modules/*
 devtools/*.js
 runtime/builtin/*.js
 runtime/builtin/UI/*.js
-
+CodeMirror/*_bundle.js
 
 .eslintrc.js
