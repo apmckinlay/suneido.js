@@ -3,6 +3,10 @@
   "license": "GPL-2.0",
   "repository": "github/apmckinlay/suneido.js",
   "devDependencies": {
-    "equals": "^1.0.5"
+    "equals": "^1.0.5",
+    "uglify-js": "^3.6.0"
+  },
+  "dependencies": {
+    "codemirror": "^5.48.2"
   }
 }
