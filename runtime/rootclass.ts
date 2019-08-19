@@ -41,16 +41,10 @@ export class RootClass extends SuValue {
     put(this: any, key: any, val: any): void {
         if (this.isClass())
             throw new Error("Class does not support put");
-        try {
-            this[key] = val;
-        } catch (e) {
-            if (!e.toString().includes("Cannot assign to read only property"))
-                throw e;
-            // classes are frozen which makes their properties read-only
-            // which means we can't do simple assignment
-            Object.defineProperty(this, key,
-                { enumerable: true, configurable: true, writable: true, value: val });
-        }
+        // classes are frozen which makes their properties read-only
+        // which means we can't do simple assignment
+        Object.defineProperty(this, key,
+            { enumerable: true, configurable: true, writable: true, value: val });
     }
 
     type(): string {
