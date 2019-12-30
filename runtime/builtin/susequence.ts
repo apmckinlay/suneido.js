@@ -119,6 +119,11 @@ export abstract class SequenceBase extends SuObject {
         this.ck_instantiate();
         return super.compareTo(that);
     }
+
+    public put(key: any, value: any): SuObject {
+        this.ck_instantiate();
+        return super.put(key, value);
+    }
 }
 
 const SequenceMethods = SequenceBase.SequenceMethods;
