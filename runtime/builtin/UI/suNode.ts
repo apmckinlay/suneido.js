@@ -25,10 +25,12 @@ export class SuNode extends SuEl implements SuEventTarget {
     protected lookupGlobal(method: string) {
         return globalLookup("Nodes", method) || super.lookupGlobal(method);
     }
-    AddEventListener(_event: any = mandatory(), fn: SuCallable = mandatory(), _preventDefault: any = false) {
-        maxargs(3, arguments.length);
+    AddEventListener(_event: any = mandatory(), fn: SuCallable = mandatory(),
+        _useCapture: any = false, _preventDefault: any = false) {
+        maxargs(4, arguments.length);
         let event: string = toStr(_event);
         let preventDefault: boolean = toBoolean(_preventDefault);
+        let useCapture: boolean = toBoolean(_useCapture);
         let listener = (e: Event) => {
             let event: SuObject;
             if (e instanceof MouseEvent)
@@ -37,7 +39,8 @@ export class SuNode extends SuEl implements SuEventTarget {
                     ['y', e.y],
                     ['ctrlKey', e.ctrlKey],
                     ['altKey', e.altKey],
-                    ['shiftKey', e.shiftKey]]));
+                    ['shiftKey', e.shiftKey],
+                    ['button', e.button]]));
             else if (e instanceof KeyboardEvent)
                 event = new SuObject([], new Map<string, any>([
                     ['altKey', e.altKey],
@@ -48,11 +51,14 @@ export class SuNode extends SuEl implements SuEventTarget {
                     ['code', e.code]]));
             else
                 event = new SuObject();
+            if (e.target instanceof Element) {
+                event.put('target', new SuNode(e.target))
+            }
             fn.$callNamed({ event: event });
             if (preventDefault)
                 e.preventDefault();
         };
-        this.el.addEventListener(event, listener);
+        this.el.addEventListener(event, listener, useCapture);
     }
 
     static DEFAULT = {};
@@ -284,18 +290,18 @@ if (typeof window !== 'undefined') {
 (su_getCurrentDocument as any).$params = '';
 //GENERATED end
 
-//BUILTIN SuNode.AddEventListener(event, fn, preventDefault=false)
+//BUILTIN SuNode.AddEventListener(event, fn, useCapture=false, preventDefault=false)
 //GENERATED start
 (SuNode.prototype['AddEventListener'] as any).$call = SuNode.prototype['AddEventListener'];
-(SuNode.prototype['AddEventListener'] as any).$callNamed = function ($named: any, event: any, fn: any, preventDefault: any) {
-    maxargs(4, arguments.length);
-    ({ event = event, fn = fn, preventDefault = preventDefault } = $named);
-    return SuNode.prototype['AddEventListener'].call(this, event, fn, preventDefault);
+(SuNode.prototype['AddEventListener'] as any).$callNamed = function ($named: any, event: any, fn: any, useCapture: any, preventDefault: any) {
+    maxargs(5, arguments.length);
+    ({ event = event, fn = fn, useCapture = useCapture, preventDefault = preventDefault } = $named);
+    return SuNode.prototype['AddEventListener'].call(this, event, fn, useCapture, preventDefault);
 };
 (SuNode.prototype['AddEventListener'] as any).$callAt = function (args: SuObject) {
     return (SuNode.prototype['AddEventListener'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(SuNode.prototype['AddEventListener'] as any).$params = 'event, fn, preventDefault=false';
+(SuNode.prototype['AddEventListener'] as any).$params = 'event, fn, useCapture=false, preventDefault=false';
 //GENERATED end
 
 //BUILTIN SuNode.Control(control)

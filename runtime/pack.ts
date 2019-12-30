@@ -3,6 +3,7 @@ import { ByteBuffer } from "./bytebuffer";
 import { SuRecord } from "./surecord";
 import { SuObject } from "./suobject";
 import { SuDate } from "./sudate";
+import { canonical } from "./ops";
 
 enum Tag {
     FALSE = 0,
@@ -89,6 +90,7 @@ export class Pack {
         let coef = 0;
         let lo = 0;
         let hi = 0;
+        let zeros = 16 - buf.remaining() * 2;
         switch (buf.remaining()) {
             // @ts-ignore allow falls through
             case 8:
@@ -117,9 +119,15 @@ export class Pack {
         if (hi > 90000000) {
             lo = (lo - (lo % 10)) / 10;
             coef = hi * 10000000 + lo;
-            exp++;
+            ++exp;
+            --zeros;
         } else {
             coef = hi * 100000000 + lo;
+        }
+        while (zeros > 0) {
+            coef = coef / 10;
+            ++exp;
+            --zeros;
         }
         return SuNum.make(sign * coef, exp - 16);
     }
@@ -147,7 +155,7 @@ export class Pack {
             for (i = 0; i < n; i++) {
                 let key = Pack.unpackvalue(buf);
                 let val = Pack.unpackvalue(buf);
-                map.set(key, val);
+                map.set(canonical(key), val);
             }
             if (buf.remaining() !== 0)
                 throw new Error("ERROR: buf not end");
