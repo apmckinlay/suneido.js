@@ -233,7 +233,7 @@ export class SuNum extends SuValue {
      */
     equals(that: any): boolean {
         if (typeof that === 'number')
-            return this.toNumber() === that;
+            return 0 === SuNum.cmp(this, SuNum.fromNumber(that));
         if (that instanceof SuNum)
             return 0 === SuNum.cmp(this, that);
         return false;
