@@ -3,12 +3,13 @@ import { SuObject } from '../../suobject';
 import { SuValue } from '../../suvalue';
 import { mandatory, maxargs } from "../../args";
 import { SuCallable } from "../../suvalue";
+import { SuEvent } from "./suEvent";
 import { globalLookup } from '../../global';
 import { toStr, coerceStr, toBoolean } from '../../ops';
 import { SuEl, defMap } from './suEl';
 
 export interface SuEventTarget {
-    AddEventListener: (type: string, callback: SuCallable) => void;
+    AddEventListener: (type: string, callback: SuCallable, useCapture: boolean) => void;
     // RemoveEventListener: (type: string, callback: SuCallable) => void;
 }
 
@@ -26,37 +27,13 @@ export class SuNode extends SuEl implements SuEventTarget {
         return globalLookup("Nodes", method) || super.lookupGlobal(method);
     }
     AddEventListener(_event: any = mandatory(), fn: SuCallable = mandatory(),
-        _useCapture: any = false, _preventDefault: any = false) {
+        _useCapture: any = false) {
         maxargs(4, arguments.length);
         let event: string = toStr(_event);
-        let preventDefault: boolean = toBoolean(_preventDefault);
         let useCapture: boolean = toBoolean(_useCapture);
         let listener = (e: Event) => {
-            let event: SuObject;
-            if (e instanceof MouseEvent)
-                event = new SuObject([], new Map<string, any>([
-                    ['x', e.x],
-                    ['y', e.y],
-                    ['ctrlKey', e.ctrlKey],
-                    ['altKey', e.altKey],
-                    ['shiftKey', e.shiftKey],
-                    ['button', e.button]]));
-            else if (e instanceof KeyboardEvent)
-                event = new SuObject([], new Map<string, any>([
-                    ['altKey', e.altKey],
-                    ['ctrlKey', e.ctrlKey],
-                    ['metaKey', e.metaKey],
-                    ['shiftKey', e.shiftKey],
-                    ['key', e.key],
-                    ['code', e.code]]));
-            else
-                event = new SuObject();
-            if (e.target instanceof Element) {
-                event.put('target', new SuNode(e.target))
-            }
+            let event: SuEvent = new SuEvent(e);
             fn.$callNamed({ event: event });
-            if (preventDefault)
-                e.preventDefault();
         };
         this.el.addEventListener(event, listener, useCapture);
     }
@@ -290,18 +267,18 @@ if (typeof window !== 'undefined') {
 (su_getCurrentDocument as any).$params = '';
 //GENERATED end
 
-//BUILTIN SuNode.AddEventListener(event, fn, useCapture=false, preventDefault=false)
+//BUILTIN SuNode.AddEventListener(event, fn, useCapture=false)
 //GENERATED start
 (SuNode.prototype['AddEventListener'] as any).$call = SuNode.prototype['AddEventListener'];
-(SuNode.prototype['AddEventListener'] as any).$callNamed = function ($named: any, event: any, fn: any, useCapture: any, preventDefault: any) {
-    maxargs(5, arguments.length);
-    ({ event = event, fn = fn, useCapture = useCapture, preventDefault = preventDefault } = $named);
-    return SuNode.prototype['AddEventListener'].call(this, event, fn, useCapture, preventDefault);
+(SuNode.prototype['AddEventListener'] as any).$callNamed = function ($named: any, event: any, fn: any, useCapture: any) {
+    maxargs(4, arguments.length);
+    ({ event = event, fn = fn, useCapture = useCapture } = $named);
+    return SuNode.prototype['AddEventListener'].call(this, event, fn, useCapture);
 };
 (SuNode.prototype['AddEventListener'] as any).$callAt = function (args: SuObject) {
     return (SuNode.prototype['AddEventListener'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(SuNode.prototype['AddEventListener'] as any).$params = 'event, fn, useCapture=false, preventDefault=false';
+(SuNode.prototype['AddEventListener'] as any).$params = 'event, fn, useCapture=false';
 //GENERATED end
 
 //BUILTIN SuNode.Control(control)
