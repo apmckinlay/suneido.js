@@ -80,6 +80,9 @@ defGlobal("Boolean?", su_booleanq);
 import { su_webSocketClient } from "./builtin/suwebsocketclient";
 defGlobal("WebSocketClient", su_webSocketClient);
 
+import { su_intersectionObserver } from "./builtin/UI/suIntersectionObserver";
+defGlobal("IntersectionObserver", su_intersectionObserver);
+
 /** FOR TESTING PURPOSES ONLY! */
 defGlobal('Def', su_def);
 function su_def(global: string, value: any): any {

@@ -59,6 +59,20 @@ export abstract class SuEl extends SuValue {
     }
 }
 
+class SuBuiltInEl extends SuEl {
+    constructor(public el: any) {
+        super();
+    }
+
+    type(): string {
+        return this.el.constructor && this.el.constructor.name || 'Unkown';
+    }
+
+    display(): string {
+        return `SuBuiltInEl - ${this.type()}(${JSON.stringify(this.el)})`;
+    }
+}
+
 // export for testing
 export function convertSuValue(value: any) {
     if (isString(value))
@@ -110,20 +124,28 @@ export function makeSuValue(value: any) {
         if (value instanceof convertMap[i][0])
             return new convertMap[i][1](value);
     }
-    if (type === 'object')
-        return makeSuObject(value);
+    if (value && value.constructor) {
+        if (Array.isArray(value)) {
+            const ob = new SuObject();
+            for (let i = 0; i < value.length; i++)
+                ob.add(makeSuValue(value[i]));
+            return ob;
+        }
+        if (isPureObject(value)) {
+            const ob = new SuObject();
+            for (let key in value)
+                if (value.hasOwnProperty(key))
+                    ob.put(key, makeSuValue(value[key]));
+            return ob;
+        }
+        return new SuBuiltInEl(value);
+    }
     throw new Error(`Cannot convert Javascript ${type} to Suneido value`);
 }
 
-function makeSuObject(value: any[] | {[key: string]: any}): SuObject {
-    let ob = new SuObject();
-    if (Array.isArray(value) || (typeof window !== 'undefined' && value instanceof NodeList)) {
-        for (let i = 0; i < value.length; i++)
-            ob.add(makeSuValue(value[i]));
-    } else {
-        for (let key in value)
-            if (value.hasOwnProperty(key))
-                ob.put(key, makeSuValue(value[key]));
+function isPureObject(value: any): boolean {
+    if (value === null || value === undefined) {
+        return false;
     }
-    return ob;
+    return Object.getPrototypeOf(value).isPrototypeOf(Object);
 }
