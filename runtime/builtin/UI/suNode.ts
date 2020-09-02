@@ -3,10 +3,9 @@ import { SuObject } from '../../suobject';
 import { SuValue } from '../../suvalue';
 import { mandatory, maxargs } from "../../args";
 import { SuCallable } from "../../suvalue";
-import { SuEvent } from "./suEvent";
 import { globalLookup } from '../../global';
 import { toStr, coerceStr, toBoolean } from '../../ops';
-import { SuEl, defMap } from './suEl';
+import { SuEl, defMap, makeSuValue } from './suEl';
 
 export interface SuEventTarget {
     AddEventListener: (type: string, callback: SuCallable, useCapture: boolean) => void;
@@ -32,7 +31,7 @@ export class SuNode extends SuEl implements SuEventTarget {
         let event: string = toStr(_event);
         let useCapture: boolean = toBoolean(_useCapture);
         let listener = (e: Event) => {
-            let event: SuEvent = new SuEvent(e);
+            let event = makeSuValue(e);
             fn.$callNamed({ event: event });
         };
         this.el.addEventListener(event, listener, useCapture);
@@ -59,16 +58,6 @@ export class SuElement extends SuNode {
     }
     type(): string {
         return 'Element';
-    }
-    GetBoundingClientRect() {
-        let rect = this.el.getBoundingClientRect();
-        return new SuObject([], new Map<string, any>([
-            ['left', Math.round(rect.left)],
-            ['right', Math.round(rect.right)],
-            ['top', Math.round(rect.top)],
-            ['bottom', Math.round(rect.bottom)],
-            ['width', Math.round(rect.width)],
-            ['height', Math.round(rect.height)]]));
     }
     protected lookupGlobal(method: string) {
         return globalLookup("Elements", method) || super.lookupGlobal(method);
@@ -119,18 +108,6 @@ export class SuWindow extends SuEl {
     }
     protected lookupGlobal(method: string) {
         return globalLookup("Windows", method) || super.lookupGlobal(method);
-    }
-}
-
-export class SuLocation extends SuEl {
-    constructor(public el: Location) {
-        super();
-    }
-    type(): string {
-        return 'Location';
-    }
-    display(): string {
-        return `Location(<${this.el.href}>)`;
     }
 }
 
@@ -196,7 +173,6 @@ if (typeof window !== 'undefined') {
     defMap(Document, SuDocument);
     defMap(Node, SuNode);
     defMap(Window, SuWindow);
-    defMap(Location, SuLocation);
 }
 
 //BUILTIN HtmlElMap(Window)
@@ -307,19 +283,6 @@ if (typeof window !== 'undefined') {
     return (SuNode.prototype['Window'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
 (SuNode.prototype['Window'] as any).$params = 'window';
-//GENERATED end
-
-//BUILTIN SuElement.GetBoundingClientRect()
-//GENERATED start
-(SuElement.prototype['GetBoundingClientRect'] as any).$call = SuElement.prototype['GetBoundingClientRect'];
-(SuElement.prototype['GetBoundingClientRect'] as any).$callNamed = function (_named: any) {
-    maxargs(1, arguments.length);
-    return SuElement.prototype['GetBoundingClientRect'].call(this);
-};
-(SuElement.prototype['GetBoundingClientRect'] as any).$callAt = function (args: SuObject) {
-    return (SuElement.prototype['GetBoundingClientRect'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
-};
-(SuElement.prototype['GetBoundingClientRect'] as any).$params = '';
 //GENERATED end
 
 //BUILTIN SuHtmlElement.SetStyle(property, value)
