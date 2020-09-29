@@ -25,7 +25,7 @@ export class ByteBuffer {
         return this.i = pos;
     }
     public slice() {
-        return new ByteBuffer(this.buffer.slice(this.i));
+        return new ByteBuffer(this.buffer.subarray(this.i));
     }
     public limit(limit: number) {
         if (limit > this.buffer.byteLength)
