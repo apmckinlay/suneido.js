@@ -5,6 +5,7 @@ import { SuObject } from "../../suobject";
 import { display } from "../../su";
 import { SuValue, SuCallable } from "../../suvalue";
 import { isFunction } from '../../suBoundMethod';
+import { RootClass } from '../../rootclass';
 
 const convertMap: [any, any][] = [];
 
@@ -73,6 +74,10 @@ class SuBuiltInEl extends SuEl {
     }
 }
 
+function isCallable(value: any): boolean {
+    return isFunction(value) || value instanceof RootClass;
+}
+
 // export for testing
 export function convertSuValue(value: any) {
     if (isString(value))
@@ -85,7 +90,7 @@ export function convertSuValue(value: any) {
         return convertSuObject(value);
     if (value instanceof SuEl)
         return value.el;
-    if (isFunction(value))
+    if (isCallable(value))
         return convertSuCallable(value);
     throw new Error(`Cannot convert value: ${display(value)}`);
 }
