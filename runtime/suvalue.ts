@@ -43,4 +43,5 @@ export interface SuCallable extends SuValue {
     $call: (...args: any[]) => any;
     $callAt: (...args: any[]) => any;
     $callNamed: (...args: any[]) => any;
+    $callbackWrapper?: (...args: any[]) => any;
 }

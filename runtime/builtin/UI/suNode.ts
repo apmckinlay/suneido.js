@@ -8,8 +8,8 @@ import { toStr, coerceStr, toBoolean } from '../../ops';
 import { SuEl, defMap, makeSuValue } from './suEl';
 
 export interface SuEventTarget {
-    AddEventListener: (type: string, callback: SuCallable, useCapture: boolean) => void;
-    // RemoveEventListener: (type: string, callback: SuCallable) => void;
+    AddEventListener: (type: string, callback: SuCallable, useCapture: boolean) => any;
+    RemoveEventListener: (type: string, callback: SuCallable, useCapture: boolean) => void;
 }
 
 export class SuNode extends SuEl implements SuEventTarget {
@@ -27,14 +27,27 @@ export class SuNode extends SuEl implements SuEventTarget {
     }
     AddEventListener(_event: any = mandatory(), fn: SuCallable = mandatory(),
         _useCapture: any = false) {
-        maxargs(4, arguments.length);
+        maxargs(3, arguments.length);
         let event: string = toStr(_event);
         let useCapture: boolean = toBoolean(_useCapture);
         let listener = (e: Event) => {
             let event = makeSuValue(e);
             fn.$callNamed({ event: event });
         };
+        fn.$callbackWrapper = listener;
         this.el.addEventListener(event, listener, useCapture);
+        return fn;
+    }
+
+    RemoveEventListener(_event: any = mandatory(), fn: SuCallable = mandatory(),
+        _useCapture: any = false) {
+        maxargs(3, arguments.length);
+        const event: string = toStr(_event);
+        const useCapture: boolean = toBoolean(_useCapture);
+        if (fn.$callbackWrapper === undefined) {
+            throw new Error("RemoveEventListener: missing callback wrapper");
+        }
+        this.el.removeEventListener(event, fn.$callbackWrapper, useCapture);
     }
 
     static DEFAULT = {};
@@ -255,6 +268,20 @@ if (typeof window !== 'undefined') {
     return (SuNode.prototype['AddEventListener'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
 (SuNode.prototype['AddEventListener'] as any).$params = 'event, fn, useCapture=false';
+//GENERATED end
+
+//BUILTIN SuNode.RemoveEventListener(event, fn, useCapture=false)
+//GENERATED start
+(SuNode.prototype['RemoveEventListener'] as any).$call = SuNode.prototype['RemoveEventListener'];
+(SuNode.prototype['RemoveEventListener'] as any).$callNamed = function ($named: any, event: any, fn: any, useCapture: any) {
+    maxargs(4, arguments.length);
+    ({ event = event, fn = fn, useCapture = useCapture } = $named);
+    return SuNode.prototype['RemoveEventListener'].call(this, event, fn, useCapture);
+};
+(SuNode.prototype['RemoveEventListener'] as any).$callAt = function (args: SuObject) {
+    return (SuNode.prototype['RemoveEventListener'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(SuNode.prototype['RemoveEventListener'] as any).$params = 'event, fn, useCapture=false';
 //GENERATED end
 
 //BUILTIN SuNode.Control(control)
