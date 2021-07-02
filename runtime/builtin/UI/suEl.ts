@@ -60,7 +60,7 @@ export abstract class SuEl extends SuValue {
     }
 }
 
-class SuBuiltInEl extends SuEl {
+export class SuBuiltInEl extends SuEl {
     constructor(public el: any) {
         super();
     }

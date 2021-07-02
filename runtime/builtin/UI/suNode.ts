@@ -5,7 +5,7 @@ import { mandatory, maxargs } from "../../args";
 import { SuCallable } from "../../suvalue";
 import { globalLookup } from '../../global';
 import { toStr, coerceStr, toBoolean } from '../../ops';
-import { SuEl, defMap, makeSuValue } from './suEl';
+import { SuEl, defMap, makeSuValue, convertSuValue, SuBuiltInEl } from './suEl';
 
 export interface SuEventTarget {
     AddEventListener: (type: string, callback: SuCallable, useCapture: boolean) => any;
@@ -180,6 +180,22 @@ export function su_getCurrentDocument(): SuDocument | false {
     return document ? new SuDocument(document) : false;
 }
 
+export function su_makeWebObject(args: SuObject): SuBuiltInEl {
+    if (!args.vec[0]) {
+        throw new Error("missing class name")
+    }
+    let className = toStr(args.vec[0]);
+    let cls: any = window && (window as any)[className];
+    if (!cls || typeof cls !== 'function') {
+        throw new Error(`Cannot find ${className} on global window`);
+    }
+    let convertedArgs: any[] = [];
+    for (let i = 1; i < args.vec.length; i++) {
+        convertedArgs.push(convertSuValue(args.vec[i]));
+    }
+    return makeSuValue(new cls(...convertedArgs));
+}
+
 if (typeof window !== 'undefined') {
     defMap(HTMLElement, SuHtmlElement);
     defMap(Element, SuElement);
@@ -254,6 +270,18 @@ if (typeof window !== 'undefined') {
     return (su_getCurrentDocument as any).$callNamed(util.mapToOb(args.map), ...args.vec);
 };
 (su_getCurrentDocument as any).$params = '';
+//GENERATED end
+
+//BUILTIN MakeWebObject(@args)
+//GENERATED start
+(su_makeWebObject as any).$callAt = su_makeWebObject;
+(su_makeWebObject as any).$call = function (...args: any[]) {
+    return su_makeWebObject(new SuObject(args));
+};
+(su_makeWebObject as any).$callNamed = function (named: any, ...args: any[]) {
+    return su_makeWebObject(new SuObject(args, util.obToMap(named)));
+};
+(su_makeWebObject as any).$params = '@args';
 //GENERATED end
 
 //BUILTIN SuNode.AddEventListener(event, fn, useCapture=false)
