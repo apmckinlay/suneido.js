@@ -1,4 +1,7 @@
 export function libload(name: string) {
+    if ((window as any)?.suCodeBundle && (window as any).suCodeBundle[name]) {
+        return ((window as any).suCodeBundle[name])();
+    }
     let req = new XMLHttpRequest();
     req.open("GET", "/load?" + name, false); // synchronous
     req.send();
