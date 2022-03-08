@@ -132,16 +132,28 @@ export class Pack {
         return SuNum.make(sign * coef, exp - 16);
     }
 
+    private static batch = 100000;
     private static unpackString(buf: ByteBuffer, pos: number, len: number) {
         if (len === 0)
             return "";
-        let c: number[] = [];
+
         let code;
-        for (let i = 0; i < len; i++) {
-            code = buf.get(pos + i);
-            c[i] = Pack.AsciiToUTF16.get(code) || code;
+        let s = "";
+        let start = 0;
+        let end = Math.min(Pack.batch, len);
+        // process in batch to avoid the "Maximum call stack size exceeded" error
+        // from the spread operator (...)
+        while (start < len) {
+            let c: number[] = [];
+            for (let i = start; i < end; i++) {
+                code = buf.get(pos + i);
+                c[i - start] = Pack.AsciiToUTF16.get(code) || code;
+            }
+            s += String.fromCharCode(...c);
+            start = end;
+            end = Math.min(end + Pack.batch, len);
         }
-        return String.fromCharCode(...c);
+        return s;
     }
     private static unpackObject(buf: ByteBuffer) {
         let vec: any[] = [];
