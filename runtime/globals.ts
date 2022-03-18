@@ -77,6 +77,9 @@ defGlobal('Instance?', su_instanceq);
 import { su_booleanq } from "./builtin/booleanq";
 defGlobal("Boolean?", su_booleanq);
 
+import { su_sameq } from "./builtin/sameq";
+defGlobal("Same?", su_sameq);
+
 import { su_webSocketClient } from "./builtin/suwebsocketclient";
 defGlobal("WebSocketClient", su_webSocketClient);
 

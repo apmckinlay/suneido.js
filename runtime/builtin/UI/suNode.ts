@@ -7,24 +7,7 @@ import { globalLookup } from '../../global';
 import { toStr, coerceStr, toBoolean } from '../../ops';
 import { SuEl, defMap, makeSuValue, convertSuValue, SuBuiltInEl } from './suEl';
 
-export interface SuEventTarget {
-    AddEventListener: (type: string, callback: SuCallable, useCapture: boolean) => any;
-    RemoveEventListener: (type: string, callback: SuCallable, useCapture: boolean) => void;
-}
-
-export class SuNode extends SuEl implements SuEventTarget {
-    constructor(public el: Node) {
-        super();
-    }
-    type(): string {
-        return 'Node';
-    }
-    display(): string {
-        return `${this.type()}(<${this.el.nodeName}>)`;
-    }
-    protected lookupGlobal(method: string) {
-        return globalLookup("Nodes", method) || super.lookupGlobal(method);
-    }
+abstract class SuEventTarget extends SuEl {
     AddEventListener(_event: any = mandatory(), fn: SuCallable = mandatory(),
         _useCapture: any = false) {
         maxargs(3, arguments.length);
@@ -48,6 +31,21 @@ export class SuNode extends SuEl implements SuEventTarget {
             throw new Error("RemoveEventListener: missing callback wrapper");
         }
         this.el.removeEventListener(event, fn.$callbackWrapper, useCapture);
+    }
+}
+
+export class SuNode extends SuEventTarget {
+    constructor(public el: Node) {
+        super();
+    }
+    type(): string {
+        return 'Node';
+    }
+    display(): string {
+        return `${this.type()}(<${this.el.nodeName}>)`;
+    }
+    protected lookupGlobal(method: string) {
+        return globalLookup("Nodes", method) || super.lookupGlobal(method);
     }
 
     static DEFAULT = {};
@@ -109,7 +107,7 @@ export class SuDocument extends SuNode {
     }
 }
 
-export class SuWindow extends SuEl {
+export class SuWindow extends SuEventTarget {
     constructor(public el: Window) {
         super();
     }
@@ -182,7 +180,7 @@ export function su_getCurrentDocument(): SuDocument | false {
 
 export function su_makeWebObject(args: SuObject): SuBuiltInEl {
     if (!args.vec[0]) {
-        throw new Error("missing class name")
+        throw new Error("missing class name");
     }
     let className = toStr(args.vec[0]);
     let cls: any = window && (window as any)[className];
@@ -284,32 +282,32 @@ if (typeof window !== 'undefined') {
 (su_makeWebObject as any).$params = '@args';
 //GENERATED end
 
-//BUILTIN SuNode.AddEventListener(event, fn, useCapture=false)
+//BUILTIN SuEventTarget.AddEventListener(event, fn, useCapture=false)
 //GENERATED start
-(SuNode.prototype['AddEventListener'] as any).$call = SuNode.prototype['AddEventListener'];
-(SuNode.prototype['AddEventListener'] as any).$callNamed = function ($named: any, event: any, fn: any, useCapture: any) {
+(SuEventTarget.prototype['AddEventListener'] as any).$call = SuEventTarget.prototype['AddEventListener'];
+(SuEventTarget.prototype['AddEventListener'] as any).$callNamed = function ($named: any, event: any, fn: any, useCapture: any) {
     maxargs(4, arguments.length);
     ({ event = event, fn = fn, useCapture = useCapture } = $named);
-    return SuNode.prototype['AddEventListener'].call(this, event, fn, useCapture);
+    return SuEventTarget.prototype['AddEventListener'].call(this, event, fn, useCapture);
 };
-(SuNode.prototype['AddEventListener'] as any).$callAt = function (args: SuObject) {
-    return (SuNode.prototype['AddEventListener'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+(SuEventTarget.prototype['AddEventListener'] as any).$callAt = function (args: SuObject) {
+    return (SuEventTarget.prototype['AddEventListener'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(SuNode.prototype['AddEventListener'] as any).$params = 'event, fn, useCapture=false';
+(SuEventTarget.prototype['AddEventListener'] as any).$params = 'event, fn, useCapture=false';
 //GENERATED end
 
-//BUILTIN SuNode.RemoveEventListener(event, fn, useCapture=false)
+//BUILTIN SuEventTarget.RemoveEventListener(event, fn, useCapture=false)
 //GENERATED start
-(SuNode.prototype['RemoveEventListener'] as any).$call = SuNode.prototype['RemoveEventListener'];
-(SuNode.prototype['RemoveEventListener'] as any).$callNamed = function ($named: any, event: any, fn: any, useCapture: any) {
+(SuEventTarget.prototype['RemoveEventListener'] as any).$call = SuEventTarget.prototype['RemoveEventListener'];
+(SuEventTarget.prototype['RemoveEventListener'] as any).$callNamed = function ($named: any, event: any, fn: any, useCapture: any) {
     maxargs(4, arguments.length);
     ({ event = event, fn = fn, useCapture = useCapture } = $named);
-    return SuNode.prototype['RemoveEventListener'].call(this, event, fn, useCapture);
+    return SuEventTarget.prototype['RemoveEventListener'].call(this, event, fn, useCapture);
 };
-(SuNode.prototype['RemoveEventListener'] as any).$callAt = function (args: SuObject) {
-    return (SuNode.prototype['RemoveEventListener'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+(SuEventTarget.prototype['RemoveEventListener'] as any).$callAt = function (args: SuObject) {
+    return (SuEventTarget.prototype['RemoveEventListener'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
-(SuNode.prototype['RemoveEventListener'] as any).$params = 'event, fn, useCapture=false';
+(SuEventTarget.prototype['RemoveEventListener'] as any).$params = 'event, fn, useCapture=false';
 //GENERATED end
 
 //BUILTIN SuNode.Control(control)
