@@ -444,7 +444,7 @@ export class SuObject extends SuValue {
                 if (!SuObject.equals3(x.vec[i], y.vec[i], stack))
                     return false;
             for (let [k, v] of x.map)
-                if (!SuObject.equals3(v, y.map.get(k), stack))
+                if (!y.map.has(k) || !SuObject.equals3(v, y.map.get(k), stack))
                     return false;
             return true;
         } finally {
