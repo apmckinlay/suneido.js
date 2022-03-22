@@ -73,7 +73,14 @@ assert.that(!ob2.equals(ob));
 ob2.put('a', 'alpha');
 assert.that(ob.equals(ob2));
 assert.that(ob2.equals(ob));
-
+ob.put('b', 'Beta');
+ob2.put('c', 'Test');
+assert.that(!ob.equals(ob2));
+assert.that(!ob2.equals(ob));
+ob.put('c', 'Test');
+ob2.put('b', 'Beta');
+assert.that(ob.equals(ob2));
+assert.that(ob2.equals(ob));
 // cmp
 function cmp(x: SuObject, y: SuObject, expected: number): void {
     assert.equal(x.compareTo(y), expected);
