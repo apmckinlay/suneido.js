@@ -243,7 +243,7 @@ export class Strings {
         let n = toInt(nArg);
         let dst = "";
         for (let i = 0; i < this.length; i += n) {
-            dst += f.$call.call(undefined, this.substr(i, n));
+            dst += f.$call.call(f, this.substr(i, n));
         }
         return dst;
     }
