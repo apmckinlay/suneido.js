@@ -23,6 +23,11 @@ assert.equal(sud1.WeekDay(4), 0);
 assert.equal(sud3.MinusDays(sud1), 6);
 assert.equal(sud4.MinusSeconds(sud3), 12.345);
 
+// test daylight saving
+let sud7 = SuDate.make(2022, 10, 21, 0, 0, 0, 0);
+let sud8 = SuDate.make(2022, 11, 18, 0, 0, 0, 0);
+assert.equal(sud8.MinusDays(sud7), 28);
+
 sud2 = sud3.Plus(0, 0, 0, 1, 2, 3, 4);
 assert.equal(sud2, sud5);
 

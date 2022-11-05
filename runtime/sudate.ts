@@ -338,7 +338,7 @@ export class SuDate extends SuValue {
     MinusDays(_sud2: any = mandatory()): number {
         maxargs(1, arguments.length);
         let sud2 = toSuDate(_sud2, "MinusDays");
-        let timeDiff = this.toDate().getTime() - sud2.toDate().getTime();
+        let timeDiff = this.utc() - sud2.utc();
         return Math.ceil(timeDiff / (1000 * 3600 * 24));
     }
 
@@ -350,7 +350,7 @@ export class SuDate extends SuValue {
     MinusSeconds(_sud2: any = mandatory()): number {
         maxargs(1, arguments.length);
         let sud2 = toSuDate(_sud2, "MinusSeconds");
-        let timeDiff = this.toDate().getTime() - sud2.toDate().getTime();
+        let timeDiff = this.utc() - sud2.utc();
         return timeDiff / 1000;
     }
 
@@ -457,6 +457,11 @@ export class SuDate extends SuValue {
     /** Convert to a JavaScript Date */
     toDate(): Date {
         return new Date(this.Year(), this.Month() - 1, this.Day(),
+            this.Hour(), this.Minute(), this.Second(), this.Millisecond());
+    }
+
+    utc(): number {
+        return Date.UTC(this.Year(), this.Month() - 1, this.Day(),
             this.Hour(), this.Minute(), this.Second(), this.Millisecond());
     }
 
