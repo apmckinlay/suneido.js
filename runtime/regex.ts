@@ -401,8 +401,7 @@ abstract class Element {
 }
 class StartOfLine extends Element {
     public omatch(s: string, si: number): number {
-        return (si === 0 || s[si - 1] === '\r' ||
-            s[si - 1] === '\n') ? si : Regex.FAIL;
+        return (si === 0 || s[si - 1] === '\n') ? si : Regex.FAIL;
     }
     public nextPossible(s: string, si: number, sn: number): number {
         if (si === sn)
@@ -417,7 +416,7 @@ class StartOfLine extends Element {
 class EndOfLine extends Element {
     public omatch(s: string, si: number): number {
         return (si >= s.length || s[si] === '\r' ||
-            s[si] === '\n') ? si : Regex.FAIL;
+            (s[si] === '\n' && (si < 1 || s[si - 1] !== '\r'))) ? si : Regex.FAIL;
     }
     public toString(): string {
         return '$';
