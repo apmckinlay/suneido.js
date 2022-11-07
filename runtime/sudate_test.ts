@@ -21,12 +21,25 @@ assert.equal(sud1.WeekDay("MON"), 3);
 assert.equal(sud1.WeekDay(4), 0);
 
 assert.equal(sud3.MinusDays(sud1), 6);
+assert.equal(sud1.MinusDays(sud3), -6);
 assert.equal(sud4.MinusSeconds(sud3), 12.345);
+assert.equal(sud3.MinusSeconds(sud4), -12.345);
 
 // test daylight saving
 let sud7 = SuDate.make(2022, 10, 21, 0, 0, 0, 0);
 let sud8 = SuDate.make(2022, 11, 18, 0, 0, 0, 0);
 assert.equal(sud8.MinusDays(sud7), 28);
+assert.equal(sud7.MinusDays(sud8), -28);
+
+let sud9 = SuDate.make(2022, 10, 21, 0, 0, 0, 0);
+let sud10 = SuDate.make(2022, 10, 21, 0, 0, 1, 0);
+assert.equal(sud10.MinusDays(sud9), 0);
+assert.equal(sud9.MinusDays(sud10), 0);
+
+let sud11 = SuDate.make(2022, 10, 21, 23, 59, 59, 0);
+let sud12 = SuDate.make(2022, 10, 22, 0, 0, 0, 0);
+assert.equal(sud12.MinusDays(sud11), 1);
+assert.equal(sud11.MinusDays(sud12), -1);
 
 sud2 = sud3.Plus(0, 0, 0, 1, 2, 3, 4);
 assert.equal(sud2, sud5);
