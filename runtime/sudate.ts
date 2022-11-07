@@ -338,7 +338,7 @@ export class SuDate extends SuValue {
     MinusDays(_sud2: any = mandatory()): number {
         maxargs(1, arguments.length);
         let sud2 = toSuDate(_sud2, "MinusDays");
-        let timeDiff = this.utc() - sud2.utc();
+        let timeDiff = this.utc(true) - sud2.utc(true);
         return Math.ceil(timeDiff / (1000 * 3600 * 24));
     }
 
@@ -460,9 +460,10 @@ export class SuDate extends SuValue {
             this.Hour(), this.Minute(), this.Second(), this.Millisecond());
     }
 
-    utc(): number {
+    utc(noTime: boolean = false): number {
         return Date.UTC(this.Year(), this.Month() - 1, this.Day(),
-            this.Hour(), this.Minute(), this.Second(), this.Millisecond());
+            noTime ? 0 : this.Hour(), noTime ? 0 : this.Minute(),
+            noTime ? 0 : this.Second(), noTime ? 0 : this.Millisecond());
     }
 
     static fromDate(d: Date): SuDate {
