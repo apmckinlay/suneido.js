@@ -2,7 +2,7 @@ import * as util from '../../utility';
 import { isString, toStr } from "../../ops";
 import { SuNum } from "../../sunum";
 import { SuObject } from "../../suobject";
-import { display } from "../../su";
+import { display, mandatory, maxargs } from "../../su";
 import { SuValue, SuCallable } from "../../suvalue";
 import { isFunction } from '../../suBoundMethod';
 import { RootClass } from '../../rootclass';
@@ -57,6 +57,13 @@ export abstract class SuEl extends SuValue {
     put(key: any, val: any): void {
         let k = toStr(key);
         this.el[k] = convertSuValue(val);
+    }
+    GetDefault(key: any = mandatory(), def: any = mandatory()): any {
+        maxargs(2, arguments.length);
+        let val = this.get(key);
+        if (val !== undefined)
+            return val;
+        return def;
     }
 }
 
@@ -154,3 +161,18 @@ function isPureObject(value: any): boolean {
     }
     return Object.getPrototypeOf(value).isPrototypeOf(Object);
 }
+
+//BUILTIN SuEl.GetDefault(key, value)
+//GENERATED start
+(SuEl.prototype['GetDefault'] as any).$call = SuEl.prototype['GetDefault'];
+(SuEl.prototype['GetDefault'] as any).$callNamed = function ($named: any, key: any, value: any) {
+    maxargs(3, arguments.length);
+    ({ key = key, value = value } = $named);
+    return SuEl.prototype['GetDefault'].call(this, key, value);
+};
+(SuEl.prototype['GetDefault'] as any).$callAt = function (args: SuObject) {
+    return (SuEl.prototype['GetDefault'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(SuEl.prototype['GetDefault'] as any).$params = 'key, value';
+//GENERATED end
+

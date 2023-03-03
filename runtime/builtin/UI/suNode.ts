@@ -14,8 +14,12 @@ abstract class SuEventTarget extends SuEl {
         let event: string = toStr(_event);
         let useCapture: boolean = toBoolean(_useCapture);
         let listener = (e: Event) => {
-            let event = makeSuValue(e);
-            fn.$callNamed({ event: event });
+            // safari autofill
+            if (event === 'keydown' && e instanceof CustomEvent) {
+                return;
+            }
+            let suValue = makeSuValue(e);
+            fn.$callNamed({ event: suValue });
         };
         fn.$callbackWrapper = listener;
         this.el.addEventListener(event, listener, useCapture);
@@ -154,13 +158,6 @@ export class SuHtmlElMap extends SuValue {
             return false;
         return (key.el as any).su_window === this.suWin;
     }
-    GetDefault(key: any = mandatory(), def: any = mandatory()): any {
-        maxargs(2, arguments.length);
-        let val = this.get(key);
-        if (val !== undefined)
-            return val;
-        return def;
-    }
 }
 
 export function su_htmlElMap(_suWin: any): SuHtmlElMap {
@@ -228,20 +225,6 @@ if (typeof window !== 'undefined') {
     return (SuHtmlElMap.prototype['Member?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
 (SuHtmlElMap.prototype['Member?'] as any).$params = 'key';
-//GENERATED end
-
-//BUILTIN SuHtmlElMap.GetDefault(key, value)
-//GENERATED start
-(SuHtmlElMap.prototype['GetDefault'] as any).$call = SuHtmlElMap.prototype['GetDefault'];
-(SuHtmlElMap.prototype['GetDefault'] as any).$callNamed = function ($named: any, key: any, value: any) {
-    maxargs(3, arguments.length);
-    ({ key = key, value = value } = $named);
-    return SuHtmlElMap.prototype['GetDefault'].call(this, key, value);
-};
-(SuHtmlElMap.prototype['GetDefault'] as any).$callAt = function (args: SuObject) {
-    return (SuHtmlElMap.prototype['GetDefault'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
-};
-(SuHtmlElMap.prototype['GetDefault'] as any).$params = 'key, value';
 //GENERATED end
 
 //BUILTIN GetCurrentWindow()
