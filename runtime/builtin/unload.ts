@@ -1,6 +1,6 @@
 import { clear, clearAll } from "../global";
 import { maxargs } from "../args";
-import { toStr } from "../Ops";
+import { toStr } from "../ops";
 import { SuObject } from "../suobject";
 import * as util from "../utility";
 
