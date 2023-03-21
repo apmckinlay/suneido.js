@@ -21,20 +21,23 @@ export class SuDate extends SuValue {
     private date: number;
     private time: number;
 
-    constructor(date: number, time: number) {
+    // extra is only used for timestamps, to allow more unique values
+    constructor(date: number, time: number, extra: number = 0) {
         super();
         this.date = date;
-        this.time = time;
+        // using more than 32 bits for time so we can't use bitwise operations
+        this.time = (time * 256) + extra;
         Object.freeze(this); // SuDate is immutable
     }
 
     static make(year: number, month: number, day: number,
-        hour: number, minute: number, second: number, millisecond: number): SuDate {
+        hour: number, minute: number, second: number, millisecond: number,
+        extra: number = 0): SuDate {
         if (!valid(year, month, day, hour, minute, second, millisecond))
             throw new Error("bad date");
         let date = (year << 9) | (month << 5) | day;
         let time = (hour << 22) | (minute << 16) | (second << 10) | millisecond;
-        return new SuDate(date, time);
+        return new SuDate(date, time, extra);
     }
 
     type(): string {
@@ -46,7 +49,7 @@ export class SuDate extends SuValue {
     }
 
     timePart(): number {
-        return this.time;
+        return (this.time / 256) | 0;
     }
 
     datePart(): number {
@@ -285,7 +288,7 @@ export class SuDate extends SuValue {
             tn = s.length - sn - 1;
         else
             sn = s.length;
-        if (sn !== 8 || (tn !== 0 && tn !== 4 && tn !== 6 && tn !== 9))
+        if (sn !== 8 || (tn !== 0 && tn !== 4 && tn !== 6 && tn !== 9 && tn !== 12))
             return null;
 
         let year = nsub(s, 0, 4);
@@ -296,9 +299,11 @@ export class SuDate extends SuValue {
         let minute = nsub(s, 11, 2);
         let second = nsub(s, 13, 2);
         let millisecond = nsub(s, 15, 3);
+        let extra = nsub(s, 18, 3)
         if (!valid(year, month, day, hour, minute, second, millisecond))
             return null;
-        return SuDate.make(year, month, day, hour, minute, second, millisecond);
+        return SuDate.make(year, month, day, hour, minute, second, millisecond,
+            extra);
     }
 
     /**
@@ -383,7 +388,7 @@ export class SuDate extends SuValue {
      */
     Hour(): number {
         maxargs(0, arguments.length);
-        return this.time >> 22;
+        return (this.time / 256) >> 22;
     }
 
     /**
@@ -391,7 +396,7 @@ export class SuDate extends SuValue {
      */
     Minute(): number {
         maxargs(0, arguments.length);
-        return (this.time >> 16) & 0x3f;
+        return ((this.time / 256) >> 16) & 0x3f;
     }
 
     /**
@@ -399,7 +404,7 @@ export class SuDate extends SuValue {
      */
     Second(): number {
         maxargs(0, arguments.length);
-        return (this.time >> 10) & 0x3f;
+        return ((this.time / 256) >> 10) & 0x3f;
     }
 
     /**
@@ -407,7 +412,11 @@ export class SuDate extends SuValue {
      */
     Millisecond(): number {
         maxargs(0, arguments.length);
-        return this.time & 0x3ff;
+        return (this.time / 256) & 0x3ff;
+    }
+
+    extra(): number {
+        return this.time & 0xff;
     }
 
     /**
@@ -437,7 +446,7 @@ export class SuDate extends SuValue {
 
     toString(): string {
         let s = "#" +
-            ("0000" + this.Year()).slice(-4) +
+            ("000" + this.Year()).slice(-4) +
             ("0" + this.Month()).slice(-2) +
             ("0" + this.Day()).slice(-2);
         if (this.time !== 0) {
@@ -445,11 +454,14 @@ export class SuDate extends SuValue {
                 ("0" + this.Hour()).slice(-2) +
                 ("0" + this.Minute()).slice(-2) +
                 ("0" + this.Second()).slice(-2) +
-                ("000" + this.Millisecond()).slice(-3);
-            if (s.endsWith("00000"))
-                return s.substring(0, 14);
-            if (s.endsWith("000"))
-                return s.substring(0, 16);
+                ("00" + this.Millisecond()).slice(-3) +
+                ("00" + this.extra()).slice(-3);
+            if (s.endsWith("00000000")) // sec, ms, extra
+                return s.slice(0, -8);
+            else if (s.endsWith("000000")) // ms, extra
+                return s.slice(0, -6);
+            else if (s.endsWith("000")) // extra
+                return s.slice(0, -3);
         }
         return s;
     }

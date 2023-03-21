@@ -8,6 +8,8 @@ import { toInt, toStr, coerceStr } from "../ops";
 const BEGIN = SuDate.literal('17000101')!;
 const END = SuDate.literal('30000101')!;
 
+const tsPat = /^\d\d\d\d\d\d\d\d\.\d\d\d\d\d\d\d\d\d\d\d\d$/
+
 class DateClass extends SuBuiltinClass {
     protected className = "Date";
     protected newInstance(_s?: any, _order?: any,
@@ -27,12 +29,11 @@ class DateClass extends SuBuiltinClass {
                 return _s;
             let s = coerceStr(_s);
             let d;
-            if (_order === undefined) {
-                if (s.startsWith("#"))
-                    d = SuDate.literal(s);
-                else
-                    d = SuDate.parse(s);
-            } else
+            if (s.startsWith("#") || s.search(tsPat) === 0)
+                d = SuDate.literal(s);
+            else if (_order === undefined)
+                d = SuDate.parse(s);
+            else
                 d =  SuDate.parse(s, toStr(_order));
             return d == null ? false : d;
         } else

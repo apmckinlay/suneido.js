@@ -198,6 +198,7 @@ export class Pack {
     private static unpackDate(buf: ByteBuffer) {
         let date = buf.getInt();
         let time = buf.getInt();
-        return new SuDate(date, time);
+        let extra = (buf.remaining() === 0) ? 0 : buf.get(); // timestamp
+        return new SuDate(date, time, extra);
     }
 }

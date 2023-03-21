@@ -7,3 +7,8 @@ assert.equal(DATE_CLASS.$call('16-9-8', 'ydM'), SuDate.literal('20160809'));
 
 let d = DATE_CLASS.$call(undefined, undefined, 2000);
 assert.equal(d!.Year(), 2000);
+
+// extended timestamps
+let s = "20230320.112233444123"
+assert.equal(DATE_CLASS.$call(s).toString(), "#" + s);
+assert.equal(DATE_CLASS.$call("#" + s).toString(), "#" + s);
