@@ -55,3 +55,11 @@ assert.equal(fn1({a: "aa", b: "bb"}), makeObj([], ["a", "aa"], ["b", "bb"]));
 assert.equal(
     fn1([1, true, {a: "aa", b: [], c: null}]),
     makeObj([1, true, makeObj([], ["a", "aa"], ["b", makeObj([])], ["c", undefined])]));
+// circular deps
+let arr: any[] = [1];
+arr[1] = arr;
+assert.equal(fn1(arr), 
+    makeObj([1, makeObj([1, makeObj([1, makeObj([1, makeObj([1, 
+    makeObj([1, makeObj([1, makeObj([1, makeObj([1, makeObj([1, 
+    makeObj([1, makeObj([1, makeObj([1, makeObj([1, makeObj([1, 
+    makeObj([1, makeObj([1, makeObj([1, makeObj([1, makeObj([1, makeObj([])])])])])])])])])])])])])])])])])])])])]))

@@ -123,8 +123,9 @@ function convertSuCallable(callable: SuCallable) {
     };
 }
 
+const maxLevel = 20;
 // export for testing
-export function makeSuValue(value: any) {
+export function makeSuValue(value: any, level: number = 0) {
     let type = typeof value;
     if (value == null)
         return undefined;
@@ -137,17 +138,20 @@ export function makeSuValue(value: any) {
             return new convertMap[i][1](value);
     }
     if (value && value.constructor) {
+        if (level >= maxLevel) {
+            return new SuObject()
+        }
         if (Array.isArray(value)) {
             const ob = new SuObject();
             for (let i = 0; i < value.length; i++)
-                ob.add(makeSuValue(value[i]));
+                ob.add(makeSuValue(value[i], level + 1));
             return ob;
         }
         if (isPureObject(value)) {
             const ob = new SuObject();
             for (let key in value)
                 if (value.hasOwnProperty(key))
-                    ob.put(key, makeSuValue(value[key]));
+                    ob.put(key, makeSuValue(value[key], level + 1));
             return ob;
         }
         return new SuBuiltInEl(value);
