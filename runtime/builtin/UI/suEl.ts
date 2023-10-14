@@ -123,7 +123,7 @@ function convertSuCallable(callable: SuCallable) {
     };
 }
 
-const maxLeverl = 20;
+const maxLevel = 20;
 // export for testing
 export function makeSuValue(value: any, level: number = 0) {
     let type = typeof value;
@@ -138,7 +138,7 @@ export function makeSuValue(value: any, level: number = 0) {
             return new convertMap[i][1](value);
     }
     if (value && value.constructor) {
-        if (level >= maxLeverl) {
+        if (level >= maxLevel) {
             return new SuObject()
         }
         if (Array.isArray(value)) {
