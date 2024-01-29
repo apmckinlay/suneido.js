@@ -310,6 +310,36 @@ export class SuObject extends SuValue {
         return copy;
     }
 
+    Min(): any {
+        maxargs(0, arguments.length);
+        let iter = new ObjectIter(this.toObject(), Values.ITER_VALUES, true, true);
+        let min = iter.Next();
+        if (min === iter) {
+            throw new Error("cannot use Min on empty object");   
+        }
+        for (let v = iter.Next(); v !== iter; v = iter.Next()) {
+            if (cmp(v, min) < 0) {
+                min = v;
+            }
+        }
+        return min;
+    }
+
+    Max(): any {
+        maxargs(0, arguments.length);
+        let iter = new ObjectIter(this.toObject(), Values.ITER_VALUES, true, true);
+        let max = iter.Next();
+        if (max === iter) {
+            throw new Error("cannot use Max on empty object");
+        }
+        for (let v = iter.Next(); v !== iter; v = iter.Next()) {
+            if (cmp(v, max) > 0) {
+                max = v;
+            }
+        }
+        return max;
+    }
+
     Slice(i: number = mandatory(), n: number = this.vecsize()): SuObject {
         maxargs(2, arguments.length);
         return this.slice(i, n < 0 ? n : i + n);

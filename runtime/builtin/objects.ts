@@ -49,6 +49,32 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Copy'] as any).$params = '';
 //GENERATED end
 
+//BUILTIN SuObject.Min()
+//GENERATED start
+(SuObject.prototype['Min'] as any).$call = SuObject.prototype['Min'];
+(SuObject.prototype['Min'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
+    return SuObject.prototype['Min'].call(this);
+};
+(SuObject.prototype['Min'] as any).$callAt = function (args: SuObject) {
+    return (SuObject.prototype['Min'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(SuObject.prototype['Min'] as any).$params = '';
+//GENERATED end
+
+//BUILTIN SuObject.Max()
+//GENERATED start
+(SuObject.prototype['Max'] as any).$call = SuObject.prototype['Max'];
+(SuObject.prototype['Max'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
+    return SuObject.prototype['Max'].call(this);
+};
+(SuObject.prototype['Max'] as any).$callAt = function (args: SuObject) {
+    return (SuObject.prototype['Max'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(SuObject.prototype['Max'] as any).$params = '';
+//GENERATED end
+
 //BUILTIN SuObject.Size(list=false, named=false)
 //GENERATED start
 (SuObject.prototype['Size'] as any).$call = SuObject.prototype['Size'];

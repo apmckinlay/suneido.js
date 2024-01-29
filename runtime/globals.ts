@@ -40,11 +40,14 @@ defGlobal('Date?', su_dateq);
 import { su_built } from "./builtin/built";
 defGlobal('Built', su_built);
 
-import { su_stringq } from "./builtin/strings";
+import { su_stringq, su_global } from "./builtin/strings";
 defGlobal('String?', su_stringq);
+defGlobal('Global', su_global);
 
-import { su_numberq } from "./builtin/numbers";
+import { su_numberq, su_max, su_min } from "./builtin/numbers";
 defGlobal('Number?', su_numberq);
+defGlobal('Max', su_max);
+defGlobal('Min', su_min);
 
 import { su_sequence } from "./builtin/susequence";
 defGlobal('Sequence', su_sequence);

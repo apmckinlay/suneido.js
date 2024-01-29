@@ -6,7 +6,7 @@ import { SuObject } from "../suobject";
 import { mandatory, maxargs } from "../args";
 import { Result, ForEach, Regex } from "../regex";
 import { RegexReplace} from "../regexreplace";
-import { SuIterable, SuCallable } from "../suvalue";
+import { SuIterable, SuCallable, SuValue } from "../suvalue";
 import { toInt, toStr, toBoolean, isString } from "../ops";
 import { Pack } from "../pack";
 
@@ -26,6 +26,34 @@ export function su_stringq(x: any): boolean {
     return (su_stringq as any).$callNamed(util.mapToOb(args.map), ...args.vec);
 };
 (su_stringq as any).$params = 'value';
+//GENERATED end
+
+export function su_global(x: any): any {
+    maxargs(1, arguments.length);
+    let s = toStr(x);
+    let splits = s.split('.');
+    let val = global(splits[0]) as SuValue;
+    if (splits.length > 1) {
+        val = val.get(splits[1]);
+        if (val == null) {
+            throw new Error("Global: " + splits[1] + " not found");
+        }
+    }
+    return val;
+}
+
+//BUILTIN Global(name)
+//GENERATED start
+(su_global as any).$call = su_global;
+(su_global as any).$callNamed = function ($named: any, name: any) {
+    maxargs(2, arguments.length);
+    ({ name = name } = $named);
+    return su_global(name);
+};
+(su_global as any).$callAt = function (args: SuObject) {
+    return (su_global as any).$callNamed(util.mapToOb(args.map), ...args.vec);
+};
+(su_global as any).$params = 'name';
 //GENERATED end
 
 export class Strings {

@@ -114,6 +114,21 @@ ob = new SuObject();
 ob.add('a b');
 assert.equal(ob.toString(), '#("a b")');
 
+// Min and Max
+ob = new SuObject();
+assert.throws(() => ob.Max(), "cannot use Max on empty object")
+assert.throws(() => ob.Min(), "cannot use Min on empty object")
+ob.add(1);
+ob.add(100);
+ob.add(200);
+ob.add(1);
+assert.equal(ob.Max(), 200)
+assert.equal(ob.Min(), 1)
+ob.put('a', 0);
+ob.put('b', 300);
+assert.equal(ob.Max(), 300)
+assert.equal(ob.Min(), 0)
+
 // Join
 function joinTest(expected: string, sep: string, ...args: any[]) {
     let temp = new SuObject(args);
