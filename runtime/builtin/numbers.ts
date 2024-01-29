@@ -22,6 +22,38 @@ export function su_numberq(x: any): boolean {
 (su_numberq as any).$params = 'value';
 //GENERATED end
 
+export function su_max(args: SuObject): any {
+    return args.Max();
+}
+
+export function su_min(args: SuObject): any {
+    return args.Min();
+}
+
+//BUILTIN Max(@args) 
+//GENERATED start
+(su_max as any).$callAt = su_max;
+(su_max as any).$call = function (...args: any[]) {
+    return su_max(new SuObject(args));
+};
+(su_max as any).$callNamed = function (named: any, ...args: any[]) {
+    return su_max(new SuObject(args, util.obToMap(named)));
+};
+(su_max as any).$params = '@args';
+//GENERATED end
+
+//BUILTIN Min(@args)
+//GENERATED start
+(su_min as any).$callAt = su_min;
+(su_min as any).$call = function (...args: any[]) {
+    return su_min(new SuObject(args));
+};
+(su_min as any).$callNamed = function (named: any, ...args: any[]) {
+    return su_min(new SuObject(args, util.obToMap(named)));
+};
+(su_min as any).$params = '@args';
+//GENERATED end
+
 // round to integer
 function int(n: Num, trunc: boolean = false): number {
     if (n instanceof SuNum)
