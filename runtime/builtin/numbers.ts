@@ -2,6 +2,8 @@ import { SuNum, RoundingMode } from "../sunum";
 import { SuObject } from "../suobject";
 import * as util from "../utility";
 import { maxargs } from "../args";
+import { isString } from "../ops";
+import { type } from "../type";
 
 type Num = number | SuNum;
 
@@ -20,6 +22,48 @@ export function su_numberq(x: any): boolean {
     return (su_numberq as any).$callNamed(util.mapToOb(args.map), ...args.vec);
 };
 (su_numberq as any).$params = 'value';
+//GENERATED end
+
+export function su_number(x: any) {
+    maxargs(1, arguments.length);
+    if (isString(x)) {
+        let s: string = x.toString();
+        s = s.trim();
+        if (s === '') {
+            return SuNum.ZERO;
+        }
+        s = s.replace(/[,_]/g, '');
+        try {
+            if (s.startsWith('0x')) {
+                let int = parseInt(s);
+                if (!isNaN(int)) {
+                    return int;
+                }
+            }
+            let res = SuNum.parse(s);
+            if (res !== null) {
+                return res;
+            }
+        } catch (e) {}
+    } else if (su_numberq(x)) {
+        return x;
+    } else if (x === false) {
+        return SuNum.ZERO;
+    }
+    throw new Error("can't convert " + type(x) + " to number");
+}
+//BUILTIN Number(value)
+//GENERATED start
+(su_number as any).$call = su_number;
+(su_number as any).$callNamed = function ($named: any, value: any) {
+    maxargs(2, arguments.length);
+    ({ value = value } = $named);
+    return su_number(value);
+};
+(su_number as any).$callAt = function (args: SuObject) {
+    return (su_number as any).$callNamed(util.mapToOb(args.map), ...args.vec);
+};
+(su_number as any).$params = 'value';
 //GENERATED end
 
 export function su_max(args: SuObject): any {

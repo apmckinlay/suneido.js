@@ -44,8 +44,9 @@ import { su_stringq, su_global } from "./builtin/strings";
 defGlobal('String?', su_stringq);
 defGlobal('Global', su_global);
 
-import { su_numberq, su_max, su_min } from "./builtin/numbers";
+import { su_numberq, su_max, su_min, su_number } from "./builtin/numbers";
 defGlobal('Number?', su_numberq);
+defGlobal('Number', su_number);
 defGlobal('Max', su_max);
 defGlobal('Min', su_min);
 
