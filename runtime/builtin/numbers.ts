@@ -34,6 +34,12 @@ export function su_number(x: any) {
         }
         s = s.replace(/[,_]/g, '');
         try {
+            if (s.startsWith('0x')) {
+                let int = parseInt(s);
+                if (!isNaN(int)) {
+                    return int;
+                }
+            }
             let res = SuNum.parse(s);
             if (res !== null) {
                 return res;

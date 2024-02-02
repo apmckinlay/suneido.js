@@ -50,7 +50,7 @@ export class SuNum extends SuValue {
             i++;
         let before = spanDigits(s, i);
         i += before.length;
-        before = trimLeft(before, '0');
+        before = trimLeft(before, '0', before.length - 1);
         let after = "";
         if (i < s.length && s[i] === '.') {
             i++;
@@ -578,9 +578,9 @@ function trimRight(s: string, c: string): string {
     return s.substring(0, i + 1);
 }
 
-function trimLeft(s: string, c: string): string {
+function trimLeft(s: string, c: string, to: number): string {
     let i = 0;
-    while (s[i] === c)
+    while (i < to && s[i] === c)
         i++;
     return s.substring(i);
 }
