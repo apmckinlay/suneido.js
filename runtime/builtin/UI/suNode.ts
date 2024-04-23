@@ -13,14 +13,17 @@ abstract class SuEventTarget extends SuEl {
         maxargs(3, arguments.length);
         let event: string = toStr(_event);
         let useCapture: boolean = toBoolean(_useCapture);
-        let listener = (e: Event) => {
-            // safari autofill
-            if (event === 'keydown' && e instanceof CustomEvent) {
-                return;
-            }
-            let suValue = makeSuValue(e);
-            fn.$callNamed({ event: suValue });
-        };
+        let listener = event === 'keydown' || event === 'keyup' ? (e: Event) => {
+                // browser autofill
+                if (!(e as KeyboardEvent).key) {
+                    return;
+                }
+                let suValue = makeSuValue(e);
+                fn.$callNamed({ event: suValue });
+            } : (e: Event) => {
+                let suValue = makeSuValue(e);
+                fn.$callNamed({ event: suValue });
+            };
         fn.$callbackWrapper = listener;
         this.el.addEventListener(event, listener, useCapture);
         return fn;
