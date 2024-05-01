@@ -3,35 +3,12 @@ import { ByteBuffer } from "./bytebuffer";
 import { SuRecord } from "./surecord";
 import { SuObject } from "./suobject";
 import { SuDate } from "./sudate";
-import { canonical } from "./ops";
-
-enum Tag {
-    FALSE = 0,
-    TRUE,
-    MINUS,
-    PLUS,
-    STRING,
-    DATE,
-    OBJECT,
-    RECORD
-}
+import { canonical, isString } from "./ops";
+import { SuValue } from "./suvalue";
+import { type } from "./type";
+import { Tag, UTF16ToAscii, AsciiToUTF16, Encoder, convert } from "./packbase";
 
 export class Pack {
-    private static UTF16ToAscii = new Map([
-        [8364, 128], [8218, 130], [402, 131], [8222, 132], [8230, 133],
-        [8224, 134], [8225, 135], [710, 136], [8240, 137], [352, 138],
-        [8249, 139], [338, 140], [381, 142], [8216, 145], [8217, 146],
-        [8220, 147], [8221, 148], [8226, 149], [8211, 150], [8212, 151],
-        [732, 152], [8482, 153], [353, 154], [8250, 155], [339, 156],
-        [382, 158], [376, 159]]);
-    private static AsciiToUTF16 = new Map([
-        [128, 8364], [130, 8218], [131, 402], [132, 8222], [133, 8230],
-        [134, 8224], [135, 8225], [136, 710], [137, 8240], [138, 352],
-        [139, 8249], [140, 338], [142, 381], [145, 8216], [146, 8217],
-        [147, 8220], [148, 8221], [149, 8226], [150, 8211], [151, 8212],
-        [152, 732], [153, 8482], [154, 353], [155, 8250], [156, 339],
-        [158, 382], [159, 376]]);
-
     public static convertStringToBuffer(s: string): ByteBuffer {
         let bufView = new Uint8Array(new ArrayBuffer(s.length));
         let code;
@@ -40,10 +17,53 @@ export class Pack {
             // JavaScript string is UTF-16 encoded.
             // Some characters' codes are different from the original extended ASCII codes.
             // Thus, here we need to map back to ASCII code in order to get the original bytes.
-            bufView[i] = Pack.UTF16ToAscii.get(code) || code;
+            bufView[i] = UTF16ToAscii.get(code) || code;
         }
         return new ByteBuffer(bufView);
     }
+
+    private static packedTrue = new Uint8Array([Tag.TRUE]);
+    private static packedFalse = new Uint8Array([Tag.FALSE]);
+
+    public static pack(value: any): Uint8Array {
+        if (value === true) {
+            return Pack.packedTrue;
+        }
+        if (value === false) {
+            return Pack.packedFalse;
+        }
+
+        const size = Pack.packSize(value);
+        const buf = new Encoder(size);
+
+        if (isString(value)) {
+            if (value !== "") {
+                buf.put1(Tag.STRING).putStr(value);
+            }
+        } else if (typeof value === 'number') {
+            SuNum.fromNumber(value).pack(buf);
+        } else if (value instanceof SuValue) {
+            value.pack(buf);
+        } else {
+            throw new Error("can't pack " + type(value));
+        }
+        return buf.buf;
+    }
+
+    private static packSize(value: any): number {
+        if (value === true || value === false) {
+            return 1;
+        } else if (typeof value === 'number') {
+            return SuNum.fromNumber(value).packSize();
+        } else if (isString(value)) {
+            const len = (value as string).length;
+            return len === 0 ? 0 : 1 + len;
+        } else if (value instanceof SuValue) {
+            return value.packSize();
+        }
+        throw new Error("can't pack " + type(value));
+    }
+
     public static unpack(buf: ByteBuffer): any {
         if (buf.remaining() === 0)
             return "";
@@ -68,10 +88,6 @@ export class Pack {
         }
     }
     private static unpackNum(buf: ByteBuffer) {
-        function convert(n: number, xor: number) {
-            return ((n ^ xor) << 24) >> 24; // convert Uint8 to int
-        }
-
         if (buf.remaining() === 0)
             return 0;
 
@@ -141,7 +157,7 @@ export class Pack {
         let end = pos + len;
         for (let i = pos; i < end; i++) {
             code = buf.get(i);
-            s += String.fromCharCode(Pack.AsciiToUTF16.get(code) || code);
+            s += String.fromCharCode(AsciiToUTF16.get(code) || code);
         }
         return s;
     }

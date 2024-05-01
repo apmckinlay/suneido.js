@@ -5,6 +5,9 @@ import { SuNum } from "./sunum";
 import { SuDate } from "./sudate";
 import { SuRecord } from "./surecord";
 import { makeObj } from "./testUtility";
+import { mkObject, mkObject2 } from "./su";
+import { su_seq } from "./builtin/seq";
+import { RootClass } from "./rootclass";
 
 let fn = Pack.unpack;
 function createBuffer(array: number[]) {
@@ -47,4 +50,85 @@ test([3, 230, 45, 60], SuNum.make(456, 99));
 // test unpack [-1, 1.1, a: "a", ob: #(true, false)]
 test([7, 2, 3, 2, 126, 245, 3, 3, 129, 11, 2, 3, 4, 111, 98,
     7, 6, 2, 1, 1, 1, 0, 0, 2, 4, 97, 2, 4, 97],
-    SuRecord.mkRecord(makeObj([-1, SuNum.make(11, -1)], ['a', 'a'], ['ob', makeObj([true, false])])));
+SuRecord.mkRecord(makeObj([-1, SuNum.make(11, -1)], ['a', 'a'], ['ob', makeObj([true, false])])));
+
+function testPackUnpack(v: any) {
+    let buf = Pack.pack(v);
+    let result = Pack.unpack(new ByteBuffer(buf));
+    assert.equal(v, result);
+}
+
+testPackUnpack(false);
+testPackUnpack(true);
+testPackUnpack(0);
+testPackUnpack(SuNum.INF);
+testPackUnpack(SuNum.MINUS_INF);
+testPackUnpack(1);
+testPackUnpack(SuNum.make(4945573770491, -12));
+
+testPackUnpack(10000);
+testPackUnpack(10001);
+testPackUnpack(1234);
+testPackUnpack(12345678);
+testPackUnpack(1234567890);
+testPackUnpack(-1234567890);
+
+testPackUnpack(SuNum.make(-123, -64));
+testPackUnpack(SuNum.make(1, -3));
+testPackUnpack(1234567890123456);
+testPackUnpack(SuNum.make(-123, -99));
+testPackUnpack(SuNum.make(456, 99));
+
+testPackUnpack("");
+testPackUnpack("abc");
+
+testPackUnpack(mkObject(null, 'evnetId', 2));
+
+testPackUnpack(SuDate.make(2018, 8, 11, 23, 20, 7, 3));
+testPackUnpack(SuDate.make(2018, 8, 11, 23, 20, 7, 3, 3));
+
+testPackUnpack(SuRecord.mkRecord(makeObj([])));
+testPackUnpack(SuRecord.mkRecord(makeObj([-1, SuNum.make(11, -1)], ['a', 'a'], ['ob', makeObj([true, false])])));
+
+testPackUnpack('a'.repeat(1000));
+// test varintLen > 1
+let numbers = new Array(10000);
+for (let i = 0; i < 9999; i++) {
+    numbers[i] = i;
+}
+numbers[9999] = null;
+testPackUnpack(mkObject(1, 'a'.repeat(1000), mkObject(...numbers), null, 'name', 2));
+
+testPackUnpack(su_seq(0, 1000));
+
+function testPackNum(v: string, array: number[]) {
+    let packed = Pack.pack(SuNum.parse(v));
+    assert.that(array.every((v, i) => v === packed[i]));
+}
+
+testPackNum('0', [3]);
+testPackNum('1', [3, 129, 10]);
+testPackNum('-1', [2, 126, 10^0xff]);
+testPackNum(".1", [3, 128, 10]);
+testPackNum("20000", [3, 133, 20]);
+testPackNum("123.456", [3, 131, 12, 34, 56]);
+testPackNum("12345678.87654321", [3, 136, 12, 34, 56, 78, 87, 65, 43, 21]);
+testPackNum("1e23", [3, 152, 10]);
+testPackNum("-1e23", [2, 152^0xff, 10^0xff]);
+testPackNum("1e-23", [3, 106, 10]);
+
+assert.throws(() => Pack.pack(null), "can't pack null");
+assert.throws(() => Pack.pack(Object.freeze(new RootClass())), "can't pack Class");
+
+let ob = mkObject2([1, 'a']);
+ob.add(ob);
+assert.throws(() => Pack.pack(ob), "can't pack object/record containing itself");
+
+ob = mkObject2([]);
+let curOb = ob;
+for (let i = 0; i < 16 + 1; i++) {
+    let newOb = mkObject2([]);
+    curOb.add(newOb);
+    curOb = newOb;
+}
+assert.throws(() => Pack.pack(ob), 'object nesting overflow');

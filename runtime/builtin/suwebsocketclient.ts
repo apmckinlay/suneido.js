@@ -19,6 +19,12 @@ export class SuWebSocketClient extends SuEl {
     display(): string {
         return `${this.type()}(<${this.el.url}>)`;
     }
+    Send(_s: any = mandatory()) {
+        maxargs(1, arguments.length);
+        let s = toStr(_s);
+        let buf = Pack.convertStringToBuffer(s);
+        this.el.send(buf.buf);
+    }
     AddEventListener(_event: any = mandatory(), fn: SuCallable = mandatory()) {
         maxargs(2, arguments.length);
         let event = toStr(_event);
@@ -66,6 +72,20 @@ export function su_webSocketClient(_url: any): SuWebSocketClient {
     return (su_webSocketClient as any).$callNamed(util.mapToOb(args.map), ...args.vec);
 };
 (su_webSocketClient as any).$params = 'url';
+//GENERATED end
+
+//BUILTIN SuWebSocketClient.Send(s)
+//GENERATED start
+(SuWebSocketClient.prototype['Send'] as any).$call = SuWebSocketClient.prototype['Send'];
+(SuWebSocketClient.prototype['Send'] as any).$callNamed = function ($named: any, s: any) {
+    maxargs(2, arguments.length);
+    ({ s = s } = $named);
+    return SuWebSocketClient.prototype['Send'].call(this, s);
+};
+(SuWebSocketClient.prototype['Send'] as any).$callAt = function (args: SuObject) {
+    return (SuWebSocketClient.prototype['Send'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(SuWebSocketClient.prototype['Send'] as any).$params = 's';
 //GENERATED end
 
 //BUILTIN SuWebSocketClient.AddEventListener(event, fn)

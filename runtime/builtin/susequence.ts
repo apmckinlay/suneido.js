@@ -6,6 +6,7 @@ import { toStr, toBoolean, isString } from "../ops";
 import { type } from "../type";
 import { globalLookup } from "../global";
 import * as util from "../utility";
+import { Encoder, PackStack } from "../packbase";
 
 export abstract class SequenceBase extends SuObject {
     protected instantiated: boolean = false;
@@ -89,6 +90,21 @@ export abstract class SequenceBase extends SuObject {
                 return call.apply(ob);
         }
         throw new Error("method not found: " + type(ob) + "." + method);
+    }
+
+    packSize(): number {
+        this.ck_instantiate();
+        return super.packSize();
+    }
+
+    packSize2(stack: PackStack): number {
+        this.ck_instantiate();
+        return super.packSize2(stack);
+    }
+
+    pack(buf: Encoder) {
+        this.ck_instantiate();
+        super.pack(buf);
     }
 
     public equals(that: any): boolean {

@@ -8,14 +8,52 @@ import { SuNum } from "./sunum";
 import { SuValue, SuIterable, SuCallable } from "./suvalue";
 import { isBlock, SuBoundMethod } from "./suBoundMethod";
 import { display } from "./display";
-import { is, toBoolean, isNumber, toInt,
+import { is, toBoolean, isNumber, toInt, isString,
     canonical, getKeyFromCanonical } from "./ops";
 import { mandatory, maxargs } from "./args";
 import { cmp } from "./cmp";
 import { globalLookup, global } from "./global";
 import * as util from "./utility";
+import { PackStack, varintLen, Encoder, Tag } from "./packbase";
 
 import * as assert from "./assert";
+import { type } from "./type";
+
+
+function packSize(value: any, stack: PackStack): number {
+    let n = 0;
+    if (value === true || value === false) {
+        n = 1;
+    } else if (typeof value === 'number') {
+        n = SuNum.fromNumber(value).packSize2(stack);
+    } else if (isString(value)) {
+        const len = (value as string).length;
+        n = len === 0 ? 0 : 1 + len;
+    } else if (value instanceof SuValue) {
+        n = value.packSize2(stack);
+    } else {
+        throw new Error("can't pack " + type(value));
+    }
+    return varintLen(n) + n;
+}
+
+function packValue(value: any, buf: Encoder) {
+    if (isString(value)) {
+        if (value !== "") {
+            buf.put1(Tag.STRING).putStr(value);
+        }
+    } else if (typeof value === 'number') {
+        SuNum.fromNumber(value).pack(buf);
+    } else if (value instanceof SuValue) {
+        value.pack(buf);
+    } else if (value === true) {
+        buf.put1(Tag.TRUE);
+    } else if (value === false) {
+        buf.put1(Tag.FALSE);
+    } else {
+        throw new Error("can't pack " + type(value));
+    }
+}
 
 export class SuObject extends SuValue {
     private readonly: boolean;
@@ -53,6 +91,67 @@ export class SuObject extends SuValue {
         return before + s.slice(0, -2) + after;
     }
 
+    packSize(): number {
+        return this.packSize2(new PackStack());
+    }
+
+    packSize2(stack: PackStack): number {
+        if (this.size() === 0) {
+            return 1;
+        }
+        stack.push(this);
+        let ps = 1;
+        ps += varintLen(this.vec.length);
+        for (let v of this.vec) {
+            ps += packSize(v, stack);
+        }
+        ps += varintLen(this.map.size);
+        for (let [k, v] of this.map) {
+            let kk = packSize(k, stack);
+            let vv = packSize(v, stack);
+
+            ps += kk + vv;
+        }
+        stack.pop();
+        return ps;
+    }
+
+    pack(buf: Encoder) {
+        this.packOb(buf, Tag.OBJECT);
+    }
+
+    packOb(buf: Encoder, tag: Tag) {
+        buf.put1(tag);
+        if (this.size() === 0) {
+            return;
+        }
+        buf.varUint(this.vec.length);
+        for (let v of this.vec) {
+            this.packValue(v, buf);
+        }
+        buf.varUint(this.map.size);
+        for (let [k, v] of this.map) {
+            this.packValue(k, buf);
+            this.packValue(v, buf);
+        }
+    }
+
+    private packValue(x: any, buf: Encoder) {
+        const prevLen = buf.len;
+        buf.put1(0); // 99% of the time we only need one byte for the size
+        packValue(x, buf);
+        const curLen = buf.len;
+        const n = curLen - prevLen - 1;
+        const varlen = varintLen(n);
+        if (varlen > 1) {
+            // move what we just packed to make room for larger varint
+            buf.move(n, varlen - 1);
+        }
+        buf.len = prevLen;
+        buf.varUint(n);
+        buf.len = curLen + varlen - 1;
+    }
+
     size(): number {
         return this.vec.length + this.map.size;
     }
@@ -83,7 +182,7 @@ export class SuObject extends SuValue {
 
     private checkReadonly(): void {
         if (this.readonly)
-           throw new Error("can't modify readonly objects");
+            throw new Error("can't modify readonly objects");
     }
 
     private mapset(key: any, value: any): void {
@@ -315,7 +414,7 @@ export class SuObject extends SuValue {
         let iter = new ObjectIter(this.toObject(), Values.ITER_VALUES, true, true);
         let min = iter.Next();
         if (min === iter) {
-            throw new Error("cannot use Min on empty object");   
+            throw new Error("cannot use Min on empty object");
         }
         for (let v = iter.Next(); v !== iter; v = iter.Next()) {
             if (cmp(v, min) < 0) {
@@ -525,7 +624,7 @@ export class SuObject extends SuValue {
         let oriVersion = this.version;
         function checkForModification(curVersion: number) {
             if (oriVersion !== curVersion)
-               throw new Error("object modified during iteration");
+                throw new Error("object modified during iteration");
         }
         if (includeVec)
             for (let i = 0; i < this.vec.length; i++) {
@@ -583,12 +682,12 @@ export class ObjectIter extends SuIterable {
         if (next.done)
             return this;
         switch (this.values) {
-        case Values.ITER_KEYS:
-            return next.value[0];
-        case Values.ITER_VALUES:
-            return next.value[1];
-        case Values.ITER_ASSOCS:
-            return SuObject.list(...next.value);
+            case Values.ITER_KEYS:
+                return next.value[0];
+            case Values.ITER_VALUES:
+                return next.value[1];
+            case Values.ITER_ASSOCS:
+                return SuObject.list(...next.value);
         }
     }
     Dup(): ObjectIter {

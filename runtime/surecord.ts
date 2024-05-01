@@ -6,6 +6,7 @@ import { cmp } from "./cmp";
 import * as ops from "./ops";
 import { tryGlobal, globalLookup } from "./global";
 import * as assert from "./assert";
+import { Encoder, Tag } from "./packbase";
 
 export enum Status {
     NEW,
@@ -43,6 +44,10 @@ export class SuRecord extends SuObject {
 
     static mkRecord1(): SuRecord {
         return new SuRecord(null, null, 0, Status.NEW, new MultiMap());
+    }
+
+    pack(buf: Encoder) {
+        this.packOb(buf, Tag.RECORD);
     }
 
     public Clear(): void {

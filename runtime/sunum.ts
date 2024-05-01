@@ -8,6 +8,7 @@
  */
 
 import * as assert from "./assert";
+import { Encoder, PackStack, Tag } from "./packbase";
 import { SuValue } from "./suvalue";
 import { Cmp } from "./utility";
 
@@ -15,6 +16,19 @@ const minExp = -126;
 const maxExp = +126;
 const expInf = 127;
 const MAX_COEF_STR = "" + Number.MAX_SAFE_INTEGER;
+
+function prepare(coef: number, exp: number): [number, number] {
+    if (coef < 0) {
+        coef = -coef;
+    }
+    let next = coef * 10;
+    while (Number.isSafeInteger(next)) {
+        coef = next;
+        exp--;
+        next = coef * 10;
+    }
+    return [coef, exp];
+}
 
 export enum RoundingMode { HALF_UP = 0, DOWN = -0.5, UP = 0.5 }
 
@@ -140,6 +154,106 @@ export class SuNum extends SuValue {
         digits = digits.replace(/0*$/, "");
         digits = digits.replace(/\.$/, "");
         return sign + digits + se;
+    }
+
+    packSize(): number {
+        if (this.isZero()) {
+            return 1;
+        }
+        if (this.isInf()) {
+            return 3;
+        }
+        let [ coef ] = prepare(this.coef, this.exp);
+        coef %= 1e14;
+        if (coef === 0) {
+            return 3;
+        }
+        coef %= 1e12;
+        if (coef === 0) {
+            return 4;
+        }
+        coef %= 1e10;
+        if (coef === 0) {
+            return 5;
+        }
+        coef %= 1e8;
+        if (coef === 0) {
+            return 6;
+        }
+        coef %= 1e6;
+        if (coef === 0) {
+            return 7;
+        }
+        coef %= 1e4;
+        if (coef === 0) {
+            return 8;
+        }
+        coef %= 1e2;
+        if (coef === 0) {
+            return 9;
+        }
+        return 10;
+    }
+
+    packSize2(stack: PackStack): number {
+        return this.packSize();
+    }
+
+    pack(buf: Encoder): void {
+        let xor = 0;
+        if (this.sign() < 0) {
+            xor = 0xff;
+            buf.put1(Tag.MINUS);
+        } else {
+            buf.put1(Tag.PLUS);
+        }
+        if (this.isZero()) {
+            return;
+        }
+        if (this.isInf()) {
+            buf.put2(xor^0xff, xor^0xff);
+            return;
+        }
+        let [ coef, exp ] = prepare(this.coef, this.exp);
+        exp += 16;
+        buf.put1(exp ^ 0x80 ^ xor);
+
+        buf.put1((Math.trunc(coef/1e14)) ^ xor);
+        coef %= 1e14;
+        if (coef === 0) {
+            return;
+        }
+        buf.put1((Math.trunc(coef/1e12)) ^ xor);
+        coef %= 1e12;
+        if (coef === 0) {
+            return;
+        }
+        buf.put1((Math.trunc(coef/1e10)) ^ xor);
+        coef %= 1e10;
+        if (coef === 0) {
+            return;
+        }
+        buf.put1((Math.trunc(coef/1e8)) ^ xor);
+        coef %= 1e8;
+        if (coef === 0) {
+            return;
+        }
+        buf.put1((Math.trunc(coef/1e6)) ^ xor);
+        coef %= 1e6;
+        if (coef === 0) {
+            return;
+        }
+        buf.put1((Math.trunc(coef/1e4)) ^ xor);
+        coef %= 1e4;
+        if (coef === 0) {
+            return;
+        }
+        buf.put1((Math.trunc(coef/1e2)) ^ xor);
+        coef %= 1e2;
+        if (coef === 0) {
+            return;
+        }
+        buf.put1(coef ^ xor);
     }
 
     /**
@@ -505,26 +619,26 @@ export class SuNum extends SuValue {
         for (p = num.length - 1, q = maskSize - 1; q >= 0; --q) {
             let c = mask[q];
             switch (c) {
-            case '#':
-                dstArray.push(p >= 0 ? num[p--] : '0');
-                break;
-            case ',':
-                if (p >= 0)
+                case '#':
+                    dstArray.push(p >= 0 ? num[p--] : '0');
+                    break;
+                case ',':
+                    if (p >= 0)
+                        dstArray.push(c);
+                    break;
+                case '-':
+                case '(':
+                    signOk = true;
+                    if (sign < 0)
+                        dstArray.push(c);
+                    break;
+                case ')':
+                    dstArray.push(sign < 0 ? c : ' ');
+                    break;
+                case '.':
+                default:
                     dstArray.push(c);
-                break;
-            case '-':
-            case '(':
-                signOk = true;
-                if (sign < 0)
-                    dstArray.push(c);
-                break;
-            case ')':
-                dstArray.push(sign < 0 ? c : ' ');
-                break;
-            case '.':
-            default:
-                dstArray.push(c);
-                break;
+                    break;
             }
         }
         if (p >= 0)
