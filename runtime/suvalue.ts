@@ -1,4 +1,5 @@
 import { Cmp } from "./utility";
+import { PackStack, Encoder } from "./packbase";
 
 export abstract class SuValue {
     abstract equals(x: any): boolean;
@@ -18,6 +19,18 @@ export abstract class SuValue {
     }
     toObject(): any {
         return null;
+    }
+
+    packSize(): number {
+        throw new Error("can't pack " + this.type());
+    }
+
+    packSize2(stack: PackStack): number {
+        throw new Error("can't pack " + this.type());
+    }
+
+    pack(buf: Encoder) {
+        throw new Error("can't pack " + this.type());
     }
 }
 

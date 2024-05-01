@@ -57,6 +57,10 @@ import { su_seq, su_seqq } from "./builtin/seq";
 defGlobal('Seq', su_seq);
 defGlobal('Seq?', su_seqq);
 
+import { su_pack, su_unpack } from "./builtin/packs";
+defGlobal('Pack', su_pack);
+defGlobal('Unpack', su_unpack);
+
 import { su_random } from "./builtin/random";
 defGlobal('Random', su_random);
 

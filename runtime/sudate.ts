@@ -11,6 +11,7 @@ import { globalLookup } from "./global";
 import { maxargs, mandatory } from "./args";
 import { toStr, toInt } from "./ops";
 import { type } from "./type";
+import { Encoder, PackStack, Tag } from "./packbase";
 
 const month = ["January", "February", "March", "April", "May", "June", "July",
     "August", "September", "October", "November", "December"];
@@ -65,6 +66,23 @@ export class SuDate extends SuValue {
             return SuDate.cmp(this, that);
         else
             throw new Error("SuDate compareTo incompatible type");
+    }
+
+    packSize(): number {
+        return this.time % 256 === 0 ? 9 : 10;
+    }
+
+    packSize2(stack: PackStack): number {
+        return this.packSize();
+    }
+
+    pack(buf: Encoder): void {
+        const extra = this.time % 256;
+        const time = Math.trunc(this.time / 256);
+        buf.put1(Tag.DATE).uint32(this.date).uint32(time);
+        if (extra !== 0) {
+            buf.put1(extra);
+        }
     }
 
     /** compare compares two sudates, returning Zero, Negative or Positive */
@@ -299,7 +317,7 @@ export class SuDate extends SuValue {
         let minute = nsub(s, 11, 2);
         let second = nsub(s, 13, 2);
         let millisecond = nsub(s, 15, 3);
-        let extra = nsub(s, 18, 3)
+        let extra = nsub(s, 18, 3);
         if (!valid(year, month, day, hour, minute, second, millisecond))
             return null;
         return SuDate.make(year, month, day, hour, minute, second, millisecond,
