@@ -10,7 +10,7 @@ export enum Tag {
     RECORD
 }
 
-export const UTF16ToAscii = new Map([
+const UTF16ToAscii = new Map([
     [8364, 128], [8218, 130], [402, 131], [8222, 132], [8230, 133],
     [8224, 134], [8225, 135], [710, 136], [8240, 137], [352, 138],
     [8249, 139], [338, 140], [381, 142], [8216, 145], [8217, 146],
@@ -24,6 +24,11 @@ export const AsciiToUTF16 = new Map([
     [147, 8220], [148, 8221], [149, 8226], [150, 8211], [151, 8212],
     [152, 732], [153, 8482], [154, 353], [155, 8250], [156, 339],
     [158, 382], [159, 376]]);
+
+export function fromUtf16ToAscii(c: number): number {
+    const rtn = UTF16ToAscii.get(c) || c;
+    return rtn > 255 ? 26 : rtn;
+}
 
 export function convert(n: number, xor: number) {
     return ((n ^ xor) << 24) >> 24; // convert Uint8 to int
@@ -69,7 +74,7 @@ export class Encoder {
         let code: number;
         for (let i = 0; i < s.length; i++) {
             code = s.charCodeAt(i);
-            this.buf[this.len++] = UTF16ToAscii.get(code) || code;
+            this.buf[this.len++] = fromUtf16ToAscii(code) || code;
         }
         return this;
     }
