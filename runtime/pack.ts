@@ -6,10 +6,10 @@ import { SuDate } from "./sudate";
 import { canonical, isString } from "./ops";
 import { SuValue } from "./suvalue";
 import { type } from "./type";
-import { Tag, UTF16ToAscii, AsciiToUTF16, Encoder, convert } from "./packbase";
+import { Tag, AsciiToUTF16, Encoder, convert, fromUtf16ToAscii } from "./packbase";
 
 export class Pack {
-    public static convertStringToBuffer(s: string): ByteBuffer {
+    public static convertStringToBuffer(s: string, utf16: boolean = false): ByteBuffer {
         let bufView = new Uint8Array(new ArrayBuffer(s.length));
         let code;
         for (let i = 0; i < s.length; i++) {
@@ -17,7 +17,7 @@ export class Pack {
             // JavaScript string is UTF-16 encoded.
             // Some characters' codes are different from the original extended ASCII codes.
             // Thus, here we need to map back to ASCII code in order to get the original bytes.
-            bufView[i] = UTF16ToAscii.get(code) || code;
+            bufView[i] = (utf16 && fromUtf16ToAscii(code)) || code;
         }
         return new ByteBuffer(bufView);
     }

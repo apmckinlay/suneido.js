@@ -150,7 +150,7 @@ export class Strings {
         req.send(s);
         if (req.status !== 200)
             throw new Error("connection error: " + req.status);
-        return Pack.unpack(Pack.convertStringToBuffer(req.responseText));
+        return Pack.unpack(Pack.convertStringToBuffer(req.responseText, true));
     }
 
     Extract(this: string, patternArg: any = mandatory(), partArg?: any): string | boolean {
@@ -176,8 +176,7 @@ export class Strings {
         return i === -1 ? this.length : i;
     }
 
-    FindLast(this: string, strArg: any = mandatory(), posArg: any = this.length):
-        number | boolean {
+    FindLast(this: string, strArg: any = mandatory(), posArg: any = this.length): number | boolean {
         maxargs(2, arguments.length);
         let str = toStr(strArg);
         let pos = toInt(posArg);
@@ -196,8 +195,7 @@ export class Strings {
         return this.length;
     }
 
-    FindLast1of(this: string, charsArg: any = mandatory(), posArg: any = this.length - 1):
-        number | boolean {
+    FindLast1of(this: string, charsArg: any = mandatory(), posArg: any = this.length - 1): number | boolean {
         maxargs(2, arguments.length);
         let chars = toStr(charsArg);
         let pos = toInt(posArg);
@@ -219,8 +217,7 @@ export class Strings {
         return this.length;
     }
 
-    FindLastnot1of(this: string, charsArg: any = mandatory(), posArg: any = this.length - 1):
-        number | boolean {
+    FindLastnot1of(this: string, charsArg: any = mandatory(), posArg: any = this.length - 1): number | boolean {
         maxargs(2, arguments.length);
         let chars = toStr(charsArg);
         let pos = toInt(posArg);
