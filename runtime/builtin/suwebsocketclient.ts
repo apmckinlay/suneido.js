@@ -43,14 +43,35 @@ export class SuWebSocketClient extends SuEl {
         } else if (e instanceof MessageEvent) {
             let data = e.data;
             if (e.data instanceof Blob) {
-                const buffer = await new Response(e.data).arrayBuffer();
-                data = Pack.unpack(new ByteBuffer(new Uint8Array(buffer)));
+                const buffer = new Uint8Array(await new Response(e.data).arrayBuffer());
+                const decompressedBuffer = buffer.length > 0 && buffer[0] === 0xff /* Compressed. This value should not conflict with any existing Pack tags */
+                    ? await this.decompress(buffer.slice(1))
+                    : buffer;
+                data = Pack.unpack(new ByteBuffer(decompressedBuffer));
             }
             return new SuObject([], new Map<string, any>([
                 ['data', data]
             ]));
         }
         return new SuObject();
+    }
+    private async decompress(compressedBytes: Uint8Array) {
+        const stream = new Blob([compressedBytes]).stream();
+        const decompressedStream = stream.pipeThrough(new DecompressionStream("deflate"));
+        const chunks = [];
+        const reader = decompressedStream.getReader();
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            chunks.push(value);
+        }
+        return await this.concatUint8Arrays(chunks);
+    }
+
+    private async concatUint8Arrays(uint8arrays: Uint8Array[]) {
+        const blob = new Blob(uint8arrays);
+        const buffer = await blob.arrayBuffer();
+        return new Uint8Array(buffer);
     }
 }
 
