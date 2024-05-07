@@ -9,6 +9,8 @@ import { ByteBuffer } from '../bytebuffer';
 
 export class SuWebSocketClient extends SuEl {
     el: WebSocket;
+    private eventQueue: [Event, SuCallable][] = [];
+    private isProcessingEvent: boolean = false;
     constructor(url: string) {
         super();
         this.el = new WebSocket(url);
@@ -29,9 +31,31 @@ export class SuWebSocketClient extends SuEl {
         maxargs(2, arguments.length);
         let event = toStr(_event);
         let listner = (e: Event) => {
-            this.parseEvent(e).then(event => fn.$callNamed({ event }));
+            this.enqueueEvent(e, fn);
         };
         this.el.addEventListener(event, listner);
+    }
+    private enqueueEvent(event: Event, fn: SuCallable) {
+        this.eventQueue.push([event, fn]);
+        if (!this.isProcessingEvent) {
+            this.processEventQueue();
+        }
+    }
+    private async processEventQueue() {
+        if (this.eventQueue.length === 0) {
+            return;
+        }
+
+        this.isProcessingEvent = true;
+
+        // Process events sequentially
+        while (this.eventQueue.length > 0) {
+            const eventOb = this.eventQueue.shift(); // Get the next event from the queue
+            if (!!eventOb) {
+                await this.parseEvent(eventOb[0]).then(event => eventOb[1].$callNamed({ event })); // Process the event
+            }
+        }
+        this.isProcessingEvent = false;
     }
     private async parseEvent(e: Event): Promise<SuObject> {
         if (e instanceof CloseEvent) {
