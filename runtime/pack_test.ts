@@ -116,6 +116,11 @@ testPackNum("12345678.87654321", [3, 136, 12, 34, 56, 78, 87, 65, 43, 21]);
 testPackNum("1e23", [3, 152, 10]);
 testPackNum("-1e23", [2, 152^0xff, 10^0xff]);
 testPackNum("1e-23", [3, 106, 10]);
+testPackNum('9999', [3, 132, 99, 99]);
+testPackNum('99999', [3, 133, 99, 99, 90]);
+testPackNum('999999', [3, 134, 99, 99, 99]);
+testPackNum('9999999', [3, 135, 99, 99, 99, 90]);
+testPackNum('-9999999', [2, 120, 156, 156, 156, 165]);
 
 assert.throws(() => Pack.pack(null), "can't pack null");
 assert.throws(() => Pack.pack(Object.freeze(new RootClass())), "can't pack Class");
