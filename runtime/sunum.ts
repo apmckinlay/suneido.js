@@ -17,17 +17,24 @@ const maxExp = +126;
 const expInf = 127;
 const MAX_COEF_STR = "" + Number.MAX_SAFE_INTEGER;
 
-function prepare(coef: number, exp: number): [number, number] {
+
+function prepare(coef: number, exp: number): [number[], number] {
     if (coef < 0) {
         coef = -coef;
     }
-    let next = coef * 10;
-    while (Number.isSafeInteger(next)) {
-        coef = next;
-        exp--;
-        next = coef * 10;
+
+    while (coef % 10 === 0) {
+        coef /= 10;
+        exp++;
     }
-    return [coef, exp];
+
+    const coefArray = [];
+    while (coef !== 0) {
+        coefArray.push(coef % 10);
+        coef = Math.trunc(coef / 10);
+    }
+    coefArray.reverse();
+    return [coefArray, exp - 16 + coefArray.length];
 }
 
 export enum RoundingMode { HALF_UP = 0, DOWN = -0.5, UP = 0.5 }
@@ -163,36 +170,8 @@ export class SuNum extends SuValue {
         if (this.isInf()) {
             return 3;
         }
-        let [ coef ] = prepare(this.coef, this.exp);
-        coef %= 1e14;
-        if (coef === 0) {
-            return 3;
-        }
-        coef %= 1e12;
-        if (coef === 0) {
-            return 4;
-        }
-        coef %= 1e10;
-        if (coef === 0) {
-            return 5;
-        }
-        coef %= 1e8;
-        if (coef === 0) {
-            return 6;
-        }
-        coef %= 1e6;
-        if (coef === 0) {
-            return 7;
-        }
-        coef %= 1e4;
-        if (coef === 0) {
-            return 8;
-        }
-        coef %= 1e2;
-        if (coef === 0) {
-            return 9;
-        }
-        return 10;
+        let [ coefArray ] = prepare(this.coef, this.exp);
+        return 1 + 1 + Math.ceil(coefArray.length / 2);
     }
 
     packSize2(stack: PackStack): number {
@@ -214,46 +193,16 @@ export class SuNum extends SuValue {
             buf.put2(xor^0xff, xor^0xff);
             return;
         }
-        let [ coef, exp ] = prepare(this.coef, this.exp);
+        let [ coefArray, exp ] = prepare(this.coef, this.exp);
         exp += 16;
+
         buf.put1(exp ^ 0x80 ^ xor);
 
-        buf.put1((Math.trunc(coef/1e14)) ^ xor);
-        coef %= 1e14;
-        if (coef === 0) {
-            return;
+        let i = 0;
+        while (coefArray.length > i) {
+            buf.put1(coefArray[i] * 10 + (coefArray.length > i + 1 ? coefArray[i + 1] : 0) ^ xor);
+            i += 2;
         }
-        buf.put1((Math.trunc(coef/1e12)) ^ xor);
-        coef %= 1e12;
-        if (coef === 0) {
-            return;
-        }
-        buf.put1((Math.trunc(coef/1e10)) ^ xor);
-        coef %= 1e10;
-        if (coef === 0) {
-            return;
-        }
-        buf.put1((Math.trunc(coef/1e8)) ^ xor);
-        coef %= 1e8;
-        if (coef === 0) {
-            return;
-        }
-        buf.put1((Math.trunc(coef/1e6)) ^ xor);
-        coef %= 1e6;
-        if (coef === 0) {
-            return;
-        }
-        buf.put1((Math.trunc(coef/1e4)) ^ xor);
-        coef %= 1e4;
-        if (coef === 0) {
-            return;
-        }
-        buf.put1((Math.trunc(coef/1e2)) ^ xor);
-        coef %= 1e2;
-        if (coef === 0) {
-            return;
-        }
-        buf.put1(coef ^ xor);
     }
 
     /**
