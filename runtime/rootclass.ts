@@ -51,6 +51,10 @@ export class RootClass extends SuValue {
         return this.isClass() ? "Class" : "Object";
     }
 
+    getName(): string {
+        return this.isClass() ? this.className : '';
+    }
+
     display(): string {
         return this.isClass() ? this.displayClass() : this.displayInstance();
     }
@@ -78,7 +82,7 @@ export class RootClass extends SuValue {
         if (this.className.endsWith("$c"))
             return "/* class */";
         if (this.library)
-            return `${this.className}/* ${this.library} class */`;
+            return `${this.className} /* ${this.library} class */`;
         return this.className;
     }
 
@@ -314,6 +318,8 @@ function instanceEquals(x: any, y: any): boolean {
 (RootClass.prototype['New'] as any).$callAt = function (args: SuObject) {
     return (RootClass.prototype['New'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(RootClass.prototype['New'] as any).$callableType = "BUILTIN";
+(RootClass.prototype['New'] as any).$callableName = "RootClass#New";
 (RootClass.prototype['New'] as any).$params = '';
 //GENERATED end
 
@@ -327,6 +333,8 @@ function instanceEquals(x: any, y: any): boolean {
 (RootClass.prototype['Size'] as any).$callAt = function (args: SuObject) {
     return (RootClass.prototype['Size'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(RootClass.prototype['Size'] as any).$callableType = "BUILTIN";
+(RootClass.prototype['Size'] as any).$callableName = "RootClass#Size";
 (RootClass.prototype['Size'] as any).$params = '';
 //GENERATED end
 
@@ -341,6 +349,8 @@ function instanceEquals(x: any, y: any): boolean {
 (RootClass.prototype['Members'] as any).$callAt = function (args: SuObject) {
     return (RootClass.prototype['Members'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(RootClass.prototype['Members'] as any).$callableType = "BUILTIN";
+(RootClass.prototype['Members'] as any).$callableName = "RootClass#Members";
 (RootClass.prototype['Members'] as any).$params = 'all=false';
 //GENERATED end
 
@@ -355,6 +365,8 @@ function instanceEquals(x: any, y: any): boolean {
 (RootClass.prototype['Member?'] as any).$callAt = function (args: SuObject) {
     return (RootClass.prototype['Member?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(RootClass.prototype['Member?'] as any).$callableType = "BUILTIN";
+(RootClass.prototype['Member?'] as any).$callableName = "RootClass#Member?";
 (RootClass.prototype['Member?'] as any).$params = 'key';
 //GENERATED end
 
@@ -369,6 +381,8 @@ function instanceEquals(x: any, y: any): boolean {
 (RootClass.prototype['Method?'] as any).$callAt = function (args: SuObject) {
     return (RootClass.prototype['Method?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(RootClass.prototype['Method?'] as any).$callableType = "BUILTIN";
+(RootClass.prototype['Method?'] as any).$callableName = "RootClass#Method?";
 (RootClass.prototype['Method?'] as any).$params = 'method';
 //GENERATED end
 
@@ -383,6 +397,8 @@ function instanceEquals(x: any, y: any): boolean {
 (RootClass.prototype['MethodClass'] as any).$callAt = function (args: SuObject) {
     return (RootClass.prototype['MethodClass'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(RootClass.prototype['MethodClass'] as any).$callableType = "BUILTIN";
+(RootClass.prototype['MethodClass'] as any).$callableName = "RootClass#MethodClass";
 (RootClass.prototype['MethodClass'] as any).$params = 'key';
 //GENERATED end
 
@@ -395,6 +411,8 @@ function instanceEquals(x: any, y: any): boolean {
 (RootClass.prototype['Eval'] as any).$callNamed = function (named: any, ...args: any[]) {
     return RootClass.prototype['Eval'].call(this, new SuObject(args, util.obToMap(named)));
 };
+(RootClass.prototype['Eval'] as any).$callableType = "BUILTIN";
+(RootClass.prototype['Eval'] as any).$callableName = "RootClass#Eval";
 (RootClass.prototype['Eval'] as any).$params = '@args';
 //GENERATED end
 
@@ -407,6 +425,8 @@ function instanceEquals(x: any, y: any): boolean {
 (RootClass.prototype['Eval2'] as any).$callNamed = function (named: any, ...args: any[]) {
     return RootClass.prototype['Eval2'].call(this, new SuObject(args, util.obToMap(named)));
 };
+(RootClass.prototype['Eval2'] as any).$callableType = "BUILTIN";
+(RootClass.prototype['Eval2'] as any).$callableName = "RootClass#Eval2";
 (RootClass.prototype['Eval2'] as any).$params = '@args';
 //GENERATED end
 
@@ -421,6 +441,8 @@ function instanceEquals(x: any, y: any): boolean {
 (RootClass.prototype['Delete'] as any).$callAt = function (args: SuObject) {
     return (RootClass.prototype['Delete'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(RootClass.prototype['Delete'] as any).$callableType = "BUILTIN";
+(RootClass.prototype['Delete'] as any).$callableName = "RootClass#Delete";
 (RootClass.prototype['Delete'] as any).$params = 'key=false, all=false';
 //GENERATED end
 
@@ -434,6 +456,8 @@ function instanceEquals(x: any, y: any): boolean {
 (RootClass.prototype['Copy'] as any).$callAt = function (args: SuObject) {
     return (RootClass.prototype['Copy'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(RootClass.prototype['Copy'] as any).$callableType = "BUILTIN";
+(RootClass.prototype['Copy'] as any).$callableName = "RootClass#Copy";
 (RootClass.prototype['Copy'] as any).$params = '';
 //GENERATED end
 
@@ -448,6 +472,8 @@ function instanceEquals(x: any, y: any): boolean {
 (RootClass.prototype['GetDefault'] as any).$callAt = function (args: SuObject) {
     return (RootClass.prototype['GetDefault'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(RootClass.prototype['GetDefault'] as any).$callableType = "BUILTIN";
+(RootClass.prototype['GetDefault'] as any).$callableName = "RootClass#GetDefault";
 (RootClass.prototype['GetDefault'] as any).$params = 'member, default_value';
 //GENERATED end
 
@@ -461,6 +487,8 @@ function instanceEquals(x: any, y: any): boolean {
 (RootClass.prototype['Base'] as any).$callAt = function (args: SuObject) {
     return (RootClass.prototype['Base'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(RootClass.prototype['Base'] as any).$callableType = "BUILTIN";
+(RootClass.prototype['Base'] as any).$callableName = "RootClass#Base";
 (RootClass.prototype['Base'] as any).$params = '';
 //GENERATED end
 
@@ -475,5 +503,7 @@ function instanceEquals(x: any, y: any): boolean {
 (RootClass.prototype['Base?'] as any).$callAt = function (args: SuObject) {
     return (RootClass.prototype['Base?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(RootClass.prototype['Base?'] as any).$callableType = "BUILTIN";
+(RootClass.prototype['Base?'] as any).$callableName = "RootClass#Base?";
 (RootClass.prototype['Base?'] as any).$params = 'value';
 //GENERATED end

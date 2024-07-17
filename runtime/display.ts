@@ -1,9 +1,13 @@
-import { SuValue } from "./suvalue";
+import { SuCallable, SuValue } from "./suvalue";
 import { isString } from "./ops";
+import { isFunction } from "./suBoundMethod";
 
 export function display(x: any): string {
     if (x instanceof SuValue)
         return x.display();
+    if (isFunction(x)) {
+        return (x as SuCallable).$callableName || '';
+    }
     if (isString(x))
         return displayString(x);
     return String(x);
@@ -24,4 +28,14 @@ function displayString(s: string): string {
         return "'" + s + "'";
     else
         return '"' + s.replace(/"/g, '\\"') + '"';
+}
+
+export function name(x: any): string {
+    if (x instanceof SuValue) {
+        return x.getName();
+    }
+    if (isFunction(x)) {
+        return (x as SuCallable).$callableName || '';
+    }
+    return '';
 }

@@ -25,6 +25,8 @@ export function su_stringq(x: any): boolean {
 (su_stringq as any).$callAt = function (args: SuObject) {
     return (su_stringq as any).$callNamed(util.mapToOb(args.map), ...args.vec);
 };
+(su_stringq as any).$callableType = "BUILTIN";
+(su_stringq as any).$callableName = "String?";
 (su_stringq as any).$params = 'value';
 //GENERATED end
 
@@ -53,6 +55,8 @@ export function su_global(x: any): any {
 (su_global as any).$callAt = function (args: SuObject) {
     return (su_global as any).$callNamed(util.mapToOb(args.map), ...args.vec);
 };
+(su_global as any).$callableType = "BUILTIN";
+(su_global as any).$callableName = "Global";
 (su_global as any).$params = 'name';
 //GENERATED end
 
@@ -544,6 +548,8 @@ class ClassForEach implements ForEach {
 (Strings.prototype['Alpha?'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['Alpha?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Strings.prototype['Alpha?'] as any).$callableType = "BUILTIN";
+(Strings.prototype['Alpha?'] as any).$callableName = "Strings#Alpha?";
 (Strings.prototype['Alpha?'] as any).$params = '';
 //GENERATED end
 
@@ -557,6 +563,8 @@ class ClassForEach implements ForEach {
 (Strings.prototype['AlphaNum?'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['AlphaNum?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Strings.prototype['AlphaNum?'] as any).$callableType = "BUILTIN";
+(Strings.prototype['AlphaNum?'] as any).$callableName = "Strings#AlphaNum?";
 (Strings.prototype['AlphaNum?'] as any).$params = '';
 //GENERATED end
 
@@ -570,6 +578,8 @@ class ClassForEach implements ForEach {
 (Strings.prototype['Asc'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['Asc'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Strings.prototype['Asc'] as any).$callableType = "BUILTIN";
+(Strings.prototype['Asc'] as any).$callableName = "Strings#Asc";
 (Strings.prototype['Asc'] as any).$params = '';
 //GENERATED end
 
@@ -583,6 +593,8 @@ class ClassForEach implements ForEach {
 (Strings.prototype['Detab'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['Detab'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Strings.prototype['Detab'] as any).$callableType = "BUILTIN";
+(Strings.prototype['Detab'] as any).$callableName = "Strings#Detab";
 (Strings.prototype['Detab'] as any).$params = '';
 //GENERATED end
 
@@ -596,6 +608,8 @@ class ClassForEach implements ForEach {
 (Strings.prototype['Entab'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['Entab'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Strings.prototype['Entab'] as any).$callableType = "BUILTIN";
+(Strings.prototype['Entab'] as any).$callableName = "Strings#Entab";
 (Strings.prototype['Entab'] as any).$params = '';
 //GENERATED end
 
@@ -609,6 +623,8 @@ class ClassForEach implements ForEach {
 (Strings.prototype['Eval'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['Eval'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Strings.prototype['Eval'] as any).$callableType = "BUILTIN";
+(Strings.prototype['Eval'] as any).$callableName = "Strings#Eval";
 (Strings.prototype['Eval'] as any).$params = '';
 //GENERATED end
 
@@ -622,6 +638,8 @@ class ClassForEach implements ForEach {
 (Strings.prototype['ServerEval'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['ServerEval'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Strings.prototype['ServerEval'] as any).$callableType = "BUILTIN";
+(Strings.prototype['ServerEval'] as any).$callableName = "Strings#ServerEval";
 (Strings.prototype['ServerEval'] as any).$params = '';
 //GENERATED end
 
@@ -636,6 +654,8 @@ class ClassForEach implements ForEach {
 (Strings.prototype['Extract'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['Extract'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Strings.prototype['Extract'] as any).$callableType = "BUILTIN";
+(Strings.prototype['Extract'] as any).$callableName = "Strings#Extract";
 (Strings.prototype['Extract'] as any).$params = 'pattern, part=false';
 //GENERATED end
 
@@ -650,6 +670,8 @@ class ClassForEach implements ForEach {
 (Strings.prototype['Find'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['Find'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Strings.prototype['Find'] as any).$callableType = "BUILTIN";
+(Strings.prototype['Find'] as any).$callableName = "Strings#Find";
 (Strings.prototype['Find'] as any).$params = 's, pos=0';
 //GENERATED end
 
@@ -664,6 +686,8 @@ class ClassForEach implements ForEach {
 (Strings.prototype['FindLast'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['FindLast'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Strings.prototype['FindLast'] as any).$callableType = "BUILTIN";
+(Strings.prototype['FindLast'] as any).$callableName = "Strings#FindLast";
 (Strings.prototype['FindLast'] as any).$params = 's, pos=99999';
 //GENERATED end
 
@@ -678,6 +702,8 @@ class ClassForEach implements ForEach {
 (Strings.prototype['Find1of'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['Find1of'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Strings.prototype['Find1of'] as any).$callableType = "BUILTIN";
+(Strings.prototype['Find1of'] as any).$callableName = "Strings#Find1of";
 (Strings.prototype['Find1of'] as any).$params = 'chars, pos=0';
 //GENERATED end
 
@@ -692,6 +718,8 @@ class ClassForEach implements ForEach {
 (Strings.prototype['FindLast1of'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['FindLast1of'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Strings.prototype['FindLast1of'] as any).$callableType = "BUILTIN";
+(Strings.prototype['FindLast1of'] as any).$callableName = "Strings#FindLast1of";
 (Strings.prototype['FindLast1of'] as any).$params = 'chars, pos=99999';
 //GENERATED end
 
@@ -706,6 +734,8 @@ class ClassForEach implements ForEach {
 (Strings.prototype['Findnot1of'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['Findnot1of'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Strings.prototype['Findnot1of'] as any).$callableType = "BUILTIN";
+(Strings.prototype['Findnot1of'] as any).$callableName = "Strings#Findnot1of";
 (Strings.prototype['Findnot1of'] as any).$params = 'chars, pos=0';
 //GENERATED end
 
@@ -720,6 +750,8 @@ class ClassForEach implements ForEach {
 (Strings.prototype['FindLastnot1of'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['FindLastnot1of'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Strings.prototype['FindLastnot1of'] as any).$callableType = "BUILTIN";
+(Strings.prototype['FindLastnot1of'] as any).$callableName = "Strings#FindLastnot1of";
 (Strings.prototype['FindLastnot1of'] as any).$params = 'chars, pos=99999';
 //GENERATED end
 
@@ -734,6 +766,8 @@ class ClassForEach implements ForEach {
 (Strings.prototype['Has?'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['Has?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Strings.prototype['Has?'] as any).$callableType = "BUILTIN";
+(Strings.prototype['Has?'] as any).$callableName = "Strings#Has?";
 (Strings.prototype['Has?'] as any).$params = 's';
 //GENERATED end
 
@@ -747,6 +781,8 @@ class ClassForEach implements ForEach {
 (Strings.prototype['Lower'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['Lower'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Strings.prototype['Lower'] as any).$callableType = "BUILTIN";
+(Strings.prototype['Lower'] as any).$callableName = "Strings#Lower";
 (Strings.prototype['Lower'] as any).$params = '';
 //GENERATED end
 
@@ -760,6 +796,8 @@ class ClassForEach implements ForEach {
 (Strings.prototype['Lower?'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['Lower?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Strings.prototype['Lower?'] as any).$callableType = "BUILTIN";
+(Strings.prototype['Lower?'] as any).$callableName = "Strings#Lower?";
 (Strings.prototype['Lower?'] as any).$params = '';
 //GENERATED end
 
@@ -773,6 +811,8 @@ class ClassForEach implements ForEach {
 (Strings.prototype['MapN'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['MapN'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Strings.prototype['MapN'] as any).$callableType = "BUILTIN";
+(Strings.prototype['MapN'] as any).$callableName = "Strings#MapN";
 (Strings.prototype['MapN'] as any).$params = '';
 //GENERATED end
 
@@ -787,6 +827,8 @@ class ClassForEach implements ForEach {
 (Strings.prototype['Match'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['Match'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Strings.prototype['Match'] as any).$callableType = "BUILTIN";
+(Strings.prototype['Match'] as any).$callableName = "Strings#Match";
 (Strings.prototype['Match'] as any).$params = 'pattern, pos=false, prev=false';
 //GENERATED end
 
@@ -801,6 +843,8 @@ class ClassForEach implements ForEach {
 (Strings.prototype['NthLine'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['NthLine'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Strings.prototype['NthLine'] as any).$callableType = "BUILTIN";
+(Strings.prototype['NthLine'] as any).$callableName = "Strings#NthLine";
 (Strings.prototype['NthLine'] as any).$params = 'n';
 //GENERATED end
 
@@ -815,6 +859,8 @@ class ClassForEach implements ForEach {
 (Strings.prototype['CountChar'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['CountChar'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Strings.prototype['CountChar'] as any).$callableType = "BUILTIN";
+(Strings.prototype['CountChar'] as any).$callableName = "Strings#CountChar";
 (Strings.prototype['CountChar'] as any).$params = 'c';
 //GENERATED end
 
@@ -828,6 +874,8 @@ class ClassForEach implements ForEach {
 (Strings.prototype['Number?'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['Number?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Strings.prototype['Number?'] as any).$callableType = "BUILTIN";
+(Strings.prototype['Number?'] as any).$callableName = "Strings#Number?";
 (Strings.prototype['Number?'] as any).$params = '';
 //GENERATED end
 
@@ -841,6 +889,8 @@ class ClassForEach implements ForEach {
 (Strings.prototype['Numeric?'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['Numeric?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Strings.prototype['Numeric?'] as any).$callableType = "BUILTIN";
+(Strings.prototype['Numeric?'] as any).$callableName = "Strings#Numeric?";
 (Strings.prototype['Numeric?'] as any).$params = '';
 //GENERATED end
 
@@ -855,6 +905,8 @@ class ClassForEach implements ForEach {
 (Strings.prototype['Prefix?'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['Prefix?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Strings.prototype['Prefix?'] as any).$callableType = "BUILTIN";
+(Strings.prototype['Prefix?'] as any).$callableName = "Strings#Prefix?";
 (Strings.prototype['Prefix?'] as any).$params = 's, pos=0';
 //GENERATED end
 
@@ -869,6 +921,8 @@ class ClassForEach implements ForEach {
 (Strings.prototype['Repeat'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['Repeat'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Strings.prototype['Repeat'] as any).$callableType = "BUILTIN";
+(Strings.prototype['Repeat'] as any).$callableName = "Strings#Repeat";
 (Strings.prototype['Repeat'] as any).$params = 'n';
 //GENERATED end
 
@@ -883,6 +937,8 @@ class ClassForEach implements ForEach {
 (Strings.prototype['Replace'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['Replace'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Strings.prototype['Replace'] as any).$callableType = "BUILTIN";
+(Strings.prototype['Replace'] as any).$callableName = "Strings#Replace";
 (Strings.prototype['Replace'] as any).$params = 'pat, rep="", count=99999';
 //GENERATED end
 
@@ -896,6 +952,8 @@ class ClassForEach implements ForEach {
 (Strings.prototype['Size'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['Size'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Strings.prototype['Size'] as any).$callableType = "BUILTIN";
+(Strings.prototype['Size'] as any).$callableName = "Strings#Size";
 (Strings.prototype['Size'] as any).$params = '';
 //GENERATED end
 
@@ -910,6 +968,8 @@ class ClassForEach implements ForEach {
 (Strings.prototype['Split'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['Split'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Strings.prototype['Split'] as any).$callableType = "BUILTIN";
+(Strings.prototype['Split'] as any).$callableName = "Strings#Split";
 (Strings.prototype['Split'] as any).$params = 'sep';
 //GENERATED end
 
@@ -924,6 +984,8 @@ class ClassForEach implements ForEach {
 (Strings.prototype['Substr'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['Substr'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Strings.prototype['Substr'] as any).$callableType = "BUILTIN";
+(Strings.prototype['Substr'] as any).$callableName = "Strings#Substr";
 (Strings.prototype['Substr'] as any).$params = 'i, n=99999';
 //GENERATED end
 
@@ -937,6 +999,8 @@ class ClassForEach implements ForEach {
 (Strings.prototype['Suffix?'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['Suffix?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Strings.prototype['Suffix?'] as any).$callableType = "BUILTIN";
+(Strings.prototype['Suffix?'] as any).$callableName = "Strings#Suffix?";
 (Strings.prototype['Suffix?'] as any).$params = '';
 //GENERATED end
 
@@ -951,6 +1015,8 @@ class ClassForEach implements ForEach {
 (Strings.prototype['Tr'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['Tr'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Strings.prototype['Tr'] as any).$callableType = "BUILTIN";
+(Strings.prototype['Tr'] as any).$callableName = "Strings#Tr";
 (Strings.prototype['Tr'] as any).$params = 'from, to=""';
 //GENERATED end
 
@@ -964,6 +1030,8 @@ class ClassForEach implements ForEach {
 (Strings.prototype['Unescape'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['Unescape'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Strings.prototype['Unescape'] as any).$callableType = "BUILTIN";
+(Strings.prototype['Unescape'] as any).$callableName = "Strings#Unescape";
 (Strings.prototype['Unescape'] as any).$params = '';
 //GENERATED end
 
@@ -977,6 +1045,8 @@ class ClassForEach implements ForEach {
 (Strings.prototype['Upper'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['Upper'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Strings.prototype['Upper'] as any).$callableType = "BUILTIN";
+(Strings.prototype['Upper'] as any).$callableName = "Strings#Upper";
 (Strings.prototype['Upper'] as any).$params = '';
 //GENERATED end
 
@@ -990,6 +1060,8 @@ class ClassForEach implements ForEach {
 (Strings.prototype['Upper?'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['Upper?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Strings.prototype['Upper?'] as any).$callableType = "BUILTIN";
+(Strings.prototype['Upper?'] as any).$callableName = "Strings#Upper?";
 (Strings.prototype['Upper?'] as any).$params = '';
 //GENERATED end
 
@@ -1003,6 +1075,8 @@ class ClassForEach implements ForEach {
 (Strings.prototype['Iter'] as any).$callAt = function (args: SuObject) {
     return (Strings.prototype['Iter'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Strings.prototype['Iter'] as any).$callableType = "BUILTIN";
+(Strings.prototype['Iter'] as any).$callableName = "Strings#Iter";
 (Strings.prototype['Iter'] as any).$params = '';
 //GENERATED end
 
@@ -1016,6 +1090,8 @@ class ClassForEach implements ForEach {
 (StringIter.prototype['Next'] as any).$callAt = function (args: SuObject) {
     return (StringIter.prototype['Next'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(StringIter.prototype['Next'] as any).$callableType = "BUILTIN";
+(StringIter.prototype['Next'] as any).$callableName = "StringIter#Next";
 (StringIter.prototype['Next'] as any).$params = '';
 //GENERATED end
 
@@ -1029,6 +1105,8 @@ class ClassForEach implements ForEach {
 (StringIter.prototype['Dup'] as any).$callAt = function (args: SuObject) {
     return (StringIter.prototype['Dup'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(StringIter.prototype['Dup'] as any).$callableType = "BUILTIN";
+(StringIter.prototype['Dup'] as any).$callableName = "StringIter#Dup";
 (StringIter.prototype['Dup'] as any).$params = '';
 //GENERATED end
 
@@ -1042,5 +1120,7 @@ class ClassForEach implements ForEach {
 (StringIter.prototype['Infinite?'] as any).$callAt = function (args: SuObject) {
     return (StringIter.prototype['Infinite?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(StringIter.prototype['Infinite?'] as any).$callableType = "BUILTIN";
+(StringIter.prototype['Infinite?'] as any).$callableName = "StringIter#Infinite?";
 (StringIter.prototype['Infinite?'] as any).$params = '';
 //GENERATED end

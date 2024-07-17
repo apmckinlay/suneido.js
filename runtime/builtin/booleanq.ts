@@ -18,5 +18,7 @@ export function su_booleanq(_value: any = mandatory()): boolean {
 (su_booleanq as any).$callAt = function (args: SuObject) {
     return (su_booleanq as any).$callNamed(util.mapToOb(args.map), ...args.vec);
 };
+(su_booleanq as any).$callableType = "BUILTIN";
+(su_booleanq as any).$callableName = "Boolean?";
 (su_booleanq as any).$params = 'value';
 //GENERATED end

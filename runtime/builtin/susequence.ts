@@ -199,6 +199,8 @@ export class SuSequence extends SequenceBase {
 (SequenceMethods.prototype['Iter'] as any).$callAt = function (args: SuObject) {
     return (SequenceMethods.prototype['Iter'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SequenceMethods.prototype['Iter'] as any).$callableType = "BUILTIN";
+(SequenceMethods.prototype['Iter'] as any).$callableName = "SequenceMethods#Iter";
 (SequenceMethods.prototype['Iter'] as any).$params = '';
 //GENERATED end
 
@@ -212,6 +214,8 @@ export class SuSequence extends SequenceBase {
 (SequenceMethods.prototype['Instantiated?'] as any).$callAt = function (args: SuObject) {
     return (SequenceMethods.prototype['Instantiated?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SequenceMethods.prototype['Instantiated?'] as any).$callableType = "BUILTIN";
+(SequenceMethods.prototype['Instantiated?'] as any).$callableName = "SequenceMethods#Instantiated?";
 (SequenceMethods.prototype['Instantiated?'] as any).$params = '';
 //GENERATED end
 
@@ -225,6 +229,8 @@ export class SuSequence extends SequenceBase {
 (SequenceMethods.prototype['Copy'] as any).$callAt = function (args: SuObject) {
     return (SequenceMethods.prototype['Copy'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SequenceMethods.prototype['Copy'] as any).$callableType = "BUILTIN";
+(SequenceMethods.prototype['Copy'] as any).$callableName = "SequenceMethods#Copy";
 (SequenceMethods.prototype['Copy'] as any).$params = '';
 //GENERATED end
 
@@ -239,6 +245,8 @@ export class SuSequence extends SequenceBase {
 (SequenceMethods.prototype['Join'] as any).$callAt = function (args: SuObject) {
     return (SequenceMethods.prototype['Join'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SequenceMethods.prototype['Join'] as any).$callableType = "BUILTIN";
+(SequenceMethods.prototype['Join'] as any).$callableName = "SequenceMethods#Join";
 (SequenceMethods.prototype['Join'] as any).$params = 'sep=""';
 //GENERATED end
 
@@ -253,5 +261,7 @@ export class SuSequence extends SequenceBase {
 (su_sequence as any).$callAt = function (args: SuObject) {
     return (su_sequence as any).$callNamed(util.mapToOb(args.map), ...args.vec);
 };
+(su_sequence as any).$callableType = "BUILTIN";
+(su_sequence as any).$callableName = "Sequence";
 (su_sequence as any).$params = 'iterator';
 //GENERATED end

@@ -75,6 +75,8 @@ export function su_seqq(x: any): boolean {
 (su_seq as any).$callAt = function (args: SuObject) {
     return (su_seq as any).$callNamed(util.mapToOb(args.map), ...args.vec);
 };
+(su_seq as any).$callableType = "BUILTIN";
+(su_seq as any).$callableName = "Seq";
 (su_seq as any).$params = 'from=false, to=false, by=1';
 //GENERATED end
 
@@ -89,6 +91,8 @@ export function su_seqq(x: any): boolean {
 (su_seqq as any).$callAt = function (args: SuObject) {
     return (su_seqq as any).$callNamed(util.mapToOb(args.map), ...args.vec);
 };
+(su_seqq as any).$callableType = "BUILTIN";
+(su_seqq as any).$callableName = "Seq?";
 (su_seqq as any).$params = 'value';
 //GENERATED end
 
@@ -102,6 +106,8 @@ export function su_seqq(x: any): boolean {
 (SuSeq.prototype['Next'] as any).$callAt = function (args: SuObject) {
     return (SuSeq.prototype['Next'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuSeq.prototype['Next'] as any).$callableType = "BUILTIN";
+(SuSeq.prototype['Next'] as any).$callableName = "SuSeq#Next";
 (SuSeq.prototype['Next'] as any).$params = '';
 //GENERATED end
 
@@ -115,6 +121,8 @@ export function su_seqq(x: any): boolean {
 (SuSeq.prototype['Dup'] as any).$callAt = function (args: SuObject) {
     return (SuSeq.prototype['Dup'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuSeq.prototype['Dup'] as any).$callableType = "BUILTIN";
+(SuSeq.prototype['Dup'] as any).$callableName = "SuSeq#Dup";
 (SuSeq.prototype['Dup'] as any).$params = '';
 //GENERATED end
 
@@ -128,5 +136,7 @@ export function su_seqq(x: any): boolean {
 (SuSeq.prototype['Infinite?'] as any).$callAt = function (args: SuObject) {
     return (SuSeq.prototype['Infinite?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuSeq.prototype['Infinite?'] as any).$callableType = "BUILTIN";
+(SuSeq.prototype['Infinite?'] as any).$callableName = "SuSeq#Infinite?";
 (SuSeq.prototype['Infinite?'] as any).$params = '';
 //GENERATED end

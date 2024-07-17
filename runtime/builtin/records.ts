@@ -16,6 +16,8 @@ export function su_record(args: SuObject) {
 (su_record as any).$callNamed = function (named: any, ...args: any[]) {
     return su_record(new SuObject(args, util.obToMap(named)));
 };
+(su_record as any).$callableType = "BUILTIN";
+(su_record as any).$callableName = "Record";
 (su_record as any).$params = '@args';
 //GENERATED end
 
@@ -35,6 +37,8 @@ export function su_recordq(x: any = mandatory()): boolean {
 (su_recordq as any).$callAt = function (args: SuObject) {
     return (su_recordq as any).$callNamed(util.mapToOb(args.map), ...args.vec);
 };
+(su_recordq as any).$callableType = "BUILTIN";
+(su_recordq as any).$callableName = "Record?";
 (su_recordq as any).$params = 'x';
 //GENERATED end
 
@@ -48,6 +52,8 @@ export function su_recordq(x: any = mandatory()): boolean {
 (SuRecord.prototype['Clear'] as any).$callAt = function (args: SuObject) {
     return (SuRecord.prototype['Clear'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuRecord.prototype['Clear'] as any).$callableType = "BUILTIN";
+(SuRecord.prototype['Clear'] as any).$callableName = "SuRecord#Clear";
 (SuRecord.prototype['Clear'] as any).$params = '';
 //GENERATED end
 
@@ -61,6 +67,8 @@ export function su_recordq(x: any = mandatory()): boolean {
 (SuRecord.prototype['Copy'] as any).$callAt = function (args: SuObject) {
     return (SuRecord.prototype['Copy'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuRecord.prototype['Copy'] as any).$callableType = "BUILTIN";
+(SuRecord.prototype['Copy'] as any).$callableName = "SuRecord#Copy";
 (SuRecord.prototype['Copy'] as any).$params = '';
 //GENERATED end
 
@@ -73,6 +81,8 @@ export function su_recordq(x: any = mandatory()): boolean {
 (SuRecord.prototype['Invalidate'] as any).$callNamed = function (named: any, ...args: any[]) {
     return SuRecord.prototype['Invalidate'].call(this, new SuObject(args, util.obToMap(named)));
 };
+(SuRecord.prototype['Invalidate'] as any).$callableType = "BUILTIN";
+(SuRecord.prototype['Invalidate'] as any).$callableName = "SuRecord#Invalidate";
 (SuRecord.prototype['Invalidate'] as any).$params = '@members';
 //GENERATED end
 
@@ -86,6 +96,8 @@ export function su_recordq(x: any = mandatory()): boolean {
 (SuRecord.prototype['New?'] as any).$callAt = function (args: SuObject) {
     return (SuRecord.prototype['New?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuRecord.prototype['New?'] as any).$callableType = "BUILTIN";
+(SuRecord.prototype['New?'] as any).$callableName = "SuRecord#New?";
 (SuRecord.prototype['New?'] as any).$params = '';
 //GENERATED end
 
@@ -100,6 +112,8 @@ export function su_recordq(x: any = mandatory()): boolean {
 (SuRecord.prototype['Observer'] as any).$callAt = function (args: SuObject) {
     return (SuRecord.prototype['Observer'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuRecord.prototype['Observer'] as any).$callableType = "BUILTIN";
+(SuRecord.prototype['Observer'] as any).$callableName = "SuRecord#Observer";
 (SuRecord.prototype['Observer'] as any).$params = 'observer';
 //GENERATED end
 
@@ -114,6 +128,8 @@ export function su_recordq(x: any = mandatory()): boolean {
 (SuRecord.prototype['PreSet'] as any).$callAt = function (args: SuObject) {
     return (SuRecord.prototype['PreSet'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuRecord.prototype['PreSet'] as any).$callableType = "BUILTIN";
+(SuRecord.prototype['PreSet'] as any).$callableName = "SuRecord#PreSet";
 (SuRecord.prototype['PreSet'] as any).$params = 'field, value';
 //GENERATED end
 
@@ -128,6 +144,8 @@ export function su_recordq(x: any = mandatory()): boolean {
 (SuRecord.prototype['RemoveObserver'] as any).$callAt = function (args: SuObject) {
     return (SuRecord.prototype['RemoveObserver'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuRecord.prototype['RemoveObserver'] as any).$callableType = "BUILTIN";
+(SuRecord.prototype['RemoveObserver'] as any).$callableName = "SuRecord#RemoveObserver";
 (SuRecord.prototype['RemoveObserver'] as any).$params = 'observer';
 //GENERATED end
 
@@ -142,6 +160,8 @@ export function su_recordq(x: any = mandatory()): boolean {
 (SuRecord.prototype['SetDeps'] as any).$callAt = function (args: SuObject) {
     return (SuRecord.prototype['SetDeps'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuRecord.prototype['SetDeps'] as any).$callableType = "BUILTIN";
+(SuRecord.prototype['SetDeps'] as any).$callableName = "SuRecord#SetDeps";
 (SuRecord.prototype['SetDeps'] as any).$params = 'field, s';
 //GENERATED end
 
@@ -156,5 +176,7 @@ export function su_recordq(x: any = mandatory()): boolean {
 (SuRecord.prototype['AttachRule'] as any).$callAt = function (args: SuObject) {
     return (SuRecord.prototype['AttachRule'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuRecord.prototype['AttachRule'] as any).$callableType = "BUILTIN";
+(SuRecord.prototype['AttachRule'] as any).$callableName = "SuRecord#AttachRule";
 (SuRecord.prototype['AttachRule'] as any).$params = 'field, rule';
 //GENERATED end

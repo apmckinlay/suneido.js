@@ -13,5 +13,7 @@ export function su_print(args: SuObject) {
 (su_print as any).$callNamed = function (named: any, ...args: any[]) {
     return su_print(new SuObject(args, util.obToMap(named)));
 };
+(su_print as any).$callableType = "BUILTIN";
+(su_print as any).$callableName = "Print";
 (su_print as any).$params = '@args';
 //GENERATED end

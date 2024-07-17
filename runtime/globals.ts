@@ -13,8 +13,9 @@ import { SuDate } from "./sudate";
 Suneido.put('BuiltDate', SuDate.literal('20160913'));
 defGlobal('Suneido', Suneido);
 
-import { su_display } from "./builtin/display";
+import { su_display, su_name } from "./builtin/display";
 defGlobal('Display', su_display);
+defGlobal('Name', su_name);
 
 import { su_print } from "./builtin/print";
 defGlobal('Print', su_print);
@@ -114,5 +115,7 @@ import { maxargs } from "./args";
 (su_def as any).$callAt = function (args: SuObject) {
     return (su_def as any).$callNamed(util.mapToOb(args.map), ...args.vec);
 };
+(su_def as any).$callableType = "BUILTIN";
+(su_def as any).$callableName = "Def";
 (su_def as any).$params = 'name, value';
 //GENERATED end

@@ -27,6 +27,8 @@ export function su_functionq(value: any = mandatory()): boolean {
 (Functions.prototype['Params'] as any).$callAt = function (args: SuObject) {
     return (Functions.prototype['Params'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Functions.prototype['Params'] as any).$callableType = "BUILTIN";
+(Functions.prototype['Params'] as any).$callableName = "Functions#Params";
 (Functions.prototype['Params'] as any).$params = '';
 //GENERATED end
 
@@ -41,5 +43,7 @@ export function su_functionq(value: any = mandatory()): boolean {
 (su_functionq as any).$callAt = function (args: SuObject) {
     return (su_functionq as any).$callNamed(util.mapToOb(args.map), ...args.vec);
 };
+(su_functionq as any).$callableType = "BUILTIN";
+(su_functionq as any).$callableName = "Function?";
 (su_functionq as any).$params = 'value';
 //GENERATED end

@@ -21,6 +21,8 @@ export function su_numberq(x: any): boolean {
 (su_numberq as any).$callAt = function (args: SuObject) {
     return (su_numberq as any).$callNamed(util.mapToOb(args.map), ...args.vec);
 };
+(su_numberq as any).$callableType = "BUILTIN";
+(su_numberq as any).$callableName = "Number?";
 (su_numberq as any).$params = 'value';
 //GENERATED end
 
@@ -63,6 +65,8 @@ export function su_number(x: any) {
 (su_number as any).$callAt = function (args: SuObject) {
     return (su_number as any).$callNamed(util.mapToOb(args.map), ...args.vec);
 };
+(su_number as any).$callableType = "BUILTIN";
+(su_number as any).$callableName = "Number";
 (su_number as any).$params = 'value';
 //GENERATED end
 
@@ -83,6 +87,8 @@ export function su_min(args: SuObject): any {
 (su_max as any).$callNamed = function (named: any, ...args: any[]) {
     return su_max(new SuObject(args, util.obToMap(named)));
 };
+(su_max as any).$callableType = "BUILTIN";
+(su_max as any).$callableName = "Max";
 (su_max as any).$params = '@args';
 //GENERATED end
 
@@ -95,6 +101,8 @@ export function su_min(args: SuObject): any {
 (su_min as any).$callNamed = function (named: any, ...args: any[]) {
     return su_min(new SuObject(args, util.obToMap(named)));
 };
+(su_min as any).$callableType = "BUILTIN";
+(su_min as any).$callableName = "Min";
 (su_min as any).$params = '@args';
 //GENERATED end
 
@@ -253,6 +261,8 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 (Numbers.prototype['Chr'] as any).$callAt = function (args: SuObject) {
     return (Numbers.prototype['Chr'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Numbers.prototype['Chr'] as any).$callableType = "BUILTIN";
+(Numbers.prototype['Chr'] as any).$callableName = "Numbers#Chr";
 (Numbers.prototype['Chr'] as any).$params = '';
 //GENERATED end
 
@@ -266,6 +276,8 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 (Numbers.prototype['Int'] as any).$callAt = function (args: SuObject) {
     return (Numbers.prototype['Int'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Numbers.prototype['Int'] as any).$callableType = "BUILTIN";
+(Numbers.prototype['Int'] as any).$callableName = "Numbers#Int";
 (Numbers.prototype['Int'] as any).$params = '';
 //GENERATED end
 
@@ -279,6 +291,8 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 (Numbers.prototype['Hex'] as any).$callAt = function (args: SuObject) {
     return (Numbers.prototype['Hex'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Numbers.prototype['Hex'] as any).$callableType = "BUILTIN";
+(Numbers.prototype['Hex'] as any).$callableName = "Numbers#Hex";
 (Numbers.prototype['Hex'] as any).$params = '';
 //GENERATED end
 
@@ -293,6 +307,8 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 (Numbers.prototype['Format'] as any).$callAt = function (args: SuObject) {
     return (Numbers.prototype['Format'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Numbers.prototype['Format'] as any).$callableType = "BUILTIN";
+(Numbers.prototype['Format'] as any).$callableName = "Numbers#Format";
 (Numbers.prototype['Format'] as any).$params = 'mask';
 //GENERATED end
 
@@ -306,6 +322,8 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 (Numbers.prototype['Frac'] as any).$callAt = function (args: SuObject) {
     return (Numbers.prototype['Frac'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Numbers.prototype['Frac'] as any).$callableType = "BUILTIN";
+(Numbers.prototype['Frac'] as any).$callableName = "Numbers#Frac";
 (Numbers.prototype['Frac'] as any).$params = '';
 //GENERATED end
 
@@ -320,6 +338,8 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 (Numbers.prototype['Round'] as any).$callAt = function (args: SuObject) {
     return (Numbers.prototype['Round'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Numbers.prototype['Round'] as any).$callableType = "BUILTIN";
+(Numbers.prototype['Round'] as any).$callableName = "Numbers#Round";
 (Numbers.prototype['Round'] as any).$params = 'digits';
 //GENERATED end
 
@@ -334,6 +354,8 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 (Numbers.prototype['RoundDown'] as any).$callAt = function (args: SuObject) {
     return (Numbers.prototype['RoundDown'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Numbers.prototype['RoundDown'] as any).$callableType = "BUILTIN";
+(Numbers.prototype['RoundDown'] as any).$callableName = "Numbers#RoundDown";
 (Numbers.prototype['RoundDown'] as any).$params = 'digits';
 //GENERATED end
 
@@ -348,6 +370,8 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 (Numbers.prototype['RoundUp'] as any).$callAt = function (args: SuObject) {
     return (Numbers.prototype['RoundUp'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Numbers.prototype['RoundUp'] as any).$callableType = "BUILTIN";
+(Numbers.prototype['RoundUp'] as any).$callableName = "Numbers#RoundUp";
 (Numbers.prototype['RoundUp'] as any).$params = 'digits';
 //GENERATED end
 
@@ -361,6 +385,8 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 (Numbers.prototype['Log10'] as any).$callAt = function (args: SuObject) {
     return (Numbers.prototype['Log10'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Numbers.prototype['Log10'] as any).$callableType = "BUILTIN";
+(Numbers.prototype['Log10'] as any).$callableName = "Numbers#Log10";
 (Numbers.prototype['Log10'] as any).$params = '';
 //GENERATED end
 
@@ -374,6 +400,8 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 (Numbers.prototype['Log'] as any).$callAt = function (args: SuObject) {
     return (Numbers.prototype['Log'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Numbers.prototype['Log'] as any).$callableType = "BUILTIN";
+(Numbers.prototype['Log'] as any).$callableName = "Numbers#Log";
 (Numbers.prototype['Log'] as any).$params = '';
 //GENERATED end
 
@@ -388,6 +416,8 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 (Numbers.prototype['Pow'] as any).$callAt = function (args: SuObject) {
     return (Numbers.prototype['Pow'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Numbers.prototype['Pow'] as any).$callableType = "BUILTIN";
+(Numbers.prototype['Pow'] as any).$callableName = "Numbers#Pow";
 (Numbers.prototype['Pow'] as any).$params = 'exponent';
 //GENERATED end
 
@@ -401,6 +431,8 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 (Numbers.prototype['Sin'] as any).$callAt = function (args: SuObject) {
     return (Numbers.prototype['Sin'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Numbers.prototype['Sin'] as any).$callableType = "BUILTIN";
+(Numbers.prototype['Sin'] as any).$callableName = "Numbers#Sin";
 (Numbers.prototype['Sin'] as any).$params = '';
 //GENERATED end
 
@@ -414,6 +446,8 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 (Numbers.prototype['ASin'] as any).$callAt = function (args: SuObject) {
     return (Numbers.prototype['ASin'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Numbers.prototype['ASin'] as any).$callableType = "BUILTIN";
+(Numbers.prototype['ASin'] as any).$callableName = "Numbers#ASin";
 (Numbers.prototype['ASin'] as any).$params = '';
 //GENERATED end
 
@@ -427,6 +461,8 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 (Numbers.prototype['Cos'] as any).$callAt = function (args: SuObject) {
     return (Numbers.prototype['Cos'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Numbers.prototype['Cos'] as any).$callableType = "BUILTIN";
+(Numbers.prototype['Cos'] as any).$callableName = "Numbers#Cos";
 (Numbers.prototype['Cos'] as any).$params = '';
 //GENERATED end
 
@@ -440,6 +476,8 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 (Numbers.prototype['ACos'] as any).$callAt = function (args: SuObject) {
     return (Numbers.prototype['ACos'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Numbers.prototype['ACos'] as any).$callableType = "BUILTIN";
+(Numbers.prototype['ACos'] as any).$callableName = "Numbers#ACos";
 (Numbers.prototype['ACos'] as any).$params = '';
 //GENERATED end
 
@@ -453,6 +491,8 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 (Numbers.prototype['Tan'] as any).$callAt = function (args: SuObject) {
     return (Numbers.prototype['Tan'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Numbers.prototype['Tan'] as any).$callableType = "BUILTIN";
+(Numbers.prototype['Tan'] as any).$callableName = "Numbers#Tan";
 (Numbers.prototype['Tan'] as any).$params = '';
 //GENERATED end
 
@@ -466,6 +506,8 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 (Numbers.prototype['ATan'] as any).$callAt = function (args: SuObject) {
     return (Numbers.prototype['ATan'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Numbers.prototype['ATan'] as any).$callableType = "BUILTIN";
+(Numbers.prototype['ATan'] as any).$callableName = "Numbers#ATan";
 (Numbers.prototype['ATan'] as any).$params = '';
 //GENERATED end
 
@@ -479,6 +521,8 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 (Numbers.prototype['Exp'] as any).$callAt = function (args: SuObject) {
     return (Numbers.prototype['Exp'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Numbers.prototype['Exp'] as any).$callableType = "BUILTIN";
+(Numbers.prototype['Exp'] as any).$callableName = "Numbers#Exp";
 (Numbers.prototype['Exp'] as any).$params = '';
 //GENERATED end
 
@@ -492,5 +536,7 @@ function round(n: Num, num: Num, mode: RoundingMode): SuNum {
 (Numbers.prototype['Sqrt'] as any).$callAt = function (args: SuObject) {
     return (Numbers.prototype['Sqrt'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Numbers.prototype['Sqrt'] as any).$callableType = "BUILTIN";
+(Numbers.prototype['Sqrt'] as any).$callableName = "Numbers#Sqrt";
 (Numbers.prototype['Sqrt'] as any).$params = '';
 //GENERATED end

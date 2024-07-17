@@ -125,7 +125,7 @@ testGetDefault(c, "NewKey", f, f);
 let cl3 = makeClass(false, [], 'stdlib', 'TestClass$c');
 assert.equal(cl3.display(), "/* class */");
 cl3 = makeClass(false, [], 'stdlib', 'TestClass');
-assert.equal(cl3.display(), "TestClass/* stdlib class */");
+assert.equal(cl3.display(), "TestClass /* stdlib class */");
 cl3 = makeClass(false, [], '', 'TestClass');
 assert.equal(cl3.display(), "TestClass");
 

@@ -24,6 +24,8 @@ export function su_instanceq(_value: any): boolean {
 (su_classq as any).$callAt = function (args: SuObject) {
     return (su_classq as any).$callNamed(util.mapToOb(args.map), ...args.vec);
 };
+(su_classq as any).$callableType = "BUILTIN";
+(su_classq as any).$callableName = "Class?";
 (su_classq as any).$params = 'value';
 //GENERATED end
 
@@ -38,5 +40,7 @@ export function su_instanceq(_value: any): boolean {
 (su_instanceq as any).$callAt = function (args: SuObject) {
     return (su_instanceq as any).$callNamed(util.mapToOb(args.map), ...args.vec);
 };
+(su_instanceq as any).$callableType = "BUILTIN";
+(su_instanceq as any).$callableName = "Instance?";
 (su_instanceq as any).$params = 'value';
 //GENERATED end
