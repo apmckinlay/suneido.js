@@ -66,6 +66,8 @@ export function su_dateq(x: any = mandatory()): boolean {
 (su_dateq as any).$callAt = function (args: SuObject) {
     return (su_dateq as any).$callNamed(util.mapToOb(args.map), ...args.vec);
 };
+(su_dateq as any).$callableType = "BUILTIN";
+(su_dateq as any).$callableName = "Date?";
 (su_dateq as any).$params = 'x';
 //GENERATED end
 
@@ -80,6 +82,8 @@ export function su_dateq(x: any = mandatory()): boolean {
 (DateClass.prototype['newInstance'] as any).$callAt = function (args: SuObject) {
     return (DateClass.prototype['newInstance'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(DateClass.prototype['newInstance'] as any).$callableType = "BUILTIN";
+(DateClass.prototype['newInstance'] as any).$callableName = "DateClass#newInstance";
 (DateClass.prototype['newInstance'] as any).$params = 's="", order="yMd", year=false, month=false, day=false, hour=false, minute=false, second=false, millisecond=false';
 //GENERATED end
 
@@ -93,6 +97,8 @@ export function su_dateq(x: any = mandatory()): boolean {
 (DateClass.prototype['Begin'] as any).$callAt = function (args: SuObject) {
     return (DateClass.prototype['Begin'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(DateClass.prototype['Begin'] as any).$callableType = "BUILTIN";
+(DateClass.prototype['Begin'] as any).$callableName = "DateClass#Begin";
 (DateClass.prototype['Begin'] as any).$params = '';
 //GENERATED end
 
@@ -106,6 +112,8 @@ export function su_dateq(x: any = mandatory()): boolean {
 (DateClass.prototype['End'] as any).$callAt = function (args: SuObject) {
     return (DateClass.prototype['End'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(DateClass.prototype['End'] as any).$callableType = "BUILTIN";
+(DateClass.prototype['End'] as any).$callableName = "DateClass#End";
 (DateClass.prototype['End'] as any).$params = '';
 //GENERATED end
 
@@ -119,6 +127,8 @@ export function su_dateq(x: any = mandatory()): boolean {
 (SuDate.prototype['Year'] as any).$callAt = function (args: SuObject) {
     return (SuDate.prototype['Year'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuDate.prototype['Year'] as any).$callableType = "BUILTIN";
+(SuDate.prototype['Year'] as any).$callableName = "SuDate#Year";
 (SuDate.prototype['Year'] as any).$params = '';
 //GENERATED end
 
@@ -132,6 +142,8 @@ export function su_dateq(x: any = mandatory()): boolean {
 (SuDate.prototype['Month'] as any).$callAt = function (args: SuObject) {
     return (SuDate.prototype['Month'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuDate.prototype['Month'] as any).$callableType = "BUILTIN";
+(SuDate.prototype['Month'] as any).$callableName = "SuDate#Month";
 (SuDate.prototype['Month'] as any).$params = '';
 //GENERATED end
 
@@ -145,6 +157,8 @@ export function su_dateq(x: any = mandatory()): boolean {
 (SuDate.prototype['Day'] as any).$callAt = function (args: SuObject) {
     return (SuDate.prototype['Day'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuDate.prototype['Day'] as any).$callableType = "BUILTIN";
+(SuDate.prototype['Day'] as any).$callableName = "SuDate#Day";
 (SuDate.prototype['Day'] as any).$params = '';
 //GENERATED end
 
@@ -158,6 +172,8 @@ export function su_dateq(x: any = mandatory()): boolean {
 (SuDate.prototype['Hour'] as any).$callAt = function (args: SuObject) {
     return (SuDate.prototype['Hour'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuDate.prototype['Hour'] as any).$callableType = "BUILTIN";
+(SuDate.prototype['Hour'] as any).$callableName = "SuDate#Hour";
 (SuDate.prototype['Hour'] as any).$params = '';
 //GENERATED end
 
@@ -171,6 +187,8 @@ export function su_dateq(x: any = mandatory()): boolean {
 (SuDate.prototype['Minute'] as any).$callAt = function (args: SuObject) {
     return (SuDate.prototype['Minute'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuDate.prototype['Minute'] as any).$callableType = "BUILTIN";
+(SuDate.prototype['Minute'] as any).$callableName = "SuDate#Minute";
 (SuDate.prototype['Minute'] as any).$params = '';
 //GENERATED end
 
@@ -184,6 +202,8 @@ export function su_dateq(x: any = mandatory()): boolean {
 (SuDate.prototype['Second'] as any).$callAt = function (args: SuObject) {
     return (SuDate.prototype['Second'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuDate.prototype['Second'] as any).$callableType = "BUILTIN";
+(SuDate.prototype['Second'] as any).$callableName = "SuDate#Second";
 (SuDate.prototype['Second'] as any).$params = '';
 //GENERATED end
 
@@ -197,6 +217,8 @@ export function su_dateq(x: any = mandatory()): boolean {
 (SuDate.prototype['Millisecond'] as any).$callAt = function (args: SuObject) {
     return (SuDate.prototype['Millisecond'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuDate.prototype['Millisecond'] as any).$callableType = "BUILTIN";
+(SuDate.prototype['Millisecond'] as any).$callableName = "SuDate#Millisecond";
 (SuDate.prototype['Millisecond'] as any).$params = '';
 //GENERATED end
 
@@ -211,6 +233,8 @@ export function su_dateq(x: any = mandatory()): boolean {
 (SuDate.prototype['FormatEn'] as any).$callAt = function (args: SuObject) {
     return (SuDate.prototype['FormatEn'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuDate.prototype['FormatEn'] as any).$callableType = "BUILTIN";
+(SuDate.prototype['FormatEn'] as any).$callableName = "SuDate#FormatEn";
 (SuDate.prototype['FormatEn'] as any).$params = 'format';
 //GENERATED end
 
@@ -225,6 +249,8 @@ export function su_dateq(x: any = mandatory()): boolean {
 (SuDate.prototype['MinusDays'] as any).$callAt = function (args: SuObject) {
     return (SuDate.prototype['MinusDays'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuDate.prototype['MinusDays'] as any).$callableType = "BUILTIN";
+(SuDate.prototype['MinusDays'] as any).$callableName = "SuDate#MinusDays";
 (SuDate.prototype['MinusDays'] as any).$params = 'date';
 //GENERATED end
 
@@ -239,6 +265,8 @@ export function su_dateq(x: any = mandatory()): boolean {
 (SuDate.prototype['MinusSeconds'] as any).$callAt = function (args: SuObject) {
     return (SuDate.prototype['MinusSeconds'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuDate.prototype['MinusSeconds'] as any).$callableType = "BUILTIN";
+(SuDate.prototype['MinusSeconds'] as any).$callableName = "SuDate#MinusSeconds";
 (SuDate.prototype['MinusSeconds'] as any).$params = 'date';
 //GENERATED end
 
@@ -253,6 +281,8 @@ export function su_dateq(x: any = mandatory()): boolean {
 (SuDate.prototype['Plus'] as any).$callAt = function (args: SuObject) {
     return (SuDate.prototype['Plus'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuDate.prototype['Plus'] as any).$callableType = "BUILTIN";
+(SuDate.prototype['Plus'] as any).$callableName = "SuDate#Plus";
 (SuDate.prototype['Plus'] as any).$params = 'years=0, months=0, days=0, hours=0, minutes=0, seconds=0, milliseconds=0';
 //GENERATED end
 
@@ -267,5 +297,7 @@ export function su_dateq(x: any = mandatory()): boolean {
 (SuDate.prototype['WeekDay'] as any).$callAt = function (args: SuObject) {
     return (SuDate.prototype['WeekDay'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuDate.prototype['WeekDay'] as any).$callableType = "BUILTIN";
+(SuDate.prototype['WeekDay'] as any).$callableName = "SuDate#WeekDay";
 (SuDate.prototype['WeekDay'] as any).$params = 'firstday="Sun"';
 //GENERATED end

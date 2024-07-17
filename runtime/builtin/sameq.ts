@@ -18,5 +18,7 @@ export function su_sameq(x: any = mandatory(), y: any = mandatory()): boolean {
 (su_sameq as any).$callAt = function (args: SuObject) {
     return (su_sameq as any).$callNamed(util.mapToOb(args.map), ...args.vec);
 };
+(su_sameq as any).$callableType = "BUILTIN";
+(su_sameq as any).$callableName = "Same?";
 (su_sameq as any).$params = 'x, y';
 //GENERATED end

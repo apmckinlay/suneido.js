@@ -31,6 +31,8 @@ export function su_unpack(x: any) {
 (su_pack as any).$callAt = function (args: SuObject) {
     return (su_pack as any).$callNamed(util.mapToOb(args.map), ...args.vec);
 };
+(su_pack as any).$callableType = "BUILTIN";
+(su_pack as any).$callableName = "Pack";
 (su_pack as any).$params = 'value';
 //GENERATED end
 
@@ -45,5 +47,7 @@ export function su_unpack(x: any) {
 (su_unpack as any).$callAt = function (args: SuObject) {
     return (su_unpack as any).$callNamed(util.mapToOb(args.map), ...args.vec);
 };
+(su_unpack as any).$callableType = "BUILTIN";
+(su_unpack as any).$callableName = "Unpack";
 (su_unpack as any).$params = 'value';
 //GENERATED end

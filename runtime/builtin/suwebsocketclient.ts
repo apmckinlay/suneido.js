@@ -116,6 +116,8 @@ export function su_webSocketClient(_url: any): SuWebSocketClient {
 (su_webSocketClient as any).$callAt = function (args: SuObject) {
     return (su_webSocketClient as any).$callNamed(util.mapToOb(args.map), ...args.vec);
 };
+(su_webSocketClient as any).$callableType = "BUILTIN";
+(su_webSocketClient as any).$callableName = "WebSocketClient";
 (su_webSocketClient as any).$params = 'url';
 //GENERATED end
 
@@ -130,6 +132,8 @@ export function su_webSocketClient(_url: any): SuWebSocketClient {
 (SuWebSocketClient.prototype['SendPacked'] as any).$callAt = function (args: SuObject) {
     return (SuWebSocketClient.prototype['SendPacked'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuWebSocketClient.prototype['SendPacked'] as any).$callableType = "BUILTIN";
+(SuWebSocketClient.prototype['SendPacked'] as any).$callableName = "SuWebSocketClient#SendPacked";
 (SuWebSocketClient.prototype['SendPacked'] as any).$params = 's';
 //GENERATED end
 
@@ -144,5 +148,7 @@ export function su_webSocketClient(_url: any): SuWebSocketClient {
 (SuWebSocketClient.prototype['AddEventListener'] as any).$callAt = function (args: SuObject) {
     return (SuWebSocketClient.prototype['AddEventListener'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuWebSocketClient.prototype['AddEventListener'] as any).$callableType = "BUILTIN";
+(SuWebSocketClient.prototype['AddEventListener'] as any).$callableName = "SuWebSocketClient#AddEventListener";
 (SuWebSocketClient.prototype['AddEventListener'] as any).$params = 'event, fn';
 //GENERATED end

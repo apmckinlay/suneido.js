@@ -19,5 +19,7 @@ export function su_type(x: any = mandatory()): string {
 (su_type as any).$callAt = function (args: SuObject) {
     return (su_type as any).$callNamed(util.mapToOb(args.map), ...args.vec);
 };
+(su_type as any).$callableType = "BUILTIN";
+(su_type as any).$callableName = "Type";
 (su_type as any).$params = 'x';
 //GENERATED end

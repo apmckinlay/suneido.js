@@ -62,6 +62,8 @@ function genAtMethod(name: string, params: string) {
         `${f}.$callNamed = function (named: any, ...args: any[]) {`,
         `    return ${clas}.prototype['${meth}'].call(this, new SuObject(args, util.obToMap(named)));`,
         `};`,
+        `${f}.$callableType = "BUILTIN";`,
+        `${f}.$callableName = "${clas}#${meth}";`,
         `${f}.$params = '${params}';`
     ];
 }
@@ -80,6 +82,8 @@ function genMethod(name: string, params: string) {
         `${f}.$callAt = function (args: SuObject) {`,
         `    return ${f}.$callNamed.call(this, util.mapToOb(args.map), ...args.vec);`,
         `};`,
+        `${f}.$callableType = "BUILTIN";`,
+        `${f}.$callableName = "${clas}#${meth}";`,
         `${f}.$params = '${params}';`
     ];
 }
@@ -95,6 +99,8 @@ function genAtFunction(name: string, params: string) {
         `${f}.$callNamed = function (named: any, ...args: any[]) {`,
         `    return ${su_name}(new SuObject(args, util.obToMap(named)));`,
         `};`,
+        `${f}.$callableType = "BUILTIN";`,
+        `${f}.$callableName = "${name}";`,
         `${f}.$params = '${params}';`
     ];
 }
@@ -112,6 +118,8 @@ function genFunction(name: string, params: string) {
         `${f}.$callAt = function (args: SuObject) {`,
         `    return ${f}.$callNamed(util.mapToOb(args.map), ...args.vec);`,
         `};`,
+        `${f}.$callableType = "BUILTIN";`,
+        `${f}.$callableName = "${name}";`,
         `${f}.$params = '${params}';`
     ];
 }

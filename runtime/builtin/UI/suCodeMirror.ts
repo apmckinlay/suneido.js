@@ -36,6 +36,8 @@ if (typeof window !== 'undefined') {
 (su_getCodeMirror as any).$callAt = function (args: SuObject) {
     return (su_getCodeMirror as any).$callNamed(util.mapToOb(args.map), ...args.vec);
 };
+(su_getCodeMirror as any).$callableType = "BUILTIN";
+(su_getCodeMirror as any).$callableName = "GetCodeMirror";
 (su_getCodeMirror as any).$params = '';
 //GENERATED end
 

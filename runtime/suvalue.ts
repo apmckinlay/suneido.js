@@ -32,6 +32,10 @@ export abstract class SuValue {
     pack(buf: Encoder) {
         throw new Error("can't pack " + this.type());
     }
+
+    getName() {
+        return '';
+    }
 }
 
 export abstract class SuIterable extends SuValue {
@@ -52,6 +56,7 @@ export abstract class SuIterable extends SuValue {
 export interface SuCallable extends SuValue {
     $params: string;
     $callableType: string;
+    $callableName: string;
     $blockThis?: any;
     $call: (...args: any[]) => any;
     $callAt: (...args: any[]) => any;

@@ -17,5 +17,7 @@ export function su_built(): string {
 (su_built as any).$callAt = function (args: SuObject) {
     return (su_built as any).$callNamed(util.mapToOb(args.map), ...args.vec);
 };
+(su_built as any).$callableType = "BUILTIN";
+(su_built as any).$callableName = "Built";
 (su_built as any).$params = '';
 //GENERATED end

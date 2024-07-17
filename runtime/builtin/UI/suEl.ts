@@ -177,6 +177,8 @@ function isPureObject(value: any): boolean {
 (SuEl.prototype['GetDefault'] as any).$callAt = function (args: SuObject) {
     return (SuEl.prototype['GetDefault'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuEl.prototype['GetDefault'] as any).$callableType = "BUILTIN";
+(SuEl.prototype['GetDefault'] as any).$callableName = "SuEl#GetDefault";
 (SuEl.prototype['GetDefault'] as any).$params = 'key, value';
 //GENERATED end
 

@@ -20,5 +20,7 @@ export function su_random(a: any = mandatory()): number {
 (su_random as any).$callAt = function (args: SuObject) {
     return (su_random as any).$callNamed(util.mapToOb(args.map), ...args.vec);
 };
+(su_random as any).$callableType = "BUILTIN";
+(su_random as any).$callableName = "Random";
 (su_random as any).$params = 'n';
 //GENERATED end

@@ -24,6 +24,8 @@ export function su_unload(_name: any = false) {
 (su_unload as any).$callAt = function (args: SuObject) {
     return (su_unload as any).$callNamed(util.mapToOb(args.map), ...args.vec);
 };
+(su_unload as any).$callableType = "BUILTIN";
+(su_unload as any).$callableName = "Unload";
 (su_unload as any).$params = 's=false';
 //GENERATED end
 

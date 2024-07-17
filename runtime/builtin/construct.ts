@@ -46,6 +46,8 @@ export function su_construct(what: any = mandatory(), s: any = '') {
 (su_construct as any).$callAt = function (args: SuObject) {
     return (su_construct as any).$callNamed(util.mapToOb(args.map), ...args.vec);
 };
+(su_construct as any).$callableType = "BUILTIN";
+(su_construct as any).$callableName = "Construct";
 (su_construct as any).$params = 'what, suffix=""';
 //GENERATED end
 

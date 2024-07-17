@@ -53,6 +53,8 @@ export class Except extends String {
 (Except.prototype['As'] as any).$callAt = function (args: SuObject) {
     return (Except.prototype['As'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Except.prototype['As'] as any).$callableType = "BUILTIN";
+(Except.prototype['As'] as any).$callableName = "Except#As";
 (Except.prototype['As'] as any).$params = 'a';
 //GENERATED end
 
@@ -66,5 +68,7 @@ export class Except extends String {
 (Except.prototype['Callstack'] as any).$callAt = function (args: SuObject) {
     return (Except.prototype['Callstack'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(Except.prototype['Callstack'] as any).$callableType = "BUILTIN";
+(Except.prototype['Callstack'] as any).$callableName = "Except#Callstack";
 (Except.prototype['Callstack'] as any).$params = '';
 //GENERATED end

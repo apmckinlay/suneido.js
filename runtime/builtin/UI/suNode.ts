@@ -213,6 +213,8 @@ if (typeof window !== 'undefined') {
 (su_htmlElMap as any).$callAt = function (args: SuObject) {
     return (su_htmlElMap as any).$callNamed(util.mapToOb(args.map), ...args.vec);
 };
+(su_htmlElMap as any).$callableType = "BUILTIN";
+(su_htmlElMap as any).$callableName = "HtmlElMap";
 (su_htmlElMap as any).$params = 'Window';
 //GENERATED end
 
@@ -227,6 +229,8 @@ if (typeof window !== 'undefined') {
 (SuHtmlElMap.prototype['Member?'] as any).$callAt = function (args: SuObject) {
     return (SuHtmlElMap.prototype['Member?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuHtmlElMap.prototype['Member?'] as any).$callableType = "BUILTIN";
+(SuHtmlElMap.prototype['Member?'] as any).$callableName = "SuHtmlElMap#Member?";
 (SuHtmlElMap.prototype['Member?'] as any).$params = 'key';
 //GENERATED end
 
@@ -240,6 +244,8 @@ if (typeof window !== 'undefined') {
 (su_getCurrentWindow as any).$callAt = function (args: SuObject) {
     return (su_getCurrentWindow as any).$callNamed(util.mapToOb(args.map), ...args.vec);
 };
+(su_getCurrentWindow as any).$callableType = "BUILTIN";
+(su_getCurrentWindow as any).$callableName = "GetCurrentWindow";
 (su_getCurrentWindow as any).$params = '';
 //GENERATED end
 
@@ -253,6 +259,8 @@ if (typeof window !== 'undefined') {
 (su_getCurrentDocument as any).$callAt = function (args: SuObject) {
     return (su_getCurrentDocument as any).$callNamed(util.mapToOb(args.map), ...args.vec);
 };
+(su_getCurrentDocument as any).$callableType = "BUILTIN";
+(su_getCurrentDocument as any).$callableName = "GetCurrentDocument";
 (su_getCurrentDocument as any).$params = '';
 //GENERATED end
 
@@ -265,6 +273,8 @@ if (typeof window !== 'undefined') {
 (su_makeWebObject as any).$callNamed = function (named: any, ...args: any[]) {
     return su_makeWebObject(new SuObject(args, util.obToMap(named)));
 };
+(su_makeWebObject as any).$callableType = "BUILTIN";
+(su_makeWebObject as any).$callableName = "MakeWebObject";
 (su_makeWebObject as any).$params = '@args';
 //GENERATED end
 
@@ -279,6 +289,8 @@ if (typeof window !== 'undefined') {
 (SuEventTarget.prototype['AddEventListener'] as any).$callAt = function (args: SuObject) {
     return (SuEventTarget.prototype['AddEventListener'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuEventTarget.prototype['AddEventListener'] as any).$callableType = "BUILTIN";
+(SuEventTarget.prototype['AddEventListener'] as any).$callableName = "SuEventTarget#AddEventListener";
 (SuEventTarget.prototype['AddEventListener'] as any).$params = 'event, fn, useCapture=false';
 //GENERATED end
 
@@ -293,6 +305,8 @@ if (typeof window !== 'undefined') {
 (SuEventTarget.prototype['RemoveEventListener'] as any).$callAt = function (args: SuObject) {
     return (SuEventTarget.prototype['RemoveEventListener'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuEventTarget.prototype['RemoveEventListener'] as any).$callableType = "BUILTIN";
+(SuEventTarget.prototype['RemoveEventListener'] as any).$callableName = "SuEventTarget#RemoveEventListener";
 (SuEventTarget.prototype['RemoveEventListener'] as any).$params = 'event, fn, useCapture=false';
 //GENERATED end
 
@@ -307,6 +321,8 @@ if (typeof window !== 'undefined') {
 (SuNode.prototype['Control'] as any).$callAt = function (args: SuObject) {
     return (SuNode.prototype['Control'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuNode.prototype['Control'] as any).$callableType = "BUILTIN";
+(SuNode.prototype['Control'] as any).$callableName = "SuNode#Control";
 (SuNode.prototype['Control'] as any).$params = 'control';
 //GENERATED end
 
@@ -321,6 +337,8 @@ if (typeof window !== 'undefined') {
 (SuNode.prototype['Window'] as any).$callAt = function (args: SuObject) {
     return (SuNode.prototype['Window'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuNode.prototype['Window'] as any).$callableType = "BUILTIN";
+(SuNode.prototype['Window'] as any).$callableName = "SuNode#Window";
 (SuNode.prototype['Window'] as any).$params = 'window';
 //GENERATED end
 
@@ -335,6 +353,8 @@ if (typeof window !== 'undefined') {
 (SuHtmlElement.prototype['SetStyle'] as any).$callAt = function (args: SuObject) {
     return (SuHtmlElement.prototype['SetStyle'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuHtmlElement.prototype['SetStyle'] as any).$callableType = "BUILTIN";
+(SuHtmlElement.prototype['SetStyle'] as any).$callableName = "SuHtmlElement#SetStyle";
 (SuHtmlElement.prototype['SetStyle'] as any).$params = 'property, value';
 //GENERATED end
 
@@ -349,5 +369,7 @@ if (typeof window !== 'undefined') {
 (SuHtmlElement.prototype['GetStyle'] as any).$callAt = function (args: SuObject) {
     return (SuHtmlElement.prototype['GetStyle'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuHtmlElement.prototype['GetStyle'] as any).$callableType = "BUILTIN";
+(SuHtmlElement.prototype['GetStyle'] as any).$callableName = "SuHtmlElement#GetStyle";
 (SuHtmlElement.prototype['GetStyle'] as any).$params = 'property';
 //GENERATED end

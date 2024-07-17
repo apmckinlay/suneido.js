@@ -15,6 +15,8 @@ export function su_object(args: SuObject) {
 (su_object as any).$callNamed = function (named: any, ...args: any[]) {
     return su_object(new SuObject(args, util.obToMap(named)));
 };
+(su_object as any).$callableType = "BUILTIN";
+(su_object as any).$callableName = "Object";
 (su_object as any).$params = '@args';
 //GENERATED end
 
@@ -33,6 +35,8 @@ export function su_objectq(x: any = mandatory()): boolean {
 (su_objectq as any).$callAt = function (args: SuObject) {
     return (su_objectq as any).$callNamed(util.mapToOb(args.map), ...args.vec);
 };
+(su_objectq as any).$callableType = "BUILTIN";
+(su_objectq as any).$callableName = "Object?";
 (su_objectq as any).$params = 'x';
 //GENERATED end
 
@@ -46,6 +50,8 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Copy'] as any).$callAt = function (args: SuObject) {
     return (SuObject.prototype['Copy'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuObject.prototype['Copy'] as any).$callableType = "BUILTIN";
+(SuObject.prototype['Copy'] as any).$callableName = "SuObject#Copy";
 (SuObject.prototype['Copy'] as any).$params = '';
 //GENERATED end
 
@@ -59,6 +65,8 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Min'] as any).$callAt = function (args: SuObject) {
     return (SuObject.prototype['Min'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuObject.prototype['Min'] as any).$callableType = "BUILTIN";
+(SuObject.prototype['Min'] as any).$callableName = "SuObject#Min";
 (SuObject.prototype['Min'] as any).$params = '';
 //GENERATED end
 
@@ -72,6 +80,8 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Max'] as any).$callAt = function (args: SuObject) {
     return (SuObject.prototype['Max'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuObject.prototype['Max'] as any).$callableType = "BUILTIN";
+(SuObject.prototype['Max'] as any).$callableName = "SuObject#Max";
 (SuObject.prototype['Max'] as any).$params = '';
 //GENERATED end
 
@@ -86,6 +96,8 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Size'] as any).$callAt = function (args: SuObject) {
     return (SuObject.prototype['Size'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuObject.prototype['Size'] as any).$callableType = "BUILTIN";
+(SuObject.prototype['Size'] as any).$callableName = "SuObject#Size";
 (SuObject.prototype['Size'] as any).$params = 'list=false, named=false';
 //GENERATED end
 
@@ -98,6 +110,8 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Add'] as any).$callNamed = function (named: any, ...args: any[]) {
     return SuObject.prototype['Add'].call(this, new SuObject(args, util.obToMap(named)));
 };
+(SuObject.prototype['Add'] as any).$callableType = "BUILTIN";
+(SuObject.prototype['Add'] as any).$callableName = "SuObject#Add";
 (SuObject.prototype['Add'] as any).$params = '@args';
 //GENERATED end
 
@@ -112,6 +126,8 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['GetDefault'] as any).$callAt = function (args: SuObject) {
     return (SuObject.prototype['GetDefault'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuObject.prototype['GetDefault'] as any).$callableType = "BUILTIN";
+(SuObject.prototype['GetDefault'] as any).$callableName = "SuObject#GetDefault";
 (SuObject.prototype['GetDefault'] as any).$params = 'key, value';
 //GENERATED end
 
@@ -126,6 +142,8 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Find'] as any).$callAt = function (args: SuObject) {
     return (SuObject.prototype['Find'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuObject.prototype['Find'] as any).$callableType = "BUILTIN";
+(SuObject.prototype['Find'] as any).$callableName = "SuObject#Find";
 (SuObject.prototype['Find'] as any).$params = 'value';
 //GENERATED end
 
@@ -140,6 +158,8 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Member?'] as any).$callAt = function (args: SuObject) {
     return (SuObject.prototype['Member?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuObject.prototype['Member?'] as any).$callableType = "BUILTIN";
+(SuObject.prototype['Member?'] as any).$callableName = "SuObject#Member?";
 (SuObject.prototype['Member?'] as any).$params = 'key';
 //GENERATED end
 
@@ -154,6 +174,8 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Members'] as any).$callAt = function (args: SuObject) {
     return (SuObject.prototype['Members'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuObject.prototype['Members'] as any).$callableType = "BUILTIN";
+(SuObject.prototype['Members'] as any).$callableName = "SuObject#Members";
 (SuObject.prototype['Members'] as any).$params = 'list=false, named=false';
 //GENERATED end
 
@@ -166,6 +188,8 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Delete'] as any).$callNamed = function (named: any, ...args: any[]) {
     return SuObject.prototype['Delete'].call(this, new SuObject(args, util.obToMap(named)));
 };
+(SuObject.prototype['Delete'] as any).$callableType = "BUILTIN";
+(SuObject.prototype['Delete'] as any).$callableName = "SuObject#Delete";
 (SuObject.prototype['Delete'] as any).$params = '@args';
 //GENERATED end
 
@@ -178,6 +202,8 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Erase'] as any).$callNamed = function (named: any, ...args: any[]) {
     return SuObject.prototype['Erase'].call(this, new SuObject(args, util.obToMap(named)));
 };
+(SuObject.prototype['Erase'] as any).$callableType = "BUILTIN";
+(SuObject.prototype['Erase'] as any).$callableName = "SuObject#Erase";
 (SuObject.prototype['Erase'] as any).$params = '@args';
 //GENERATED end
 
@@ -191,6 +217,8 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Set_readonly'] as any).$callAt = function (args: SuObject) {
     return (SuObject.prototype['Set_readonly'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuObject.prototype['Set_readonly'] as any).$callableType = "BUILTIN";
+(SuObject.prototype['Set_readonly'] as any).$callableName = "SuObject#Set_readonly";
 (SuObject.prototype['Set_readonly'] as any).$params = '';
 //GENERATED end
 
@@ -205,6 +233,8 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Set_default'] as any).$callAt = function (args: SuObject) {
     return (SuObject.prototype['Set_default'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuObject.prototype['Set_default'] as any).$callableType = "BUILTIN";
+(SuObject.prototype['Set_default'] as any).$callableName = "SuObject#Set_default";
 (SuObject.prototype['Set_default'] as any).$params = 'value=null';
 //GENERATED end
 
@@ -218,6 +248,8 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Readonly?'] as any).$callAt = function (args: SuObject) {
     return (SuObject.prototype['Readonly?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuObject.prototype['Readonly?'] as any).$callableType = "BUILTIN";
+(SuObject.prototype['Readonly?'] as any).$callableName = "SuObject#Readonly?";
 (SuObject.prototype['Readonly?'] as any).$params = '';
 //GENERATED end
 
@@ -232,6 +264,8 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Slice'] as any).$callAt = function (args: SuObject) {
     return (SuObject.prototype['Slice'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuObject.prototype['Slice'] as any).$callableType = "BUILTIN";
+(SuObject.prototype['Slice'] as any).$callableName = "SuObject#Slice";
 (SuObject.prototype['Slice'] as any).$params = 'i, n=99999';
 //GENERATED end
 
@@ -246,6 +280,8 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Sort!'] as any).$callAt = function (args: SuObject) {
     return (SuObject.prototype['Sort!'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuObject.prototype['Sort!'] as any).$callableType = "BUILTIN";
+(SuObject.prototype['Sort!'] as any).$callableName = "SuObject#Sort!";
 (SuObject.prototype['Sort!'] as any).$params = 'lt';
 //GENERATED end
 
@@ -260,6 +296,8 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['LowerBound'] as any).$callAt = function (args: SuObject) {
     return (SuObject.prototype['LowerBound'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuObject.prototype['LowerBound'] as any).$callableType = "BUILTIN";
+(SuObject.prototype['LowerBound'] as any).$callableName = "SuObject#LowerBound";
 (SuObject.prototype['LowerBound'] as any).$params = 'value, block=false';
 //GENERATED end
 
@@ -274,6 +312,8 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['BinarySearch'] as any).$callAt = function (args: SuObject) {
     return (SuObject.prototype['BinarySearch'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuObject.prototype['BinarySearch'] as any).$callableType = "BUILTIN";
+(SuObject.prototype['BinarySearch'] as any).$callableName = "SuObject#BinarySearch";
 (SuObject.prototype['BinarySearch'] as any).$params = 'value, block=false';
 //GENERATED end
 
@@ -287,6 +327,8 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Iter'] as any).$callAt = function (args: SuObject) {
     return (SuObject.prototype['Iter'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuObject.prototype['Iter'] as any).$callableType = "BUILTIN";
+(SuObject.prototype['Iter'] as any).$callableName = "SuObject#Iter";
 (SuObject.prototype['Iter'] as any).$params = '';
 //GENERATED end
 
@@ -301,6 +343,8 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Join'] as any).$callAt = function (args: SuObject) {
     return (SuObject.prototype['Join'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuObject.prototype['Join'] as any).$callableType = "BUILTIN";
+(SuObject.prototype['Join'] as any).$callableName = "SuObject#Join";
 (SuObject.prototype['Join'] as any).$params = 'separator=""';
 //GENERATED end
 
@@ -315,6 +359,8 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Values'] as any).$callAt = function (args: SuObject) {
     return (SuObject.prototype['Values'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuObject.prototype['Values'] as any).$callableType = "BUILTIN";
+(SuObject.prototype['Values'] as any).$callableName = "SuObject#Values";
 (SuObject.prototype['Values'] as any).$params = 'list=false, named=false';
 //GENERATED end
 
@@ -329,6 +375,8 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Assocs'] as any).$callAt = function (args: SuObject) {
     return (SuObject.prototype['Assocs'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuObject.prototype['Assocs'] as any).$callableType = "BUILTIN";
+(SuObject.prototype['Assocs'] as any).$callableName = "SuObject#Assocs";
 (SuObject.prototype['Assocs'] as any).$params = 'list=false, named=false';
 //GENERATED end
 
@@ -343,6 +391,8 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Members'] as any).$callAt = function (args: SuObject) {
     return (SuObject.prototype['Members'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuObject.prototype['Members'] as any).$callableType = "BUILTIN";
+(SuObject.prototype['Members'] as any).$callableName = "SuObject#Members";
 (SuObject.prototype['Members'] as any).$params = 'list=false, named=false';
 //GENERATED end
 
@@ -356,6 +406,8 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Unique!'] as any).$callAt = function (args: SuObject) {
     return (SuObject.prototype['Unique!'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuObject.prototype['Unique!'] as any).$callableType = "BUILTIN";
+(SuObject.prototype['Unique!'] as any).$callableName = "SuObject#Unique!";
 (SuObject.prototype['Unique!'] as any).$params = '';
 //GENERATED end
 
@@ -369,6 +421,8 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Reverse!'] as any).$callAt = function (args: SuObject) {
     return (SuObject.prototype['Reverse!'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(SuObject.prototype['Reverse!'] as any).$callableType = "BUILTIN";
+(SuObject.prototype['Reverse!'] as any).$callableName = "SuObject#Reverse!";
 (SuObject.prototype['Reverse!'] as any).$params = '';
 //GENERATED end
 
@@ -381,6 +435,8 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Eval'] as any).$callNamed = function (named: any, ...args: any[]) {
     return SuObject.prototype['Eval'].call(this, new SuObject(args, util.obToMap(named)));
 };
+(SuObject.prototype['Eval'] as any).$callableType = "BUILTIN";
+(SuObject.prototype['Eval'] as any).$callableName = "SuObject#Eval";
 (SuObject.prototype['Eval'] as any).$params = '@args';
 //GENERATED end
 
@@ -393,6 +449,8 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Eval2'] as any).$callNamed = function (named: any, ...args: any[]) {
     return SuObject.prototype['Eval2'].call(this, new SuObject(args, util.obToMap(named)));
 };
+(SuObject.prototype['Eval2'] as any).$callableType = "BUILTIN";
+(SuObject.prototype['Eval2'] as any).$callableName = "SuObject#Eval2";
 (SuObject.prototype['Eval2'] as any).$params = '@args';
 //GENERATED end
 
@@ -406,6 +464,8 @@ export function su_objectq(x: any = mandatory()): boolean {
 (ObjectIter.prototype['Next'] as any).$callAt = function (args: SuObject) {
     return (ObjectIter.prototype['Next'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(ObjectIter.prototype['Next'] as any).$callableType = "BUILTIN";
+(ObjectIter.prototype['Next'] as any).$callableName = "ObjectIter#Next";
 (ObjectIter.prototype['Next'] as any).$params = '';
 //GENERATED end
 
@@ -419,6 +479,8 @@ export function su_objectq(x: any = mandatory()): boolean {
 (ObjectIter.prototype['Dup'] as any).$callAt = function (args: SuObject) {
     return (ObjectIter.prototype['Dup'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(ObjectIter.prototype['Dup'] as any).$callableType = "BUILTIN";
+(ObjectIter.prototype['Dup'] as any).$callableName = "ObjectIter#Dup";
 (ObjectIter.prototype['Dup'] as any).$params = '';
 //GENERATED end
 
@@ -432,5 +494,7 @@ export function su_objectq(x: any = mandatory()): boolean {
 (ObjectIter.prototype['Infinite?'] as any).$callAt = function (args: SuObject) {
     return (ObjectIter.prototype['Infinite?'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
 };
+(ObjectIter.prototype['Infinite?'] as any).$callableType = "BUILTIN";
+(ObjectIter.prototype['Infinite?'] as any).$callableName = "ObjectIter#Infinite?";
 (ObjectIter.prototype['Infinite?'] as any).$params = '';
 //GENERATED end

@@ -16,6 +16,9 @@ export abstract class SuBuiltinClass extends SuValue {
     compareTo(that: any): Cmp {
         return -1;
     }
+    getName(): string {
+        return this.className;
+    }
     equals(that: any): boolean {
         return false;
     }
