@@ -68,10 +68,11 @@ defGlobal('Random', su_random);
 import { su_functionq } from "./builtin/functions";
 defGlobal('Function?', su_functionq);
 
-import { su_getCurrentDocument, su_getCurrentWindow, su_htmlElMap } from "./builtin/UI/suNode";
+import { su_getCurrentDocument, su_getCurrentWindow, su_htmlElMap, su_getContentWindow } from "./builtin/UI/suNode";
 defGlobal('GetCurrentDocument', su_getCurrentDocument);
 defGlobal('GetCurrentWindow', su_getCurrentWindow);
 defGlobal('HtmlElMap', su_htmlElMap);
+defGlobal('GetContentWindow', su_getContentWindow);
 
 import { su_getCodeMirror } from "./builtin/UI/suCodeMirror";
 defGlobal('GetCodeMirror', su_getCodeMirror);
@@ -86,8 +87,9 @@ defGlobal('Instance?', su_instanceq);
 import { su_booleanq } from "./builtin/booleanq";
 defGlobal("Boolean?", su_booleanq);
 
-import { su_sameq } from "./builtin/sameq";
+import { su_sameq, su_cmp } from "./builtin/sameq";
 defGlobal("Same?", su_sameq);
+defGlobal("Cmp", su_cmp);
 
 import { su_webSocketClient } from "./builtin/suwebsocketclient";
 defGlobal("WebSocketClient", su_webSocketClient);
