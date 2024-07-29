@@ -36,6 +36,7 @@ import "./globals";
 import { mandatory } from "./args";
 import { Except } from "./builtin/except";
 import { isBlock, SuBoundMethod } from "./suBoundMethod";
+import { isBlockReturn } from "./blockreturn";
 
 export { toStr } from "./ops";
 export { mandatory, maxargs } from "./args";
@@ -178,7 +179,7 @@ export function exception(e: any): Error {
 }
 
 export function catchMatch(e: Error, pat?: string): Except {
-    if (isCatchMatch(e.message, pat))
+    if (!isBlockReturn(e) && isCatchMatch(e.message, pat))
         return new Except(e);
     throw e;
 }

@@ -112,6 +112,7 @@ assert.equal(su.catchMatch(su.exception("test"), "test").valueOf(), "test");
 assert.equal(su.catchMatch(su.exception("test"), "te").valueOf(), "test");
 assert.equal(su.catchMatch(su.exception("test"), "*st").valueOf(), "test");
 assert.equal(su.catchMatch(su.exception("test"), "match|*st").valueOf(), "test");
+assert.throws(() => su.catchMatch(su.blockreturn(0, 'test')), 'BlockReturn');
 assert.throws(() => su.catchMatch(su.exception("test"), "wrong"), "test");
 
 // lang port test

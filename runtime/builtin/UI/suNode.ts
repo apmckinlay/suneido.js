@@ -173,6 +173,12 @@ export function su_getCurrentWindow(): SuWindow | false {
     return window ? new SuWindow(window) : false;
 }
 
+export function su_getContentWindow(_iframe: SuHtmlElement): SuWindow | false {
+    maxargs(1, arguments.length);
+    let iframe = _iframe.el as HTMLIFrameElement;
+    return iframe.contentWindow ? new SuWindow(iframe.contentWindow) : false;
+}
+
 export function su_getCurrentDocument(): SuDocument | false {
     maxargs(0, arguments.length);
     return document ? new SuDocument(document) : false;
@@ -247,6 +253,22 @@ if (typeof window !== 'undefined') {
 (su_getCurrentWindow as any).$callableType = "BUILTIN";
 (su_getCurrentWindow as any).$callableName = "GetCurrentWindow";
 (su_getCurrentWindow as any).$params = '';
+//GENERATED end
+
+//BUILTIN GetContentWindow(iframe)
+//GENERATED start
+(su_getContentWindow as any).$call = su_getContentWindow;
+(su_getContentWindow as any).$callNamed = function ($named: any, iframe: any) {
+    maxargs(2, arguments.length);
+    ({ iframe = iframe } = $named);
+    return su_getContentWindow(iframe);
+};
+(su_getContentWindow as any).$callAt = function (args: SuObject) {
+    return (su_getContentWindow as any).$callNamed(util.mapToOb(args.map), ...args.vec);
+};
+(su_getContentWindow as any).$callableType = "BUILTIN";
+(su_getContentWindow as any).$callableName = "GetContentWindow";
+(su_getContentWindow as any).$params = 'iframe';
 //GENERATED end
 
 //BUILTIN GetCurrentDocument()
