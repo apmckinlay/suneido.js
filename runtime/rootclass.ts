@@ -26,7 +26,7 @@ export class RootClass extends SuValue {
     get(this: any, key: any): any {
         let val = this[key];
         if (val !== undefined)
-            return typeof val === 'function'
+            return typeof val === 'function' && val.$callableType === 'METHOD'
                 ? new SuBoundMethod(this, val)
                 : val;
         val = this["Getter_"] || this["Get_"];
