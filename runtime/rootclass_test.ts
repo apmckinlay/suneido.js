@@ -3,19 +3,20 @@ import { defGlobal } from "./global";
 import * as su from "./su";
 import * as assert from "./assert";
 import { SuObject } from "./suobject";
+import { SuBoundMethod } from "./suBoundMethod";
 
 // Setup
 defGlobal('Objects', makeClass(false, []));
 
-// Test Get_ & Getter_ Method
+// Test Getter_ Method
 /* class
 	{
     X: 123
-	Get_Test()
+	Getter_Test()
 		{
 		return 'Test' $ .test
 		}
-	get_test()
+	getter_test()
 		{
 		return '- test'
 		}
@@ -28,6 +29,7 @@ let fn2 = function () {
     su.maxargs(0, arguments.length);
     return " - test";
 };
+// Get_ no longer supported
 let cl1 = makeClass(false, [
     {key: 'X', value: 123},
     {key: 'Get_Test', value: fn1, params: '', paramNames: []},
@@ -35,7 +37,7 @@ let cl1 = makeClass(false, [
 ]);
 
 assert.equal(su.get(cl1, "X"), 123);
-assert.equal(su.get(cl1, "Test"), "Test - test");
+assert.throws(() => su.get(cl1, "Test"), /member not found/);
 assert.throws(() => su.get(cl1, "Test1"), /member not found/);
 
 let cl11 = makeClass(false, [
@@ -51,15 +53,15 @@ assert.throws(() => su.get(cl11, "Test1"), /member not found/);
 /* class
 	{
     X: 123
-	Get_Test()
+	Getter_Test()
 		{
 		return 'Test' $ .test
 		}
-	get_test()
+	getter_test()
 		{
 		return '- test'
         }
-    Get_(member)
+    Getter_(member)
         {
         return 'Get: ' $ member
         }
@@ -70,16 +72,16 @@ let fn3 = function (member = su.mandatory()) {
 };
 let cl2 = makeClass(false, [
     {key: 'X', value: 123},
-    {key: 'Get_Test', value: fn1, params: '', paramNames: []},
-    {key: 'Get_eval$c_test', value: fn2, params: '', paramNames: []},
-    {key: 'Get_', value: fn3, params: 'member', paramNames: ['member']},
+    {key: 'Getter_Test', value: fn1, params: '', paramNames: []},
+    {key: 'Getter_eval$c_test', value: fn2, params: '', paramNames: []},
+    {key: 'Getter_', value: fn3, params: 'member', paramNames: ['member']},
 ]);
 assert.equal(su.get(cl2, "X"), 123);
 assert.equal(su.get(cl2, "Test"), "Get: Test");
 assert.equal(su.get(cl2, "TestTest"), "Get: TestTest");
 
 // Test GetDefault
-let c = su.instantiate(cl1);
+let c = su.instantiate(cl11);
 function testGetDefault(c: any, key: any, def: any, expected: any) {
     assert.equal(su.invoke(c, "GetDefault", key, def), expected);
 }
@@ -120,6 +122,17 @@ let f = (function () {
     return $f;
     })();
 testGetDefault(c, "NewKey", f, f);
+
+// Test get function/block type members
+let m = su.get(c, 'Getter_Test');
+assert.that(m instanceof SuBoundMethod);
+assert.equal((m as SuBoundMethod).method, fn1);
+
+su.put(c, "BlockKey", b);
+assert.equal(su.get(c, 'BlockKey'), b);
+
+su.put(c, 'FunctionKey', f);
+assert.equal(su.get(c, 'FunctionKey'), f);
 
 // Test display
 let cl3 = makeClass(false, [], 'stdlib', 'TestClass$c');
@@ -193,6 +206,6 @@ assert.equal(cl4['Method?']('Test1'), false);
 assert.equal(c['Method?']('Test'), true);
 assert.equal(c['Method?']('Default'), true);
 assert.equal(c['Method?']('Test1'), false);
-assert.equal(cl2['Method?']('Get_Test'), true);
-assert.equal(cl2['Method?']('Get_'), true);
-assert.equal(cl2['Method?']('get_test'), false);
+assert.equal(cl2['Method?']('Getter_Test'), true);
+assert.equal(cl2['Method?']('Getter_'), true);
+assert.equal(cl2['Method?']('getter_test'), false);
