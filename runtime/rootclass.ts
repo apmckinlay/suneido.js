@@ -26,13 +26,13 @@ export class RootClass extends SuValue {
     get(this: any, key: any): any {
         let val = this[key];
         if (val !== undefined)
-            return typeof val === 'function'
+            return typeof val === 'function' && val.$callableType === 'METHOD'
                 ? new SuBoundMethod(this, val)
                 : val;
-        val = this["Getter_"] || this["Get_"];
+        val = this["Getter_"];
         if (val && typeof val === 'function')
             return val.$call.call(this, key);
-        val = typeof key === 'string' && (this["Getter_" + key] || this["Get_" + key]);
+        val = typeof key === 'string' && this["Getter_" + key];
         if (val && typeof val === 'function')
             return val.$call.call(this);
         throw new Error("member not found " + key);
