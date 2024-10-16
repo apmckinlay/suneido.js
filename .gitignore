@@ -18,4 +18,5 @@ node_modules/*
 devtools/*.js
 runtime/builtin/*.js
 runtime/builtin/UI/*.js
+runtime/su_global_builtins.json
 CodeMirror/*_bundle.js

@@ -5,6 +5,7 @@ bundle: runtime/*.ts runtime/builtin/*.ts runtime/builtin/UI/*.ts
 	node devtools/setbuilt.js runtime/builtin/built.js
 	npx browserify runtime/su.js -o runtime/su_bundle.js -s su
 	npx uglifyjs runtime/su_bundle.js --source-map "root='/',url='su_bundle.min.js.map'" -o runtime/su_bundle.min.js -c -m
+	node devtools/listGlobals.js runtime/su_global_builtins.json
 
 builtins: runtime/builtin/*.ts runtime/rootclass.ts runtime/globals.ts runtime/builtin/UI/*.ts
 	node devtools/builtins.js $^
