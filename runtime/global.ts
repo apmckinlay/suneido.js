@@ -44,3 +44,7 @@ export function clearAll() {
         if (suglobals.hasOwnProperty(name))
             delete suglobals[name];
 }
+
+export function listGlobals() {
+    return Object.getOwnPropertyNames(suglobals);
+}
