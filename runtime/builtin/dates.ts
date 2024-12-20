@@ -18,7 +18,7 @@ class DateClass extends SuBuiltinClass {
         if (_year || _month || _day || _hour || _minute || _second || _millisecond) {
             if (_s)
                 throw new Error("bad arguments to Date");
-            let t = SuDate.now();
+            let t = BEGIN;
             ({ _year = t.Year(), _month = t.Month(), _day = t.Day(), _hour = t.Hour(),
                 _minute = t.Minute(), _second = t.Second(), _millisecond = t.Millisecond()
                 } = { _year, _month, _day, _hour, _minute, _second, _millisecond });
