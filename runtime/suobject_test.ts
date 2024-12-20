@@ -50,6 +50,14 @@ assert.equal(def, makeObj([1, 2, 3]));
 assert.equal(ob.get('x'), makeObj([1, 2, 3]));
 assert.equal(ob.get('y'), makeObj([1, 2]));
 
+assert.equal(ob.CompareAndSet('z', 123, undefined), true);
+assert.equal(ob.get('z'), 123);
+assert.equal(ob.CompareAndSet('z', 123, undefined), false);
+assert.equal(ob.CompareAndSet('z', 456, 123), true);
+assert.equal(ob.get('z'), 456);
+assert.equal(ob.CompareAndSet('z', 789, 123), false);
+assert.equal(ob.get('z'), 456);
+
 ob.Set_readonly();
 assert.throws(() => ob.put('b', true),
     /can't modify readonly objects/);

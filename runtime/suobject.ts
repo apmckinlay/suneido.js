@@ -264,6 +264,21 @@ export class SuObject extends SuValue {
         return this.preset(key, value);
     }
 
+    CompareAndSet(member: any = mandatory(), newval: any = mandatory(), oldval: any): boolean {
+        this.checkReadonly();
+        const val = this.getIfPresent(member);
+        let set: boolean = true;
+        if (oldval === undefined || val === undefined) {
+            set = oldval === val;
+        } else {
+            set = is(val, oldval);
+        }
+        if (set) {
+            this.preset(member, newval);
+        }
+        return set;
+    }
+
     preset(key: any, value: any): SuObject {
         this.checkReadonly();
         return this.runWithModificationCheck(() => {
