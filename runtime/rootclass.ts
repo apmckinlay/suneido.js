@@ -220,6 +220,23 @@ export class RootClass extends SuValue {
         return x;
     }
 
+    CompareAndSet(member: any = mandatory(), newval: any = mandatory(), oldval: any): boolean {
+        maxargs(3, arguments.length);
+        if (this.isClass())
+            throw new Error("method not found: class.CompareAndSet")
+        const val = (this as any)[toStr(member)];
+        let set: boolean = true;
+        if (oldval === undefined || val === undefined) {
+            set = oldval === val;
+        } else {
+            set = is(val, oldval);
+        }
+        if (set) {
+            this.put(member, newval);
+        }
+        return set;
+    }
+
     GetDefault(this: any, key: any = mandatory(), defValue: any = mandatory()): any {
         maxargs(2, arguments.length);
         let val;
@@ -459,6 +476,22 @@ function instanceEquals(x: any, y: any): boolean {
 (RootClass.prototype['Copy'] as any).$callableType = "BUILTIN";
 (RootClass.prototype['Copy'] as any).$callableName = "RootClass#Copy";
 (RootClass.prototype['Copy'] as any).$params = '';
+//GENERATED end
+
+//BUILTIN RootClass.CompareAndSet(member, newVal, oldVal=null)
+//GENERATED start
+(RootClass.prototype['CompareAndSet'] as any).$call = RootClass.prototype['CompareAndSet'];
+(RootClass.prototype['CompareAndSet'] as any).$callNamed = function ($named: any, member: any, newVal: any, oldVal: any) {
+    maxargs(4, arguments.length);
+    ({ member = member, newVal = newVal, oldVal = oldVal } = $named);
+    return RootClass.prototype['CompareAndSet'].call(this, member, newVal, oldVal);
+};
+(RootClass.prototype['CompareAndSet'] as any).$callAt = function (args: SuObject) {
+    return (RootClass.prototype['CompareAndSet'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(RootClass.prototype['CompareAndSet'] as any).$callableType = "BUILTIN";
+(RootClass.prototype['CompareAndSet'] as any).$callableName = "RootClass#CompareAndSet";
+(RootClass.prototype['CompareAndSet'] as any).$params = 'member, newVal, oldVal=null';
 //GENERATED end
 
 //BUILTIN RootClass.GetDefault(member, default_value)

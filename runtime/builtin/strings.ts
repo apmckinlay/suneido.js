@@ -385,10 +385,9 @@ export class Strings {
         return this.length;
     }
 
-    Split(this: string, separatorArg: any = mandatory()): SuObject {
+    Split(this: string, separatorArg: any = ''): SuObject {
         maxargs(1, arguments.length);
         let separator = toStr(separatorArg);
-        assert.that(separator !== '', "string.Split separator must not be empty string");
         let arraySplit = this.split(separator);
         if (arraySplit[arraySplit.length - 1] === '')
             arraySplit = arraySplit.slice(0, -1);

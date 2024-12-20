@@ -115,6 +115,22 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Add'] as any).$params = '@args';
 //GENERATED end
 
+//BUILTIN SuObject.CompareAndSet(member, newVal, oldVal=null)
+//GENERATED start
+(SuObject.prototype['CompareAndSet'] as any).$call = SuObject.prototype['CompareAndSet'];
+(SuObject.prototype['CompareAndSet'] as any).$callNamed = function ($named: any, member: any, newVal: any, oldVal: any) {
+    maxargs(4, arguments.length);
+    ({ member = member, newVal = newVal, oldVal = oldVal } = $named);
+    return SuObject.prototype['CompareAndSet'].call(this, member, newVal, oldVal);
+};
+(SuObject.prototype['CompareAndSet'] as any).$callAt = function (args: SuObject) {
+    return (SuObject.prototype['CompareAndSet'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(SuObject.prototype['CompareAndSet'] as any).$callableType = "BUILTIN";
+(SuObject.prototype['CompareAndSet'] as any).$callableName = "SuObject#CompareAndSet";
+(SuObject.prototype['CompareAndSet'] as any).$params = 'member, newVal, oldVal=null';
+//GENERATED end
+
 //BUILTIN SuObject.GetDefault(key, value)
 //GENERATED start
 (SuObject.prototype['GetDefault'] as any).$call = SuObject.prototype['GetDefault'];
