@@ -171,6 +171,8 @@ str1 = "one,two,three,";
 assert.equal(sm.Split.call(str1, ',').toString(), '#("one", "two", "three")');
 str1 = "one,two,three,,,";
 assert.equal(sm.Split.call(str1, ',').toString(), '#("one", "two", "three", "", "")');
+assert.equal(sm.Split.call("on e").toString(), '#("o", "n", " ", "e")');
+assert.equal(sm.Split.call("").toString(), '#()');
 
 str1 = "";
 assert.equal(sm.Substr.call(str1, 1), "");
