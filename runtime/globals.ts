@@ -8,9 +8,6 @@ import { defGlobal } from "./global";
 import { SuObject } from "./suobject";
 let Suneido = new SuObject();
 
-// temp so BuiltDate works
-import { SuDate } from "./sudate";
-Suneido.put('BuiltDate', SuDate.literal('20160913'));
 defGlobal('Suneido', Suneido);
 
 import { su_display, su_name } from "./builtin/display";
