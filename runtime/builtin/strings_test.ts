@@ -59,20 +59,33 @@ assert.equal(sm.Find1of.call(str1, "si", 2), 2);
 assert.equal(sm.Find1of.call(str1, "si", 4), 5);
 assert.equal(sm.Find1of.call(str1, "xy", 0), 14);
 
+function findTest(s: string, chars: string, first: number, last: number|false) {
+    assert.equal(sm.Find1of.call(s, chars), first);
+    assert.equal(sm.FindLast1of.call(s, chars), last);
+}
+
+findTest("", "", 0, false)
+findTest("", "x", 0, false)
+findTest("x", "", 1, false)
+findTest("x", "x", 0, 0)
+findTest("xyz", "x", 0, 0)
+findTest("xyz", "y", 1, 1)
+findTest("xyz", "z", 2, 2)
+findTest("xyz", "xyz", 0, 2)
+findTest("now is the time", "xyz", 15, false)
+
+findTest("now is the time", "i-k", 4, 12) // beginning of range
+findTest("now is the time", "a-i", 4, 14) // end of range
+findTest("now is the time", "^m-z", 3, 14)
+findTest("0", "\x00-\xff", 0, 0)
+findTest("0", "^\x00-\xff", 1, false)
+findTest("hello", "z-a", 5, false)
+findTest("hello", "^z-a", 0, 4)
+
 assert.equal(sm.FindLast1of.call(str1, "si"), 12);
 assert.equal(sm.FindLast1of.call(str1, "si", 12), 12);
 assert.equal(sm.FindLast1of.call(str1, "si", 11), 6);
 assert.equal(sm.FindLast1of.call(str1, "xy", 0), false);
-
-assert.equal(sm.Findnot1of.call(str1, " hist"), 8);
-assert.equal(sm.Findnot1of.call(str1, " hist", 8), 8);
-assert.equal(sm.Findnot1of.call(str1, " hist", 9), 11);
-assert.equal(sm.Findnot1of.call(str1, " histea", 0), 14);
-
-assert.equal(sm.FindLastnot1of.call(str1, "tse"), 9);
-assert.equal(sm.FindLastnot1of.call(str1, "tse", 9), 9);
-assert.equal(sm.FindLastnot1of.call(str1, "tse", 6), 5);
-assert.equal(sm.FindLastnot1of.call(str1, " histea"), false);
 
 assert.that(sm['Has?'].call(str1, "this"), "check method hasq()");
 assert.that(!sm['Has?'].call(str1, "thsi"), "check method hasq()");

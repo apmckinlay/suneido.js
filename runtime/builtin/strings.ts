@@ -191,9 +191,15 @@ export class Strings {
     Find1of(this: string, charsArg: any = mandatory(), posArg: any = 0): number {
         maxargs(2, arguments.length);
         let chars = toStr(charsArg);
+
+        if (chars.length === 0) {
+            return this.length;
+        }
+        const [search, negated] = makeSearchText(chars);
+
         let pos = toInt(posArg);
         for (let i = Math.max(0, pos); i < this.length; i++) {
-            if (-1 !== chars.indexOf(this[i]))
+            if (negated ? -1 === search.indexOf(this[i]) : -1 !== search.indexOf(this[i]))
                 return i;
         }
         return this.length;
@@ -202,31 +208,15 @@ export class Strings {
     FindLast1of(this: string, charsArg: any = mandatory(), posArg: any = this.length - 1): number | boolean {
         maxargs(2, arguments.length);
         let chars = toStr(charsArg);
+
+        if (chars.length === 0) {
+            return false;
+        }
+        const [search, negated] = makeSearchText(chars);
+
         let pos = toInt(posArg);
         for (let i = Math.min(this.length - 1, pos); i >= 0; i--) {
-            if (-1 !== chars.indexOf(this[i]))
-                return i;
-        }
-        return false;
-    }
-
-    Findnot1of(this: string, charsArg: any = mandatory(), posArg: any = 0): number {
-        maxargs(2, arguments.length);
-        let chars = toStr(charsArg);
-        let pos = toInt(posArg);
-        for (let i = Math.max(0, pos); i < this.length; i++) {
-            if (-1 === chars.indexOf(this[i]))
-                return i;
-        }
-        return this.length;
-    }
-
-    FindLastnot1of(this: string, charsArg: any = mandatory(), posArg: any = this.length - 1): number | boolean {
-        maxargs(2, arguments.length);
-        let chars = toStr(charsArg);
-        let pos = toInt(posArg);
-        for (let i = Math.min(this.length - 1, pos); i >= 0; i--) {
-            if (-1 === chars.indexOf(this[i]))
+            if (negated ? -1 === search.indexOf(this[i]) : -1 !== search.indexOf(this[i]))
                 return i;
         }
         return false;
@@ -452,6 +442,30 @@ export class Strings {
         maxargs(0, arguments.length);
         return new StringIter(this);
     }
+}
+
+function makeSearchText(chars: string): [string, boolean] {
+    let s = '';
+    let negated = chars[0] === '^';
+    if (negated) {
+        chars = chars.substring(1);
+    }
+    const n = chars.length;
+    for (let i = 0; i < n; i++) {
+        if (i+2 < n && chars[i+1] === '-') { // range
+            for (let c = chars.charCodeAt(i); c <= chars.charCodeAt(i+2); c++) {
+                s += String.fromCharCode(c);
+            }
+            i += 2;
+        } else {
+            let c = chars[i];
+            if (c === '-' && i > 0 && i+1 < n) {
+            } else {
+                s += c;
+            }
+        }
+    }
+    return [s, negated];
 }
 
 export class StringIter extends SuIterable {
@@ -720,38 +734,6 @@ class ClassForEach implements ForEach {
 (Strings.prototype['FindLast1of'] as any).$callableType = "BUILTIN";
 (Strings.prototype['FindLast1of'] as any).$callableName = "Strings#FindLast1of";
 (Strings.prototype['FindLast1of'] as any).$params = 'chars, pos=99999';
-//GENERATED end
-
-//BUILTIN Strings.Findnot1of(chars, pos=0)
-//GENERATED start
-(Strings.prototype['Findnot1of'] as any).$call = Strings.prototype['Findnot1of'];
-(Strings.prototype['Findnot1of'] as any).$callNamed = function ($named: any, chars: any, pos: any) {
-    maxargs(3, arguments.length);
-    ({ chars = chars, pos = pos } = $named);
-    return Strings.prototype['Findnot1of'].call(this, chars, pos);
-};
-(Strings.prototype['Findnot1of'] as any).$callAt = function (args: SuObject) {
-    return (Strings.prototype['Findnot1of'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
-};
-(Strings.prototype['Findnot1of'] as any).$callableType = "BUILTIN";
-(Strings.prototype['Findnot1of'] as any).$callableName = "Strings#Findnot1of";
-(Strings.prototype['Findnot1of'] as any).$params = 'chars, pos=0';
-//GENERATED end
-
-//BUILTIN Strings.FindLastnot1of(chars, pos=99999)
-//GENERATED start
-(Strings.prototype['FindLastnot1of'] as any).$call = Strings.prototype['FindLastnot1of'];
-(Strings.prototype['FindLastnot1of'] as any).$callNamed = function ($named: any, chars: any, pos: any) {
-    maxargs(3, arguments.length);
-    ({ chars = chars, pos = pos } = $named);
-    return Strings.prototype['FindLastnot1of'].call(this, chars, pos);
-};
-(Strings.prototype['FindLastnot1of'] as any).$callAt = function (args: SuObject) {
-    return (Strings.prototype['FindLastnot1of'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
-};
-(Strings.prototype['FindLastnot1of'] as any).$callableType = "BUILTIN";
-(Strings.prototype['FindLastnot1of'] as any).$callableName = "Strings#FindLastnot1of";
-(Strings.prototype['FindLastnot1of'] as any).$params = 'chars, pos=99999';
 //GENERATED end
 
 //BUILTIN Strings.Has?(s)

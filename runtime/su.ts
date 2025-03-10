@@ -72,7 +72,7 @@ export function get(x: any, key: any): any {
     if (x instanceof SuValue) {
         let result = x.get(key);
         if (result == null)
-            throw new Error("uninitialized member: " + display(key));
+            throw new Error("member not found: " + display(key));
         return result;
     }
     throw new Error(type(x) + " does not support get (" + key + ")");
