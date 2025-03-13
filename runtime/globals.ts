@@ -14,6 +14,9 @@ import { su_display, su_name } from "./builtin/display";
 defGlobal('Display', su_display);
 defGlobal('Name', su_name);
 
+import { su_finally } from "./builtin/finally"; 
+defGlobal('Finally', su_finally);
+
 import { su_print } from "./builtin/print";
 defGlobal('Print', su_print);
 
