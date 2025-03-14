@@ -65,6 +65,11 @@ export class SuNum extends SuValue {
             return null; // invalid input
         if (s === "0")
             return SuNum.ZERO;
+        if (s === "inf")
+            return SuNum.INF;
+        if (s === "-inf")
+            return SuNum.MINUS_INF;
+        
         let i = 0;
         let sign = s[i] === '-' ? -1 : 1;
         if (s[i] === '+' || s[i] === '-')
