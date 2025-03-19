@@ -1,7 +1,7 @@
 import * as assert from "../assert";
 import * as util from "../utility";
 import { tr } from "../tr";
-import { global } from "../global";
+import { global, globalLookup } from "../global";
 import { SuObject } from "../suobject";
 import { mandatory, maxargs } from "../args";
 import { Result, ForEach, Regex } from "../regex";
@@ -262,7 +262,13 @@ export class Strings {
         let n = toInt(nArg);
         let dst = "";
         for (let i = 0; i < this.length; i += n) {
-            dst += f.$call.call(f, this.substr(i, n));
+            let ss = this.substring(i, i + n);
+            // similar to su.call, but it cannot be called here due to the dependency order
+            if (typeof f === 'string') {
+                dst += ((Strings.prototype as any)[f] || globalLookup('Strings', f)).$call.call(ss);
+            } else {
+                dst += f.$call.call(f, ss);
+            }
         }
         return dst;
     }
@@ -436,6 +442,15 @@ export class Strings {
                 result = true;
         }
         return result;
+    }
+
+    Count(this: string, substr: any = mandatory()): number {
+        maxargs(1, arguments.length);
+        let target = toStr(substr);
+        if (target === '') {
+            return this.length + 1;
+        }
+        return this.split(target).length - 1;
     }
 
     Iter(this: string): StringIter {
@@ -1029,6 +1044,22 @@ class ClassForEach implements ForEach {
 (Strings.prototype['Upper'] as any).$callableType = "BUILTIN";
 (Strings.prototype['Upper'] as any).$callableName = "Strings#Upper";
 (Strings.prototype['Upper'] as any).$params = '';
+//GENERATED end
+
+//BUILTIN Strings.Count(substr)
+//GENERATED start
+(Strings.prototype['Count'] as any).$call = Strings.prototype['Count'];
+(Strings.prototype['Count'] as any).$callNamed = function ($named: any, substr: any) {
+    maxargs(2, arguments.length);
+    ({ substr = substr } = $named);
+    return Strings.prototype['Count'].call(this, substr);
+};
+(Strings.prototype['Count'] as any).$callAt = function (args: SuObject) {
+    return (Strings.prototype['Count'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(Strings.prototype['Count'] as any).$callableType = "BUILTIN";
+(Strings.prototype['Count'] as any).$callableName = "Strings#Count";
+(Strings.prototype['Count'] as any).$params = 'substr';
 //GENERATED end
 
 //BUILTIN Strings.Upper?()
