@@ -127,7 +127,14 @@ assert.that(!sm['Number?'].call(str1), "check method numberq() with a combinatio
 str1 = "10e10000000";
 assert.that(sm['Number?'].call(str1), "check method numberq() with a big number which will be treated as infinity in javascript");
 str1 = "0x1f";
-assert.that(!sm['Number?'].call(str1), "check method numberq() with hex number");
+assert.that(sm['Number?'].call(str1), "check method numberq() with hex number");
+assert.that(sm['Number?'].call("+1_2_3"), "+1_2_3");
+assert.that(!sm['Number?'].call("+1_2__3"), "+1_2__3");
+assert.that(!sm['Number?'].call("+1_2_"), "+1_2_");
+assert.that(sm['Number?'].call("+1_2.3"), "+1_2.3");
+assert.that(!sm['Number?'].call("+1_2._3"), "+1_2._3");
+assert.that(sm['Number?'].call("-0x1_a_b"), "-0x1_a_b");
+assert.that(!sm['Number?'].call("0x"), "0x");
 
 assert.that(!sm['Number?'].call(""), "check method numericq() with empty string");
 assert.that(sm['Number?'].call("123"), "check method numericq() with whole digits string");

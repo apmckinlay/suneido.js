@@ -310,29 +310,64 @@ export class Strings {
     ['Number?'](this: string): boolean {
         maxargs(0, arguments.length);
         let i: number = 0;
+        let d: number;
         let c: string;
         let intdigits: boolean;
         let fracdigits: boolean;
+        let skipUnderscore: boolean;
+        function matchNext(s: string, pos: number,
+            matchFn: (c: string) => boolean, skipUnderscore: boolean = false): number {
+            let extraStep = 0;
+            if (skipUnderscore === true && pos < s.length && s[pos] === '_') {
+                extraStep = 1;
+            }
+            return matchFn(s[pos + extraStep]) ? 1 + extraStep : 0;
+        }
+
         c = this[i];
         if (c === '+' || c === '-')
             c = this[++i];
+        
+        // hex
+        if (c === '0' && (this[i+1] === 'x' || this[i+1] === 'X')) {
+            i += 2;
+            let j = i;
+            while (d = matchNext(this, i, util.isHexDigit, true)) {
+                i += d
+            }
+            if (j === i)
+                return false; // no digits after '0x'
+            return i === this.length;
+        }
+
         intdigits = util.isDigit(c);
-        while (util.isDigit(c))
-            c = this[++i];
+        skipUnderscore = false;  
+        while (d = matchNext(this, i, util.isDigit, skipUnderscore)) {
+            i += d
+            skipUnderscore = true;
+        }
+        c = this[i];
         if (c === '.')
             c = this[++i];
         fracdigits = util.isDigit(c);
-        while (util.isDigit(c))
-            c = this[++i];
+        skipUnderscore = false;
+        while (d = matchNext(this, i, util.isDigit, skipUnderscore)) {
+            i += d
+            skipUnderscore = true;
+        }
         if (!intdigits && !fracdigits)
             return false;
+        c = this[i];
         if (c === 'e' || c === 'E') {
             c = this[++i];
             if (c === '-' || c === '+')
                 c = this[++i];
             let j = i;
-            while (util.isDigit(c))
-                c = this[++i];
+            skipUnderscore = false;
+            while (d = matchNext(this, i, util.isDigit, true)) {
+                i += d
+                skipUnderscore = true;
+            }
             if (j === i)
                 return false; // no digits after 'e'
         }
