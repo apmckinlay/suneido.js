@@ -36,8 +36,11 @@ class DateClass extends SuBuiltinClass {
             else
                 d =  SuDate.parse(s, toStr(_order));
             return d == null ? false : d;
-        } else
+        } else if (_s === false) {
+            return false;
+        } else {
             return SuDate.now();
+        }
     }
     Begin(): SuDate {
         maxargs(0, arguments.length);
