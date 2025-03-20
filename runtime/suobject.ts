@@ -390,6 +390,22 @@ export class SuObject extends SuValue {
         });
     }
 
+    PopFirst(): any {
+        this.checkReadonly();
+        if (this.vec.length < 1) {
+            return this;
+        }
+        return this.vec.shift();
+    }
+
+    PopLast(): any {
+        this.checkReadonly();
+        if (this.vec.length < 1) {
+            return this;
+        }
+        return this.vec.pop();
+    }
+
     Set_readonly(): SuObject {
         maxargs(0, arguments.length);
         if (this.readonly)

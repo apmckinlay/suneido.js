@@ -223,6 +223,36 @@ export function su_objectq(x: any = mandatory()): boolean {
 (SuObject.prototype['Erase'] as any).$params = '@args';
 //GENERATED end
 
+//BUILTIN SuObject.PopFirst()
+//GENERATED start
+(SuObject.prototype['PopFirst'] as any).$call = SuObject.prototype['PopFirst'];
+(SuObject.prototype['PopFirst'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
+    return SuObject.prototype['PopFirst'].call(this);
+};
+(SuObject.prototype['PopFirst'] as any).$callAt = function (args: SuObject) {
+    return (SuObject.prototype['PopFirst'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(SuObject.prototype['PopFirst'] as any).$callableType = "BUILTIN";
+(SuObject.prototype['PopFirst'] as any).$callableName = "SuObject#PopFirst";
+(SuObject.prototype['PopFirst'] as any).$params = '';
+//GENERATED end
+
+//BUILTIN SuObject.PopLast()
+//GENERATED start
+(SuObject.prototype['PopLast'] as any).$call = SuObject.prototype['PopLast'];
+(SuObject.prototype['PopLast'] as any).$callNamed = function (_named: any) {
+    maxargs(1, arguments.length);
+    return SuObject.prototype['PopLast'].call(this);
+};
+(SuObject.prototype['PopLast'] as any).$callAt = function (args: SuObject) {
+    return (SuObject.prototype['PopLast'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(SuObject.prototype['PopLast'] as any).$callableType = "BUILTIN";
+(SuObject.prototype['PopLast'] as any).$callableName = "SuObject#PopLast";
+(SuObject.prototype['PopLast'] as any).$params = '';
+//GENERATED end
+
 //BUILTIN SuObject.Set_readonly()
 //GENERATED start
 (SuObject.prototype['Set_readonly'] as any).$call = SuObject.prototype['Set_readonly'];
