@@ -131,8 +131,9 @@ export class SuDate extends SuValue {
 
         let i = 0;
         while (i < s.length) {
-            assert.that(ntokens < MAXTOKENS,
-                "Current token number is bigger than MAXTOKENS");
+            if (ntokens >= MAXTOKENS) {
+                return null;
+            }
             if (util.isAlpha(s[i])) {
                 let word = nextWord(s, i);
                 i += word.length;
