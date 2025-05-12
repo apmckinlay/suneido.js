@@ -37,12 +37,15 @@ export function tryGlobal(name: string) {
 
 export function clear(name: string) {
     delete suglobals[name];
+    if ((window as any)?.suCodeBundle && (window as any).suCodeBundle[name])
+        delete ((window as any).suCodeBundle[name]);
 }
 
 export function clearAll() {
     for (let name in suglobals)
         if (suglobals.hasOwnProperty(name))
             delete suglobals[name];
+    delete (window as any).suCodeBundle;
 }
 
 export function listGlobals() {
