@@ -78,13 +78,17 @@ export function get(x: any, key: any): any {
     throw new Error(type(x) + " does not support get (" + key + ")");
 }
 
-export function rangeto(x: any, i: number, j: number) {
+export function rangeto(x: any, i: number, j: number | false) {
     sliceable(x);
+    if (j === false) 
+        j = x.length;
     return x.slice(i, j);
 }
 
-export function rangelen(x: any, i: number, n: number) {
+export function rangelen(x: any, i: number, n: number | false) {
     sliceable(x);
+    if (n === false)
+        n = x.length - i;
     if (n < 0)
         n = 0;
     return x.slice(i, i + n);

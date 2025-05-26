@@ -30,19 +30,21 @@ assert.equal(su.get(ob, 'n'), 123);
 
 assert.equal(su.rangeto("abcde", 1, 4), "bcd");
 assert.equal(su.rangeto("abcde", 2, 9), "cde");
+assert.equal(su.rangeto("abcde", 2, false), "cde");
 assert.equal(su.rangeto("abcde", 1, -1), "bcd");
 assert.equal(su.rangeto("abcde", -2, -1), "d");
 assert.equal(su.rangeto("abcde", 4, 1), "");
 
 assert.equal(su.rangelen("abcde", 1, 3), "bcd");
 assert.equal(su.rangelen("abcde", 2, 9), "cde");
+assert.equal(su.rangelen("abcde", 2, false), "cde");
 assert.equal(su.rangelen("abcde", -2, 1), "d");
 assert.equal(su.rangelen("abcde", 3, 0), "");
 assert.equal(su.rangelen("abcde", 3, -3), "");
-
 let list = SuObject.list;
 function eq(x: any, y: any) { assert.that(x.equals(y), x + " should be " + y); }
 eq(su.rangeto(list(0, 1, 2, 3, 4), 2, 9), list(2, 3, 4));
+eq(su.rangeto(list(0, 1, 2, 3, 4), 2, false), list(2, 3, 4));
 eq(su.rangeto(list(0, 1, 2, 3, 4), 1, 4), list(1, 2, 3));
 eq(su.rangeto(list(0, 1, 2, 3, 4), 1, -1), list(1, 2, 3));
 eq(su.rangeto(list(0, 1, 2, 3, 4), -2, -1), list(3));
@@ -50,6 +52,7 @@ eq(su.rangeto(list(0, 1, 2, 3, 4), 4, 1), list());
 
 eq(su.rangelen(list(0, 1, 2, 3, 4), 1, 3), list(1, 2, 3));
 eq(su.rangelen(list(0, 1, 2, 3, 4), 2, 9), list(2, 3, 4));
+eq(su.rangelen(list(0, 1, 2, 3, 4), 2, false), list(2, 3, 4));
 eq(su.rangelen(list(0, 1, 2, 3, 4), -2, 1), list(3));
 eq(su.rangelen(list(0, 1, 2, 3, 4), 3, 0), list());
 eq(su.rangelen(list(0, 1, 2, 3, 4), 3, -3), list());
