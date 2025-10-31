@@ -8,8 +8,13 @@ import { SuCallable } from "../suvalue";
 import { maxargs } from "../args";
 
 export class Except extends String {
-    constructor(private error: Error, message?: string) {
+    private error: Error;
+    constructor(error: any, message?: string) {
+        if (!(error instanceof Error)) {
+            error = new Error(String(error) + ' (' + (typeof error) + ')');
+        }
         super(message || error.message);
+        this.error = error;
         Object.freeze(this);
     }
 
