@@ -6,6 +6,7 @@
 
 import * as assert from "./assert";
 import * as util from "./utility";
+import { SuNum } from "./sunum";
 import { SuValue, SuCallable } from "./suvalue";
 import { globalLookup } from "./global";
 import { maxargs, mandatory } from "./args";
@@ -369,13 +370,13 @@ export class SuDate extends SuValue {
     /**
      * minusSeconds returns the number of seconds between two dates
      * @param sud2 {Object}  another sudate
-     * @returns {number}
+     * @returns {SuNum}
      */
-    MinusSeconds(_sud2: any = mandatory()): number {
+    MinusSeconds(_sud2: any = mandatory()): SuNum {
         maxargs(1, arguments.length);
         let sud2 = toSuDate(_sud2, "MinusSeconds");
         let timeDiff = this.utc() - sud2.utc();
-        return timeDiff / 1000;
+        return SuNum.make(timeDiff, -3);
     }
 
     /**

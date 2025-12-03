@@ -120,9 +120,9 @@ export class SuNum extends SuValue {
         if (coef === Number.POSITIVE_INFINITY)
             return SuNum.INF;
         if (!Number.isSafeInteger(coef))
-            throw "SuNum.make invalid coefficient: " + coef;
+            throw new Error("SuNum.make invalid coefficient: " + coef);
         else if (!Number.isSafeInteger(exp))
-            throw "SuNum.make invalid exponent: " + exp;
+            throw new Error("SuNum.make invalid exponent: " + exp);
         if (exp < minExp)
             return SuNum.ZERO;
         if (exp > maxExp)
