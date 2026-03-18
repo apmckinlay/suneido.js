@@ -61,7 +61,7 @@ CodeMirror.registerHelper("wordChars", "suneido", /[\w?!]/);
                             end = true;
                             break;
                         }
-                        escaped = !escaped && next === "\\";
+                        escaped = !escaped && quote !== '`' && next === "\\";
                         next = stream.next();
                     }
                     if (end || oneLineMode) {
