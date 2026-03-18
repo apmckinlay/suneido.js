@@ -1,7 +1,8 @@
 import * as util from '../../utility';
 import { SuObject } from '../../suobject';
-import { SuBuiltInEl, SuEl, defMap } from './suEl';
+import { SuBuiltInEl, SuEl, convertSuValue, defMap, makeSuValue } from './suEl';
 import { mandatory, maxargs } from '../../args';
+import { SuCallable } from '../../suvalue';
 
 export class SuCodeMirror extends SuEl {
     constructor(public el: any) {
@@ -16,6 +17,19 @@ export class SuCodeMirror extends SuEl {
     GetMode(cm: SuEl = mandatory()) {
         maxargs(1, arguments.length);
         return new SuBuiltInEl(cm.el.getMode());
+    }
+    OnBeforeChange(cm: SuEl = mandatory(), fn: SuCallable = mandatory()) {
+        maxargs(2, arguments.length);
+        cm.el.on('beforeChange', (_cm: any, _changeObj: any) => {
+            let cm = makeSuValue(_cm);
+            let updateFn = (from: any, to: any, text: any) => {
+                _changeObj.update(convertSuValue(from), convertSuValue(to), convertSuValue(text));
+            };
+            (updateFn as any).$call = updateFn;
+            let changeObj = makeSuValue(_changeObj);
+            changeObj.put('update', updateFn);
+            fn.$call(cm, changeObj);
+        });
     }
 }
 
@@ -59,4 +73,20 @@ if (typeof window !== 'undefined') {
 (SuCodeMirror.prototype['GetMode'] as any).$callableType = "BUILTIN";
 (SuCodeMirror.prototype['GetMode'] as any).$callableName = "SuCodeMirror#GetMode";
 (SuCodeMirror.prototype['GetMode'] as any).$params = 'cm';
+//GENERATED end
+
+//BUILTIN SuCodeMirror.OnBeforeChange(cm, fn)
+//GENERATED start
+(SuCodeMirror.prototype['OnBeforeChange'] as any).$call = SuCodeMirror.prototype['OnBeforeChange'];
+(SuCodeMirror.prototype['OnBeforeChange'] as any).$callNamed = function ($named: any, cm: any, fn: any) {
+    maxargs(3, arguments.length);
+    ({ cm = cm, fn = fn } = $named);
+    return SuCodeMirror.prototype['OnBeforeChange'].call(this, cm, fn);
+};
+(SuCodeMirror.prototype['OnBeforeChange'] as any).$callAt = function (args: SuObject) {
+    return (SuCodeMirror.prototype['OnBeforeChange'] as any).$callNamed.call(this, util.mapToOb(args.map), ...args.vec);
+};
+(SuCodeMirror.prototype['OnBeforeChange'] as any).$callableType = "BUILTIN";
+(SuCodeMirror.prototype['OnBeforeChange'] as any).$callableName = "SuCodeMirror#OnBeforeChange";
+(SuCodeMirror.prototype['OnBeforeChange'] as any).$params = 'cm, fn';
 //GENERATED end
