@@ -1,11 +1,7 @@
 // Copyright (C) 2015 Suneido Software Corp. All rights reserved worldwide.
-/*global CodeMirror*/
-(function (mod) {
-	"use strict";
-    mod(CodeMirror);
-}(function (CodeMirror) {
-    "use strict";
-	CodeMirror.registerHelper("wordChars", "suneido", /[\w?!]/);
+import CodeMirror from 'codemirror';
+
+CodeMirror.registerHelper("wordChars", "suneido", /[\w?!]/);
     function def(oneLineMode) {
         return function (config) {
             function words(str) {
@@ -196,4 +192,3 @@
     }
     CodeMirror.defineMode("suneido", def(false));
     CodeMirror.defineMode("suneido-line", def(true));
-}));
