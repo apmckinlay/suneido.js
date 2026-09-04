@@ -14,6 +14,7 @@ export class SuWebSocketClient extends SuEl {
     constructor(url: string) {
         super();
         this.el = new WebSocket(url);
+        this.el.binaryType = 'arraybuffer';
     }
     type(): string {
         return 'WebSocket';
@@ -49,13 +50,16 @@ export class SuWebSocketClient extends SuEl {
         this.isProcessingEvent = true;
 
         // Process events sequentially
-        while (this.eventQueue.length > 0) {
-            const eventOb = this.eventQueue.shift(); // Get the next event from the queue
-            if (!!eventOb) {
-                await this.parseEvent(eventOb[0]).then(event => eventOb[1].$callNamed({ event })); // Process the event
+        try {
+            while (this.eventQueue.length > 0) {
+                const eventOb = this.eventQueue.shift(); // Get the next event from the queue
+                if (!!eventOb) {
+                    await this.parseEvent(eventOb[0]).then(event => eventOb[1].$callNamed({ event })); // Process the event
+                }
             }
+        } finally {
+            this.isProcessingEvent = false;
         }
-        this.isProcessingEvent = false;
     }
     private async parseEvent(e: Event): Promise<SuObject> {
         if (e instanceof CloseEvent) {
@@ -66,8 +70,8 @@ export class SuWebSocketClient extends SuEl {
             ]));
         } else if (e instanceof MessageEvent) {
             let data = e.data;
-            if (e.data instanceof Blob) {
-                const buffer = new Uint8Array(await new Response(e.data).arrayBuffer());
+            if (e.data instanceof ArrayBuffer) {
+                const buffer = new Uint8Array(e.data);
                 const decompressedBuffer = buffer.length > 0 && buffer[0] === 0xff /* Compressed. This value should not conflict with any existing Pack tags */
                     ? await this.decompress(buffer.slice(1))
                     : buffer;
