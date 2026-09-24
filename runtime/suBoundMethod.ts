@@ -1,3 +1,4 @@
+import { SuBuiltinClass } from "./builtin/subuiltinclass";
 import { SuValue, SuCallable } from "./suvalue";
 import * as util from "./utility";
 
@@ -45,5 +46,6 @@ export class SuBoundMethod extends SuValue implements SuCallable {
 
 export function isFunction(value: any): boolean {
     return typeof value === 'function' && (value as SuCallable).$callableType != null ||
-        value instanceof SuBoundMethod;
+        value instanceof SuBoundMethod ||
+        value instanceof SuBuiltinClass;
 }
