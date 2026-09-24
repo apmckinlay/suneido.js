@@ -14,8 +14,8 @@ import { type } from "./type";
 import * as util from "./utility";
 
 export class RootClass extends SuValue {
-    private library: string;
-    private className: string;
+    private library!: string;
+    private className!: string;
     // Generated code should call this when generating Class
     $setClassInfo(library: string, className: string) {
         Object.defineProperty(this, 'library',  { value: library });

@@ -7,9 +7,11 @@
     "@typescript-eslint/parser": "^7.18.0",
     "equals": "^1.0.5",
     "esbuild": "^0.28.1",
-    "eslint": "^8.57.1"
+    "eslint": "^8.57.1",
+    "typescript": "^7.0.2"
   },
   "dependencies": {
-    "codemirror": "^5.65.21"
+    "codemirror": "^5.65.21",
+    "fflate": "^0.8.3"
   }
 }

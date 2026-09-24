@@ -2,8 +2,9 @@ import * as su from "./su";
 import * as assert from "./assert";
 import { makeClass } from "./testUtility";
 import { defGlobal } from "./global";
+import { RootClass } from "./rootclass";
 
-let fn = function(a = su.mandatory(), b = 10, c = 100) {
+let fn = function(this: RootClass, a = su.mandatory(), b = 10, c = 100) {
     su.maxargs(3, arguments.length);
     return su.add(su.add(su.add(su.get(this, "X"), a), b), c);
 };
@@ -36,7 +37,7 @@ assert.equal(su.invokeNamed(c, 'Fn', {a: 3}, 1), 2113);
 // test super
 let $super = 'TestClass'; // need this to make super call work
 defGlobal($super, cl);
-let fn1 = function (a = su.mandatory(), b = 90, c = 900) {
+let fn1 = function (this: RootClass, a = su.mandatory(), b = 90, c = 900) {
     su.maxargs(3, arguments.length);
     return su.add(su.get(this, "X"), su.invokeBySuper($super, "Fn", this, a, b, c));
 };

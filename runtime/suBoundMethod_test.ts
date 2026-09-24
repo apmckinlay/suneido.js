@@ -1,6 +1,7 @@
 import { makeClass } from "./testUtility";
 import * as su from "./su";
 import * as assert from "./assert";
+import { RootClass } from "./rootclass";
 
 /* class {
     X: 123
@@ -13,11 +14,11 @@ import * as assert from "./assert";
         return .X + a
         }
     } */
-let fn = function (a = su.mandatory()) {
+let fn = function (this: RootClass, a = su.mandatory()) {
     su.maxargs(1, arguments.length);
     return su.add(su.get(this, "X"), a);
 };
-let fn1 = function (a = su.mandatory()) {
+let fn1 = function (this: RootClass, a = su.mandatory()) {
     su.maxargs(1, arguments.length);
     return su.add(su.get(this, "X"), a);
 };

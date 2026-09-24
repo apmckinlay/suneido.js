@@ -1,5 +1,5 @@
 class BlockReturn extends Error {
-    public name: 'BlockReturn';
+    public name = 'BlockReturn';
     constructor(public id: number, public value: any) {
         super('BlockReturn')
     }
