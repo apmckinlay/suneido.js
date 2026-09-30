@@ -1,5 +1,6 @@
 import { SuObject } from "./suobject";
 import * as su from "./su";
+import { RootClass } from "./rootclass";
 
 export interface Member {
     key: string;
@@ -25,7 +26,7 @@ export function makeClass(baseName: string | false, members: Member[],
 }
 
 function generateMethod(member: Member) {
-    let $callNamed = function(named: any, ...args: any[]) {
+    let $callNamed = function(this: RootClass, named: any, ...args: any[]) {
         if (!member.paramNames)
             return member.value.call(this);
         let params = [];

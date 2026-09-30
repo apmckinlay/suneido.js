@@ -6,11 +6,10 @@ import { mandatory, maxargs } from '../args';
 import { SuObject } from '../suobject';
 import { Pack } from '../pack';
 import { ByteBuffer } from '../bytebuffer';
+import { decompressSync } from 'fflate';
 
 export class SuWebSocketClient extends SuEl {
     el: WebSocket;
-    private eventQueue: [Event, SuCallable][] = [];
-    private isProcessingEvent: boolean = false;
     constructor(url: string) {
         super();
         this.el = new WebSocket(url);
@@ -32,36 +31,14 @@ export class SuWebSocketClient extends SuEl {
         maxargs(2, arguments.length);
         let event = toStr(_event);
         let listner = (e: Event) => {
-            this.enqueueEvent(e, fn);
+            this.processEvent(e, fn);
         };
         this.el.addEventListener(event, listner);
     }
-    private enqueueEvent(event: Event, fn: SuCallable) {
-        this.eventQueue.push([event, fn]);
-        if (!this.isProcessingEvent) {
-            this.processEventQueue();
-        }
+    private processEvent(event: Event, fn: SuCallable) {
+        fn.$callNamed({ event: this.parseEvent(event) });
     }
-    private async processEventQueue() {
-        if (this.eventQueue.length === 0) {
-            return;
-        }
-
-        this.isProcessingEvent = true;
-
-        // Process events sequentially
-        try {
-            while (this.eventQueue.length > 0) {
-                const eventOb = this.eventQueue.shift(); // Get the next event from the queue
-                if (!!eventOb) {
-                    await this.parseEvent(eventOb[0]).then(event => eventOb[1].$callNamed({ event })); // Process the event
-                }
-            }
-        } finally {
-            this.isProcessingEvent = false;
-        }
-    }
-    private async parseEvent(e: Event): Promise<SuObject> {
+    private parseEvent(e: Event): SuObject {
         if (e instanceof CloseEvent) {
             return new SuObject([], new Map<string, any>([
                 ['code', e.code],
@@ -73,7 +50,7 @@ export class SuWebSocketClient extends SuEl {
             if (e.data instanceof ArrayBuffer) {
                 const buffer = new Uint8Array(e.data);
                 const decompressedBuffer = buffer.length > 0 && buffer[0] === 0xff /* Compressed. This value should not conflict with any existing Pack tags */
-                    ? await this.decompress(buffer.slice(1))
+                    ? this.decompress(buffer.slice(1))
                     : buffer;
                 data = Pack.unpack(new ByteBuffer(decompressedBuffer));
             }
@@ -83,23 +60,8 @@ export class SuWebSocketClient extends SuEl {
         }
         return new SuObject();
     }
-    private async decompress(compressedBytes: Uint8Array) {
-        const stream = new Blob([compressedBytes]).stream();
-        const decompressedStream = stream.pipeThrough(new DecompressionStream("deflate"));
-        const chunks = [];
-        const reader = decompressedStream.getReader();
-        while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-            chunks.push(value);
-        }
-        return await this.concatUint8Arrays(chunks);
-    }
-
-    private async concatUint8Arrays(uint8arrays: Uint8Array[]) {
-        const blob = new Blob(uint8arrays);
-        const buffer = await blob.arrayBuffer();
-        return new Uint8Array(buffer);
+    private decompress(compressedBytes: Uint8Array<ArrayBuffer>) {
+        return decompressSync(compressedBytes);
     }
 }
 

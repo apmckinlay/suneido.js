@@ -4,6 +4,7 @@ import * as su from "./su";
 import * as assert from "./assert";
 import { SuObject } from "./suobject";
 import { SuBoundMethod } from "./suBoundMethod";
+import { RootClass } from "./rootclass";
 
 // Setup
 defGlobal('Objects', makeClass(false, []));
@@ -21,7 +22,7 @@ defGlobal('Objects', makeClass(false, []));
 		return '- test'
 		}
 	} */
-let fn1 = function () {
+let fn1 = function (this: RootClass) {
     su.maxargs(0, arguments.length);
     return "Test" + su.toStr(su.get(this, "eval$c_test"));
 };

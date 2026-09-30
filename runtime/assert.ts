@@ -33,7 +33,7 @@ function eq(x: any, y: any): boolean {
 export function throws(f: () => any, rx?: RegExp | string): void {
     try {
         f();
-    } catch (e) {
+    } catch (e: any) {
         if (rx)
             that(rx instanceof RegExp ? rx.test(e) : e.toString().includes(rx),
                 "expected an exception matching " + rx + " but got " + e);

@@ -28,7 +28,7 @@ export abstract class SuEl extends SuValue {
             return this[method];
         let jsMethodName = method[0].toLowerCase() + method.substr(1);
         if (typeof this.el[jsMethodName] === "function") {
-            let fn: any = function () {
+            let fn: any = function (this: SuEl) {
                 let args: any[] = [];
                 for (let i = 0; i < arguments.length; i++) {
                     args[i] = convertSuValue(arguments[i]);

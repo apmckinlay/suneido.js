@@ -95,7 +95,7 @@ function runCase(fixture: Fixture, args: string[]): boolean {
 
 class Scanner {
     private lexer: Lexer;
-    public token: Token;
+    public token!: Token;
 
     constructor(src: string) {
         this.lexer = new Lexer(src);
